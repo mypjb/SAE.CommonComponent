@@ -18,6 +18,15 @@ namespace SAE.CommonComponent.ConfigServer.Events
 
     public class ProjectRelevanceConfigEvent : IEvent
     {
-        public IEnumerable<string> ConfigIds { get; set; }
+        public string Id { get; set; }
+        public string ProjectId { get; set; }
+        public string ConfigId { get; set; }
+        public string Alias { get; set; }
+    }
+
+    public class ProjectConfigChangeAliasEvent : IEvent
+    {
+        public string Id { get; set; }
+        public string Alias { get; set; }
     }
 }

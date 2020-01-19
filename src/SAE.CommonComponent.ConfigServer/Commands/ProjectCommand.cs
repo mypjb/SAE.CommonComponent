@@ -24,6 +24,9 @@ namespace SAE.CommonComponent.ConfigServer.Commands
         public IEnumerable<string> ConfigIds { get; set; }
     }
 
-
-
+    public class ProjectConfigChangeAliasCommand
+    {
+        public string Id { get; set; }
+        public string Name { get; set; }
+    }
 }

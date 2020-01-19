@@ -18,6 +18,7 @@ namespace SAE.CommonComponent.ConfigServer.Handles
     {
         public ConfigHandler(IDocumentStore documentStore) : base(documentStore)
         {
+            
         }
 
         public Task<ConfigDto> Handle(GetByIdCommand<Config> command)

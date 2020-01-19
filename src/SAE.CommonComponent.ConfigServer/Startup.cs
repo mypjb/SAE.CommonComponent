@@ -17,7 +17,6 @@ namespace SAE.CommonComponent.ConfigServer
                     .AddNewtonsoftJson();
 
             services.AddServiceProvider()
-                    .AddMemoryCache()
                     .AddMemoryDocument()
                     .AddMemoryPersistenceService()
                     .AddMemoryMessageQueue();
@@ -30,7 +29,7 @@ namespace SAE.CommonComponent.ConfigServer
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            
             app.UseRouting()
                .UseEndpoints(endpoints =>
                {

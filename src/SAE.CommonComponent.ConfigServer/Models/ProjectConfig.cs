@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using SAE.CommonComponent.ConfigServer.Events;
 
 namespace SAE.CommonComponent.ConfigServer.Models
 {
@@ -19,8 +20,14 @@ namespace SAE.CommonComponent.ConfigServer.Models
         {
             Assert.Build(project.SolutionId == config.SolutionId)
                   .True($"项目'{project.Name}',和配置'{config.Name}'所属解决方案不一致,无法建立引用");
-            this.ProjectId = project.Id;
-            this.ConfigId = config.Id;
+
+            this.Apply(new ProjectRelevanceConfigEvent
+            {
+                Id = $"{this.ProjectId}_{this.ConfigId}",
+                ProjectId = project.Id,
+                ConfigId = config.Id,
+                Alias = project.Name,
+            });
         }
 
         /// <summary>

@@ -37,11 +37,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SAE.CommonLibrary.MessageQu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SAE.CommonLibrary.TinyMapper", "..\CommonLibrary\src\SAE.CommonLibrary.TinyMapper\SAE.CommonLibrary.TinyMapper.csproj", "{78ED58CB-330F-42F4-9701-C88DBC902B7E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAE.CommonComponent.ConfigServer.Test", "test\SAE.CommonComponent.ConfigServer.Test\SAE.CommonComponent.ConfigServer.Test.csproj", "{7F30CD90-9611-4FE5-BC71-BE038844610B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SAE.CommonComponent.ConfigServer.Test", "test\SAE.CommonComponent.ConfigServer.Test\SAE.CommonComponent.ConfigServer.Test.csproj", "{7F30CD90-9611-4FE5-BC71-BE038844610B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAE.CommonComponent.Test", "test\SAE.CommonComponent.Test\SAE.CommonComponent.Test.csproj", "{82A0D39F-CE63-47DB-AA57-088C680FE83D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SAE.CommonComponent.Test", "test\SAE.CommonComponent.Test\SAE.CommonComponent.Test.csproj", "{82A0D39F-CE63-47DB-AA57-088C680FE83D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SAE.CommonLibrary.AspNetCore", "..\CommonLibrary\src\SAE.CommonLibrary.AspNetCore\SAE.CommonLibrary.AspNetCore.csproj", "{B35224BD-3B3C-43A6-A4BD-106FA99C3050}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SAE.CommonLibrary.Caching", "..\CommonLibrary\src\SAE.CommonLibrary.Caching\SAE.CommonLibrary.Caching.csproj", "{298FD77D-4DC1-490F-A2DA-1FC2FB7B4082}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SAE.CommonLibrary.Caching.Redis", "..\CommonLibrary\src\SAE.CommonLibrary.Caching.Redis\SAE.CommonLibrary.Caching.Redis.csproj", "{A9447A90-6544-407A-A493-5667CA6277AF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SAE.CommonLibrary.Data", "..\CommonLibrary\src\SAE.CommonLibrary.Data\SAE.CommonLibrary.Data.csproj", "{00CE9D80-CC12-455F-9416-33E179C802CD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SAE.CommonLibrary.Data.MongoDB", "..\CommonLibrary\src\SAE.CommonLibrary.Data.MongoDB\SAE.CommonLibrary.Data.MongoDB.csproj", "{E00C59DE-0879-4F65-9FE4-99A1AB4B3E27}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -105,6 +113,22 @@ Global
 		{B35224BD-3B3C-43A6-A4BD-106FA99C3050}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B35224BD-3B3C-43A6-A4BD-106FA99C3050}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B35224BD-3B3C-43A6-A4BD-106FA99C3050}.Release|Any CPU.Build.0 = Release|Any CPU
+		{298FD77D-4DC1-490F-A2DA-1FC2FB7B4082}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{298FD77D-4DC1-490F-A2DA-1FC2FB7B4082}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{298FD77D-4DC1-490F-A2DA-1FC2FB7B4082}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{298FD77D-4DC1-490F-A2DA-1FC2FB7B4082}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9447A90-6544-407A-A493-5667CA6277AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9447A90-6544-407A-A493-5667CA6277AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9447A90-6544-407A-A493-5667CA6277AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9447A90-6544-407A-A493-5667CA6277AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00CE9D80-CC12-455F-9416-33E179C802CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00CE9D80-CC12-455F-9416-33E179C802CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00CE9D80-CC12-455F-9416-33E179C802CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00CE9D80-CC12-455F-9416-33E179C802CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E00C59DE-0879-4F65-9FE4-99A1AB4B3E27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E00C59DE-0879-4F65-9FE4-99A1AB4B3E27}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E00C59DE-0879-4F65-9FE4-99A1AB4B3E27}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E00C59DE-0879-4F65-9FE4-99A1AB4B3E27}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -124,6 +148,10 @@ Global
 		{7F30CD90-9611-4FE5-BC71-BE038844610B} = {81E9D704-8CD3-4A8D-9AB0-62C63829990A}
 		{82A0D39F-CE63-47DB-AA57-088C680FE83D} = {81E9D704-8CD3-4A8D-9AB0-62C63829990A}
 		{B35224BD-3B3C-43A6-A4BD-106FA99C3050} = {683BBBDB-B4DC-4B36-B42F-504CC8B6A794}
+		{298FD77D-4DC1-490F-A2DA-1FC2FB7B4082} = {683BBBDB-B4DC-4B36-B42F-504CC8B6A794}
+		{A9447A90-6544-407A-A493-5667CA6277AF} = {683BBBDB-B4DC-4B36-B42F-504CC8B6A794}
+		{00CE9D80-CC12-455F-9416-33E179C802CD} = {683BBBDB-B4DC-4B36-B42F-504CC8B6A794}
+		{E00C59DE-0879-4F65-9FE4-99A1AB4B3E27} = {683BBBDB-B4DC-4B36-B42F-504CC8B6A794}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E3F15B03-989E-49CA-AC48-4DA76E675671}

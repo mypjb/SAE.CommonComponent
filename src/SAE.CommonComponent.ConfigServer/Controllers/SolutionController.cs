@@ -6,44 +6,43 @@ using SAE.CommonComponent.ConfigServer.Models;
 using SAE.CommonLibrary;
 using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.EventStore.Document;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SAE.CommonComponent.ConfigServer.Server
+namespace SAE.CommonComponent.ConfigServer.Controllers
 {
     [ApiController]
     [Route("{controller}")]
-    public class ConfigController : Controller
+    public class SolutionController:Controller
     {
+
         private readonly IMediator _mediator;
 
-        public ConfigController(IMediator mediator)
+        public SolutionController(IMediator mediator)
         {
             this._mediator = mediator;
         }
         [HttpPost]
-        public async Task<object> Add(ConfigCreateCommand command)
+        public async Task<object> Add(SolutionCreateCommand command)
         {
             return await this._mediator.Send<string>(command);
         }
         [HttpDelete("{id}")]
-        public async Task<object> Delete(RemoveCommand<Config> command)
+        public async Task<object> Delete(RemoveCommand<Solution> command)
         {
             await this._mediator.Send(command);
             return ResponseResult.Success;
         }
         [HttpPut]
-        public async Task<object> Put(ConfigChangeCommand command)
+        public async Task<object> Put(SolutionChangeCommand command)
         {
             await this._mediator.Send(command);
             return ResponseResult.Success;
         }
         [HttpGet("{id}")]
-        public async Task<object> Get(GetByIdCommand<Config> command)
+        public async Task<object> Get(GetByIdCommand<Solution> command)
         {
-            return await this._mediator.Send<ConfigDto>(command);
+            return await this._mediator.Send<SolutionDto>(command);
         }
     }
 }
