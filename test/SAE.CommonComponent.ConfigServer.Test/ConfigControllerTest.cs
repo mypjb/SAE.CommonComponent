@@ -1,12 +1,8 @@
 ﻿using SAE.CommonComponent.ConfigServer.Commands;
-using SAE.CommonComponent.ConfigServer.Events;
-using SAE.CommonComponent.ConfigServer.Models;
+using SAE.CommonComponent.ConfigServer.Dtos;
 using SAE.CommonLibrary;
 using SAE.CommonLibrary.Extension;
-using System;
-using System.Collections.Generic;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
@@ -29,7 +25,7 @@ namespace SAE.CommonComponent.ConfigServer.Test
         private readonly SolutionControllerTest _solutionController;
 
         [Fact]
-        public async Task<Config> Add()
+        public async Task<ConfigDto> Add()
         {
             var solution = await this._solutionController.Add();
             var template = await this._templateController.Add();
@@ -88,11 +84,11 @@ namespace SAE.CommonComponent.ConfigServer.Test
             Assert.Equal(StatusCode.ResourcesNotExist, exception.Code);
         }
 
-        private async Task<Config> Get(string id)
+        private async Task<ConfigDto> Get(string id)
         {
             var message = new HttpRequestMessage(HttpMethod.Get, $"{API}/{id}");
             var responseMessage = await this.HttpClient.SendAsync(message);
-            return await responseMessage.AsResult<Config>();
+            return await responseMessage.AsResult<ConfigDto>();
         }
 
 

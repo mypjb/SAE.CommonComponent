@@ -1,21 +1,24 @@
 ﻿using SAE.CommonComponent.ConfigServer.Commands;
 using SAE.CommonComponent.ConfigServer.Dtos;
-using SAE.CommonComponent.ConfigServer.Models;
+using SAE.CommonComponent.ConfigServer.Domains;
 using SAE.CommonLibrary.Abstract.Mediator;
+using SAE.CommonLibrary.Data;
 using SAE.CommonLibrary.EventStore.Document;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using SAE.CommonLibrary.Abstract.Model;
 
 namespace SAE.CommonComponent.ConfigServer.Handles
 {
     public class ProjectHandler : AbstractHandler<Project>,
-                                  IRequestHandler<ProjectCreateCommand, string>,
+                                  ICommandHandler<ProjectCreateCommand, string>,
                                   ICommandHandler<ProjectChangeCommand>,
                                   ICommandHandler<RemoveCommand<Project>>,
-                                  IRequestHandler<GetByIdCommand<Project>, ProjectDto>
+                                  ICommandHandler<string, ProjectDto>,
+                                  ICommandHandler<ProjectQueryCommand, IPagedList<ProjectDto>>
     {
-        public ProjectHandler(IDocumentStore documentStore) : base(documentStore)
+        public ProjectHandler(IDocumentStore documentStore, IStorage storage) : base(documentStore, storage)
         {
         }
 
@@ -35,11 +38,16 @@ namespace SAE.CommonComponent.ConfigServer.Handles
             return this.Remove(command.Id);
         }
 
-        public Task<ProjectDto> Handle(GetByIdCommand<Project> command)
+        public Task<ProjectDto> Handle(string command)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(this._storage.AsQueryable<ProjectDto>()
+                       .FirstOrDefault(s => s.Id == command));
         }
 
-       
+        public async Task<IPagedList<ProjectDto>> Handle(ProjectQueryCommand command)
+        {
+            return PagedList.Build(this._storage.AsQueryable<ProjectDto>()
+                                                .Where(s => s.SolutionId == command.SolutionId), command);
+        }
     }
 }

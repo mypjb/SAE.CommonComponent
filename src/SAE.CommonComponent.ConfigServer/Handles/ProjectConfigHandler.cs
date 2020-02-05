@@ -1,6 +1,7 @@
 ﻿using SAE.CommonComponent.ConfigServer.Commands;
-using SAE.CommonComponent.ConfigServer.Models;
+using SAE.CommonComponent.ConfigServer.Domains;
 using SAE.CommonLibrary.Abstract.Mediator;
+using SAE.CommonLibrary.Data;
 using SAE.CommonLibrary.EventStore.Document;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace SAE.CommonComponent.ConfigServer.Handles
                                         ICommandHandler<ProjectRelevanceConfigCommand>,
                                         ICommandHandler<BatchRemoveCommand<ProjectConfig>>
     {
-        public ProjectConfigHandler(IDocumentStore documentStore) : base(documentStore)
+        public ProjectConfigHandler(IDocumentStore documentStore, IStorage storage) : base(documentStore, storage)
         {
         }
 
@@ -21,9 +22,9 @@ namespace SAE.CommonComponent.ConfigServer.Handles
         {
             var project = await this._documentStore.FindAsync<Project>(command.Id);
 
-            var projectConfigs = project.Relevance(command.ConfigIds
-                                                          .Select(s => new Config { Id = s })
-                                                          .ToArray());
+            var projectConfigs = project.Relevance(this._storage.AsQueryable<Config>()
+                                                                .Where(s=>command.ConfigIds.Contains(s.Id))
+                                                                .ToArray());
 
             await this._documentStore.SaveAsync(projectConfigs);
         }

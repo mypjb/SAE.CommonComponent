@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SAE.CommonComponent.ConfigServer.Models
+namespace SAE.CommonComponent.ConfigServer.Domains
 {
     /// <summary>
     /// 模板

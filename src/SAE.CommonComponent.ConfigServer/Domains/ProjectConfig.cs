@@ -7,7 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using SAE.CommonComponent.ConfigServer.Events;
 
-namespace SAE.CommonComponent.ConfigServer.Models
+namespace SAE.CommonComponent.ConfigServer.Domains
 {
     public class ProjectConfig : Document
     {
@@ -23,10 +23,10 @@ namespace SAE.CommonComponent.ConfigServer.Models
 
             this.Apply(new ProjectRelevanceConfigEvent
             {
-                Id = $"{this.ProjectId}_{this.ConfigId}",
+                Id = $"{project.Id}_{config.Id}",
                 ProjectId = project.Id,
                 ConfigId = config.Id,
-                Alias = project.Name,
+                Alias = config.Name,
             });
         }
 

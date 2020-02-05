@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SAE.CommonComponent.ConfigServer.Models
+namespace SAE.CommonComponent.ConfigServer.Domains
 {
     public class Solution:Document
     {
@@ -18,6 +18,11 @@ namespace SAE.CommonComponent.ConfigServer.Models
 
         public Solution(SolutionCreateCommand command)
         {
+            this.Apply<SolutionCreateEvent>(command, e =>
+            {
+                e.Id = Utils.GenerateId();
+                e.CreateTime = DateTime.UtcNow;
+            });
         }
 
         /// <summary>
@@ -38,15 +43,7 @@ namespace SAE.CommonComponent.ConfigServer.Models
             return this.Id;
         }
 
-        public void Create(SolutionCreateCommand Command)
-        {
-            this.Apply<SolutionCreateEvent>(Command, e =>
-            {
-                e.Id = Utils.GenerateId();
-                e.CreateTime = DateTime.UtcNow;
-            });
-        }
-
+       
         public void Change(SolutionChangeCommand Command) => this.Apply<SolutionChangeEvent>(Command);
     }
 }

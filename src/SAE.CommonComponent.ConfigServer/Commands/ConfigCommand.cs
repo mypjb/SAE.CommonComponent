@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SAE.CommonLibrary.Abstract.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -41,5 +42,11 @@ namespace SAE.CommonComponent.ConfigServer.Commands
         public string Content { get; set; }
     }
 
-   
+    public class ConfigQueryCommand : Paging
+    {
+        /// <summary>
+        /// 解决方案Id
+        /// </summary>
+        public string SolutionId { get; set; }
+    }
 }

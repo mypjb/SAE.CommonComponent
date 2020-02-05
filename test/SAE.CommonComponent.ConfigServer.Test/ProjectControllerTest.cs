@@ -1,13 +1,9 @@
 ﻿using SAE.CommonComponent.ConfigServer.Commands;
-using SAE.CommonComponent.ConfigServer.Events;
-using SAE.CommonComponent.ConfigServer.Models;
+using SAE.CommonComponent.ConfigServer.Dtos;
 using SAE.CommonLibrary;
 using SAE.CommonLibrary.Extension;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
@@ -20,16 +16,24 @@ namespace SAE.CommonComponent.ConfigServer.Test
         public ProjectControllerTest(ITestOutputHelper output) : base(output)
         {
             this._configController = new ConfigControllerTest(this._output);
+            this._solutionController = new SolutionControllerTest(output);
             this._configController.UseClient(this.HttpClient);
+            this._solutionController.UseClient(this.HttpClient);
         }
 
         public const string API = "Project";
         private readonly ConfigControllerTest _configController;
+        private readonly SolutionControllerTest _solutionController;
 
         [Theory]
-        [InlineData("00000000000000000000")]
-        public async Task<Project> Add(string solutionId = "00000000000000000000")
+        [InlineData("")]
+        public async Task<ProjectDto> Add(string solutionId = "")
         {
+            if (solutionId.IsNullOrWhiteSpace())
+            {
+                var solution = await this._solutionController.Add();
+                solutionId = solution.Id;
+            }
             var command = new ProjectCreateCommand
             {
                 Name = this.GetRandom(),
@@ -57,12 +61,10 @@ namespace SAE.CommonComponent.ConfigServer.Test
             var message = new HttpRequestMessage(HttpMethod.Post, $"{API}/{nameof(Relevance)}")
                               .AddJsonContent(command);
 
-            await this.HttpClient.SendAsync(message).ContinueWith(s => s.Result.AsResult());
+            await this.HttpClient.SendAsync(message);
 
             var newProject = await this.Get(project.Id);
 
-            //Assert.Equal(newProject.ConfigIds.Count(), command.ConfigIds.Count());
-            //Assert.All(newProject.ConfigIds, s => command.ConfigIds.Contains(s));
         }
 
         [Fact]
@@ -97,11 +99,39 @@ namespace SAE.CommonComponent.ConfigServer.Test
             Assert.Equal(StatusCode.ResourcesNotExist, exception.Code);
         }
 
-        private async Task<Project> Get(string id)
+        [Fact]
+        public async Task AppConfig()
+        {
+            var config = await this._configController.Add();
+            var project = await this.Add(config.SolutionId);
+            var command = new ProjectRelevanceConfigCommand
+            {
+                Id = project.Id,
+                ConfigIds = new[] { config.Id }
+            };
+            var message = new HttpRequestMessage(HttpMethod.Post, $"{API}/{nameof(Relevance)}")
+                              .AddJsonContent(command);
+
+            await this.HttpClient.SendAsync(message);
+
+            var appConfigCommand = new AppConfigCommand
+            {
+                Id = project.Id
+            };
+
+            var responseMessage = await this.HttpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, $"app/config")
+                                                 .AddJsonContent(appConfigCommand));
+            var appConfig =await responseMessage.AsResult<AppConfigDto>();
+
+            Assert.True(appConfig.Data.Count == 1);
+            Assert.Equal(config.Content, appConfig.Data.First().Value.ToJsonString());
+        }
+
+        private async Task<ProjectDto> Get(string id)
         {
             var message = new HttpRequestMessage(HttpMethod.Get, $"{API}/{id}");
             var responseMessage = await this.HttpClient.SendAsync(message);
-            return await responseMessage.AsResult<Project>();
+            return await responseMessage.AsResult<ProjectDto>();
         }
 
     }

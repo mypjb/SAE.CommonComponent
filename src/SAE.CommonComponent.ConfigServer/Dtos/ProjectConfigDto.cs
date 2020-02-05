@@ -5,8 +5,14 @@ using System.Threading.Tasks;
 
 namespace SAE.CommonComponent.ConfigServer.Dtos
 {
-    public class ProjectConfigDto:Dictionary<string,object>
+    public class ProjectConfigDto
     {
+        public string Id { get; set; }
+        public string ConfigId { get; set; }
         public string ProjectId { get; set; }
+        /// <summary>
+        /// 别名
+        /// </summary>
+        public string Alias { get; set; }
     }
 }

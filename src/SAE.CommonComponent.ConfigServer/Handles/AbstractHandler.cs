@@ -1,4 +1,5 @@
-﻿using SAE.CommonLibrary.EventStore.Document;
+﻿using SAE.CommonLibrary.Data;
+using SAE.CommonLibrary.EventStore.Document;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +10,12 @@ namespace SAE.CommonComponent.ConfigServer.Handles
     public class AbstractHandler<TDocument> where TDocument : IDocument, new()
     {
         protected readonly IDocumentStore _documentStore;
+        protected readonly IStorage _storage;
 
-        public AbstractHandler(IDocumentStore documentStore)
+        public AbstractHandler(IDocumentStore documentStore, IStorage storage)
         {
             this._documentStore = documentStore;
+            this._storage = storage;
         }
 
         protected virtual async Task<TDocument> Add(TDocument document)

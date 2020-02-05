@@ -1,0 +1,38 @@
+﻿using SAE.CommonComponent.ConfigServer.Commands;
+using SAE.CommonComponent.ConfigServer.Dtos;
+using SAE.CommonLibrary.Abstract.Mediator;
+using SAE.CommonLibrary.Data;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace SAE.CommonComponent.ConfigServer.Handles
+{
+    public class AppConfigHandler : ICommandHandler<AppConfigCommand, AppConfigDto>
+    {
+        private readonly IStorage _storage;
+
+        public AppConfigHandler(IStorage storage)
+        {
+            this._storage = storage;
+        }
+        public Task<AppConfigDto> Handle(AppConfigCommand command)
+        {
+            var app = new AppConfigDto();
+            var projectConfigs = this._storage.AsQueryable<ProjectConfigDto>()
+                                              .Where(s => s.ProjectId == command.Id);
+
+            var configs = this._storage.AsQueryable<ConfigDto>()
+                                       .Where(s => projectConfigs.Any(pc => pc.ConfigId == s.Id))
+                                       .ToArray();
+
+            foreach (var projectConfig in projectConfigs)
+            {
+                app.Add(projectConfig, configs.FirstOrDefault(s => s.Id == projectConfig.ConfigId));
+            }
+
+            return Task.FromResult(app);
+        }
+    }
+}

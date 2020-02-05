@@ -15,8 +15,19 @@ namespace SAE.CommonComponent.ConfigServer.Commands
         public IEnumerable<string> Ids { get; set; }
     }
 
-    public class GetByIdCommand<TDto>
+    //public class GetByIdCommand<TDto>
+    //{
+    //    public string Id { get; set; }
+
+    //}
+
+    public class CommandBuilder
     {
-        public string Id { get; set; }
+
+        public static RemoveCommand<TDocument> Remove<TDocument>(string id) where TDocument : IDocument
+        {
+            return new RemoveCommand<TDocument> { Id = id };
+        }
     }
+
 }

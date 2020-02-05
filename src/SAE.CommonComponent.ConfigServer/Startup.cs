@@ -1,7 +1,10 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SAE.CommonComponent.ConfigServer.Dtos;
+using SAE.CommonComponent.ConfigServer.Domains;
 using System;
 
 namespace SAE.CommonComponent.ConfigServer
@@ -16,10 +19,19 @@ namespace SAE.CommonComponent.ConfigServer
                     .AddResponseResult()
                     .AddNewtonsoftJson();
 
+
             services.AddServiceProvider()
+                    .AddMediator()
                     .AddMemoryDocument()
-                    .AddMemoryPersistenceService()
-                    .AddMemoryMessageQueue();
+                    .AddMemoryMessageQueue()
+                    .AddDataPersistenceService(option =>
+                    {
+                        option.AddMapper<Template, TemplateDto>();
+                        option.AddMapper<Config, ConfigDto>();
+                        option.AddMapper<Project, ProjectDto>();
+                        option.AddMapper<ProjectConfig, ProjectConfigDto>();
+                        option.AddMapper<Solution, SolutionDto>();
+                    });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -29,7 +41,7 @@ namespace SAE.CommonComponent.ConfigServer
             {
                 app.UseDeveloperExceptionPage();
             }
-            
+
             app.UseRouting()
                .UseEndpoints(endpoints =>
                {

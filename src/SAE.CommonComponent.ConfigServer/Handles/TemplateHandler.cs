@@ -1,28 +1,31 @@
 ﻿using SAE.CommonComponent.ConfigServer.Commands;
 using SAE.CommonComponent.ConfigServer.Dtos;
-using SAE.CommonComponent.ConfigServer.Models;
+using SAE.CommonComponent.ConfigServer.Domains;
 using SAE.CommonLibrary.Abstract.Mediator;
+using SAE.CommonLibrary.Data;
 using SAE.CommonLibrary.EventStore.Document;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using SAE.CommonLibrary.Abstract.Model;
 
 namespace SAE.CommonComponent.ConfigServer.Handles
 {
     public class TemplateHandler : AbstractHandler<Template>,
-                                   IRequestHandler<TemplateCreateCommand,string>,
+                                   ICommandHandler<TemplateCreateCommand, string>,
                                    ICommandHandler<TemplateChangeCommand>,
                                    ICommandHandler<RemoveCommand<Template>>,
-                                   IRequestHandler<GetByIdCommand<Template>, TemplateDto>
+                                   ICommandHandler<string, TemplateDto>,
+                                   ICommandHandler<TemplateQueryCommand, IPagedList<TemplateDto>>
     {
-        public TemplateHandler(IDocumentStore documentStore) : base(documentStore)
+        public TemplateHandler(IDocumentStore documentStore, IStorage storage) : base(documentStore, storage)
         {
         }
 
         public async Task<string> Handle(TemplateCreateCommand command)
         {
-            var template= await this.Add(new Template(command));
+            var template = await this.Add(new Template(command));
             return template.Id;
         }
 
@@ -36,9 +39,15 @@ namespace SAE.CommonComponent.ConfigServer.Handles
             return this.Remove(command.Id);
         }
 
-        public Task<TemplateDto> Handle(GetByIdCommand<Template> command)
+        public Task<TemplateDto> Handle(string command)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(this._storage.AsQueryable<TemplateDto>()
+                                       .FirstOrDefault(s => s.Id == command));
+        }
+
+        public async Task<IPagedList<TemplateDto>> Handle(TemplateQueryCommand command)
+        {
+            return PagedList.Build(this._storage.AsQueryable<TemplateDto>(), command);
         }
     }
 }

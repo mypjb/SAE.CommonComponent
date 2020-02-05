@@ -13,7 +13,5 @@ namespace SAE.CommonComponent.ConfigServer.Dtos
         public int Version { get; set; }
         public DateTime CreateTime { get; set; }
 
-        public IEnumerable<ConfigDto> Configs { get; set; }
-
     }
 }

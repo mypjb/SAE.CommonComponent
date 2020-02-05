@@ -1,6 +1,5 @@
 ﻿using SAE.CommonComponent.ConfigServer.Commands;
-using SAE.CommonComponent.ConfigServer.Events;
-using SAE.CommonComponent.ConfigServer.Models;
+using SAE.CommonComponent.ConfigServer.Dtos;
 using SAE.CommonComponent.ConfigServer.Test.Models;
 using SAE.CommonLibrary;
 using SAE.CommonLibrary.Extension;
@@ -21,7 +20,7 @@ namespace SAE.CommonComponent.ConfigServer.Test
 
 
         [Fact]
-        public async Task<Template> Add()
+        public async Task<TemplateDto> Add()
         {
             var command = new TemplateCreateCommand
             {
@@ -71,11 +70,11 @@ namespace SAE.CommonComponent.ConfigServer.Test
             Assert.Equal(StatusCode.ResourcesNotExist, exception.Code);
         }
 
-        private async Task<Template> Get(string id)
+        private async Task<TemplateDto> Get(string id)
         {
             var message = new HttpRequestMessage(HttpMethod.Get, $"{API}/{id}");
             var responseMessage = await this.HttpClient.SendAsync(message);
-            return await responseMessage.AsResult<Template>();
+            return await responseMessage.AsResult<TemplateDto>();
         }
 
         private string GetConfig()
