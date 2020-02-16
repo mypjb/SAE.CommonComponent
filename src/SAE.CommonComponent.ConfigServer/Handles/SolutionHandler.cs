@@ -17,7 +17,7 @@ namespace SAE.CommonComponent.ConfigServer.Handles
                                   ICommandHandler<SolutionChangeCommand>,
                                   ICommandHandler<RemoveCommand<Solution>>,
                                   ICommandHandler<string, SolutionDto>,
-                                  ICommandHandler<ConfigQueryCommand, IPagedList<SolutionDto>>
+                                  ICommandHandler<SolutionQueryCommand, IPagedList<SolutionDto>>
     {
         public SolutionHandler(IDocumentStore documentStore, IStorage storage) : base(documentStore, storage)
         {
@@ -45,7 +45,7 @@ namespace SAE.CommonComponent.ConfigServer.Handles
                            .FirstOrDefault(s => s.Id == command));
         }
 
-        public async Task<IPagedList<SolutionDto>> Handle(ConfigQueryCommand command)
+        public async Task<IPagedList<SolutionDto>> Handle(SolutionQueryCommand command)
         {
             return PagedList.Build(this._storage.AsQueryable<SolutionDto>(), command);
         }

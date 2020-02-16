@@ -84,8 +84,8 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
             return ResponseResult.Success;
         }
 
-        [Route("{action}")]
-        public async Task<object> Paging(ProjectQueryCommand command)
+        [HttpGet("{action}")]
+        public async Task<object> Paging([FromQuery]ProjectQueryCommand command)
         {
             return await this._mediator.Send<IPagedList<ProjectDto>>(command);
         }

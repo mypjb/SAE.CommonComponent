@@ -46,8 +46,8 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
         {
             return await this._mediator.Send<TemplateDto>(id);
         }
-        [Route("{action}")]
-        public async Task<object> Paging(TemplateQueryCommand command)
+        [HttpGet("{action}")]
+        public async Task<object> Paging([FromQuery]TemplateQueryCommand command)
         {
             return await this._mediator.Send<IPagedList<TemplateDto>>(command);
         }
