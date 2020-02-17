@@ -1,3 +1,4 @@
+using System.Net.Mime;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -19,10 +20,18 @@ namespace SAE.CommonComponent.ConfigServer
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(
+                    builder => builder.WithOrigins("http://localhost:8000")
+                                      .AllowAnyHeader()
+                                      .AllowAnyMethod()
+                                      .AllowCredentials());
+            });
+
             services.AddControllers()
                     .AddResponseResult()
                     .AddNewtonsoftJson();
-
 
             services.AddServiceProvider()
                     .AddMediator()
@@ -49,16 +58,20 @@ namespace SAE.CommonComponent.ConfigServer
                           {
                               mediator.Send<string>(new SolutionCreateCommand
                               {
-                                  Name = $"测试解决方案{s}"
+                                  Name = $"test solution {s}"
                               });
                           });
             }
+            
+            
 
             app.UseRouting()
+               .UseCors()
                .UseEndpoints(endpoints =>
                {
                    endpoints.MapControllers();
                });
+               
 
         }
     }
