@@ -110,12 +110,6 @@ export default {
               component: './Admin',
             },
             {
-              name: 'list.table-list',
-              icon: 'table',
-              path: '/list',
-              component: './ListTableList',
-            },
-            {
               name: '空白页面',
               icon: 'smile',
               path: '/solution',
