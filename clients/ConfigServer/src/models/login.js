@@ -1,6 +1,6 @@
 import { stringify } from 'querystring';
 import { router } from 'umi';
-import { fakeAccountLogin } from '@/services/login';
+import { fakeAccountLogin, getFakeCaptcha } from '@/services/login';
 import { setAuthority } from '@/utils/authority';
 import { getPageQuery } from '@/utils/utils';
 const Model = {
@@ -38,6 +38,10 @@ const Model = {
 
         router.replace(redirect || '/');
       }
+    },
+
+    *getCaptcha({ payload }, { call }) {
+      yield call(getFakeCaptcha, payload);
     },
 
     logout() {

@@ -2,10 +2,12 @@ import defaultSettings from './defaultSettings'; // https://umijs.org/config/
 
 import slash from 'slash2';
 import themePluginConfig from './themePluginConfig';
+import proxy from './proxy';
+import webpackPlugin from './plugin.config';
 const { pwa } = defaultSettings; // preview.pro.ant.design only do not use in your production ;
 // preview.pro.ant.design 专用环境变量，请不要在你的项目中使用它。
 
-const { ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION } = process.env;
+const { ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION, REACT_APP_ENV } = process.env;
 const isAntDesignProPreview = ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION === 'site';
 const plugins = [
   ['umi-plugin-antd-icon-config', {}],
@@ -95,25 +97,19 @@ export default {
           routes: [
             {
               path: '/',
-              redirect: '/welcome',
+              redirect: '/solution',
             },
             {
-              path: '/welcome',
-              name: 'welcome',
-              icon: 'smile',
-              component: './Welcome',
-            },
-            {
-              path: '/admin',
-              name: 'admin',
-              icon: 'crown',
-              component: './Admin',
-            },
-            {
-              name: '空白页面',
-              icon: 'smile',
               path: '/solution',
-              component: './solution',
+              name: 'solution',
+              icon: 'smile',
+              component: './solution'
+            },
+            {
+              path: '/solution/add',
+              name: 'add',
+              icon: 'smile',
+              component: './solution/add'
             },
             {
               component: './404',
@@ -134,6 +130,7 @@ export default {
     // ...darkTheme,
   },
   define: {
+    REACT_APP_ENV: REACT_APP_ENV || false,
     ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION:
       ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION || '', // preview.pro.ant.design only do not use in your production ; preview.pro.ant.design 专用环境变量，请不要在你的项目中使用它。
   },
@@ -169,12 +166,7 @@ export default {
   },
   manifest: {
     basePath: '/',
-  }, // chainWebpack: webpackPlugin,
-  // proxy: {
-  //   '/server/api/': {
-  //     target: 'https://preview.pro.ant.design/',
-  //     changeOrigin: true,
-  //     pathRewrite: { '^/server': '' },
-  //   },
-  // },
+  },
+  proxy: proxy[REACT_APP_ENV || 'dev'],
+  chainWebpack: webpackPlugin,
 };

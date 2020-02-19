@@ -4,12 +4,11 @@
  * https://github.com/ant-design/ant-design-pro-layout
  */
 import ProLayout, { DefaultFooter } from '@ant-design/pro-layout';
-import { formatMessage } from 'umi-plugin-react/locale';
 import React, { useEffect } from 'react';
 import { Link } from 'umi';
 import { connect } from 'dva';
-import { GithubOutlined } from '@ant-design/icons';
-import { Result, Button } from 'antd';
+import { Icon, Result, Button } from 'antd';
+import { formatMessage } from 'umi-plugin-react/locale';
 import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
 import { isAntDesignPro, getAuthorityFromRouter } from '@/utils/utils';
@@ -48,7 +47,7 @@ const defaultFooterDom = (
       },
       {
         key: 'github',
-        title: <GithubOutlined />,
+        title: <Icon type="github" />,
         href: 'https://github.com/ant-design/ant-design-pro',
         blankTarget: true,
       },
@@ -127,7 +126,6 @@ const BasicLayout = props => {
   return (
     <ProLayout
       logo={logo}
-      formatMessage={formatMessage}
       menuHeaderRender={(logoDom, titleDom) => (
         <Link to="/">
           {logoDom}
@@ -145,7 +143,10 @@ const BasicLayout = props => {
       breadcrumbRender={(routers = []) => [
         {
           path: '/',
-          breadcrumbName: '首页',
+          breadcrumbName: formatMessage({
+            id: 'menu.home',
+            defaultMessage: 'Home',
+          }),
         },
         ...routers,
       ]}
@@ -159,6 +160,7 @@ const BasicLayout = props => {
       }}
       footerRender={footerRender}
       menuDataRender={menuDataRender}
+      formatMessage={formatMessage}
       rightContentRender={() => <RightContent />}
       {...props}
       {...settings}

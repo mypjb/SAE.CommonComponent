@@ -1,7 +1,7 @@
 export default {
   navTheme: 'dark',
   // 拂晓蓝
-  primaryColor: 'daybreak',
+  primaryColor: '#1890ff',
   layout: 'sidemenu',
   contentWidth: 'Fluid',
   fixedHeader: false,
