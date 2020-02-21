@@ -3,7 +3,6 @@ import defaultSettings from './defaultSettings'; // https://umijs.org/config/
 import slash from 'slash2';
 import themePluginConfig from './themePluginConfig';
 import proxy from './proxy';
-import webpackPlugin from './plugin.config';
 const { pwa } = defaultSettings; // preview.pro.ant.design only do not use in your production ;
 // preview.pro.ant.design 专用环境变量，请不要在你的项目中使用它。
 
@@ -76,17 +75,17 @@ export default {
   },
   // umi routes: https://umijs.org/zh/guide/router.html
   routes: [
-    {
-      path: '/user',
-      component: '../layouts/UserLayout',
-      routes: [
-        {
-          name: 'login',
-          path: '/user/login',
-          component: './user/login',
-        },
-      ],
-    },
+    // {
+    //   path: '/user',
+    //   component: '../layouts/UserLayout',
+    //   routes: [
+    //     {
+    //       name: 'login',
+    //       path: '/user/login',
+    //       component: './user/login',
+    //     },
+    //   ],
+    // },
     {
       path: '/',
       // component: '../layouts/SecurityLayout',
@@ -94,22 +93,29 @@ export default {
         {
           path: '/',
           component: '../layouts/BasicLayout',
+          // authority: ['admin', 'user'],
           routes: [
             {
               path: '/',
-              redirect: '/solution',
+              redirect: '/welcome',
+            },
+            {
+              path: '/welcome',
+              name: 'welcome',
+              icon: 'smile',
+              component: './Welcome',
             },
             {
               path: '/solution',
               name: 'solution',
-              icon: 'smile',
-              component: './solution'
+              icon: 'crown',
+              component: './solution',
             },
             {
               path: '/solution/add',
               name: 'add',
               icon: 'smile',
-              component: './solution/add'
+              component: './solution/add.jsx',
             },
             {
               component: './404',
@@ -168,5 +174,4 @@ export default {
     basePath: '/',
   },
   proxy: proxy[REACT_APP_ENV || 'dev'],
-  chainWebpack: webpackPlugin,
 };

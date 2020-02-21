@@ -1,5 +1,6 @@
 import React from 'react';
-import { Card, Typography, Alert, Icon } from 'antd';
+import { HeartTwoTone, SmileTwoTone } from '@ant-design/icons';
+import { Card, Typography, Alert } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 export default () => (
   <PageHeaderWrapper content=" 这个页面只有 admin 权限才能查看">
@@ -20,8 +21,7 @@ export default () => (
           textAlign: 'center',
         }}
       >
-        <Icon type="smile" theme="twoTone" /> Ant Design Pro{' '}
-        <Icon type="heart" theme="twoTone" twoToneColor="#eb2f96" /> You
+        <SmileTwoTone /> Ant Design Pro <HeartTwoTone twoToneColor="#eb2f96" /> You
       </Typography.Title>
     </Card>
     <p
