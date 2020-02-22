@@ -53,14 +53,6 @@ namespace SAE.CommonComponent.ConfigServer
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                Enumerable.Range(0, 100)
-                          .ForEach(s =>
-                          {
-                              mediator.Send<string>(new SolutionCreateCommand
-                              {
-                                  Name = $"test solution {s}"
-                              });
-                          });
             }
             
             

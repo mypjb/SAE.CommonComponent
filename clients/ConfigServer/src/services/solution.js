@@ -10,15 +10,15 @@ export async function queryPaging(params) {
     });
 }
 
-export async function add(params) {
-    return request.post('/solution/add', {
-        params
+export async function add(data) {
+    return request.post('/solution', {
+        data
     });
 }
 
-export async function edit(params) {
-    return request.put('/solution/edit', {
-        params
+export async function edit(data) {
+    return request.put('/solution', {
+        data
     });
 }
 

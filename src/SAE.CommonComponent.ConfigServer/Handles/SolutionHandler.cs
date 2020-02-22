@@ -47,7 +47,13 @@ namespace SAE.CommonComponent.ConfigServer.Handles
 
         public async Task<IPagedList<SolutionDto>> Handle(SolutionQueryCommand command)
         {
-            return PagedList.Build(this._storage.AsQueryable<SolutionDto>(), command);
+            var query = this._storage.AsQueryable<SolutionDto>();
+            if (!string.IsNullOrWhiteSpace(command.Name))
+            {
+                query = query.Where(s => s.Name.Contains(command.Name));
+            }
+
+            return PagedList.Build(query, command);
         }
     }
 }

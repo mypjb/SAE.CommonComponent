@@ -17,6 +17,7 @@ namespace SAE.CommonComponent.ConfigServer.Commands
 
     public class SolutionQueryCommand : Paging
     {
+        public string Name { get; set; }
     }
 
 }

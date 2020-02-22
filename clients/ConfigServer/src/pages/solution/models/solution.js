@@ -1,4 +1,6 @@
 import * as request from "@/services/solution"
+import { Modal } from "antd";
+import { router } from "umi";
 
 export default {
   state: {
@@ -20,6 +22,7 @@ export default {
       return { ...state, params: { ...payload } };
     },
     set(state, { payload }) {
+      debugger;
       return { ...state, model: payload };
     }
   },
@@ -30,14 +33,27 @@ export default {
       yield put({ type: "setList", payload: data });
       yield put({ type: "setPaging", payload: data });
     },
-    *search({ payload }, { call, put }) {
+    *search({ payload }, { put }) {
       yield put({ type: "setParams", payload });
       yield put({ type: "paging", payload: {} });
     },
     *add({ payload }, { call, put }) {
       yield call(request.add, payload);
+      Modal.success({
+        "title": "solution add success",
+        "cancelText": "readd",
+        "okCancel": true,
+        "okText": "go back",
+        "onOk": () => {
+          router.push("/solution");
+        },
+        "onCancel":()=> {
+           
+        }
+      });
+
     },
-    *edit({ payload }, { call, put }) {
+    *edit({ payload }, { call }) {
       yield call(request.edit, payload);
     },
     *query({ payload }, { call, put }) {
