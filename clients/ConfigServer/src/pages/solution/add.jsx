@@ -6,7 +6,7 @@ import { connect } from 'dva';
 
 
 
-export default connect(({ solution }) => ({ solution }))(({ dispatch, solution }) => {
+export default connect()(({ dispatch }) => {
   const handleSave = (payload) => {
     dispatch({ type: 'solution/add', payload });
   }
@@ -14,13 +14,13 @@ export default connect(({ solution }) => ({ solution }))(({ dispatch, solution }
   return (
     <PageHeaderWrapper className={styles.main}>
       <div>
-        <Form layout="inline" initialValues={solution.model} onFinish={handleSave}>
+        <Form layout="inline" onFinish={handleSave}>
           <Form.Item name="name" label="name" rules={[{ required: true }]}>
             <Input />
           </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit" >
-              Register
+              Registerty
             </Button>
           </Form.Item>
         </Form>

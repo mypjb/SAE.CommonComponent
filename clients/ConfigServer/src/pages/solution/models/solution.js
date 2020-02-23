@@ -1,6 +1,7 @@
-import * as request from "@/services/solution"
+import { request } from "@/services/solution"
 import { Modal } from "antd";
 import { router } from "umi";
+
 
 export default {
   state: {
@@ -8,8 +9,7 @@ export default {
     pageSize: 10,
     totalCount: 0,
     items: [],
-    params: {},
-    model: {}
+    params: {}
   },
   reducers: {
     setList(state, { payload: { items } }) {
@@ -22,7 +22,6 @@ export default {
       return { ...state, params: { ...payload } };
     },
     set(state, { payload }) {
-      debugger;
       return { ...state, model: payload };
     }
   },
@@ -37,28 +36,28 @@ export default {
       yield put({ type: "setParams", payload });
       yield put({ type: "paging", payload: {} });
     },
-    *add({ payload }, { call, put }) {
+    *add({ payload }, { call }) {
       yield call(request.add, payload);
       Modal.success({
         "title": "solution add success",
-        "cancelText": "readd",
+        "cancelText": "continue add",
         "okCancel": true,
         "okText": "go back",
         "onOk": () => {
           router.push("/solution");
         },
-        "onCancel":()=> {
-           
-        }
       });
-
     },
     *edit({ payload }, { call }) {
       yield call(request.edit, payload);
     },
     *query({ payload }, { call, put }) {
-      const model = yield call(request.query, payload);
-      yield put({ type: 'set', model });
+      const model = yield call(request.query, payload.id);
+      yield put({ type: 'set', payload: model });
+    },
+    *remove({ payload }, { call, put }) {
+      yield call(request.remove, payload.id);
+      yield put({ type: 'paging' });
     }
   },
   subscriptions: {
@@ -66,7 +65,15 @@ export default {
       history.listen(({ pathname }) => {
         if (pathname === '/solution') {
           dispatch({
-            type: 'solution/paging',
+            type: 'paging',
+          });
+        } else if (pathname.startsWith('/solution/edit')) {
+          const index = pathname.lastIndexOf('/');
+          dispatch({
+            type: 'query',
+            payload: {
+              id: pathname.substr(index + 1)
+            }
           });
         }
       });

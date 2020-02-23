@@ -32,11 +32,11 @@ const plugins = [
       },
       pwa: pwa
         ? {
-            workboxPluginMode: 'InjectManifest',
-            workboxOptions: {
-              importWorkboxFrom: 'local',
-            },
-          }
+          workboxPluginMode: 'InjectManifest',
+          workboxOptions: {
+            importWorkboxFrom: 'local',
+          },
+        }
         : false, // default close dll, because issue https://github.com/ant-design/ant-design-pro/issues/4665
       // dll features https://webpack.js.org/plugins/dll-plugin/
       // dll: {
@@ -115,7 +115,15 @@ export default {
               path: '/solution/add',
               name: 'add',
               icon: 'smile',
+              hideInMenu: true,
               component: './solution/add.jsx',
+            },
+            {
+              path: '/solution/edit/:id',
+              name: 'edit',
+              icon: 'smile',
+              hideInMenu: true,
+              component: './solution/edit.jsx',
             },
             {
               component: './404',
