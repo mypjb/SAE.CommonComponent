@@ -5,14 +5,14 @@ export const dva = {
             console.error(err.message);
         },
         initialState: {
-            solution: {
-                pageIndex: 1,
-                pageSize: 10,
-                totalCount: 0,
-                items: [],
-                params: {},
-                model: {}
-            },
+            // solution: {
+            //     pageIndex: 1,
+            //     pageSize: 10,
+            //     totalCount: 0,
+            //     items: [],
+            //     params: {},
+            //     model: {}
+            // },
         },
     },
 };

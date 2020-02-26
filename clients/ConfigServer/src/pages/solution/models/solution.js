@@ -9,7 +9,8 @@ export default {
     pageSize: 10,
     totalCount: 0,
     items: [],
-    params: {}
+    params: {},
+    model:{}
   },
   reducers: {
     setList(state, { payload: { items } }) {
@@ -22,7 +23,8 @@ export default {
       return { ...state, params: { ...payload } };
     },
     set(state, { payload }) {
-      return { ...state, model: payload };
+      const model={ ...state, model: payload };
+      return model;
     }
   },
   effects: {
@@ -50,6 +52,15 @@ export default {
     },
     *edit({ payload }, { call }) {
       yield call(request.edit, payload);
+      Modal.success({
+        "title": "solution edit success",
+        "cancelText": "continue edit",
+        "okCancel": true,
+        "okText": "go back",
+        "onOk": () => {
+          router.push("/solution");
+        },
+      });
     },
     *query({ payload }, { call, put }) {
       const model = yield call(request.query, payload.id);

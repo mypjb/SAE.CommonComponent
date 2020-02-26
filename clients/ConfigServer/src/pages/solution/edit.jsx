@@ -4,20 +4,25 @@ import { Form, Input, Button } from 'antd';
 import { connect } from 'dva';
 import styles from './index.less';
 
-export default connect(({ solution }) => ({ solution }))(({ dispatch, solution }) => {
+export default connect(({ solution }) => ({ solution }))(({ dispatch, solution, match }) => {
+
+  const [form] = Form.useForm();
 
   const handleSave = (payload) => {
     dispatch({ type: 'solution/edit', payload });
   }
+
+  form.setFieldsValue(solution.model);
+
   return (
     <PageHeaderWrapper className={styles.main}>
       <div>
-        <Form layout="inline" initialValues={solution.model} onFinish={handleSave}>
+        <Form form={form} layout="inline" onFinish={handleSave} >
           <Form.Item name="name" label="name" rules={[{ required: true }]}>
-            <Input/>
+            <Input />
           </Form.Item>
           <Form.Item name="id" style={{ display: "none" }}>
-            <input />
+            <Input />
           </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit" >
@@ -28,4 +33,5 @@ export default connect(({ solution }) => ({ solution }))(({ dispatch, solution }
       </div>
     </PageHeaderWrapper>
   );
+
 })
