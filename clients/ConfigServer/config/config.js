@@ -112,20 +112,6 @@ export default {
               component: './solution',
             },
             {
-              path: '/solution/add',
-              name: 'add',
-              icon: 'smile',
-              hideInMenu: true,
-              component: './solution/add.jsx',
-            },
-            {
-              path: '/solution/edit/:id',
-              name: 'edit',
-              icon: 'smile',
-              hideInMenu: true,
-              component: './solution/edit.jsx',
-            },
-            {
               component: './404',
             },
           ],

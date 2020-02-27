@@ -1,4 +1,4 @@
-import { request } from "@/services/solution"
+import { request } from "../service";
 import { Modal } from "antd";
 import { router } from "umi";
 
@@ -10,7 +10,8 @@ export default {
     totalCount: 0,
     items: [],
     params: {},
-    model:{}
+    model: {},
+    formStaus: 0
   },
   reducers: {
     setList(state, { payload: { items } }) {
@@ -23,7 +24,10 @@ export default {
       return { ...state, params: { ...payload } };
     },
     set(state, { payload }) {
-      const model={ ...state, model: payload };
+      return { ...state, model: payload };
+    },
+    setFormStaus(state, { payload }) {
+      const model = { ...state, formStaus: payload };
       return model;
     }
   },
@@ -38,33 +42,20 @@ export default {
       yield put({ type: "setParams", payload });
       yield put({ type: "paging", payload: {} });
     },
-    *add({ payload }, { call }) {
+    *add({ payload }, { call, put }) {
       yield call(request.add, payload);
-      Modal.success({
-        "title": "solution add success",
-        "cancelText": "continue add",
-        "okCancel": true,
-        "okText": "go back",
-        "onOk": () => {
-          router.push("/solution");
-        },
-      });
+      yield put({ type: "setFormStaus", payload: 0 });
+      router.push("/solution");
     },
-    *edit({ payload }, { call }) {
+    *edit({ payload }, { call,put }) {
       yield call(request.edit, payload);
-      Modal.success({
-        "title": "solution edit success",
-        "cancelText": "continue edit",
-        "okCancel": true,
-        "okText": "go back",
-        "onOk": () => {
-          router.push("/solution");
-        },
-      });
+      yield put({ type: "setFormStaus", payload: 0 });
+      router.push("/solution");
     },
     *query({ payload }, { call, put }) {
       const model = yield call(request.query, payload.id);
       yield put({ type: 'set', payload: model });
+      yield put({ type: "setFormStaus", payload: 2 });
     },
     *remove({ payload }, { call, put }) {
       yield call(request.remove, payload.id);
@@ -77,14 +68,6 @@ export default {
         if (pathname === '/solution') {
           dispatch({
             type: 'paging',
-          });
-        } else if (pathname.startsWith('/solution/edit')) {
-          const index = pathname.lastIndexOf('/');
-          dispatch({
-            type: 'query',
-            payload: {
-              id: pathname.substr(index + 1)
-            }
           });
         }
       });

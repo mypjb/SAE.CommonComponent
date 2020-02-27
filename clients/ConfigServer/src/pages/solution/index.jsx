@@ -1,9 +1,10 @@
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import React from 'react';
-import { Row, Col, Input, Table, Button } from 'antd';
+import { Row, Col, Input, Table, Button, Modal } from 'antd';
 import { connect } from 'dva';
-import { Link } from 'umi';
 import styles from './index.less';
+import AddForm from './components/AddForm';
+import EditForm from './components/EditForm';
 
 const { Search } = Input;
 
@@ -12,11 +13,27 @@ export default connect(({ solution }) => (
     paging: solution
   }))(({ dispatch, paging }) => {
 
-    const handleRemove = function () {
-      dispatch({
-        type: 'solution/remove',
-        payload: { id: this },
+    const { formStaus } = paging;
+
+    const handleRemove = (e) => {
+      const id = e.target.value;
+      Modal.confirm({
+        title: 'Are you sure delete this task?',
+        onOk: () => {
+          dispatch({
+            type: 'solution/remove',
+            payload: { id },
+          });
+        }
       });
+    }
+
+    const handleAdd = () => {
+      dispatch({ type: 'solution/setFormStaus', payload: 1 });
+    }
+
+    const handleEdit = (e) => {
+      dispatch({ type: 'solution/query', payload: { id: e.target.value }, });
     }
 
     const handleSkipPage = (pageIndex, pageSize) => {
@@ -54,34 +71,34 @@ export default connect(({ solution }) => (
         title: 'action',
         render: (text, row) => (
           <span>
-            <Link to={(`/solution/edit/${row.id}`)} style={{ marginRight: 16 }}>Edit</Link>
-            <Button type='link' onClick={handleRemove.bind(row.id)}>Delete</Button>
+            <Button type='link' value={row.id} onClick={handleEdit} style={{ marginRight: 16 }}>Edit</Button>
+            <Button type='link' value={row.id} onClick={handleRemove}>Delete</Button>
           </span>
         )
       }
     ];
 
-
+    const pagination = {
+      current: paging.pageIndex,
+      total: paging.totalCount,
+      size: paging.pageSize,
+      onChange: handleSkipPage
+    };
 
     return (
       <PageHeaderWrapper className={styles.main}>
         <div>
           <Row>
             <Col span={18}>
-              <Link to='/solution/add'>
-                <Button type="primary">Add</Button>
-              </Link>
+              <Button type="primary" onClick={handleAdd}>Add</Button>
             </Col>
             <Col span={6}>
               <Search placeholder="input search text" onSearch={handleSearch} className={styles.search} enterButton />
             </Col>
           </Row>
-          <Table columns={columns} dataSource={paging.items} pagination={{
-            current: paging.pageIndex,
-            total: paging.totalCount,
-            size: paging.pageSize,
-            onChange: handleSkipPage
-          }}></Table>
+          <Table columns={columns} dataSource={paging.items} pagination={pagination} />
+          <AddForm visible={formStaus === 1} />
+          <EditForm visible={formStaus === 2} />
         </div>
       </PageHeaderWrapper>
     );
