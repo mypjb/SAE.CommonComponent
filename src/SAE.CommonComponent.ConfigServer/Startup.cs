@@ -54,8 +54,6 @@ namespace SAE.CommonComponent.ConfigServer
             {
                 app.UseDeveloperExceptionPage();
             }
-            
-            
 
             app.UseRouting()
                .UseCors()

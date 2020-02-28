@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\CommonLibrary\src\SAE.CommonLibrary.AspNetCore\SAE.CommonLibrary.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\..\CommonLibrary\src\SAE.CommonLibrary.DependencyInjection\SAE.CommonLibrary.DependencyInjection.csproj" />
+    <ProjectReference Include="..\..\..\CommonLibrary\src\SAE.CommonLibrary.Abstract\SAE.CommonLibrary.Abstract.csproj" />
+    <ProjectReference Include="..\..\..\CommonLibrary\src\SAE.CommonLibrary.EventStore.Document\SAE.CommonLibrary.EventStore.Document.csproj" />
+    <ProjectReference Include="..\..\..\CommonLibrary\src\SAE.CommonLibrary.MessageQueue\SAE.CommonLibrary.MessageQueue.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="IdentityServer4" Version="3.1.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.2" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+</Project>

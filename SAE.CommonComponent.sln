@@ -51,6 +51,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SAE.CommonLibrary.Data", ".
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SAE.CommonLibrary.Data.MongoDB", "..\CommonLibrary\src\SAE.CommonLibrary.Data.MongoDB\SAE.CommonLibrary.Data.MongoDB.csproj", "{E00C59DE-0879-4F65-9FE4-99A1AB4B3E27}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAE.CommonComponent.Identity", "src\SAE.CommonComponent.Identity\SAE.CommonComponent.Identity.csproj", "{6BE4523F-952F-4E34-8259-BC94612209DF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -129,6 +131,10 @@ Global
 		{E00C59DE-0879-4F65-9FE4-99A1AB4B3E27}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E00C59DE-0879-4F65-9FE4-99A1AB4B3E27}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E00C59DE-0879-4F65-9FE4-99A1AB4B3E27}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6BE4523F-952F-4E34-8259-BC94612209DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BE4523F-952F-4E34-8259-BC94612209DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BE4523F-952F-4E34-8259-BC94612209DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BE4523F-952F-4E34-8259-BC94612209DF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -152,6 +158,7 @@ Global
 		{A9447A90-6544-407A-A493-5667CA6277AF} = {683BBBDB-B4DC-4B36-B42F-504CC8B6A794}
 		{00CE9D80-CC12-455F-9416-33E179C802CD} = {683BBBDB-B4DC-4B36-B42F-504CC8B6A794}
 		{E00C59DE-0879-4F65-9FE4-99A1AB4B3E27} = {683BBBDB-B4DC-4B36-B42F-504CC8B6A794}
+		{6BE4523F-952F-4E34-8259-BC94612209DF} = {6D4B2D09-B108-452D-B80A-C66817BE846D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E3F15B03-989E-49CA-AC48-4DA76E675671}
