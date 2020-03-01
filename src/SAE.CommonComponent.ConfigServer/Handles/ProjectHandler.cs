@@ -18,8 +18,11 @@ namespace SAE.CommonComponent.ConfigServer.Handles
                                   ICommandHandler<string, ProjectDto>,
                                   ICommandHandler<ProjectQueryCommand, IPagedList<ProjectDto>>
     {
-        public ProjectHandler(IDocumentStore documentStore, IStorage storage) : base(documentStore, storage)
+        private readonly IStorage _storage;
+
+        public ProjectHandler(IDocumentStore documentStore, IStorage storage) : base(documentStore)
         {
+            this._storage = storage;
         }
 
         public async Task<string> Handle(ProjectCreateCommand command)

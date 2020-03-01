@@ -16,6 +16,9 @@ namespace SAE.CommonComponent.Identity
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            var build = services.AddIdentityServer()
+                                .AddJwtBearerClientAuthentication()
+                                .AddDeveloperSigningCredential();
             services.AddCors(options =>
             {
                 options.AddDefaultPolicy(
@@ -51,7 +54,8 @@ namespace SAE.CommonComponent.Identity
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseRouting()
+            app.UseIdentityServer()
+               .UseRouting()
                .UseCors()
                .UseEndpoints(endpoints =>
                {

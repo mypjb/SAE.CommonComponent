@@ -10,12 +10,14 @@ using System.Threading.Tasks;
 
 namespace SAE.CommonComponent.ConfigServer.Handles
 {
-    public class ProjectConfigHandler : AbstractHandler<ProjectConfig>, 
+    public class ProjectConfigHandler : AbstractHandler<ProjectConfig>,
                                         ICommandHandler<ProjectRelevanceConfigCommand>,
                                         ICommandHandler<BatchRemoveCommand<ProjectConfig>>
     {
-        public ProjectConfigHandler(IDocumentStore documentStore, IStorage storage) : base(documentStore, storage)
+        private readonly IStorage _storage;
+        public ProjectConfigHandler(IDocumentStore documentStore, IStorage storage) : base(documentStore)
         {
+            this._storage = storage;
         }
 
         public async Task Handle(ProjectRelevanceConfigCommand command)
@@ -23,7 +25,7 @@ namespace SAE.CommonComponent.ConfigServer.Handles
             var project = await this._documentStore.FindAsync<Project>(command.Id);
 
             var projectConfigs = project.Relevance(this._storage.AsQueryable<Config>()
-                                                                .Where(s=>command.ConfigIds.Contains(s.Id))
+                                                                .Where(s => command.ConfigIds.Contains(s.Id))
                                                                 .ToArray());
 
             await this._documentStore.SaveAsync(projectConfigs);

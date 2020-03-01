@@ -6,6 +6,7 @@
     <ProjectReference Include="..\..\..\CommonLibrary\src\SAE.CommonLibrary.Abstract\SAE.CommonLibrary.Abstract.csproj" />
     <ProjectReference Include="..\..\..\CommonLibrary\src\SAE.CommonLibrary.EventStore.Document\SAE.CommonLibrary.EventStore.Document.csproj" />
     <ProjectReference Include="..\..\..\CommonLibrary\src\SAE.CommonLibrary.MessageQueue\SAE.CommonLibrary.MessageQueue.csproj" />
+    <ProjectReference Include="..\..\..\CommonLibrary\src\SAE.CommonLibrary.Caching\SAE.CommonLibrary.Caching.csproj" />
   </ItemGroup>
 
   <ItemGroup>

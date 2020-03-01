@@ -19,8 +19,11 @@ namespace SAE.CommonComponent.ConfigServer.Handles
                                  ICommandHandler<string, ConfigDto>,
                                  ICommandHandler<ConfigQueryCommand, IPagedList<ConfigDto>>
     {
-        public ConfigHandler(IDocumentStore documentStore, IStorage storage) : base(documentStore, storage)
+        private readonly IStorage _storage;
+
+        public ConfigHandler(IDocumentStore documentStore, IStorage storage) : base(documentStore)
         {
+            this._storage = storage;
 
         }
 
