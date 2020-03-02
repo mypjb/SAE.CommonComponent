@@ -8,6 +8,7 @@ namespace SAE.CommonComponent.Identity.Commands
     public class ScopeCreateCommand
     {
         public string Name { get; set; }
+        public string Display { get; set; }
     }
 
     public class ScopeRemoveCommand : ScopeCreateCommand

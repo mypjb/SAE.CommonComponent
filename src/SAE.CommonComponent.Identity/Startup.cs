@@ -7,6 +7,12 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SAE.CommonComponent.Identity.Commands;
+using SAE.CommonComponent.Identity.Domains;
+using SAE.CommonComponent.Identity.Dtos;
+using SAE.CommonComponent.Identity.Services;
+using SAE.CommonLibrary.Abstract.Mediator;
+using SAE.CommonLibrary.Extension;
 
 namespace SAE.CommonComponent.Identity
 {
@@ -18,7 +24,12 @@ namespace SAE.CommonComponent.Identity
         {
             var build = services.AddIdentityServer()
                                 .AddJwtBearerClientAuthentication()
-                                .AddDeveloperSigningCredential();
+                                .AddDeveloperSigningCredential()
+                                .AddClientStore<ClientStoreService>()
+                                .AddResourceStore<ResourceStoreService>();
+
+            services.AddSingleton<IdentityOption>();
+
             services.AddCors(options =>
             {
                 options.AddDefaultPolicy(
@@ -36,22 +47,29 @@ namespace SAE.CommonComponent.Identity
                     .AddMediator()
                     .AddMemoryDocument()
                     .AddMemoryMessageQueue()
-                    .AddDataPersistenceService(option =>
-                    {
-                        // option.AddMapper<Template, TemplateDto>();
-                        // option.AddMapper<Config, ConfigDto>();
-                        // option.AddMapper<Project, ProjectDto>();
-                        // option.AddMapper<ProjectConfig, ProjectConfigDto>();
-                        // option.AddMapper<Solution, SolutionDto>();
-                    });
+                    .AddSaeMemoryDistributedCache()
+                    .AddDataPersistenceService();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IMediator mediator)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+
+                Enumerable.Range(0, 10)
+                          .Select(s => new AppCreateCommand
+                          {
+                              Name = s.ToString("000000"),
+                              Urls = new[] { $"http://test{s}.com" }
+                          }).ForEach(command =>
+                          {
+                              mediator.Send(command).Wait();
+                          });
+
+                mediator.Send(new ScopeCreateCommand() { Name = "config", Display = "config center" }).Wait();
+
             }
 
             app.UseIdentityServer()

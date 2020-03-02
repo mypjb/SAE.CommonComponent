@@ -26,6 +26,7 @@ namespace SAE.CommonComponent.Identity.Dtos
         /// </summary>
         /// <value></value>
         public IEnumerable<string> Urls { get; set; }
+
         /// <summary>
         /// auth scope
         /// </summary>

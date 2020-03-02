@@ -11,6 +11,7 @@ using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonComponent.ConfigServer.Commands;
 using System.Linq;
 using SAE.CommonLibrary.Extension;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace SAE.CommonComponent.ConfigServer
 {
@@ -33,18 +34,28 @@ namespace SAE.CommonComponent.ConfigServer
                     .AddResponseResult()
                     .AddNewtonsoftJson();
 
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+                    {
+                        options.Authority = "http://localhost:5000";
+                        options.RequireHttpsMetadata = false;
+                        options.Audience = "config";
+                    });
+
             services.AddServiceProvider()
                     .AddMediator()
                     .AddMemoryDocument()
                     .AddMemoryMessageQueue()
-                    .AddDataPersistenceService(option =>
-                    {
-                        option.AddMapper<Template, TemplateDto>();
-                        option.AddMapper<Config, ConfigDto>();
-                        option.AddMapper<Project, ProjectDto>();
-                        option.AddMapper<ProjectConfig, ProjectConfigDto>();
-                        option.AddMapper<Solution, SolutionDto>();
-                    });
+                    .AddDataPersistenceService();
+            // .AddDataPersistenceService(option =>
+            // {
+            //     option.AddMapper<Template, TemplateDto>();
+            //     option.AddMapper<Config, ConfigDto>();
+            //     option.AddMapper<Project, ProjectDto>();
+            //     option.AddMapper<ProjectConfig, ProjectConfigDto>();
+            //     option.AddMapper<Solution, SolutionDto>();
+            // });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -61,7 +72,7 @@ namespace SAE.CommonComponent.ConfigServer
                {
                    endpoints.MapControllers();
                });
-               
+
 
         }
     }

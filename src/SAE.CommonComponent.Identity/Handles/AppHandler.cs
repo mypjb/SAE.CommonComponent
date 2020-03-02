@@ -25,8 +25,8 @@ namespace SAE.CommonComponent.Identity.Handles
                               ICommandHandler<AppQueryCommand, IPagedList<AppDto>>,
                               ICommandHandler<string, AppDto>,
                               ICommandHandler<ScopeCreateCommand>,
-                              ICommandHandler<ScopeQueryALLCommand, IEnumerable<string>>,
-                              ICommandHandler<ScopeQueryCommand, IPagedList<string>>,
+                              ICommandHandler<ScopeQueryALLCommand, IEnumerable<ScopeDto>>,
+                              ICommandHandler<ScopeQueryCommand, IPagedList<ScopeDto>>,
                               ICommandHandler<ScopeRemoveCommand>
     {
         private readonly IDistributedCache _distributedCache;
@@ -96,31 +96,31 @@ namespace SAE.CommonComponent.Identity.Handles
 
         public async Task Handle(ScopeCreateCommand command)
         {
-            var scopes = await this._distributedCache.GetAsync<List<string>>(ScopeKey);
-            if (!scopes.Contains(command.Name))
+            var scopes = (await this._distributedCache.GetAsync<List<ScopeDto>>(ScopeKey)) ?? new List<ScopeDto>();
+            if (!scopes.Any(s => s.Name.Equals(command.Name, StringComparison.OrdinalIgnoreCase)))
             {
-                scopes.Add(command.Name);
-                await this._distributedCache.AddAsync(ScopeKey, scopes.Distinct(), TimeSpan.FromDays(365 * 100));
+                scopes.Add(command.To<ScopeDto>());
+                await this._distributedCache.AddAsync(ScopeKey, scopes, TimeSpan.FromDays(365 * 100));
             }
         }
 
-        public async Task<IEnumerable<string>> Handle(ScopeQueryALLCommand command)
+        public async Task<IEnumerable<ScopeDto>> Handle(ScopeQueryALLCommand command)
         {
-            return (await this._distributedCache.GetAsync<IEnumerable<string>>(ScopeKey)).Distinct();
+            return (await this._distributedCache.GetAsync<IEnumerable<ScopeDto>>(ScopeKey)).Distinct();
         }
 
-        public async Task<IPagedList<string>> Handle(ScopeQueryCommand command)
+        public async Task<IPagedList<ScopeDto>> Handle(ScopeQueryCommand command)
         {
-            var scopes = await this._distributedCache.GetAsync<List<string>>(ScopeKey);
-            return PagedList.Build(scopes.Distinct().AsQueryable(), command);
+            var scopes = await this._distributedCache.GetAsync<List<ScopeDto>>(ScopeKey);
+            return PagedList.Build(scopes?.AsQueryable(), command);
         }
 
         public async Task Handle(ScopeRemoveCommand command)
         {
-            var scopes = await this._distributedCache.GetAsync<List<string>>(ScopeKey);
-            if (scopes.Contains(command.Name))
+            var scopes = await this._distributedCache.GetAsync<List<ScopeDto>>(ScopeKey);
+            if (scopes != null && scopes.Any(s => s.Name.Equals(command.Name, StringComparison.OrdinalIgnoreCase)))
             {
-                scopes.Remove(command.Name);
+                scopes.RemoveAll(s => s.Name.Equals(command.Name, StringComparison.OrdinalIgnoreCase));
                 await this._distributedCache.AddAsync(ScopeKey, scopes, TimeSpan.FromDays(365 * 100));
             }
         }

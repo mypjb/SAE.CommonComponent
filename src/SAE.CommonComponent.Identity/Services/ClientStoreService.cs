@@ -22,6 +22,8 @@ namespace SAE.CommonComponent.Identity.Services
         {
             var app = await this._mediator.Send<AppDto>(clientId);
 
+            var host = app.Urls.First();
+
             return new Client
             {
                 ClientId = app.Id,
@@ -34,8 +36,11 @@ namespace SAE.CommonComponent.Identity.Services
                 Enabled = app.Status == Status.Enable,
                 AccessTokenType = AccessTokenType.Jwt,
                 AuthorizationCodeLifetime = this._option.AuthorizationCodeLifetime,
-                AllowedGrantTypes = GrantTypes.Hybrid,
-                
+                AllowedGrantTypes = GrantTypes.HybridAndClientCredentials,
+                AllowRememberConsent = false,
+                AlwaysIncludeUserClaimsInIdToken = true,
+                RedirectUris = new[] { $"{host}/signin-oidc" },
+                PostLogoutRedirectUris = new[] { $"{host}/signout-callback-oidc" }
             };
         }
     }

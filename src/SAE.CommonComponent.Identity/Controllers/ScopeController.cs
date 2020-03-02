@@ -4,6 +4,7 @@ using SAE.CommonComponent.Identity.Commands;
 using SAE.CommonLibrary;
 using SAE.CommonLibrary.Abstract.Mediator;
 using System.Collections.Generic;
+using SAE.CommonComponent.Identity.Dtos;
 
 namespace SAE.CommonComponent.Identity.Controllers
 {
@@ -30,12 +31,12 @@ namespace SAE.CommonComponent.Identity.Controllers
         [HttpGet("{action}")]
         public async Task<object> Paging([FromQuery]ScopeQueryCommand command)
         {
-            return await this._mediator.Send<IEnumerable<string>>(command);
+            return await this._mediator.Send<IEnumerable<ScopeDto>>(command);
         }
         [HttpGet("{action}")]
         public async Task<object> List(ScopeQueryALLCommand command)
         {
-            return await this._mediator.Send<IEnumerable<string>>(command);
+            return await this._mediator.Send<IEnumerable<ScopeDto>>(command);
         }
 
     }
