@@ -3,6 +3,7 @@ import defaultSettings from './defaultSettings'; // https://umijs.org/config/
 import slash from 'slash2';
 import themePluginConfig from './themePluginConfig';
 import proxy from './proxy';
+import webpackPlugin from './plugin.config';
 const { pwa } = defaultSettings; // preview.pro.ant.design only do not use in your production ;
 // preview.pro.ant.design 专用环境变量，请不要在你的项目中使用它。
 
@@ -32,11 +33,11 @@ const plugins = [
       },
       pwa: pwa
         ? {
-          workboxPluginMode: 'InjectManifest',
-          workboxOptions: {
-            importWorkboxFrom: 'local',
-          },
-        }
+            workboxPluginMode: 'InjectManifest',
+            workboxOptions: {
+              importWorkboxFrom: 'local',
+            },
+          }
         : false, // default close dll, because issue https://github.com/ant-design/ant-design-pro/issues/4665
       // dll features https://webpack.js.org/plugins/dll-plugin/
       // dll: {
@@ -64,6 +65,12 @@ if (isAntDesignProPreview) {
       code: 'UA-72788897-6',
     },
   ]);
+  plugins.push([
+    'umi-plugin-pro',
+    {
+      serverUrl: 'https://ant-design-pro.netlify.com',
+    },
+  ]);
   plugins.push(['umi-plugin-antd-theme', themePluginConfig]);
 }
 
@@ -75,41 +82,43 @@ export default {
   },
   // umi routes: https://umijs.org/zh/guide/router.html
   routes: [
-    // {
-    //   path: '/user',
-    //   component: '../layouts/UserLayout',
-    //   routes: [
-    //     {
-    //       name: 'login',
-    //       path: '/user/login',
-    //       component: './user/login',
-    //     },
-    //   ],
-    // },
+    {
+      path: '/user',
+      component: '../layouts/UserLayout',
+      routes: [
+        {
+          name: 'login',
+          path: '/user/login',
+          component: './user/login',
+        },
+      ],
+    },
     {
       path: '/',
-      // component: '../layouts/SecurityLayout',
+      //component: '../layouts/SecurityLayout',
       routes: [
         {
           path: '/',
           component: '../layouts/BasicLayout',
-          // authority: ['admin', 'user'],
+          //authority: ['admin', 'user'],
           routes: [
-            {
-              path: '/',
-              redirect: '/welcome',
-            },
-            {
-              path: '/welcome',
-              name: 'welcome',
-              icon: 'smile',
-              component: './Welcome',
-            },
             {
               path: '/solution',
               name: 'solution',
-              icon: 'crown',
-              component: './solution',
+              icon: 'smile',
+              component:"./solution"
+            },
+            {
+              path:'/solution/project/:solutionId',
+              name: 'project',
+              icon: 'smile',
+              component:'./solution/project'
+            },
+            {
+              path: '/template',
+              name: 'template',
+              icon: 'smile',
+              component:"./template"
             },
             {
               component: './404',
@@ -128,6 +137,7 @@ export default {
   // Theme for antd: https://ant.design/docs/react/customize-theme-cn
   theme: {
     // ...darkTheme,
+    'primary-color': defaultSettings.primaryColor,
   },
   define: {
     REACT_APP_ENV: REACT_APP_ENV || false,
@@ -168,4 +178,5 @@ export default {
     basePath: '/',
   },
   proxy: proxy[REACT_APP_ENV || 'dev'],
+  chainWebpack: webpackPlugin,
 };

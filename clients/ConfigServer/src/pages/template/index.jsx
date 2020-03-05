@@ -2,16 +2,15 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import React from 'react';
 import { Row, Col, Input, Table, Button, Modal } from 'antd';
 import { connect } from 'dva';
-import { Link } from 'umi';
 import styles from './index.less';
 import AddForm from './components/AddForm';
 import EditForm from './components/EditForm';
 
 const { Search } = Input;
 
-export default connect(({ solution }) => (
+export default connect(({ template }) => (
   {
-    paging: solution
+    paging: template
   }))(({ dispatch, paging }) => {
 
     const { formStaus } = paging;
@@ -22,7 +21,7 @@ export default connect(({ solution }) => (
         title: 'Are you sure delete this task?',
         onOk: () => {
           dispatch({
-            type: 'solution/remove',
+            type: 'template/remove',
             payload: { id },
           });
         }
@@ -30,16 +29,16 @@ export default connect(({ solution }) => (
     }
 
     const handleAdd = () => {
-      dispatch({ type: 'solution/setFormStaus', payload: 1 });
+      dispatch({ type: 'template/setFormStaus', payload: 1 });
     }
 
     const handleEdit = (e) => {
-      dispatch({ type: 'solution/query', payload: { id: e.target.value }, });
+      dispatch({ type: 'template/query', payload: { id: e.target.value }, });
     }
 
     const handleSkipPage = (pageIndex, pageSize) => {
       dispatch({
-        type: "solution/paging",
+        type: "template/paging",
         payload: {
           pageIndex,
           pageSize
@@ -49,7 +48,7 @@ export default connect(({ solution }) => (
 
     const handleSearch = (name) => {
       dispatch({
-        type: 'solution/search',
+        type: 'template/search',
         payload: { name },
       });
     }
@@ -64,6 +63,12 @@ export default connect(({ solution }) => (
         title: 'name',
         dataIndex: 'name',
         key: 'name',
+      },
+      {
+        title: 'format',
+        dataIndex: 'format',
+        key: 'format',
+        ellipsis:true
       }, {
         title: 'createTime',
         dataIndex: 'createTime',
@@ -74,9 +79,6 @@ export default connect(({ solution }) => (
           <span>
             <Button type='link' value={row.id} onClick={handleEdit} style={{ marginRight: 16 }}>Edit</Button>
             <Button type='link' value={row.id} onClick={handleRemove}>Delete</Button>
-            <Link to={'/solution/project/'+row.id} >
-              <Button type='link'>Project Manage</Button>
-            </Link>
           </span>
         )
       }
@@ -107,3 +109,4 @@ export default connect(({ solution }) => (
       </PageHeaderWrapper>
     );
   });
+

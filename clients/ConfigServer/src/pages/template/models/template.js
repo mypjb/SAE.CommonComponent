@@ -32,7 +32,7 @@ export default {
   },
   effects: {
     *paging({ payload }, { call, put, select }) {
-      const params = yield select(({ solution }) => (solution.params));
+      const params = yield select(({ template }) => (template.params));
       const data = yield call(request.queryPaging, { ...payload, ...params });
       yield put({ type: "setList", payload: data });
       yield put({ type: "setPaging", payload: data });
@@ -45,12 +45,12 @@ export default {
       yield call(request.add, payload);
       yield put({ type: "setFormStaus", payload: 0 });
       yield put({ type: "set", payload: {} });
-      router.push("/solution");
+      router.push("/template");
     },
     *edit({ payload }, { call, put }) {
       yield call(request.edit, payload);
       yield put({ type: "setFormStaus", payload: 0 });
-      router.push("/solution");
+      router.push("/template");
     },
     *query({ payload }, { call, put }) {
       const model = yield call(request.query, payload.id);
@@ -65,7 +65,7 @@ export default {
   subscriptions: {
     setup({ dispatch, history }) {
       history.listen(({ pathname }) => {
-        if (pathname === '/solution') {
+        if (pathname === '/template') {
           dispatch({
             type: 'paging',
           });

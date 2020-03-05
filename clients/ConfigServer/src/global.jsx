@@ -5,6 +5,7 @@ import defaultSettings from '../config/defaultSettings';
 
 const { pwa } = defaultSettings; // if pwa is true
 
+
 if (pwa) {
   // Notify user if offline now
   window.addEventListener('sw.offline', () => {

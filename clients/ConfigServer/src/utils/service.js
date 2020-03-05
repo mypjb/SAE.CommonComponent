@@ -31,5 +31,3 @@ export default function (action) {
 
     return service;
 }
-
-

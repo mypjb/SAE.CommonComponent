@@ -33,6 +33,7 @@ namespace SAE.CommonComponent.ConfigServer.Commands
 
     public class ProjectQueryCommand : Paging
     {
+        public string Name { get; set; }
         /// <summary>
         /// 解决方案Id
         /// </summary>

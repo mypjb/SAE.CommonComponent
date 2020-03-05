@@ -8,6 +8,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using SAE.CommonLibrary.Abstract.Model;
+using SAE.CommonLibrary.Extension;
 
 namespace SAE.CommonComponent.ConfigServer.Handles
 {
@@ -49,8 +50,12 @@ namespace SAE.CommonComponent.ConfigServer.Handles
 
         public async Task<IPagedList<ProjectDto>> Handle(ProjectQueryCommand command)
         {
-            return PagedList.Build(this._storage.AsQueryable<ProjectDto>()
-                                                .Where(s => s.SolutionId == command.SolutionId), command);
+            var query = this._storage.AsQueryable<ProjectDto>().Where(s => s.SolutionId == command.SolutionId);
+            if (command.Name.IsNotNullOrWhiteSpace())
+            {
+                query = query.Where(s => s.Name.Contains(command.Name));
+            }
+            return PagedList.Build(query, command);
         }
     }
 }

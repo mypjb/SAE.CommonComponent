@@ -35,13 +35,13 @@ namespace SAE.CommonComponent.ConfigServer
                     .AddNewtonsoftJson();
 
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
-                    {
-                        options.Authority = "http://localhost:5000";
-                        options.RequireHttpsMetadata = false;
-                        options.Audience = "config";
-                    });
+            // services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            //         .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+            //         {
+            //             options.Authority = "http://localhost:5000";
+            //             options.RequireHttpsMetadata = false;
+            //             options.Audience = "config";
+            //         });
 
             services.AddServiceProvider()
                     .AddMediator()

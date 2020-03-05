@@ -57,3 +57,15 @@ export const getRouteAuthority = (path, routeData) => {
   });
   return authorities;
 };
+
+export const validatorJson = (rule, value) => {
+  if (value) {
+    try{
+      eval(`(${value})`);
+    }catch(e){
+      console.error(e);
+      return Promise.reject('this is json invalid');
+    }
+  }
+  return Promise.resolve();
+}

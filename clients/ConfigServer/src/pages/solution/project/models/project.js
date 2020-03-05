@@ -1,6 +1,5 @@
 import { request } from "../service";
-import { router } from "umi";
-
+import { router, Route } from "umi";
 
 export default {
   state: {
@@ -32,7 +31,7 @@ export default {
   },
   effects: {
     *paging({ payload }, { call, put, select }) {
-      const params = yield select(({ solution }) => (solution.params));
+      const params = yield select(({ project }) => (project.params));
       const data = yield call(request.queryPaging, { ...payload, ...params });
       yield put({ type: "setList", payload: data });
       yield put({ type: "setPaging", payload: data });
@@ -45,12 +44,12 @@ export default {
       yield call(request.add, payload);
       yield put({ type: "setFormStaus", payload: 0 });
       yield put({ type: "set", payload: {} });
-      router.push("/solution");
+      yield put({ type: "paging", payload: {} });
     },
     *edit({ payload }, { call, put }) {
       yield call(request.edit, payload);
       yield put({ type: "setFormStaus", payload: 0 });
-      router.push("/solution");
+      yield put({ type: "paging", payload: {} });
     },
     *query({ payload }, { call, put }) {
       const model = yield call(request.query, payload.id);
@@ -64,13 +63,13 @@ export default {
   },
   subscriptions: {
     setup({ dispatch, history }) {
-      history.listen(({ pathname }) => {
-        if (pathname === '/solution') {
-          dispatch({
-            type: 'paging',
-          });
-        }
-      });
+      // history.listen(({ pathname }) => {
+      //   if (pathname === '/solution/project') {
+      //     dispatch({
+      //       type: 'paging',
+      //     });
+      //   }
+      // });
     },
   }
 };
