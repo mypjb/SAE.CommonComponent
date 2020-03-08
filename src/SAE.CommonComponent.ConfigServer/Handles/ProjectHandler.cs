@@ -57,5 +57,7 @@ namespace SAE.CommonComponent.ConfigServer.Handles
             }
             return PagedList.Build(query, command);
         }
+
+        
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using SAE.CommonComponent.ConfigServer.Commands;
 using SAE.CommonComponent.ConfigServer.Domains;
@@ -15,7 +16,8 @@ namespace SAE.CommonComponent.ConfigServer.Handles
         ICommandHandler<TemplateChangeCommand>,
         ICommandHandler<RemoveCommand<Template>>,
         ICommandHandler<string, TemplateDto>,
-        ICommandHandler<TemplateQueryCommand, IPagedList<TemplateDto>>
+        ICommandHandler<TemplateQueryCommand, IPagedList<TemplateDto>>,
+        ICommandHandler<ListCommand,IEnumerable<TemplateDto>>
     {
         private readonly IStorage _storage;
         public TemplateHandler(IDocumentStore documentStore, IStorage storage) : base(documentStore)
@@ -48,6 +50,11 @@ namespace SAE.CommonComponent.ConfigServer.Handles
         public async Task<IPagedList<TemplateDto>> Handle(TemplateQueryCommand command)
         {
             return PagedList.Build(this._storage.AsQueryable<TemplateDto>(), command);
+        }
+
+        public async Task<IEnumerable<TemplateDto>> Handle(ListCommand command)
+        {
+            return this._storage.AsQueryable<TemplateDto>().ToList();
         }
     }
 }

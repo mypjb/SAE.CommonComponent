@@ -1,7 +1,7 @@
 import React from 'react';
 import { Form, Input, Modal } from 'antd';
 import { connect } from 'dva';
-import { validatorJson } from '../../../utils/utils';
+import { validatorJson, handleFormat } from '@/utils/utils';
 
 const { TextArea } = Input;
 
@@ -23,15 +23,7 @@ export default connect(({ template }) => ({ template }))(({ dispatch, template, 
 
     form.setFieldsValue(template.model);
 
-    const handleFormat = (e) => {
-        const value = e.target.value;
-        if (value) {
-            try {
-                const json = eval('(' + value + ')');
-                form.setFieldsValue({ format: JSON.stringify(json, null, 4) });
-            } catch{ }
-        }
-    };
+    const handleFormatFormat = handleFormat.bind(this, { form, fieldName: 'format' });
 
     return (<Modal title="add" visible={visible} onOk={handleOk} onCancel={handleCancel} closable={false}  >
         <Form form={form} size='middl' onFinish={handleSave} >
@@ -42,7 +34,7 @@ export default connect(({ template }) => ({ template }))(({ dispatch, template, 
                 <Input />
             </Form.Item>
             <Form.Item name="format" label="format" rules={[{ validator: validatorJson, required: true }]}>
-                <TextArea autoSize={{ minRows: 16 }} onDoubleClick={handleFormat} />
+                <TextArea autoSize={{ minRows: 16 }} onDoubleClick={handleFormatFormat} />
             </Form.Item>
         </Form>
     </Modal>);

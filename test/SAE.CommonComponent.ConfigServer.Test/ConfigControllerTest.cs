@@ -33,7 +33,6 @@ namespace SAE.CommonComponent.ConfigServer.Test
             {
                 Name = template.Name,
                 Content = template.Format,
-                TemplateId = template.Id,
                 SolutionId = solution.Id
             };
             var message = new HttpRequestMessage(HttpMethod.Post, API);
@@ -44,7 +43,6 @@ namespace SAE.CommonComponent.ConfigServer.Test
             Assert.Equal(commond.Name, config.Name);
             Assert.Equal(commond.Content, config.Content);
             Assert.Equal(commond.SolutionId, config.SolutionId);
-            Assert.Equal(commond.TemplateId, config.TemplateId);
             return config;
         }
 
@@ -58,8 +56,7 @@ namespace SAE.CommonComponent.ConfigServer.Test
             {
                 Id = config.Id,
                 Name = template.Name,
-                Content = template.Format,
-                TemplateId = template.Id
+                Content = template.Format
             };
             message.AddJsonContent(commond);
             var responseMessage = await this.HttpClient.SendAsync(message);
@@ -67,9 +64,7 @@ namespace SAE.CommonComponent.ConfigServer.Test
             var newConfig = await this.Get(config.Id);
             Assert.NotEqual(commond.Name, config.Name);
             Assert.NotEqual(commond.Content, config.Content);
-            Assert.NotEqual(commond.TemplateId, config.TemplateId);
             Assert.Equal(commond.Name, newConfig.Name);
-            Assert.Equal(commond.TemplateId, newConfig.TemplateId);
             Assert.Equal(commond.Content, newConfig.Content);
         }
 

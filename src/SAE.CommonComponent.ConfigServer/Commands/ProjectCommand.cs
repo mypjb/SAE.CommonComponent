@@ -39,4 +39,10 @@ namespace SAE.CommonComponent.ConfigServer.Commands
         /// </summary>
         public string SolutionId { get; set; }
     }
+
+    public class ProjectConfigQueryCommand : Paging
+    {
+        public string ProjectId { get; set; }
+        public string SolutionId { get; set; }
+    }
 }

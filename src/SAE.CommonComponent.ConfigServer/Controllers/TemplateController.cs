@@ -51,5 +51,11 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
         {
             return await this._mediator.Send<IPagedList<TemplateDto>>(command);
         }
+
+        [HttpGet("{action}")]
+        public async Task<object> List()
+        {
+            return await this._mediator.Send<IEnumerable<TemplateDto>>(new ListCommand());
+        }
     }
 }

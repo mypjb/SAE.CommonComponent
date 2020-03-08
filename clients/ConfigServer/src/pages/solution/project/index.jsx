@@ -9,18 +9,19 @@ import EditForm from './components/EditForm';
 const { Search } = Input;
 
 class ProjectList extends React.Component {
-  constructor(props){
+  constructor(props) {
     super(props);
     props.dispatch({
       type: "project/search",
       payload: props.match.params
     });
   }
-  
+
 
   render() {
     const { dispatch, paging, match } = this.props;
 
+    const { solutionId } = match.params;
     const { formStaus } = paging;
 
     const handleRemove = (e) => {
@@ -71,7 +72,8 @@ class ProjectList extends React.Component {
         title: 'name',
         dataIndex: 'name',
         key: 'name',
-      }, {
+      },
+      {
         title: 'createTime',
         dataIndex: 'createTime',
         key: 'createTime'
@@ -81,7 +83,7 @@ class ProjectList extends React.Component {
           <span>
             <Button type='link' value={row.id} onClick={handleEdit} style={{ marginRight: 16 }}>Edit</Button>
             <Button type='link' value={row.id} onClick={handleRemove}>Delete</Button>
-            <Link to={'/solution/project/manage/' + row.id} >
+            <Link to={`/solution/project/${solutionId}/config/${row.id}`} >
               <Button type='link'>Config Manage</Button>
             </Link>
           </span>

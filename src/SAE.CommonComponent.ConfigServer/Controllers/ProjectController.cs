@@ -70,14 +70,14 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
             return await this._mediator.Send<AppConfigDto>(command);
         }
 
-        [HttpPut("/project/config")]
+        [HttpPut("config")]
         public async Task<object> ProjectConfig(ProjectConfigChangeAliasCommand command)
         {
             await this._mediator.Send(command);
             return ResponseResult.Success;
         }
 
-        [HttpDelete("/project/config")]
+        [HttpDelete("config")]
         public async Task<object> ProjectConfig(BatchRemoveCommand<ProjectConfig> command)
         {
             await this._mediator.Send(command);
@@ -89,5 +89,16 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
         {
             return await this._mediator.Send<IPagedList<ProjectDto>>(command);
         }
+        [HttpGet("config/paging")]
+        public async Task<object> ProjectConfigPaging([FromQuery]ProjectConfigQueryCommand command)
+        {
+            return await this._mediator.Send<IPagedList<ProjectConfigDto>>(command);
+        } 
+
+        [HttpGet("config/relevance")]
+        public async Task<object> Relevance([FromQuery]ProjectConfigQueryCommand command)
+        {
+            return await this._mediator.Send<IPagedList<ConfigDto>>(command);
+        } 
     }
 }

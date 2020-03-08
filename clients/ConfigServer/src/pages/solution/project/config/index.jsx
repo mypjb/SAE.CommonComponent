@@ -2,17 +2,22 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import React from 'react';
 import { Row, Col, Input, Table, Button, Modal } from 'antd';
 import { connect } from 'dva';
-import { Link } from 'umi';
-import styles from './index.less';
-import AddForm from './components/AddForm';
-import EditForm from './components/EditForm';
+import Relevance from './components/Relevance';
 
 const { Search } = Input;
 
-export default connect(({ solution }) => (
-  {
-    paging: solution
-  }))(({ dispatch, paging }) => {
+class ProjectList extends React.Component {
+  constructor(props) {
+    super(props);
+    props.dispatch({
+      type: "config/paging",
+      payload: props.match.params
+    });
+  }
+
+
+  render() {
+    const { dispatch, paging, match, relevance } = this.props;
 
     const { formStaus } = paging;
 
@@ -22,24 +27,33 @@ export default connect(({ solution }) => (
         title: 'Are you sure delete this task?',
         onOk: () => {
           dispatch({
-            type: 'solution/remove',
+            type: 'config/remove',
             payload: { id },
           });
         }
       });
     }
 
-    const handleAdd = () => {
-      dispatch({ type: 'solution/setFormStaus', payload: 1 });
-    }
+    const handleRelevance = () => {
+      dispatch({
+        type: 'config/relevance',
+        payload: match.params
+      });
+
+      dispatch({
+        type: 'relevance/paging',
+        payload: match.params
+      });
+
+    };
 
     const handleEdit = (e) => {
-      dispatch({ type: 'solution/query', payload: { id: e.target.value }, });
+      dispatch({ type: 'config/query', payload: { id: e.target.value }, });
     }
 
     const handleSkipPage = (pageIndex, pageSize) => {
       dispatch({
-        type: "solution/paging",
+        type: "config/paging",
         payload: {
           pageIndex,
           pageSize
@@ -49,8 +63,8 @@ export default connect(({ solution }) => (
 
     const handleSearch = (name) => {
       dispatch({
-        type: 'solution/search',
-        payload: { name },
+        type: 'config/search',
+        payload: { name, ...match.params },
       });
     }
 
@@ -64,7 +78,8 @@ export default connect(({ solution }) => (
         title: 'name',
         dataIndex: 'name',
         key: 'name',
-      }, {
+      },
+      {
         title: 'createTime',
         dataIndex: 'createTime',
         key: 'createTime'
@@ -74,12 +89,7 @@ export default connect(({ solution }) => (
           <span>
             <Button type='link' value={row.id} onClick={handleEdit} style={{ marginRight: 16 }}>Edit</Button>
             <Button type='link' value={row.id} onClick={handleRemove}>Delete</Button>
-            <Link to={`/solution/project/${row.id}`} >
-              <Button type='link'>Project Manage</Button>
-            </Link>
-            <Link to={`/solution/config/${row.id}`} >
-              <Button type='link'>Config Manage</Button>
-            </Link>
+            <Button type='link'>Config Manage</Button>
           </span>
         )
       }
@@ -93,20 +103,27 @@ export default connect(({ solution }) => (
     };
 
     return (
-      <PageHeaderWrapper className={styles.main}>
+      <PageHeaderWrapper>
         <div>
           <Row>
             <Col span={18}>
-              <Button type="primary" onClick={handleAdd}>Add</Button>
+              <Button type="primary" onClick={handleRelevance}>Relevance</Button>
             </Col>
             <Col span={6}>
-              <Search placeholder="input search text" onSearch={handleSearch} className={styles.search} enterButton />
+              <Search placeholder="input search text" onSearch={handleSearch} enterButton />
             </Col>
           </Row>
           <Table columns={columns} dataSource={paging.items} pagination={pagination} />
-          <AddForm visible={formStaus === 1} />
-          <EditForm visible={formStaus === 2} />
+          <Relevance visible={formStaus == 1} match={match}></Relevance>
         </div>
       </PageHeaderWrapper>
     );
-  });
+  }
+
+}
+
+export default connect(({ config, relevance }) => (
+  {
+    paging: config,
+    relevance
+  }))(ProjectList);

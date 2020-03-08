@@ -1,4 +1,5 @@
-import { request } from "../service";
+import request from "../service";
+import templateRequest from "@/services/template";
 
 export default {
   state: {
@@ -8,7 +9,9 @@ export default {
     items: [],
     params: {},
     model: {},
-    formStaus: 0
+    formStaus: 0,
+    templates: [],
+    template: {}
   },
   reducers: {
     setList(state, { payload: { items } }) {
@@ -26,11 +29,14 @@ export default {
     setFormStaus(state, { payload }) {
       const model = { ...state, formStaus: payload };
       return model;
+    },
+    setTemplateList(state, { payload }) {
+      return { ...state, templates: payload }
     }
   },
   effects: {
     *paging({ payload }, { call, put, select }) {
-      const params = yield select(({ project }) => (project.params));
+      const params = yield select(({ config }) => (config.params));
       const data = yield call(request.queryPaging, { ...payload, ...params });
       yield put({ type: "setList", payload: data });
       yield put({ type: "setPaging", payload: data });
@@ -58,12 +64,16 @@ export default {
     *remove({ payload }, { call, put }) {
       yield call(request.remove, payload.id);
       yield put({ type: 'paging' });
+    },
+    *queryTemplateList(params, { call, put }) {
+      const list = yield call(templateRequest.list);
+      yield put({ type: 'setTemplateList', payload: list });
     }
   },
   // subscriptions: {
   //   setup({ dispatch, history }) {
   //     // history.listen(({ pathname }) => {
-  //     //   if (pathname === '/solution/project') {
+  //     //   if (pathname === '/solution/config') {
   //     //     dispatch({
   //     //       type: 'paging',
   //     //     });

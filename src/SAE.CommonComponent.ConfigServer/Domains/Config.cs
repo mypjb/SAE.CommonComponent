@@ -37,10 +37,6 @@ namespace SAE.CommonComponent.ConfigServer.Domains
         /// </summary>
         public string SolutionId { get; set; }
         /// <summary>
-        /// 模板类型
-        /// </summary>
-        public string TemplateId { get; set; }
-        /// <summary>
         /// 名称
         /// </summary>
         public string Name { get; set; }

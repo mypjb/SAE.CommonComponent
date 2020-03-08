@@ -13,10 +13,6 @@ namespace SAE.CommonComponent.ConfigServer.Commands
         /// </summary>
         public string SolutionId { get; set; }
         /// <summary>
-        /// 模板类型
-        /// </summary>
-        public string TemplateId { get; set; }
-        /// <summary>
         /// 名称
         /// </summary>
         public string Name { get; set; }
@@ -33,10 +29,6 @@ namespace SAE.CommonComponent.ConfigServer.Commands
         /// </summary>
         public string Name { get; set; }
         /// <summary>
-        /// 模板类型
-        /// </summary>
-        public string TemplateId { get; set; }
-        /// <summary>
         /// 内容
         /// </summary>
         public string Content { get; set; }
@@ -48,5 +40,6 @@ namespace SAE.CommonComponent.ConfigServer.Commands
         /// 解决方案Id
         /// </summary>
         public string SolutionId { get; set; }
+        public string Name { get; set; }
     }
 }

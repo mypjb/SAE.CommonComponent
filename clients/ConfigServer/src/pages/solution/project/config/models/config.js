@@ -1,4 +1,4 @@
-import { request } from "../service";
+import request from "../service"
 
 export default {
   state: {
@@ -30,7 +30,7 @@ export default {
   },
   effects: {
     *paging({ payload }, { call, put, select }) {
-      const params = yield select(({ project }) => (project.params));
+      const params = yield select(({ config }) => (config.params));
       const data = yield call(request.queryPaging, { ...payload, ...params });
       yield put({ type: "setList", payload: data });
       yield put({ type: "setPaging", payload: data });
@@ -39,11 +39,9 @@ export default {
       yield put({ type: "setParams", payload });
       yield put({ type: "paging", payload: {} });
     },
-    *add({ payload }, { call, put }) {
-      yield call(request.add, payload);
-      yield put({ type: "setFormStaus", payload: 0 });
-      yield put({ type: "set", payload: {} });
-      yield put({ type: "paging", payload: {} });
+    *relevance({ payload }, { put }) {
+      yield put({ type: "setFormStaus", payload: 1 });
+      // yield put({ type: "relevance/paging", payload });
     },
     *edit({ payload }, { call, put }) {
       yield call(request.edit, payload);
@@ -59,16 +57,5 @@ export default {
       yield call(request.remove, payload.id);
       yield put({ type: 'paging' });
     }
-  },
-  // subscriptions: {
-  //   setup({ dispatch, history }) {
-  //     // history.listen(({ pathname }) => {
-  //     //   if (pathname === '/solution/project') {
-  //     //     dispatch({
-  //     //       type: 'paging',
-  //     //     });
-  //     //   }
-  //     // });
-  //   },
-  // }
+  }
 };

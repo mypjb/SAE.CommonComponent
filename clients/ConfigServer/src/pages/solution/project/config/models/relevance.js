@@ -1,4 +1,4 @@
-import { request } from "../service";
+import request from "../service"
 
 export default {
   state: {
@@ -30,8 +30,8 @@ export default {
   },
   effects: {
     *paging({ payload }, { call, put, select }) {
-      const params = yield select(({ project }) => (project.params));
-      const data = yield call(request.queryPaging, { ...payload, ...params });
+      const params = yield select(({ relevance }) => (relevance.params));
+      const data = yield call(request.queryRelevance, { ...payload, ...params });
       yield put({ type: "setList", payload: data });
       yield put({ type: "setPaging", payload: data });
     },
@@ -59,16 +59,5 @@ export default {
       yield call(request.remove, payload.id);
       yield put({ type: 'paging' });
     }
-  },
-  // subscriptions: {
-  //   setup({ dispatch, history }) {
-  //     // history.listen(({ pathname }) => {
-  //     //   if (pathname === '/solution/project') {
-  //     //     dispatch({
-  //     //       type: 'paging',
-  //     //     });
-  //     //   }
-  //     // });
-  //   },
-  // }
+  }
 };

@@ -33,11 +33,11 @@ const plugins = [
       },
       pwa: pwa
         ? {
-            workboxPluginMode: 'InjectManifest',
-            workboxOptions: {
-              importWorkboxFrom: 'local',
-            },
-          }
+          workboxPluginMode: 'InjectManifest',
+          workboxOptions: {
+            importWorkboxFrom: 'local',
+          },
+        }
         : false, // default close dll, because issue https://github.com/ant-design/ant-design-pro/issues/4665
       // dll features https://webpack.js.org/plugins/dll-plugin/
       // dll: {
@@ -95,30 +95,47 @@ export default {
     },
     {
       path: '/',
-      //component: '../layouts/SecurityLayout',
       routes: [
         {
           path: '/',
           component: '../layouts/BasicLayout',
-          //authority: ['admin', 'user'],
           routes: [
+            {
+              path: "/",
+              redirect: '/solution'
+            },
             {
               path: '/solution',
               name: 'solution',
               icon: 'smile',
-              component:"./solution"
+              component: "./solution"
             },
             {
-              path:'/solution/project/:solutionId',
+              path: '/solution/project/:solutionId',
               name: 'project',
               icon: 'smile',
-              component:'./solution/project'
+              component: './solution/project',
+              hideInMenu:true
+            },
+            {
+              path: '/solution/project/:solutionId/config/:projectId',
+              name: 'projectConfig',
+              icon: 'smile',
+              component: './solution/project/config',
+              hideInMenu:true
+            },
+             {
+              path: '/solution/config/:solutionId',
+              name: 'config',
+              icon: 'smile',
+              component: './solution/config',
+              hideInMenu:true
             },
             {
               path: '/template',
               name: 'template',
               icon: 'smile',
-              component:"./template"
+              component: "./template"
             },
             {
               component: './404',

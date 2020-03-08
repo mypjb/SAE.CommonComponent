@@ -18,7 +18,7 @@ namespace SAE.CommonComponent.ConfigServer.Commands
         public string Format { get; set; }
     }
 
-    public class TemplateChangeCommand: TemplateCreateCommand
+    public class TemplateChangeCommand : TemplateCreateCommand
     {
         public string Id { get; set; }
     }
@@ -26,4 +26,5 @@ namespace SAE.CommonComponent.ConfigServer.Commands
     public class TemplateQueryCommand : Paging
     {
     }
+
 }
