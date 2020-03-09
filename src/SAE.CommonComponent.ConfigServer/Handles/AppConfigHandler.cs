@@ -17,22 +17,28 @@ namespace SAE.CommonComponent.ConfigServer.Handles
         {
             this._storage = storage;
         }
-        public Task<AppConfigDto> Handle(AppConfigCommand command)
+        public async Task<AppConfigDto> Handle(AppConfigCommand command)
         {
             var app = new AppConfigDto();
-            var projectConfigs = this._storage.AsQueryable<ProjectConfigDto>()
-                                              .Where(s => s.ProjectId == command.Id);
 
-            var configs = this._storage.AsQueryable<ConfigDto>()
-                                       .Where(s => projectConfigs.Any(pc => pc.ConfigId == s.Id))
-                                       .ToArray();
+            var projectDto = this._storage.AsQueryable<ProjectDto>().FirstOrDefault(s => s.Id == command.Id);
 
-            foreach (var projectConfig in projectConfigs)
+            if (projectDto.Version != command.Version)
             {
-                app.Add(projectConfig, configs.FirstOrDefault(s => s.Id == projectConfig.ConfigId));
+                var projectConfigs = this._storage.AsQueryable<ProjectConfigDto>()
+                                                              .Where(s => s.ProjectId == command.Id);
+
+                var configs = this._storage.AsQueryable<ConfigDto>()
+                                           .Where(s => projectConfigs.Any(pc => pc.ConfigId == s.Id))
+                                           .ToArray();
+
+                foreach (var projectConfig in projectConfigs)
+                {
+                    app.Add(projectConfig, configs.FirstOrDefault(s => s.Id == projectConfig.ConfigId));
+                }
             }
 
-            return Task.FromResult(app);
+            return app;
         }
     }
 }

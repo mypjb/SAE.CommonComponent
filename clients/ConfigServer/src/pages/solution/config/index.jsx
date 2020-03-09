@@ -22,9 +22,9 @@ class configList extends React.Component {
 
 
   render() {
-    const { dispatch, paging, match } = this.props;
+    const { dispatch, config, match } = this.props;
 
-    const { formStaus } = paging;
+    const { formStaus, paging, items } = config;
 
     const handleRemove = (e) => {
       const id = e.target.value;
@@ -114,7 +114,7 @@ class configList extends React.Component {
               <Search placeholder="input search text" onSearch={handleSearch} enterButton />
             </Col>
           </Row>
-          <Table columns={columns} dataSource={paging.items} pagination={pagination} />
+          <Table columns={columns} dataSource={items} pagination={pagination} />
           <AddForm visible={formStaus === 1} />
           <EditForm visible={formStaus === 2} />
         </div>
@@ -126,5 +126,5 @@ class configList extends React.Component {
 
 export default connect(({ config }) => (
   {
-    paging: config
+    config
   }))(configList);

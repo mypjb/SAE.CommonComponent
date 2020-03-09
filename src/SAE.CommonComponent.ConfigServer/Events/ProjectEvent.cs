@@ -8,12 +8,11 @@ namespace SAE.CommonComponent.ConfigServer.Events
     {
         public string SolutionId { get; set; }
         public DateTime CreateTime { get; set; }
-        public string Id { get;  set; }
+        public string Id { get; set; }
     }
     public class ProjectChangeEvent : IEvent
     {
         public string Name { get; set; }
-        public int Version { get; set; }
     }
 
     public class ProjectRelevanceConfigEvent : IEvent
@@ -26,9 +25,12 @@ namespace SAE.CommonComponent.ConfigServer.Events
 
     public class ProjectConfigChangeAliasEvent : IEvent
     {
-        public string Id { get; set; }
         public string Alias { get; set; }
     }
 
-    
+    public class ProjectVersionCumulationEvent : IEvent
+    {
+        public int Version { get; set; }
+    }
+
 }

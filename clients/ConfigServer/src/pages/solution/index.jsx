@@ -11,10 +11,10 @@ const { Search } = Input;
 
 export default connect(({ solution }) => (
   {
-    paging: solution
-  }))(({ dispatch, paging }) => {
+    solution
+  }))(({ dispatch, solution }) => {
 
-    const { formStaus } = paging;
+    const { formStaus, paging, items } = solution;
 
     const handleRemove = (e) => {
       const id = e.target.value;
@@ -103,7 +103,7 @@ export default connect(({ solution }) => (
               <Search placeholder="input search text" onSearch={handleSearch} className={styles.search} enterButton />
             </Col>
           </Row>
-          <Table columns={columns} dataSource={paging.items} pagination={pagination} />
+          <Table columns={columns} dataSource={items} pagination={pagination} />
           <AddForm visible={formStaus === 1} />
           <EditForm visible={formStaus === 2} />
         </div>

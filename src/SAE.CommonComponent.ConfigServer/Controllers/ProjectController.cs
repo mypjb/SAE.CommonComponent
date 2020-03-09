@@ -51,7 +51,7 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
             return await this._mediator.Send<ProjectDto>(id);
         }
 
-        [HttpPost("{action}")]
+        [HttpPost("config/{action}")]
         public async Task<object> Relevance(ProjectRelevanceConfigCommand command)
         {
             await this._mediator.Send(command);
@@ -64,11 +64,7 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
             return await this._mediator.Send<ProjectConfigDto>(id);
         }
 
-        [HttpGet("~/app/config")]
-        public async Task<object> AppConfig(AppConfigCommand command)
-        {
-            return await this._mediator.Send<AppConfigDto>(command);
-        }
+        
 
         [HttpPut("config")]
         public async Task<object> ProjectConfig(ProjectConfigChangeAliasCommand command)
@@ -93,12 +89,12 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
         public async Task<object> ProjectConfigPaging([FromQuery]ProjectConfigQueryCommand command)
         {
             return await this._mediator.Send<IPagedList<ProjectConfigDto>>(command);
-        } 
+        }
 
         [HttpGet("config/relevance")]
         public async Task<object> Relevance([FromQuery]ProjectConfigQueryCommand command)
         {
             return await this._mediator.Send<IPagedList<ConfigDto>>(command);
-        } 
+        }
     }
 }

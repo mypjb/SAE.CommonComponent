@@ -23,6 +23,7 @@ namespace SAE.CommonComponent.ConfigServer.Dtos
         /// 内容
         /// </summary>
         public string Content { get; set; }
+        public int Version { get; set;}
         /// <summary>
         /// 创建时间
         /// </summary>

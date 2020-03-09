@@ -17,7 +17,8 @@ namespace SAE.CommonComponent.ConfigServer.Handles
                                   ICommandHandler<ProjectChangeCommand>,
                                   ICommandHandler<RemoveCommand<Project>>,
                                   ICommandHandler<string, ProjectDto>,
-                                  ICommandHandler<ProjectQueryCommand, IPagedList<ProjectDto>>
+                                  ICommandHandler<ProjectQueryCommand, IPagedList<ProjectDto>>,
+                                  ICommandHandler<ProjectVersionCumulationCommand>
     {
         private readonly IStorage _storage;
 
@@ -58,6 +59,11 @@ namespace SAE.CommonComponent.ConfigServer.Handles
             return PagedList.Build(query, command);
         }
 
-        
+        public async Task Handle(ProjectVersionCumulationCommand command)
+        {
+           var project= await this._documentStore.FindAsync<Project>(command.ProjectId);
+           project.Cumulation();
+           await this._documentStore.SaveAsync(project);
+        }
     }
 }

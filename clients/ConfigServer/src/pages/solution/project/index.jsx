@@ -19,10 +19,10 @@ class ProjectList extends React.Component {
 
 
   render() {
-    const { dispatch, paging, match } = this.props;
+    const { dispatch, project, match } = this.props;
 
     const { solutionId } = match.params;
-    const { formStaus } = paging;
+    const { formStaus, paging, items } = project;
 
     const handleRemove = (e) => {
       const id = e.target.value;
@@ -109,7 +109,7 @@ class ProjectList extends React.Component {
               <Search placeholder="input search text" onSearch={handleSearch} enterButton />
             </Col>
           </Row>
-          <Table columns={columns} dataSource={paging.items} pagination={pagination} />
+          <Table columns={columns} dataSource={items} pagination={pagination} />
           <AddForm visible={formStaus === 1} />
           <EditForm visible={formStaus === 2} />
         </div>
@@ -121,5 +121,5 @@ class ProjectList extends React.Component {
 
 export default connect(({ project }) => (
   {
-    paging: project
+    project
   }))(ProjectList);

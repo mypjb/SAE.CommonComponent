@@ -10,10 +10,10 @@ const { Search } = Input;
 
 export default connect(({ template }) => (
   {
-    paging: template
-  }))(({ dispatch, paging }) => {
+    template
+  }))(({ dispatch, template }) => {
 
-    const { formStaus } = paging;
+    const { formStaus, paging, items } = template;
 
     const handleRemove = (e) => {
       const id = e.target.value;
@@ -68,7 +68,7 @@ export default connect(({ template }) => (
         title: 'format',
         dataIndex: 'format',
         key: 'format',
-        ellipsis:true
+        ellipsis: true
       }, {
         title: 'createTime',
         dataIndex: 'createTime',
@@ -102,7 +102,7 @@ export default connect(({ template }) => (
               <Search placeholder="input search text" onSearch={handleSearch} className={styles.search} enterButton />
             </Col>
           </Row>
-          <Table columns={columns} dataSource={paging.items} pagination={pagination} />
+          <Table columns={columns} dataSource={items} pagination={pagination} />
           <AddForm visible={formStaus === 1} />
           <EditForm visible={formStaus === 2} />
         </div>

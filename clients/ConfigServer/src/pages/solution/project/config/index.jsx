@@ -10,25 +10,27 @@ class ProjectList extends React.Component {
   constructor(props) {
     super(props);
     props.dispatch({
-      type: "config/paging",
+      type: "projectConfig/search",
       payload: props.match.params
     });
   }
 
 
   render() {
-    const { dispatch, paging, match, relevance } = this.props;
 
-    const { formStaus } = paging;
+    let ids = [];
 
-    const handleRemove = (e) => {
-      const id = e.target.value;
+    const { dispatch, projectConfig, match } = this.props;
+
+    const { formStaus, paging, items } = projectConfig;
+
+    const handleRemove = () => {
       Modal.confirm({
         title: 'Are you sure delete this task?',
         onOk: () => {
           dispatch({
-            type: 'config/remove',
-            payload: { id },
+            type: 'projectConfig/remove',
+            payload: { ids },
           });
         }
       });
@@ -36,24 +38,19 @@ class ProjectList extends React.Component {
 
     const handleRelevance = () => {
       dispatch({
-        type: 'config/relevance',
+        type: 'projectConfig/relevance',
         payload: match.params
       });
-
-      dispatch({
-        type: 'relevance/paging',
-        payload: match.params
-      });
-
     };
 
+
     const handleEdit = (e) => {
-      dispatch({ type: 'config/query', payload: { id: e.target.value }, });
+      dispatch({ type: 'projectConfig/refresh', payload: { id: e.target.value } });
     }
 
     const handleSkipPage = (pageIndex, pageSize) => {
       dispatch({
-        type: "config/paging",
+        type: "projectConfig/paging",
         payload: {
           pageIndex,
           pageSize
@@ -63,9 +60,14 @@ class ProjectList extends React.Component {
 
     const handleSearch = (name) => {
       dispatch({
-        type: 'config/search',
+        type: 'projectConfig/search',
         payload: { name, ...match.params },
       });
+    }
+
+    const handleSelect = (rowsKey, rowsData) => {
+      ids = rowsData.map(s => (s.id));
+      console.log(ids);
     }
 
     const columns = [
@@ -75,25 +77,21 @@ class ProjectList extends React.Component {
         key: 'id',
       },
       {
-        title: 'name',
-        dataIndex: 'name',
-        key: 'name',
-      },
-      {
-        title: 'createTime',
-        dataIndex: 'createTime',
-        key: 'createTime'
+        title: 'alias',
+        dataIndex: 'alias',
+        key: 'alias',
       }, {
         title: 'action',
         render: (text, row) => (
           <span>
             <Button type='link' value={row.id} onClick={handleEdit} style={{ marginRight: 16 }}>Edit</Button>
-            <Button type='link' value={row.id} onClick={handleRemove}>Delete</Button>
             <Button type='link'>Config Manage</Button>
           </span>
         )
       }
     ];
+
+    
 
     const pagination = {
       current: paging.pageIndex,
@@ -102,18 +100,20 @@ class ProjectList extends React.Component {
       onChange: handleSkipPage
     };
 
+
     return (
       <PageHeaderWrapper>
         <div>
           <Row>
             <Col span={18}>
               <Button type="primary" onClick={handleRelevance}>Relevance</Button>
+              <Button type="primary" onClick={handleRemove}>Remove</Button>
             </Col>
             <Col span={6}>
               <Search placeholder="input search text" onSearch={handleSearch} enterButton />
             </Col>
           </Row>
-          <Table columns={columns} dataSource={paging.items} pagination={pagination} />
+          <Table columns={columns} dataSource={items} rowSelection={{ onChange: handleSelect }} pagination={pagination} />
           <Relevance visible={formStaus == 1} match={match}></Relevance>
         </div>
       </PageHeaderWrapper>
@@ -122,8 +122,8 @@ class ProjectList extends React.Component {
 
 }
 
-export default connect(({ config, relevance }) => (
+export default connect(({ projectConfig, relevance }) => (
   {
-    paging: config,
+    projectConfig,
     relevance
   }))(ProjectList);

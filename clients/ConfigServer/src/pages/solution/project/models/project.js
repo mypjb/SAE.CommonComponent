@@ -1,10 +1,12 @@
-import { request } from "../service";
+import request from "../service";
 
 export default {
   state: {
-    pageIndex: 1,
-    pageSize: 10,
-    totalCount: 0,
+    paging: {
+      pageIndex: 1,
+      pageSize: 10,
+      totalCount: 0,
+    },
     items: [],
     params: {},
     model: {},
@@ -15,7 +17,7 @@ export default {
       return { ...state, items };
     },
     setPaging(state, { payload: { pageIndex, pageSize, totalCount } }) {
-      return { ...state, pageIndex, pageSize, totalCount };
+      return { ...state, paging: { pageIndex, pageSize, totalCount } };
     },
     setParams(state, { payload }) {
       return { ...state, params: { ...payload } };
@@ -59,16 +61,5 @@ export default {
       yield call(request.remove, payload.id);
       yield put({ type: 'paging' });
     }
-  },
-  // subscriptions: {
-  //   setup({ dispatch, history }) {
-  //     // history.listen(({ pathname }) => {
-  //     //   if (pathname === '/solution/project') {
-  //     //     dispatch({
-  //     //       type: 'paging',
-  //     //     });
-  //     //   }
-  //     // });
-  //   },
-  // }
+  }
 };

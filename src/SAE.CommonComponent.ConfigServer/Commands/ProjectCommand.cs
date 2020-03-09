@@ -21,7 +21,7 @@ namespace SAE.CommonComponent.ConfigServer.Commands
 
     public class ProjectRelevanceConfigCommand
     {
-        public string Id { get; set; }
+        public string ProjectId { get; set; }
         public IEnumerable<string> ConfigIds { get; set; }
     }
 
@@ -44,5 +44,10 @@ namespace SAE.CommonComponent.ConfigServer.Commands
     {
         public string ProjectId { get; set; }
         public string SolutionId { get; set; }
+    }
+
+    public class ProjectVersionCumulationCommand
+    {
+        public string ProjectId { get; set; }
     }
 }

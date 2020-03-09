@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SAE.CommonComponent.ConfigServer.Events;
+using SAE.CommonComponent.ConfigServer.Commands;
 
 namespace SAE.CommonComponent.ConfigServer.Domains
 {
@@ -47,6 +48,11 @@ namespace SAE.CommonComponent.ConfigServer.Domains
         protected override string GetIdentity()
         {
             return this.Id;
+        }
+
+        internal void Change(ProjectConfigChangeAliasCommand command)
+        {
+            this.Apply<ProjectConfigChangeAliasEvent>(command);
         }
     }
 }

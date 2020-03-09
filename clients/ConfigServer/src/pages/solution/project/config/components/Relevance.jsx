@@ -1,19 +1,22 @@
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import React from 'react';
-import { Row, Col, Input, Table, Button, Modal } from 'antd';
+import { Table, Modal } from 'antd';
 import { connect } from 'dva';
 
-const { Search } = Input;
 
+// eslint-disable-next-line react/prefer-stateless-function
 class Relevance extends React.Component {
+  // eslint-disable-next-line no-useless-constructor
   constructor(props) {
     super(props);
-    
   }
 
   render() {
-    const { dispatch, paging, match } = this.props;
 
+    let configIds = [];
+
+    const { dispatch, relevance } = this.props;
+    const { paging, items } = relevance;
+    const { projectId } = relevance.params;
     const handleSkipPage = (pageIndex, pageSize) => {
       dispatch({
         type: "relevance/paging",
@@ -39,18 +42,12 @@ class Relevance extends React.Component {
         title: 'content',
         dataIndex: 'content',
         key: 'content',
+        ellipsis: true
       },
       {
         title: 'createTime',
         dataIndex: 'createTime',
         key: 'createTime'
-      }, {
-        title: 'action',
-        render: (text, row) => (
-          <span>
-            <Button type='link'>Config Manage</Button>
-          </span>
-        )
       }
     ];
 
@@ -61,16 +58,35 @@ class Relevance extends React.Component {
       onChange: handleSkipPage
     };
 
+    const rowSelectionOption = {
+      onChange: (selectedRowKeys, selectedRows) => {
+        configIds = selectedRows.map(s => (s.id));
+      }
+    }
+
+    const handleOk = () => {
+      dispatch({
+        type: "relevance/add",
+        payload: {
+          projectId,
+          configIds
+        }
+      });
+    };
+
+    const handleCancel = () => {
+      dispatch({ type: 'config/setFormStaus', payload: 0 });
+    };
+
     return (
-      <Modal forceRender title="add" visible={this.props.visible}  closable={false}>
-        <Table columns={columns} dataSource={paging.items} pagination={pagination} />
+      <Modal forceRender width="70%" title="add" onOk={handleOk} onCancel={handleCancel} visible={this.props.visible} closable={false}>
+        <Table columns={columns} rowSelection={rowSelectionOption} dataSource={items} pagination={pagination} />
       </Modal>
     );
   }
-
 }
 
 export default connect(({ relevance }) => (
   {
-    paging: relevance
+    relevance
   }))(Relevance);

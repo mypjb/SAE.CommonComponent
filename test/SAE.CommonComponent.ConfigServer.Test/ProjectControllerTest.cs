@@ -55,7 +55,7 @@ namespace SAE.CommonComponent.ConfigServer.Test
             var project = await this.Add(config.SolutionId);
             var command = new ProjectRelevanceConfigCommand
             {
-                Id = project.Id,
+                ProjectId = project.Id,
                 ConfigIds = new[] { config.Id }
             };
             var message = new HttpRequestMessage(HttpMethod.Post, $"{API}/{nameof(Relevance)}")
@@ -106,7 +106,7 @@ namespace SAE.CommonComponent.ConfigServer.Test
             var project = await this.Add(config.SolutionId);
             var command = new ProjectRelevanceConfigCommand
             {
-                Id = project.Id,
+                ProjectId = project.Id,
                 ConfigIds = new[] { config.Id }
             };
             var message = new HttpRequestMessage(HttpMethod.Post, $"{API}/{nameof(Relevance)}")
@@ -120,7 +120,7 @@ namespace SAE.CommonComponent.ConfigServer.Test
             };
 
             var responseMessage = await this.HttpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, $"app/config")
-                                                 .AddJsonContent(appConfigCommand));
+                                                       .AddJsonContent(appConfigCommand));
             var appConfig =await responseMessage.AsResult<AppConfigDto>();
 
             Assert.True(appConfig.Data.Count == 1);

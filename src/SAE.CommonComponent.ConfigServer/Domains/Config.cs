@@ -48,11 +48,14 @@ namespace SAE.CommonComponent.ConfigServer.Domains
         /// 创建时间
         /// </summary>
         public DateTime CreateTime { get; set; }
-
-
+        /// <summary>
+        /// version
+        /// </summary>
+        /// <value></value>
+        public int Version { get; set; }
         public void Change(ConfigChangeCommand command)
         {
-            this.Apply<ConfigChangeEvent>(command);
+            this.Apply<ConfigChangeEvent>(command, e => e.Version = this.Version + 1);
         }
     }
 }

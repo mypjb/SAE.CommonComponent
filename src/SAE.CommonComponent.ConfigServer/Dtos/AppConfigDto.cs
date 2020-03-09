@@ -20,7 +20,20 @@ namespace SAE.CommonComponent.ConfigServer.Dtos
 
         public void Add(ProjectConfigDto projectConfig, ConfigDto config)
         {
-            this.Data[projectConfig.Alias] = config?.Content.ToObject<object>();
+            var key = projectConfig.Alias;
+
+            if (this.Data.ContainsKey(key))
+            {
+
+                key += "_";
+                projectConfig.Alias = key;
+                this.Add(projectConfig, config);
+            }
+            else
+            {
+                this.Data[key] = config?.Content.ToObject<object>();
+            }
+
         }
     }
 }

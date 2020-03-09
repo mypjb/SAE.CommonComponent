@@ -53,7 +53,7 @@ namespace SAE.CommonComponent.ConfigServer.Handles
         public async Task<IPagedList<ConfigDto>> Handle(ConfigQueryCommand command)
         {
             var query = this._storage.AsQueryable<ConfigDto>()
-                                   .Where(s => s.SolutionId == command.SolutionId);
+                                     .Where(s => s.SolutionId == command.SolutionId);
             if (command.Name.IsNotNullOrWhiteSpace())
             {
                 query = query.Where(s => s.Name.Contains(command.Name));

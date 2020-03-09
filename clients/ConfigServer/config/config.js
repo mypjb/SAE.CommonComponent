@@ -119,7 +119,7 @@ export default {
             },
             {
               path: '/solution/project/:solutionId/config/:projectId',
-              name: 'projectConfig',
+              name: 'config',
               icon: 'smile',
               component: './solution/project/config',
               hideInMenu:true

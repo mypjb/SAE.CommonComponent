@@ -3,9 +3,11 @@ import templateRequest from "@/services/template";
 
 export default {
   state: {
-    pageIndex: 1,
-    pageSize: 10,
-    totalCount: 0,
+    paging: {
+      pageIndex: 1,
+      pageSize: 10,
+      totalCount: 0,
+    },
     items: [],
     params: {},
     model: {},
@@ -18,7 +20,7 @@ export default {
       return { ...state, items };
     },
     setPaging(state, { payload: { pageIndex, pageSize, totalCount } }) {
-      return { ...state, pageIndex, pageSize, totalCount };
+      return { ...state, paging: { pageIndex, pageSize, totalCount } };
     },
     setParams(state, { payload }) {
       return { ...state, params: { ...payload } };

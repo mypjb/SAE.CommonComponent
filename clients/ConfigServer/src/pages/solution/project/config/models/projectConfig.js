@@ -2,9 +2,11 @@ import request from "../service"
 
 export default {
   state: {
-    pageIndex: 1,
-    pageSize: 10,
-    totalCount: 0,
+    paging: {
+      pageIndex: 1,
+      pageSize: 10,
+      totalCount: 0
+    },
     items: [],
     params: {},
     model: {},
@@ -15,7 +17,7 @@ export default {
       return { ...state, items };
     },
     setPaging(state, { payload: { pageIndex, pageSize, totalCount } }) {
-      return { ...state, pageIndex, pageSize, totalCount };
+      return { ...state, paging: { pageIndex, pageSize, totalCount } };
     },
     setParams(state, { payload }) {
       return { ...state, params: { ...payload } };
@@ -29,9 +31,15 @@ export default {
     }
   },
   effects: {
+    *refresh(o, { put, select }) {
+      const paging = yield select(({ projectConfig }) => (projectConfig.paging));
+      yield put({ type: "paging", payload: paging });
+    },
     *paging({ payload }, { call, put, select }) {
-      const params = yield select(({ config }) => (config.params));
+
+      const params = yield select(({ projectConfig }) => (projectConfig.params));
       const data = yield call(request.queryPaging, { ...payload, ...params });
+
       yield put({ type: "setList", payload: data });
       yield put({ type: "setPaging", payload: data });
     },
@@ -41,20 +49,15 @@ export default {
     },
     *relevance({ payload }, { put }) {
       yield put({ type: "setFormStaus", payload: 1 });
-      // yield put({ type: "relevance/paging", payload });
+      yield put({ type: "relevance/search", payload });
     },
     *edit({ payload }, { call, put }) {
       yield call(request.edit, payload);
       yield put({ type: "setFormStaus", payload: 0 });
       yield put({ type: "paging", payload: {} });
     },
-    *query({ payload }, { call, put }) {
-      const model = yield call(request.query, payload.id);
-      yield put({ type: 'set', payload: model });
-      yield put({ type: "setFormStaus", payload: 2 });
-    },
     *remove({ payload }, { call, put }) {
-      yield call(request.remove, payload.id);
+      yield call(request.remove, payload);
       yield put({ type: 'paging' });
     }
   }

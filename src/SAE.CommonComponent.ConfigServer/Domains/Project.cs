@@ -39,7 +39,13 @@ namespace SAE.CommonComponent.ConfigServer.Domains
 
 
         public void Change(ProjectChangeCommand command) => this.Apply<ProjectChangeEvent>(command);
-
+        public void Cumulation()
+        {
+            this.Apply(new ProjectVersionCumulationEvent
+            {
+                Version = this.Version + 1
+            });
+        }
         public IEnumerable<ProjectConfig> Relevance(IEnumerable<Config> configs)
         {
             return configs.Select(config => new ProjectConfig(this, config)).ToArray();

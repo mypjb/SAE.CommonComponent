@@ -13,7 +13,7 @@ namespace SAE.CommonComponent.ConfigServer.Events
         /// 创建时间
         /// </summary>
         public DateTime CreateTime { get; set; }
-        public string Id { get;  set; }
+        public string Id { get; set; }
     }
 
     public class ConfigChangeEvent : IEvent
@@ -30,6 +30,8 @@ namespace SAE.CommonComponent.ConfigServer.Events
         /// 内容
         /// </summary>
         public string Content { get; set; }
-       
+
+        public int Version { get; set; }
+
     }
 }

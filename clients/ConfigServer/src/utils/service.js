@@ -29,5 +29,7 @@ export default function (action) {
         return request.delete(`/${action}/${id}`);
     }
 
+
+
     return service;
 }

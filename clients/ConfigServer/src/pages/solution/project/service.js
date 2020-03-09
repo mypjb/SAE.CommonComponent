@@ -1,4 +1,4 @@
 import service from "@/utils/service";
 
-export const request = service('project');
+export default service('project');
 
