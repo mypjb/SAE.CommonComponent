@@ -58,7 +58,8 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
 
             return ResponseResult.Success;
         }
-        [HttpPost("{action}/{id}")]
+        
+        [HttpGet("{action}/{id}")]
         public async Task<object> Config(string id)
         {
             return await this._mediator.Send<ProjectConfigDto>(id);

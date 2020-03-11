@@ -23,8 +23,11 @@ namespace SAE.CommonComponent.ConfigServer.Handles
 
             var projectDto = this._storage.AsQueryable<ProjectDto>().FirstOrDefault(s => s.Id == command.Id);
 
+            app.Version=projectDto.Version;
+
             if (projectDto.Version != command.Version)
             {
+                
                 var projectConfigs = this._storage.AsQueryable<ProjectConfigDto>()
                                                               .Where(s => s.ProjectId == command.Id);
 

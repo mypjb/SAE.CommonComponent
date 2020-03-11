@@ -19,7 +19,8 @@ namespace SAE.CommonComponent.ConfigServer.Handles
                                         ICommandHandler<BatchRemoveCommand<ProjectConfig>>,
                                         ICommandHandler<ProjectConfigQueryCommand, IPagedList<ProjectConfigDto>>,
                                         ICommandHandler<ProjectConfigQueryCommand, IPagedList<ConfigDto>>,
-                                        ICommandHandler<ProjectConfigChangeAliasCommand>
+                                        ICommandHandler<ProjectConfigChangeAliasCommand>,
+                                        ICommandHandler<string, ProjectConfigDto>
     {
         private readonly IMediator _mediator;
         private readonly IStorage _storage;
@@ -42,7 +43,7 @@ namespace SAE.CommonComponent.ConfigServer.Handles
                                                                 .Where(s => command.ConfigIds.Contains(s.Id))
                                                                 .ToArray());
 
-                                                                
+
             await this._documentStore.SaveAsync(projectConfigs);
 
             await this._mediator.Send(new ProjectVersionCumulationCommand
@@ -78,14 +79,23 @@ namespace SAE.CommonComponent.ConfigServer.Handles
             projectConfig.Change(command);
 
             Assert.Build(this._storage.AsQueryable<ProjectConfigDto>()
-                             .Where(s => s.ProjectId == command.Id && s.Alias == command.Name)
-                             .Count()>0)
-                  .True($"{command.Name} is exist");
+                             .Where(s => s.ProjectId == projectConfig.ProjectId &&
+                                    s.Id != command.Id &&
+                                    s.Alias == command.Alias)
+                             .Count() == 0)
+                  .True($"{command.Alias} is exist");
+
+            await this._documentStore.SaveAsync(projectConfig);
 
             await this._mediator.Send(new ProjectVersionCumulationCommand
             {
                 ProjectId = projectConfig.ProjectId
             });
+        }
+
+        public async Task<ProjectConfigDto> Handle(string command)
+        {
+            return this._storage.AsQueryable<ProjectConfigDto>().First(s => s.Id == command);
         }
 
         async Task<IPagedList<ConfigDto>> ICommandHandler<ProjectConfigQueryCommand, IPagedList<ConfigDto>>.Handle(ProjectConfigQueryCommand command)

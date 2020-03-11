@@ -28,7 +28,7 @@ namespace SAE.CommonComponent.ConfigServer.Commands
     public class ProjectConfigChangeAliasCommand
     {
         public string Id { get; set; }
-        public string Name { get; set; }
+        public string Alias { get; set; }
     }
 
     public class ProjectQueryCommand : Paging

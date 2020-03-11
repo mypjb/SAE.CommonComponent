@@ -51,6 +51,11 @@ export default {
       yield put({ type: "setFormStaus", payload: 1 });
       yield put({ type: "relevance/search", payload });
     },
+    *query({ payload }, { put, call }) {
+      const data = yield call(request.query, payload);
+      yield put({ type: "set", payload:data });
+      yield put({ type: "setFormStaus", payload: 2 });
+    },
     *edit({ payload }, { call, put }) {
       yield call(request.edit, payload);
       yield put({ type: "setFormStaus", payload: 0 });

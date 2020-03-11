@@ -3,6 +3,7 @@ import React from 'react';
 import { Row, Col, Input, Table, Button, Modal } from 'antd';
 import { connect } from 'dva';
 import Relevance from './components/Relevance';
+import EditConfig from './components/EditConfig';
 
 const { Search } = Input;
 
@@ -45,7 +46,7 @@ class ProjectList extends React.Component {
 
 
     const handleEdit = (e) => {
-      dispatch({ type: 'projectConfig/refresh', payload: { id: e.target.value } });
+      dispatch({ type: 'projectConfig/query', payload: e.target.value });
     }
 
     const handleSkipPage = (pageIndex, pageSize) => {
@@ -67,7 +68,6 @@ class ProjectList extends React.Component {
 
     const handleSelect = (rowsKey, rowsData) => {
       ids = rowsData.map(s => (s.id));
-      console.log(ids);
     }
 
     const columns = [
@@ -91,7 +91,7 @@ class ProjectList extends React.Component {
       }
     ];
 
-    
+
 
     const pagination = {
       current: paging.pageIndex,
@@ -115,6 +115,7 @@ class ProjectList extends React.Component {
           </Row>
           <Table columns={columns} dataSource={items} rowSelection={{ onChange: handleSelect }} pagination={pagination} />
           <Relevance visible={formStaus == 1} match={match}></Relevance>
+          <EditConfig visible={formStaus == 2}></EditConfig>
         </div>
       </PageHeaderWrapper>
     );

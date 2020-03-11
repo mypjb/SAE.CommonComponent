@@ -74,6 +74,11 @@ class ProjectList extends React.Component {
         key: 'name',
       },
       {
+        title: 'version',
+        dataIndex: 'version',
+        key: 'version',
+      },
+      {
         title: 'createTime',
         dataIndex: 'createTime',
         key: 'createTime'
