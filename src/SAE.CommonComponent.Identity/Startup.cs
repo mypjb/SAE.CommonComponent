@@ -13,42 +13,19 @@ using SAE.CommonComponent.Identity.Dtos;
 using SAE.CommonComponent.Identity.Services;
 using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.Extension;
+using SAE.CommonLibrary.Plugin.AspNetCore;
 
 namespace SAE.CommonComponent.Identity
 {
-    public class Startup
+    public class Startup:WebPlugin
     {
+        
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            var build = services.AddIdentityServer()
-                                .AddJwtBearerClientAuthentication()
-                                .AddDeveloperSigningCredential()
-                                .AddClientStore<ClientStoreService>()
-                                .AddResourceStore<ResourceStoreService>();
-
-            services.AddSingleton<IdentityOption>();
-
-            services.AddCors(options =>
-            {
-                options.AddDefaultPolicy(
-                    builder => builder.WithOrigins("http://localhost:8000")
-                                      .AllowAnyHeader()
-                                      .AllowAnyMethod()
-                                      .AllowCredentials());
-            });
-
-            services.AddControllers()
-                    .AddResponseResult()
-                    .AddNewtonsoftJson();
-
-            services.AddServiceProvider()
-                    .AddMediator()
-                    .AddMemoryDocument()
-                    .AddMemoryMessageQueue()
-                    .AddSaeMemoryDistributedCache()
-                    .AddDataPersistenceService();
+            services.AddControllers();
+            this.PluginConfigureServices(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -69,16 +46,53 @@ namespace SAE.CommonComponent.Identity
                           });
 
                 mediator.Send(new ScopeCreateCommand() { Name = "config", Display = "config center" }).Wait();
-
             }
 
-            app.UseIdentityServer()
-               .UseRouting()
-               .UseCors()
-               .UseEndpoints(endpoints =>
+            app.UseRouting()
+               .UseCors();
+            
+            this.PluginConfigure(app);
+
+            app.UseEndpoints(endpoints =>
                {
                    endpoints.MapControllers();
                });
+        }
+
+        public override void PluginConfigureServices(IServiceCollection services)
+        {
+            var build = services.AddIdentityServer()
+                                .AddJwtBearerClientAuthentication()
+                                .AddDeveloperSigningCredential()
+                                .AddClientStore<ClientStoreService>()
+                                .AddResourceStore<ResourceStoreService>();
+
+            services.AddSingleton<IdentityOption>();
+
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(
+                    builder => builder.WithOrigins("http://localhost:8000")
+                                      .AllowAnyHeader()
+                                      .AllowAnyMethod()
+                                      .AllowCredentials());
+            });
+
+            services.AddMvc()
+                    .AddResponseResult()
+                    .AddNewtonsoftJson();
+
+            services.AddServiceProvider()
+                    .AddMediator()
+                    .AddMemoryDocument()
+                    .AddMemoryMessageQueue()
+                    .AddSaeMemoryDistributedCache()
+                    .AddDataPersistenceService();
+        }
+
+        public override void PluginConfigure(IApplicationBuilder app)
+        {
+            app.UseIdentityServer();
         }
     }
 }

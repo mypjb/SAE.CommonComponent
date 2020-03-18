@@ -12,10 +12,11 @@ using SAE.CommonComponent.ConfigServer.Commands;
 using System.Linq;
 using SAE.CommonLibrary.Extension;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using SAE.CommonLibrary.Plugin.AspNetCore;
 
 namespace SAE.CommonComponent.ConfigServer
 {
-    public class Startup
+    public class Startup:WebPlugin
     {
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
@@ -30,10 +31,45 @@ namespace SAE.CommonComponent.ConfigServer
                                       .AllowCredentials());
             });
 
-            services.AddControllers()
+            services.AddControllers();
+
+
+            // services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            //         .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+            //         {
+            //             options.Authority = "http://localhost:5000";
+            //             options.RequireHttpsMetadata = false;
+            //             options.Audience = "config";
+            //         });
+
+            this.PluginConfigureServices(services);
+        }
+
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IMediator mediator)
+        {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+
+            app.UseRouting();
+
+            this.PluginConfigure(app);
+
+            app.UseCors()
+               .UseEndpoints(endpoints =>
+               {
+                   endpoints.MapControllers();
+               });
+        }
+
+        public override void PluginConfigureServices(IServiceCollection services)
+        {
+            
+            services.AddMvc()
                     .AddResponseResult()
                     .AddNewtonsoftJson();
-
 
             // services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             //         .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
@@ -48,32 +84,10 @@ namespace SAE.CommonComponent.ConfigServer
                     .AddMemoryDocument()
                     .AddMemoryMessageQueue()
                     .AddDataPersistenceService();
-            // .AddDataPersistenceService(option =>
-            // {
-            //     option.AddMapper<Template, TemplateDto>();
-            //     option.AddMapper<Config, ConfigDto>();
-            //     option.AddMapper<Project, ProjectDto>();
-            //     option.AddMapper<ProjectConfig, ProjectConfigDto>();
-            //     option.AddMapper<Solution, SolutionDto>();
-            // });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IMediator mediator)
+        public override void PluginConfigure(IApplicationBuilder app)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-
-            app.UseRouting()
-               .UseCors()
-               .UseEndpoints(endpoints =>
-               {
-                   endpoints.MapControllers();
-               });
-
-
         }
     }
 }
