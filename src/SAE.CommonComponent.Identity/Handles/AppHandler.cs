@@ -106,7 +106,7 @@ namespace SAE.CommonComponent.Identity.Handles
 
         public async Task<IEnumerable<ScopeDto>> Handle(ScopeQueryALLCommand command)
         {
-            return (await this._distributedCache.GetAsync<IEnumerable<ScopeDto>>(ScopeKey)).Distinct();
+            return (await this._distributedCache.GetAsync<IEnumerable<ScopeDto>>(ScopeKey))?.Distinct() ?? Enumerable.Empty<ScopeDto>();
         }
 
         public async Task<IPagedList<ScopeDto>> Handle(ScopeQueryCommand command)

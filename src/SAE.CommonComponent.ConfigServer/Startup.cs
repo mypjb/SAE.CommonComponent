@@ -70,15 +70,7 @@ namespace SAE.CommonComponent.ConfigServer
             services.AddMvc()
                     .AddResponseResult()
                     .AddNewtonsoftJson();
-
-            // services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            //         .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
-            //         {
-            //             options.Authority = "http://localhost:5000";
-            //             options.RequireHttpsMetadata = false;
-            //             options.Audience = "config";
-            //         });
-
+                    
             services.AddServiceProvider()
                     .AddMediator()
                     .AddMemoryDocument()

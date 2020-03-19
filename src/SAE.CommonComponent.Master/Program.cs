@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace SAE.CommonComponent.Host
+namespace SAE.CommonComponent.Master
 {
     public class Program
     {
@@ -21,6 +21,6 @@ namespace SAE.CommonComponent.Host
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                });
+                }).UseAutofacProviderFactory();
     }
 }

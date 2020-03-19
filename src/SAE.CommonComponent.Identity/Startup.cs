@@ -24,6 +24,14 @@ namespace SAE.CommonComponent.Identity
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(
+                    builder => builder.WithOrigins("http://localhost:8000")
+                                      .AllowAnyHeader()
+                                      .AllowAnyMethod()
+                                      .AllowCredentials());
+            });
             services.AddControllers();
             this.PluginConfigureServices(services);
         }
@@ -68,15 +76,6 @@ namespace SAE.CommonComponent.Identity
                                 .AddResourceStore<ResourceStoreService>();
 
             services.AddSingleton<IdentityOption>();
-
-            services.AddCors(options =>
-            {
-                options.AddDefaultPolicy(
-                    builder => builder.WithOrigins("http://localhost:8000")
-                                      .AllowAnyHeader()
-                                      .AllowAnyMethod()
-                                      .AllowCredentials());
-            });
 
             services.AddMvc()
                     .AddResponseResult()

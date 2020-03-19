@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace SAE.CommonComponent.Host
+namespace SAE.CommonComponent.Master
 {
     public class Startup
     {
@@ -25,8 +25,17 @@ namespace SAE.CommonComponent.Host
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(
+                    builder => builder.WithOrigins("http://localhost:8000")
+                                      .AllowAnyHeader()
+                                      .AllowAnyMethod()
+                                      .AllowCredentials());
+            });
             services.AddControllers();
-            services.AddPluginManage();
+            services.AddPluginManage("../../../../../plugin");
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -37,14 +46,15 @@ namespace SAE.CommonComponent.Host
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseRouting();
+            //app.UseHttpsRedirection();
 
-            app.UsePluginManage();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseRouting()
+               .UseCors()
+               .UsePluginManage()
+               .UseEndpoints(endpoints =>
+               {
+                   endpoints.MapControllers();
+               });
         }
     }
 }
