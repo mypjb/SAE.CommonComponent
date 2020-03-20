@@ -43,7 +43,6 @@ namespace SAE.CommonComponent.ConfigServer.Commands
     public class ProjectConfigQueryCommand : Paging
     {
         public string ProjectId { get; set; }
-        public string SolutionId { get; set; }
     }
 
     public class ProjectVersionCumulationCommand

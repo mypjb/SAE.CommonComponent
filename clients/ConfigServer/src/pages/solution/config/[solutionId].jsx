@@ -2,18 +2,29 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import React from 'react';
 import { Row, Col, Input, Table, Button, Modal } from 'antd';
 import { connect } from 'umi';
-import styles from './index.less';
 import AddForm from './components/AddForm';
 import EditForm from './components/EditForm';
 
 const { Search } = Input;
 
-export default connect(({ template }) => (
-  {
-    template
-  }))(({ dispatch, template }) => {
-    debugger;
-    const { formStaus, paging, items } = template;
+class configList extends React.Component {
+  constructor(props) {
+    super(props);
+    props.dispatch({
+      type: "config/search",
+      payload: props.match.params
+    });
+
+    props.dispatch({
+      type: "config/queryTemplateList"
+    });
+  }
+
+
+  render() {
+    const { dispatch, config, match } = this.props;
+
+    const { formStaus, paging, items } = config;
 
     const handleRemove = (e) => {
       const id = e.target.value;
@@ -21,7 +32,7 @@ export default connect(({ template }) => (
         title: 'Are you sure delete this task?',
         onOk: () => {
           dispatch({
-            type: 'template/remove',
+            type: 'config/remove',
             payload: { id },
           });
         }
@@ -29,16 +40,16 @@ export default connect(({ template }) => (
     }
 
     const handleAdd = () => {
-      dispatch({ type: 'template/setFormStaus', payload: 1 });
+      dispatch({ type: 'config/setFormStaus', payload: 1 });
     }
 
     const handleEdit = (e) => {
-      dispatch({ type: 'template/query', payload: { id: e.target.value }, });
+      dispatch({ type: 'config/query', payload: { id: e.target.value }, });
     }
 
     const handleSkipPage = (pageIndex, pageSize) => {
       dispatch({
-        type: "template/paging",
+        type: "config/paging",
         payload: {
           pageIndex,
           pageSize
@@ -48,8 +59,8 @@ export default connect(({ template }) => (
 
     const handleSearch = (name) => {
       dispatch({
-        type: 'template/search',
-        payload: { name },
+        type: 'config/search',
+        payload: { name, ...match.params },
       });
     }
 
@@ -65,11 +76,12 @@ export default connect(({ template }) => (
         key: 'name',
       },
       {
-        title: 'format',
-        dataIndex: 'format',
-        key: 'format',
+        title: 'content',
+        dataIndex: 'content',
+        key: 'content',
         ellipsis: true
-      }, {
+      },
+      {
         title: 'createTime',
         dataIndex: 'createTime',
         key: 'createTime'
@@ -92,14 +104,14 @@ export default connect(({ template }) => (
     };
 
     return (
-      <PageHeaderWrapper className={styles.main}>
+      <PageHeaderWrapper>
         <div>
           <Row>
             <Col span={18}>
               <Button type="primary" onClick={handleAdd}>Add</Button>
             </Col>
             <Col span={6}>
-              <Search placeholder="input search text" onSearch={handleSearch} className={styles.search} enterButton />
+              <Search placeholder="input search text" onSearch={handleSearch} enterButton />
             </Col>
           </Row>
           <Table columns={columns} dataSource={items} pagination={pagination} />
@@ -108,5 +120,11 @@ export default connect(({ template }) => (
         </div>
       </PageHeaderWrapper>
     );
-  });
+  }
 
+}
+
+export default connect(({ config }) => (
+  {
+    config
+  }))(configList);

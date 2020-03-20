@@ -1,6 +1,6 @@
 import React from 'react';
 import { Form, Input, Modal } from 'antd';
-import { connect } from 'dva';
+import { connect } from 'umi';
 
 export default connect(({ project }) => (
     {

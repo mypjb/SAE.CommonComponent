@@ -1,4 +1,9 @@
 {
   "private": true,
-  "workspaces":["*"]
+  "workspaces": [
+    "*"
+  ],
+  "dependencies": {
+    "umi": "^3.0.0-beta.38"
+  }
 }

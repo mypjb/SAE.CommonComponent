@@ -100,12 +100,19 @@ namespace SAE.CommonComponent.ConfigServer.Handles
 
         async Task<IPagedList<ConfigDto>> ICommandHandler<ProjectConfigQueryCommand, IPagedList<ConfigDto>>.Handle(ProjectConfigQueryCommand command)
         {
-            var query = this._storage.AsQueryable<ConfigDto>().Where(s => s.SolutionId == command.SolutionId);
+            var project=await this._documentStore.FindAsync<Project>(command.ProjectId);
+
+            Assert.Build(project).IsNotNull();
+
+            var query = this._storage.AsQueryable<ConfigDto>().Where(s => s.SolutionId == project.SolutionId);
+
             var configIds = this._storage.AsQueryable<ProjectConfig>()
                                .Where(s => s.ProjectId == command.ProjectId)
                                .Select(s => s.ConfigId)
                                .ToArray();
+
             query = query.Where(s => !configIds.Contains(s.Id));
+            
             return PagedList.Build(query, command);
         }
     }

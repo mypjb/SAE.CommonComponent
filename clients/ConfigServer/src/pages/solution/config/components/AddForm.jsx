@@ -1,6 +1,6 @@
 import React from 'react';
 import { Form, Input, Modal, Select } from 'antd';
-import { connect } from 'dva';
+import { connect } from 'umi';
 import { validatorJson, handleFormat } from '@/utils/utils';
 
 

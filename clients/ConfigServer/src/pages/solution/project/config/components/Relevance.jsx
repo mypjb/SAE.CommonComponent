@@ -1,11 +1,9 @@
 import React from 'react';
 import { Table, Modal } from 'antd';
-import { connect } from 'dva';
+import { connect } from 'umi';
 
 
-// eslint-disable-next-line react/prefer-stateless-function
 class Relevance extends React.Component {
-  // eslint-disable-next-line no-useless-constructor
   constructor(props) {
     super(props);
   }
@@ -75,7 +73,7 @@ class Relevance extends React.Component {
     };
 
     const handleCancel = () => {
-      dispatch({ type: 'config/setFormStaus', payload: 0 });
+      dispatch({ type: 'projectConfig/setFormStaus', payload: 0 });
     };
 
     return (

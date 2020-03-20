@@ -1,5 +1,5 @@
 import request from "../service";
-import { router } from "umi";
+import { history } from "umi";
 
 
 export default {
@@ -47,12 +47,12 @@ export default {
       yield call(request.add, payload);
       yield put({ type: "setFormStaus", payload: 0 });
       yield put({ type: "set", payload: {} });
-      router.push("/template");
+      history.push("/template");
     },
     *edit({ payload }, { call, put }) {
       yield call(request.edit, payload);
       yield put({ type: "setFormStaus", payload: 0 });
-      router.push("/template");
+      history.push("/template");
     },
     *query({ payload }, { call, put }) {
       const model = yield call(request.query, payload.id);
