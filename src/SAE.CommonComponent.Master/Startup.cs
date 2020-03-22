@@ -28,7 +28,7 @@ namespace SAE.CommonComponent.Master
             services.AddCors(options =>
             {
                 options.AddDefaultPolicy(
-                    builder => builder.WithOrigins("http://localhost:8000")
+                    builder => builder.WithOrigins("http://localhost:8000","http://localhost:8001")
                                       .AllowAnyHeader()
                                       .AllowAnyMethod()
                                       .AllowCredentials());

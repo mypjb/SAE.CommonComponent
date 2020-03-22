@@ -36,6 +36,7 @@ export default {
     *paging({ payload }, { call, put, select }) {
       const params = yield select(({ solution }) => (solution.params));
       const data = yield call(request.queryPaging, { ...payload, ...params });
+      console.log(data);
       yield put({ type: "setList", payload: data });
       yield put({ type: "setPaging", payload: data });
     },
