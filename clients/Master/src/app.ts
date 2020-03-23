@@ -1,4 +1,28 @@
+
+const handleRoute = function (rootRoute, routes) {
+  
+  if (routes === null || !routes.length) {
+    return;
+  }
+
+  routes.forEach(element => {
+    
+    if(element.routes){
+      handleRoute(rootRoute, element.routes);
+    }
+    
+    if (element.path === rootRoute.path) {
+      return;
+    }
+    element.component=rootRoute.component;
+  });
+}
+
 export function patchRoutes({ routes }) {
-  routes[0].routes[0].menu={name:"sdfdsfdd"};
-  console.log(routes);
+  
+  const routeList = routes[0].routes;
+  const rootRoute = routeList.find(element => (element.path === "/"));
+  console.log(routes,rootRoute);
+  handleRoute(rootRoute,routes);
+  
 }

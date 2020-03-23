@@ -1,4 +1,4 @@
-import httpClient from '@/utils/request';
+import { request as httpClient } from "umi";
 
 const request = {};
 

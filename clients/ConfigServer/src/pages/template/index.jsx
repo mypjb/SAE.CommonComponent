@@ -12,7 +12,6 @@ export default connect(({ template }) => (
   {
     template
   }))(({ dispatch, template }) => {
-    debugger;
     const { formStaus, paging, items } = template;
 
     const handleRemove = (e) => {

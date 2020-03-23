@@ -1,7 +1,6 @@
 import request from "../service";
 import { history } from "umi";
 
-
 export default {
   state: {
     paging: {

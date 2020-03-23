@@ -31,7 +31,5 @@ export default function (action) {
         return request(`/${action}/${id}`, { method: "delete" });
     }
 
-
-
     return service;
 }

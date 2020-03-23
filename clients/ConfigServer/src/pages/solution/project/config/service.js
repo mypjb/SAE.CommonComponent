@@ -1,21 +1,25 @@
 import service from "@/utils/service";
-import request from "@/utils/request";
+import { request } from "umi";
 
 const httpClient = service('project/config');
 
 httpClient.remove = async function (data) {
     console.log(data);
-    return request.delete("/project/config", { data });
+    return request("/project/config", {
+        method: "delete",
+        data
+    });
 }
 
 httpClient.queryRelevance = async function (params) {
-    return request.get(`/project/config/relevance`, {
+    return request(`/project/config/relevance`, {
         params
     });
 }
 
 httpClient.relevance = async function (data) {
-    return request.post(`/project/config/relevance`, {
+    return request(`/project/config/relevance`, {
+        method:"post",
         data
     });
 }
