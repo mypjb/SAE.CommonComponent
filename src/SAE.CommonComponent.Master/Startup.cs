@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -28,12 +29,13 @@ namespace SAE.CommonComponent.Master
             services.AddCors(options =>
             {
                 options.AddDefaultPolicy(
-                    builder => builder.WithOrigins("http://localhost:8000","http://localhost:8001")
+                    builder => builder.WithOrigins("http://localhost:8000", "http://localhost:8001")
                                       .AllowAnyHeader()
                                       .AllowAnyMethod()
                                       .AllowCredentials());
             });
             services.AddControllers();
+            services.AddRoutingScanning();
             services.AddPluginManage("../../../../../plugin");
         }
 
@@ -53,7 +55,8 @@ namespace SAE.CommonComponent.Master
                .UseEndpoints(endpoints =>
                {
                    endpoints.MapControllers();
-               });
+               })
+               .UseRoutingScanning();
         }
     }
 }

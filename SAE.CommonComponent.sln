@@ -59,6 +59,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAE.CommonLibrary.Plugin.As
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAE.CommonComponent.Master", "src\SAE.CommonComponent.Master\SAE.CommonComponent.Master.csproj", "{77797DE1-2C25-4C30-90FF-E8C3857FD8E7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAE.CommonComponent.Routing", "src\SAE.CommonComponent.Routing\SAE.CommonComponent.Routing.csproj", "{B4B4C44F-916E-4150-A9AE-11B162B70EF3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -153,6 +155,10 @@ Global
 		{77797DE1-2C25-4C30-90FF-E8C3857FD8E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{77797DE1-2C25-4C30-90FF-E8C3857FD8E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{77797DE1-2C25-4C30-90FF-E8C3857FD8E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4B4C44F-916E-4150-A9AE-11B162B70EF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4B4C44F-916E-4150-A9AE-11B162B70EF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4B4C44F-916E-4150-A9AE-11B162B70EF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4B4C44F-916E-4150-A9AE-11B162B70EF3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -180,6 +186,7 @@ Global
 		{E00C59DE-0879-4F65-9FE4-99A1AB4B3E27} = {683BBBDB-B4DC-4B36-B42F-504CC8B6A794}
 		{6BE4523F-952F-4E34-8259-BC94612209DF} = {6D4B2D09-B108-452D-B80A-C66817BE846D}
 		{77797DE1-2C25-4C30-90FF-E8C3857FD8E7} = {6D4B2D09-B108-452D-B80A-C66817BE846D}
+		{B4B4C44F-916E-4150-A9AE-11B162B70EF3} = {6D4B2D09-B108-452D-B80A-C66817BE846D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E3F15B03-989E-49CA-AC48-4DA76E675671}
