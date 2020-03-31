@@ -19,8 +19,12 @@ namespace SAE.CommonComponent.Routing.Commands
         public string Id { get; set; }
     }
 
-    public class MenuQueryCommand : Paging
+    // public class MenuQueryCommand : Paging
+    // {
+    //     public string Name { get; set; }
+    // }
+
+    public class MenuListCommand
     {
-        public string Name { get; set; } 
     }
 }

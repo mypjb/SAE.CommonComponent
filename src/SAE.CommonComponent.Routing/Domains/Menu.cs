@@ -21,6 +21,10 @@ namespace SAE.CommonComponent.Routing.Domains
 
         public Menu(MenuCreateCommand command)
         {
+            if (command.ParentId.IsNullOrWhiteSpace())
+            {
+                command.ParentId = DefaultId;
+            }
             this.Apply<MenuCreateEvent>(command, e => e.Id = Utils.GenerateId());
         }
 
@@ -44,11 +48,14 @@ namespace SAE.CommonComponent.Routing.Domains
 
         public async Task Change(MenuChangeCommand command, Func<string, Task<Menu>> parentProvider, Func<Menu, Task<bool>> menuProvider)
         {
+            if (command.ParentId.IsNullOrWhiteSpace())
+            {
+                command.ParentId = DefaultId;
+            }
             this.Apply<MenuChangeEvent>(command);
             await this.ParentExist(parentProvider);
             await this.NotExist(menuProvider);
         }
-                 
 
         public async Task ParentExist(Func<string, Task<Menu>> menuProvider)
         {

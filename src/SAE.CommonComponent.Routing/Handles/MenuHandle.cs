@@ -1,3 +1,5 @@
+using System.Globalization;
+using System.Runtime.CompilerServices;
 using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.Data;
 using SAE.CommonLibrary.EventStore.Document;
@@ -17,9 +19,10 @@ namespace SAE.CommonComponent.ConfigServer.Handles
     public class ConfigHandler : AbstractHandler<Menu>,
                                  ICommandHandler<MenuCreateCommand, string>,
                                  ICommandHandler<MenuChangeCommand>,
-                                 ICommandHandler<RemoveCommand<Menu>>,
+                                 ICommandHandler<BatchRemoveCommand<Menu>>,
                                  ICommandHandler<string, MenuDto>,
-                                 ICommandHandler<MenuQueryCommand, IPagedList<MenuDto>>
+                                 //  ICommandHandler<MenuQueryCommand, IPagedList<MenuDto>>,
+                                 ICommandHandler<MenuListCommand, IEnumerable<MenuItemDto>>
     {
         private readonly IStorage _storage;
 
@@ -44,11 +47,6 @@ namespace SAE.CommonComponent.ConfigServer.Handles
             await menu.Change(command, this._documentStore.FindAsync<Menu>, this.MenuIsExist);
         }
 
-        public Task Handle(RemoveCommand<Menu> command)
-        {
-            return this.Remove(command.Id);
-        }
-
         public async Task<MenuDto> Handle(string command)
         {
             var first = this._storage.AsQueryable<MenuDto>()
@@ -56,22 +54,53 @@ namespace SAE.CommonComponent.ConfigServer.Handles
             return first;
         }
 
-        public async Task<IPagedList<MenuDto>> Handle(MenuQueryCommand command)
+        // public async Task<IPagedList<MenuDto>> Handle(MenuQueryCommand command)
+        // {
+        //     var query = this._storage.AsQueryable<MenuDto>();
+        //     if (command.Name.IsNotNullOrWhiteSpace())
+        //     {
+        //         query = query.Where(s => s.Name.Contains(command.Name));
+        //     }
+        //     return PagedList.Build(query, command);
+        // }
+
+        public async Task<IEnumerable<MenuItemDto>> Handle(MenuListCommand command)
         {
-            var query = this._storage.AsQueryable<MenuDto>();
-            if (command.Name.IsNotNullOrWhiteSpace())
-            {
-                query = query.Where(s => s.Name.Contains(command.Name));
-            }
-            return PagedList.Build(query, command);
+            var menus = this._storage.AsQueryable<MenuDto>()
+                                     .Select(s => new MenuItemDto
+                                     {
+                                         Id = s.Id,
+                                         Name = s.Name,
+                                         Path = s.Path,
+                                         ParentId = s.ParentId
+                                     }).ToArray();
+            var rootMenus = menus.Where(s => s.ParentId == Menu.DefaultId).ToArray();
+
+            await rootMenus.ForEachAsync(async menu => await this.Permutation(menu, menus));
+
+            return rootMenus;
+        }
+
+        private async Task Permutation(MenuItemDto menu, IEnumerable<MenuItemDto> menuItems)
+        {
+
+            var items = menuItems.Where(s => s.ParentId == menu.Id).ToArray();
+            menu.Items = items;
+            await items.ForEachAsync(async item => await this.Permutation(item, menuItems));
         }
 
         private async Task<bool> MenuIsExist(Menu menu)
         {
             return this._storage.AsQueryable<MenuDto>()
                          .Count(s => s.ParentId == menu.ParentId &&
-                                s.Name == menu.Name &&
-                                s.Path == menu.Path) == 0;
+                                s.Id != menu.Id &&
+                               (s.Name == menu.Name ||
+                                s.Path == menu.Path)) > 0;
+        }
+
+        public Task Handle(BatchRemoveCommand<Menu> command)
+        {
+            return this._documentStore.RemoveAsync<Menu>(command.Ids);
         }
     }
 }

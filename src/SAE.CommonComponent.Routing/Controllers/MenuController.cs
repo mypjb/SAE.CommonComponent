@@ -14,7 +14,7 @@ namespace SAE.CommonComponent.Routing.Controllers
 {
     [ApiController]
     [Route("{controller}")]
-    public class MenuController:Controller
+    public class MenuController : Controller
     {
         private readonly IMediator _mediator;
 
@@ -27,8 +27,8 @@ namespace SAE.CommonComponent.Routing.Controllers
         {
             return await this._mediator.Send<string>(command);
         }
-        [HttpDelete("{id}")]
-        public async Task<object> Delete([FromRoute]RemoveCommand<Menu> command)
+        [HttpDelete]
+        public async Task<object> Delete([FromBody]BatchRemoveCommand<Menu> command)
         {
             await this._mediator.Send(command);
             return ResponseResult.Success;
@@ -44,10 +44,15 @@ namespace SAE.CommonComponent.Routing.Controllers
         {
             return await this._mediator.Send<MenuDto>(id);
         }
+        // [HttpGet("{action}")]
+        // public async Task<object> Paging([FromQuery]MenuQueryCommand command)
+        // {
+        //     return await this._mediator.Send<IPagedList<MenuDto>>(command);
+        // }
         [HttpGet("{action}")]
-        public async Task<object> Paging([FromQuery]MenuQueryCommand command)
+        public async Task<object> List()
         {
-            return await this._mediator.Send<IPagedList<MenuDto>>(command);
+            return await this._mediator.Send<IEnumerable<MenuItemDto>>(new MenuListCommand());
         }
 
     }

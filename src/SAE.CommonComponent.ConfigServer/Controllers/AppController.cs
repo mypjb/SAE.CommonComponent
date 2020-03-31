@@ -1,4 +1,6 @@
 using System;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SAE.CommonComponent.ConfigServer.Commands;
@@ -17,7 +19,6 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
         {
             this._mediator = mediator;
         }
-
         [HttpGet("{action}")]
         public async Task<object> Config([FromQuery]AppConfigCommand command)
         {

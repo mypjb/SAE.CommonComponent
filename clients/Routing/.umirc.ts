@@ -1,6 +1,6 @@
 import { defineConfig } from 'umi';
 
 export default defineConfig({
-    base:"routing",
+    base:"config",
     qiankun: { slave: {} }
 });
