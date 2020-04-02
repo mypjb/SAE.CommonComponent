@@ -27,7 +27,7 @@ export default connect(({ menu }) => ({ menu }))(({ dispatch, menu, visible }) =
         dispatch({ type: 'menu/setFormStaus', payload: 0 });
     };
 
-    return (<Modal title="add" visible={visible} onOk={handleOk} onCancel={handleCancel} closable={false}  >
+    return (<Modal title="add" visible={visible} forceRender onOk={handleOk} onCancel={handleCancel} closable={false}  >
         <Form form={form} onFinish={handleSave} size='middl'>
             <Form.Item name="name" label="name" rules={[{ required: true }]}>
                 <Input />

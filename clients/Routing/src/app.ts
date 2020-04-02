@@ -8,10 +8,20 @@ export const request: RequestConfig = {
                 context.res = resData.body;
             }
             return {
-                ...resData,
+                data: resData,
                 success: resData.statusCode === 0,
                 errorMessage: resData.message,
+                showType: 2,
             };
+        },
+    }
+};
+
+export const dva = {
+    config: {
+        onError(e) {
+            e.preventDefault();
+            console.error(e.message);
         },
     }
 };

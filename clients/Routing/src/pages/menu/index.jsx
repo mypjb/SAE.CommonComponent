@@ -31,6 +31,7 @@ export default connect(({ menu }) => (
     }
 
     const handleChildAdd = ({ id, name }) => {
+      
       dispatch({ type: 'menu/requestAdd', payload: { parentId: id, parentName: name } });
     }
 
