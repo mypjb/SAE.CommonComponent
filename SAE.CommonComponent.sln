@@ -51,15 +51,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SAE.CommonLibrary.Data", ".
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SAE.CommonLibrary.Data.MongoDB", "..\CommonLibrary\src\SAE.CommonLibrary.Data.MongoDB\SAE.CommonLibrary.Data.MongoDB.csproj", "{E00C59DE-0879-4F65-9FE4-99A1AB4B3E27}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAE.CommonComponent.Identity", "src\SAE.CommonComponent.Identity\SAE.CommonComponent.Identity.csproj", "{6BE4523F-952F-4E34-8259-BC94612209DF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SAE.CommonComponent.Identity", "src\SAE.CommonComponent.Identity\SAE.CommonComponent.Identity.csproj", "{6BE4523F-952F-4E34-8259-BC94612209DF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAE.CommonLibrary.Plugin", "..\CommonLibrary\src\SAE.CommonLibrary.Plugin\SAE.CommonLibrary.Plugin.csproj", "{65AE7FCD-63D7-4CD6-860C-5075386E2700}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SAE.CommonLibrary.Plugin", "..\CommonLibrary\src\SAE.CommonLibrary.Plugin\SAE.CommonLibrary.Plugin.csproj", "{65AE7FCD-63D7-4CD6-860C-5075386E2700}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAE.CommonLibrary.Plugin.AspNetCore", "..\CommonLibrary\src\SAE.CommonLibrary.Plugin.AspNetCore\SAE.CommonLibrary.Plugin.AspNetCore.csproj", "{60CE0A2D-F5A1-4FAD-A923-53F71484F132}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SAE.CommonLibrary.Plugin.AspNetCore", "..\CommonLibrary\src\SAE.CommonLibrary.Plugin.AspNetCore\SAE.CommonLibrary.Plugin.AspNetCore.csproj", "{60CE0A2D-F5A1-4FAD-A923-53F71484F132}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAE.CommonComponent.Master", "src\SAE.CommonComponent.Master\SAE.CommonComponent.Master.csproj", "{77797DE1-2C25-4C30-90FF-E8C3857FD8E7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SAE.CommonComponent.Master", "src\SAE.CommonComponent.Master\SAE.CommonComponent.Master.csproj", "{77797DE1-2C25-4C30-90FF-E8C3857FD8E7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAE.CommonComponent.Routing", "src\SAE.CommonComponent.Routing\SAE.CommonComponent.Routing.csproj", "{B4B4C44F-916E-4150-A9AE-11B162B70EF3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SAE.CommonComponent.Routing", "src\SAE.CommonComponent.Routing\SAE.CommonComponent.Routing.csproj", "{B4B4C44F-916E-4150-A9AE-11B162B70EF3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAE.CommonComponent.Authorize", "src\SAE.CommonComponent.Authorize\SAE.CommonComponent.Authorize.csproj", "{94781DCE-BD49-44FE-845C-464999D93066}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SAE.CommonComponent", "src\SAE.CommonComponent\SAE.CommonComponent.csproj", "{B6A5B3F4-BF73-4627-B6F9-57E23AE94121}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -159,13 +163,19 @@ Global
 		{B4B4C44F-916E-4150-A9AE-11B162B70EF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B4B4C44F-916E-4150-A9AE-11B162B70EF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B4B4C44F-916E-4150-A9AE-11B162B70EF3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94781DCE-BD49-44FE-845C-464999D93066}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94781DCE-BD49-44FE-845C-464999D93066}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94781DCE-BD49-44FE-845C-464999D93066}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94781DCE-BD49-44FE-845C-464999D93066}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6A5B3F4-BF73-4627-B6F9-57E23AE94121}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6A5B3F4-BF73-4627-B6F9-57E23AE94121}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6A5B3F4-BF73-4627-B6F9-57E23AE94121}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6A5B3F4-BF73-4627-B6F9-57E23AE94121}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{60CE0A2D-F5A1-4FAD-A923-53F71484F132} = {683BBBDB-B4DC-4B36-B42F-504CC8B6A794}
-		{65AE7FCD-63D7-4CD6-860C-5075386E2700} = {683BBBDB-B4DC-4B36-B42F-504CC8B6A794}
 		{0CED6C8A-1E70-4A81-B9CE-A4EFA064D02E} = {6D4B2D09-B108-452D-B80A-C66817BE846D}
 		{A9E1F98E-533B-4A10-A0C9-0E6847C5374F} = {683BBBDB-B4DC-4B36-B42F-504CC8B6A794}
 		{FE9EA196-9C6F-4347-984D-06A6BD0483C4} = {683BBBDB-B4DC-4B36-B42F-504CC8B6A794}
@@ -185,8 +195,12 @@ Global
 		{00CE9D80-CC12-455F-9416-33E179C802CD} = {683BBBDB-B4DC-4B36-B42F-504CC8B6A794}
 		{E00C59DE-0879-4F65-9FE4-99A1AB4B3E27} = {683BBBDB-B4DC-4B36-B42F-504CC8B6A794}
 		{6BE4523F-952F-4E34-8259-BC94612209DF} = {6D4B2D09-B108-452D-B80A-C66817BE846D}
+		{65AE7FCD-63D7-4CD6-860C-5075386E2700} = {683BBBDB-B4DC-4B36-B42F-504CC8B6A794}
+		{60CE0A2D-F5A1-4FAD-A923-53F71484F132} = {683BBBDB-B4DC-4B36-B42F-504CC8B6A794}
 		{77797DE1-2C25-4C30-90FF-E8C3857FD8E7} = {6D4B2D09-B108-452D-B80A-C66817BE846D}
 		{B4B4C44F-916E-4150-A9AE-11B162B70EF3} = {6D4B2D09-B108-452D-B80A-C66817BE846D}
+		{94781DCE-BD49-44FE-845C-464999D93066} = {6D4B2D09-B108-452D-B80A-C66817BE846D}
+		{B6A5B3F4-BF73-4627-B6F9-57E23AE94121} = {6D4B2D09-B108-452D-B80A-C66817BE846D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E3F15B03-989E-49CA-AC48-4DA76E675671}

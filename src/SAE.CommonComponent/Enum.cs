@@ -1,6 +1,6 @@
 using System;
 
-namespace SAE.CommonComponent.Identity.Domains
+namespace SAE.CommonComponent
 {
     public enum Status
     {
