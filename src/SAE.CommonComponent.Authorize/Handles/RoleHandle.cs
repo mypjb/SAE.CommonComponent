@@ -19,6 +19,7 @@ namespace SAE.CommonComponent.Authorize.Handles
                               ICommandHandler<RoleChangeCommand>,
                               ICommandHandler<RoleChangeStatusCommand>,
                               ICommandHandler<BatchRemoveCommand<Role>>,
+                              ICommandHandler<string,RoleDto>,
                               ICommandHandler<RoleQueryCommand, IPagedList<RoleDto>>
 
     {
@@ -81,7 +82,14 @@ namespace SAE.CommonComponent.Authorize.Handles
 
             return dtos;
         }
-        
+
+        public async Task<RoleDto> Handle(string id)
+        {
+            var dto= this._storage.AsQueryable<RoleDto>()
+                                  .FirstOrDefault(s => s.Id == id);
+            return dto;
+        }
+
         private Task<string> FindRole(string name)
         {
             var dto = this._storage.AsQueryable<RoleDto>()

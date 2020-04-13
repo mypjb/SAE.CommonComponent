@@ -7,6 +7,11 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SAE.CommonComponent.Authorize.Commands;
+using SAE.CommonComponent.Authorize.Dtos;
+using SAE.CommonLibrary.Abstract.Mediator;
+using SAE.CommonLibrary.AspNetCore.Authorization;
+using SAE.CommonLibrary.AspNetCore.Routing;
 using SAE.CommonLibrary.Plugin.AspNetCore;
 
 namespace SAE.CommonComponent.Authorize
@@ -42,6 +47,31 @@ namespace SAE.CommonComponent.Authorize
         {
             services.AddMvc()
                     .AddResponseResult();
+
+            services.AddBitmapAuthorization()
+                    .AddLocalBitmapEndpointProvider(provider =>
+                    {
+                        var mediator = provider.GetService<IMediator>();
+
+                        var dtos= mediator.Send<IEnumerable<PermissionDto>>(new PermissionQueryALLCommand())
+                                          .GetAwaiter()
+                                          .GetResult()
+                                          .OrderBy(s=>s.Id)
+                                          .ToArray();
+
+                        var endpoints = new List<BitmapEndpoint>(dtos.Count());
+
+                        for (int i = 0; i < dtos.Length; i++)
+                        {
+                            endpoints.Add(new BitmapEndpoint
+                            {
+                                Index = i,
+                                Path =dtos[i].Path,
+                                Name=dtos[i].Name
+                            });
+                        }
+                        return endpoints;
+                    });
 
         }
 

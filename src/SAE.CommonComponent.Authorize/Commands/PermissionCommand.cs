@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace SAE.CommonComponent.Authorize.Commands
 {
+
     public class PermissionCreateCommand
     {
         public string Name { get; set; }
@@ -13,6 +14,7 @@ namespace SAE.CommonComponent.Authorize.Commands
 
         public string Path { get; set; }
     }
+
 
     public class PermissionChangeCommand: PermissionCreateCommand
     {
@@ -33,4 +35,5 @@ namespace SAE.CommonComponent.Authorize.Commands
     {
 
     }
+
 }

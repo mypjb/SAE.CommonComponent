@@ -3,6 +3,8 @@ using SAE.CommonComponent.Authorize.Domains;
 using SAE.CommonComponent.Authorize.Dtos;
 using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.Abstract.Model;
+using SAE.CommonLibrary.AspNetCore.Authorization;
+using SAE.CommonLibrary.AspNetCore.Routing;
 using SAE.CommonLibrary.Data;
 using SAE.CommonLibrary.EventStore.Document;
 using SAE.CommonLibrary.Extension;
@@ -18,15 +20,19 @@ namespace SAE.CommonComponent.Authorize.Handles
                                     ICommandHandler<PermissionChangeCommand>,
                                     ICommandHandler<PermissionChangeStatusCommand>,
                                     ICommandHandler<BatchRemoveCommand<Permission>>,
+                                    ICommandHandler<string,PermissionDto>,
                                     ICommandHandler<PermissionQueryCommand, IPagedList<PermissionDto>>,
-                                    ICommandHandler<PermissionQueryALLCommand,IEnumerable<PermissionDto>>
+                                    ICommandHandler<PermissionQueryALLCommand,IEnumerable<PermissionDto>>,
+                                    ICommandHandler<IEnumerable<PermissionCreateCommand>,IEnumerable<BitmapEndpoint>>
 
     {
         private readonly IStorage _storage;
+        private readonly IMediator _mediator;
 
-        public PermissionHandle(IDocumentStore documentStore, IStorage storage) : base(documentStore)
+        public PermissionHandle(IDocumentStore documentStore, IStorage storage,IMediator mediator) : base(documentStore)
         {
             this._storage = storage;
+            this._mediator = mediator;
         }
 
         public async Task<string> Handle(PermissionCreateCommand command)
@@ -79,6 +85,46 @@ namespace SAE.CommonComponent.Authorize.Handles
             return this._storage.AsQueryable<PermissionDto>()
                                 .ToArray();
         }
+
+        public async Task<PermissionDto> Handle(string command)
+        {
+            var dto = this._storage.AsQueryable<PermissionDto>()
+                                   .FirstOrDefault(s => s.Id == command);
+            return dto;
+        }
+
+        public async Task<IEnumerable<BitmapEndpoint>> Handle(IEnumerable<PermissionCreateCommand> commands)
+        {
+            var endpoints = new List<BitmapEndpoint>();
+
+            var dtos=(await this._mediator.Send<IEnumerable<PermissionDto>>(new PermissionQueryALLCommand()))
+                                .ToList();
+
+            var permissionCreateCommands = commands.Where(c => dtos.Any(s => s.Path.Equals(c.Path, StringComparison.OrdinalIgnoreCase)));
+
+            if (permissionCreateCommands.Any())//不存在
+            {
+                await permissionCreateCommands.ForEachAsync(async command =>
+                {
+                    await this._mediator.Send<string>(command);
+                });
+
+                dtos = (await this._mediator.Send<IEnumerable<PermissionDto>>(new PermissionQueryALLCommand()))
+                                    .ToList();
+            }
+
+            foreach (var command in commands)
+            {
+                endpoints.Add(new BitmapEndpoint
+                {
+                    Index = dtos.FindIndex(s => s.Path.Equals(command.Path, StringComparison.OrdinalIgnoreCase)),
+                    Path = command.Path,
+                });
+            }
+
+            return endpoints;
+        }
+
 
         private Task<string> FindPermission(string name)
         {

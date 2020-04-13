@@ -11,8 +11,4 @@
     <ProjectReference Include="..\SAE.CommonComponent\SAE.CommonComponent.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
 </Project>

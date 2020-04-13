@@ -50,7 +50,7 @@ namespace SAE.CommonComponent.Routing.Controllers
         //     return await this._mediator.Send<IPagedList<MenuDto>>(command);
         // }
         [HttpGet("{action}")]
-        public async Task<object> List()
+        public async Task<object> ALL()
         {
             return await this._mediator.Send<IEnumerable<MenuItemDto>>(new MenuListCommand());
         }
