@@ -1,13 +1,15 @@
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using SAE.CommonComponent.Identity.Commands;
-using SAE.CommonComponent.Identity.Dtos;
+using SAE.CommonComponent.Application.Abstract.Commands;
+using SAE.CommonComponent.Application.Abstract.Dtos;
 using SAE.CommonLibrary;
 using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.Abstract.Model;
+using System.Threading.Tasks;
 
-namespace SAE.CommonComponent.Identity.Controllers
+namespace SAE.CommonComponent.Application.Controllers
 {
+    [ApiController]
+    [Route("{controller}")]
     public class AppController : Controller
     {
         private readonly IMediator _mediator;
@@ -16,32 +18,32 @@ namespace SAE.CommonComponent.Identity.Controllers
             this._mediator = mediator;
         }
 
-        [HttpGet]
+        [HttpGet("{id}")]
         public async Task<object> Get(string id)
         {
             return await this._mediator.Send<AppDto>(id);
         }
 
         [HttpPost]
-        public async Task<string> Add(AppCreateCommand command)
+        public async Task<object> Add(AppCreateCommand command)
         {
             return await this._mediator.Send<string>(command);
         }
 
-        [HttpPost]
+        [HttpPut]
         public async Task<object> Edit(AppChangeCommand command)
         {
             await this._mediator.Send(command);
             return ResponseResult.Success;
         }
-        [HttpPost("{action}/{id}")]
+        [HttpPut("{action}/{id}")]
         public async Task<object> Refresh([FromRoute]AppRefreshSecretCommand command)
         {
             await this._mediator.Send(command);
             return ResponseResult.Success;
         }
 
-        [HttpPost("{action}")]
+        [HttpPut("{action}")]
         public async Task<object> Status(AppChangeStatusCommand command)
         {
             await this._mediator.Send(command);

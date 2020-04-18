@@ -5,18 +5,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.3" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.3" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\CommonLibrary\src\SAE.CommonLibrary.Abstract\SAE.CommonLibrary.Abstract.csproj" />
     <ProjectReference Include="..\..\..\CommonLibrary\src\SAE.CommonLibrary.AspNetCore\SAE.CommonLibrary.AspNetCore.csproj" />
-    <ProjectReference Include="..\..\..\CommonLibrary\src\SAE.CommonLibrary.Configuration\SAE.CommonLibrary.Configuration.csproj" />
-    <ProjectReference Include="..\..\..\CommonLibrary\src\SAE.CommonLibrary.DependencyInjection\SAE.CommonLibrary.DependencyInjection.csproj" />
+    <ProjectReference Include="..\..\..\CommonLibrary\src\SAE.CommonLibrary.Caching\SAE.CommonLibrary.Caching.csproj" />
     <ProjectReference Include="..\..\..\CommonLibrary\src\SAE.CommonLibrary.EventStore.Document\SAE.CommonLibrary.EventStore.Document.csproj" />
-    <ProjectReference Include="..\..\..\CommonLibrary\src\SAE.CommonLibrary.Logging.NLog\SAE.CommonLibrary.Logging.NLog.csproj" />
     <ProjectReference Include="..\..\..\CommonLibrary\src\SAE.CommonLibrary.Plugin.AspNetCore\SAE.CommonLibrary.Plugin.AspNetCore.csproj" />
-    <ProjectReference Include="..\SAE.CommonComponent\SAE.CommonComponent.csproj" />
+    <ProjectReference Include="..\SAE.CommonComponent.Application.Abstract\SAE.CommonComponent.Application.Abstract.csproj" />
   </ItemGroup>
 
 </Project>

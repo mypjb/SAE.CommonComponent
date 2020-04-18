@@ -1,10 +1,9 @@
-using System.Linq;
-using System.Threading.Tasks;
 using IdentityServer4.Models;
 using IdentityServer4.Stores;
-using SAE.CommonComponent.Identity.Domains;
-using SAE.CommonComponent.Identity.Dtos;
+using SAE.CommonComponent.Application.Abstract.Dtos;
 using SAE.CommonLibrary.Abstract.Mediator;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SAE.CommonComponent.Identity.Services
 {

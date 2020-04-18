@@ -1,9 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
-using SAE.CommonComponent.Identity.Domains;
 using SAE.CommonLibrary.Abstract.Model;
+using System.Collections.Generic;
 
-namespace SAE.CommonComponent.Identity.Commands
+namespace SAE.CommonComponent.Application.Abstract.Commands
 {
     public class AppQueryCommand : Paging
     {

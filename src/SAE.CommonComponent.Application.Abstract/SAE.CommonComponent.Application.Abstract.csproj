@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\CommonLibrary\src\SAE.CommonLibrary.Abstract\SAE.CommonLibrary.Abstract.csproj" />
+    <ProjectReference Include="..\..\..\CommonLibrary\src\SAE.CommonLibrary.Caching\SAE.CommonLibrary.Caching.csproj" />
+    <ProjectReference Include="..\..\..\CommonLibrary\src\SAE.CommonLibrary.EventStore.Document\SAE.CommonLibrary.EventStore.Document.csproj" />
+    <ProjectReference Include="..\SAE.CommonComponent\SAE.CommonComponent.csproj" />
+  </ItemGroup>
+
+</Project>

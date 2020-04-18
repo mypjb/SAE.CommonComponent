@@ -1,6 +1,7 @@
 ﻿using SAE.CommonComponent.ConfigServer.Commands;
 using SAE.CommonComponent.ConfigServer.Dtos;
 using SAE.CommonLibrary;
+using SAE.CommonLibrary.Abstract.Model;
 using SAE.CommonLibrary.Extension;
 using System.Linq;
 using System.Net.Http;
@@ -58,13 +59,23 @@ namespace SAE.CommonComponent.ConfigServer.Test
                 ProjectId = project.Id,
                 ConfigIds = new[] { config.Id }
             };
-            var message = new HttpRequestMessage(HttpMethod.Post, $"{API}/{nameof(Relevance)}")
+
+            var url = $"{API}/config/{nameof(Relevance)}";
+
+            var message = new HttpRequestMessage(HttpMethod.Post, url)
                               .AddJsonContent(command);
 
-            await this.HttpClient.SendAsync(message);
+            var httpResponseMessage = await this.HttpClient.SendAsync(message);
 
-            var newProject = await this.Get(project.Id);
+            var responseMessage = await this.HttpClient.GetAsync($"{url}?{nameof(command.ProjectId)}={command.ProjectId}");
 
+            var configs = await responseMessage.AsResult<PagedList<ConfigDto>>();
+            var configDto = configs.First();
+
+            Assert.Equal(configDto.Id, config.Id);
+            Assert.Equal(configDto.SolutionId, config.SolutionId);
+            Assert.Equal(configDto.Content, config.Content);
+            Assert.Equal(configDto.Version, config.Version);
         }
 
         [Fact]
@@ -75,17 +86,13 @@ namespace SAE.CommonComponent.ConfigServer.Test
             var command = new ProjectChangeCommand
             {
                 Id = project.Id,
-                Name = this.GetRandom(),
-                Version = project.Version + 1
+                Name = this.GetRandom()
             };
             message.AddJsonContent(command);
             var responseMessage = await this.HttpClient.SendAsync(message);
             await responseMessage.AsResult();
             var newProject = await this.Get(project.Id);
-            Assert.NotEqual(command.Name, project.Name);
-            Assert.NotEqual(command.Version, project.Version);
-            Assert.Equal(command.Name, newProject.Name);
-            Assert.Equal(command.Version, newProject.Version);
+            Assert.NotEqual(newProject.Name, project.Name);
         }
 
         [Fact]
@@ -109,19 +116,20 @@ namespace SAE.CommonComponent.ConfigServer.Test
                 ProjectId = project.Id,
                 ConfigIds = new[] { config.Id }
             };
-            var message = new HttpRequestMessage(HttpMethod.Post, $"{API}/{nameof(Relevance)}")
+            var message = new HttpRequestMessage(HttpMethod.Post, $"{API}/config/{nameof(Relevance)}")
                               .AddJsonContent(command);
 
-            await this.HttpClient.SendAsync(message);
+            var httpResponseMessage = await this.HttpClient.SendAsync(message);
 
             var appConfigCommand = new AppConfigCommand
             {
                 Id = project.Id
             };
 
-            var responseMessage = await this.HttpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, $"app/config")
-                                                       .AddJsonContent(appConfigCommand));
-            var appConfig =await responseMessage.AsResult<AppConfigDto>();
+            var requestMessage = new HttpRequestMessage(HttpMethod.Get, $"app/config?{nameof(appConfigCommand.Id)}={appConfigCommand.Id}&{appConfigCommand.Version}={appConfigCommand.Version}");
+
+            var responseMessage = await this.HttpClient.SendAsync(requestMessage);
+            var appConfig = await responseMessage.AsResult<AppConfigDto>();
 
             Assert.True(appConfig.Data.Count == 1);
             Assert.Equal(config.Content, appConfig.Data.First().Value.ToJsonString());

@@ -1,19 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using SAE.CommonComponent.Identity.Commands;
-using SAE.CommonComponent.Identity.Domains;
-using SAE.CommonComponent.Identity.Dtos;
+using SAE.CommonComponent.Application.Abstract.Commands;
+using SAE.CommonComponent.Application.Abstract.Dtos;
 using SAE.CommonComponent.Identity.Services;
 using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.Extension;
 using SAE.CommonLibrary.Plugin.AspNetCore;
+using System.Linq;
 
 namespace SAE.CommonComponent.Identity
 {
@@ -80,13 +75,13 @@ namespace SAE.CommonComponent.Identity
             services.AddMvc()
                     .AddResponseResult()
                     .AddNewtonsoftJson();
-
+            var assembly = typeof(AppDto).Assembly;
             services.AddServiceProvider()
-                    .AddMediator()
+                    .AddMediator(assembly)
                     .AddMemoryDocument()
                     .AddMemoryMessageQueue()
                     .AddSaeMemoryDistributedCache()
-                    .AddDataPersistenceService();
+                    .AddDataPersistenceService(assembly);
         }
 
         public override void PluginConfigure(IApplicationBuilder app)

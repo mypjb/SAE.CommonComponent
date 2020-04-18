@@ -1,9 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
-using SAE.CommonComponent.Identity.Domains;
+using SAE.CommonComponent.Application.Abstract.Domains;
 using SAE.CommonLibrary.Abstract.Model;
 
-namespace SAE.CommonComponent.Identity.Commands
+namespace SAE.CommonComponent.Application.Abstract.Commands
 {
     public class ScopeCreateCommand
     {
@@ -11,8 +11,9 @@ namespace SAE.CommonComponent.Identity.Commands
         public string Display { get; set; }
     }
 
-    public class ScopeRemoveCommand : ScopeCreateCommand
+    public class ScopeRemoveCommand 
     {
+        public string Name { get; set; }
     }
     public class ScopeQueryCommand : Paging
     {

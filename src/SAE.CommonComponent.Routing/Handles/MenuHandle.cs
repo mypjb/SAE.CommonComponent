@@ -45,6 +45,7 @@ namespace SAE.CommonComponent.ConfigServer.Handles
         {
             var menu = await this._documentStore.FindAsync<Menu>(command.Id);
             await menu.Change(command, this._documentStore.FindAsync<Menu>, this.MenuIsExist);
+            await this._documentStore.SaveAsync(menu);
         }
 
         public async Task<MenuDto> Handle(string command)

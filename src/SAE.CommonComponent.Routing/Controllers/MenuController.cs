@@ -28,7 +28,7 @@ namespace SAE.CommonComponent.Routing.Controllers
             return await this._mediator.Send<string>(command);
         }
         [HttpDelete]
-        public async Task<object> Delete([FromBody]BatchRemoveCommand<Menu> command)
+        public async Task<object> Remove([FromBody]BatchRemoveCommand<Menu> command)
         {
             await this._mediator.Send(command);
             return ResponseResult.Success;

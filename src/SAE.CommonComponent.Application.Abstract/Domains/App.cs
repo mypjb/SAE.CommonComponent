@@ -1,12 +1,12 @@
 using System.Linq;
 using System;
 using System.Collections.Generic;
-using SAE.CommonComponent.Identity.Commands;
-using SAE.CommonComponent.Identity.Events;
+using SAE.CommonComponent.Application.Abstract.Commands;
+using SAE.CommonComponent.Application.Abstract.Events;
 using SAE.CommonLibrary;
 using SAE.CommonLibrary.EventStore.Document;
 
-namespace SAE.CommonComponent.Identity.Domains
+namespace SAE.CommonComponent.Application.Abstract.Domains
 {
     public class App : Document
     {

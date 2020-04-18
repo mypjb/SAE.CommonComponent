@@ -92,7 +92,7 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
             return await this._mediator.Send<IPagedList<ProjectConfigDto>>(command);
         }
 
-        [HttpGet("config/relevance")]
+        [HttpGet("config/{action}")]
         public async Task<object> Relevance([FromQuery]ProjectConfigQueryCommand command)
         {
             return await this._mediator.Send<IPagedList<ConfigDto>>(command);

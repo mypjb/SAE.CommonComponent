@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using SAE.CommonComponent.Identity.Commands;
-using SAE.CommonComponent.Identity.Domains;
-using SAE.CommonComponent.Identity.Dtos;
+using SAE.CommonComponent.Application.Abstract.Commands;
+using SAE.CommonComponent.Application.Abstract.Domains;
+using SAE.CommonComponent.Application.Abstract.Dtos;
 using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.Abstract.Model;
 using SAE.CommonLibrary.Data;
@@ -13,7 +13,7 @@ using SAE.CommonLibrary;
 using SAE.CommonLibrary.Extension;
 using SAE.CommonLibrary.Caching;
 
-namespace SAE.CommonComponent.Identity.Handles
+namespace SAE.CommonComponent.Application.Abstract.Handles
 {
     public class AppHandler : AbstractHandler,
                               ICommandHandler<AppCreateCommand, string>,

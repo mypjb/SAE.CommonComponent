@@ -111,7 +111,7 @@ namespace SAE.CommonComponent.ConfigServer.Handles
                                .Select(s => s.ConfigId)
                                .ToArray();
 
-            query = query.Where(s => !configIds.Contains(s.Id));
+            query = query.Where(s => configIds.Contains(s.Id));
             
             return PagedList.Build(query, command);
         }

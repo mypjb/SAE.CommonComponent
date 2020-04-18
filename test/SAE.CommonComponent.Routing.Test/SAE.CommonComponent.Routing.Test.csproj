@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\SAE.CommonComponent.ConfigServer\SAE.CommonComponent.ConfigServer.csproj" />
+    <ProjectReference Include="..\..\src\SAE.CommonComponent.Routing\SAE.CommonComponent.Routing.csproj" />
     <ProjectReference Include="..\SAE.CommonComponent.Test\SAE.CommonComponent.Test.csproj" />
   </ItemGroup>
 

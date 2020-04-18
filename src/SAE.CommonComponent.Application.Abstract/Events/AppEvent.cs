@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using SAE.CommonLibrary.EventStore;
 using System;
-using SAE.CommonComponent.Identity.Domains;
+using SAE.CommonComponent.Application.Abstract.Domains;
 
-namespace SAE.CommonComponent.Identity.Events
+namespace SAE.CommonComponent.Application.Abstract.Events
 {
     public class AppCreateEvent : IEvent
     {

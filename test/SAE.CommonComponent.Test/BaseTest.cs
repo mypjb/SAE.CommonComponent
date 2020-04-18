@@ -5,6 +5,7 @@ using Microsoft.Extensions.Hosting;
 using SAE.CommonLibrary;
 using SAE.CommonLibrary.Extension;
 using System.Net.Http;
+using System.Threading.Tasks;
 using Xunit.Abstractions;
 
 namespace SAE.CommonComponent.Test
@@ -55,5 +56,6 @@ namespace SAE.CommonComponent.Test
         {
             return Utils.GenerateId().ToMd5(true);
         }
+
     }
 }

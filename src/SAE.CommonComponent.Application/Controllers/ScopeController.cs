@@ -1,13 +1,15 @@
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using SAE.CommonComponent.Identity.Commands;
+using SAE.CommonComponent.Application.Abstract.Commands;
+using SAE.CommonComponent.Application.Abstract.Dtos;
 using SAE.CommonLibrary;
 using SAE.CommonLibrary.Abstract.Mediator;
 using System.Collections.Generic;
-using SAE.CommonComponent.Identity.Dtos;
+using System.Threading.Tasks;
 
-namespace SAE.CommonComponent.Identity.Controllers
+namespace SAE.CommonComponent.Application.Controllers
 {
+    [ApiController]
+    [Route("{controller}")]
     public class ScopeController : Controller
     {
         private readonly IMediator _mediator;
@@ -34,9 +36,9 @@ namespace SAE.CommonComponent.Identity.Controllers
             return await this._mediator.Send<IEnumerable<ScopeDto>>(command);
         }
         [HttpGet("{action}")]
-        public async Task<object> List(ScopeQueryALLCommand command)
+        public async Task<object> ALL()
         {
-            return await this._mediator.Send<IEnumerable<ScopeDto>>(command);
+            return await this._mediator.Send<IEnumerable<ScopeDto>>(new ScopeQueryALLCommand());
         }
 
     }
