@@ -22,7 +22,7 @@ namespace SAE.CommonComponent.ConfigServer.Test
         [Fact]
         public async Task<SolutionDto> Add()
         {
-            var command = new SolutionCreateCommand
+            var command = new SolutionCommand.Create
             {
                 Name = this.GetRandom()
             };
@@ -40,7 +40,7 @@ namespace SAE.CommonComponent.ConfigServer.Test
         {
             var Solution = await this.Add();
             var message = new HttpRequestMessage(HttpMethod.Put, API);
-            var command = new SolutionChangeCommand
+            var command = new SolutionCommand.Change
             {
                 Id = Solution.Id,
                 Name = this.GetRandom()

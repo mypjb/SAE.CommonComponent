@@ -15,12 +15,12 @@ using System.Threading.Tasks;
 namespace SAE.CommonComponent.Authorize.Handles
 {
     public class RoleHandle : AbstractHandler<Role>,
-                              ICommandHandler<RoleCreateCommand, string>,
-                              ICommandHandler<RoleChangeCommand>,
-                              ICommandHandler<RoleChangeStatusCommand>,
+                              ICommandHandler<RoleCommand.Create, string>,
+                              ICommandHandler<RoleCommand.Change>,
+                              ICommandHandler<RoleCommand.ChangeStatus>,
                               ICommandHandler<BatchRemoveCommand<Role>>,
                               ICommandHandler<string,RoleDto>,
-                              ICommandHandler<RoleQueryCommand, IPagedList<RoleDto>>
+                              ICommandHandler<RoleCommand.Query, IPagedList<RoleDto>>
 
     {
         private readonly IStorage _storage;
@@ -34,7 +34,7 @@ namespace SAE.CommonComponent.Authorize.Handles
             this._director = director;
         }
 
-        public async Task<string> Handle(RoleCreateCommand command)
+        public async Task<string> Handle(RoleCommand.Create command)
         {
             var role = new Role(command);
             await role.NameExist(this.FindRole);
@@ -42,7 +42,7 @@ namespace SAE.CommonComponent.Authorize.Handles
             return role.Id;
         }
 
-        public async Task Handle(RoleChangeCommand command)
+        public async Task Handle(RoleCommand.Change command)
         {
             await this.Update(command.Id,async role =>
             {
@@ -51,7 +51,7 @@ namespace SAE.CommonComponent.Authorize.Handles
             });
         }
 
-        public async Task Handle(RoleChangeStatusCommand command)
+        public async Task Handle(RoleCommand.ChangeStatus command)
         {
             await this.Update(command.Id, role =>
             {
@@ -69,7 +69,7 @@ namespace SAE.CommonComponent.Authorize.Handles
             });
         }
 
-        public async Task<IPagedList<RoleDto>> Handle(RoleQueryCommand command)
+        public async Task<IPagedList<RoleDto>> Handle(RoleCommand.Query command)
         {
             var query = this._storage.AsQueryable<RoleDto>()
                                      .Where(s => s.Status > Status.Delete);

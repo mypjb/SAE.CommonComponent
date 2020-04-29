@@ -51,10 +51,10 @@ namespace SAE.CommonComponent.Routing
             services.AddControllers()
                     .AddNewtonsoftJson()
                     .AddResponseResult();
-                    
+
             services.AddServiceProvider()
-                    .AddMediator()
-                    .AddMemoryDocument()
+                    .AddMediator();
+            services.AddMemoryDocument()
                     .AddMemoryMessageQueue()
                     .AddDataPersistenceService();
         }

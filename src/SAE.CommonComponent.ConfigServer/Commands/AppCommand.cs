@@ -5,9 +5,12 @@ using System.Threading.Tasks;
 
 namespace SAE.CommonComponent.ConfigServer.Commands
 {
-    public class AppConfigCommand
+    public partial class AppCommand
     {
-        public string Id { get; set; }
-        public int Version { get; set; }
+        public class Config
+        {
+            public string Id { get; set; }
+            public int Version { get; set; }
+        }
     }
 }

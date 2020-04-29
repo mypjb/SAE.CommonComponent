@@ -12,11 +12,11 @@ using SAE.CommonLibrary.EventStore.Document;
 namespace SAE.CommonComponent.ConfigServer.Handles
 {
     public class TemplateHandler : AbstractHandler<Template>,
-        ICommandHandler<TemplateCreateCommand, string>,
-        ICommandHandler<TemplateChangeCommand>,
+        ICommandHandler<TemplateCommand.Create, string>,
+        ICommandHandler<TemplateCommand.Change>,
         ICommandHandler<RemoveCommand<Template>>,
         ICommandHandler<string, TemplateDto>,
-        ICommandHandler<TemplateQueryCommand, IPagedList<TemplateDto>>,
+        ICommandHandler<TemplateCommand.Query, IPagedList<TemplateDto>>,
         ICommandHandler<ListCommand,IEnumerable<TemplateDto>>
     {
         private readonly IStorage _storage;
@@ -25,13 +25,13 @@ namespace SAE.CommonComponent.ConfigServer.Handles
             this._storage = storage;
         }
 
-        public async Task<string> Handle(TemplateCreateCommand command)
+        public async Task<string> Handle(TemplateCommand.Create command)
         {
             var template = await this.Add(new Template(command));
             return template.Id;
         }
 
-        public Task Handle(TemplateChangeCommand command)
+        public Task Handle(TemplateCommand.Change command)
         {
             return this.Update(command.Id, s => s.Change(command));
         }
@@ -47,7 +47,7 @@ namespace SAE.CommonComponent.ConfigServer.Handles
                 .FirstOrDefault(s => s.Id == command));
         }
 
-        public async Task<IPagedList<TemplateDto>> Handle(TemplateQueryCommand command)
+        public async Task<IPagedList<TemplateDto>> Handle(TemplateCommand.Query command)
         {
             return PagedList.Build(this._storage.AsQueryable<TemplateDto>(), command);
         }

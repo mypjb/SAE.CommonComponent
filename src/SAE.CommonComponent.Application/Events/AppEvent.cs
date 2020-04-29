@@ -1,7 +1,6 @@
-using System.Collections.Generic;
 using SAE.CommonLibrary.EventStore;
 using System;
-using SAE.CommonComponent.Application.Abstract.Domains;
+using System.Collections.Generic;
 
 namespace SAE.CommonComponent.Application.Abstract.Events
 {

@@ -22,7 +22,7 @@ namespace SAE.CommonComponent.ConfigServer.Test
         [Fact]
         public async Task<TemplateDto> Add()
         {
-            var command = new TemplateCreateCommand
+            var command = new TemplateCommand.Create
             {
                 Name = this.GetRandom(),
                 Format = this.GetConfig()
@@ -43,7 +43,7 @@ namespace SAE.CommonComponent.ConfigServer.Test
         {
             var template=await this.Add();
             var message = new HttpRequestMessage(HttpMethod.Put, API);
-            var command = new TemplateChangeCommand
+            var command = new TemplateCommand.Change
             {
                 Id = template.Id,
                 Format = this.GetConfig(),

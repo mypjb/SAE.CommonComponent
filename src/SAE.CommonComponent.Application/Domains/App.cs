@@ -1,10 +1,10 @@
-using System.Linq;
-using System;
-using System.Collections.Generic;
-using SAE.CommonComponent.Application.Abstract.Commands;
 using SAE.CommonComponent.Application.Abstract.Events;
+using SAE.CommonComponent.Application.Commands;
 using SAE.CommonLibrary;
 using SAE.CommonLibrary.EventStore.Document;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SAE.CommonComponent.Application.Abstract.Domains
 {
@@ -14,7 +14,7 @@ namespace SAE.CommonComponent.Application.Abstract.Domains
         {
 
         }
-        public App(AppCreateCommand command)
+        public App(AppCommand.Create command)
         {
             this.Apply<AppCreateEvent>(command, e =>
             {
@@ -60,7 +60,7 @@ namespace SAE.CommonComponent.Application.Abstract.Domains
         /// <value></value>
         public Status Status { get; set; }
 
-        public void Change(AppChangeCommand command)
+        public void Change(AppCommand.Change command)
         {
             this.Apply<AppChangeEvent>(command);
         }
@@ -73,7 +73,7 @@ namespace SAE.CommonComponent.Application.Abstract.Domains
             });
         }
 
-        public void Reference(AppReferenceScopeCommand command)
+        public void Reference(AppCommand.ReferenceScope command)
         {
             if (!command.Scopes.Any()) return;
 
@@ -84,7 +84,7 @@ namespace SAE.CommonComponent.Application.Abstract.Domains
                 Scopes = scopes
             });
         }
-        public void CancelReference(AppCancelReferenceScopeCommand command)
+        public void CancelReference(AppCommand.CancelReferenceScope command)
         {
             if (!command.Scopes.Any()) return;
 
@@ -96,14 +96,14 @@ namespace SAE.CommonComponent.Application.Abstract.Domains
             });
         }
 
-        public void ChangeStatus(AppChangeStatusCommand command)
+        public void ChangeStatus(AppCommand.ChangeStatus command)
         {
             this.Apply<AppChangeStatusEvent>(command);
         }
 
         public void Remove()
         {
-            this.ChangeStatus(new AppChangeStatusCommand
+            this.ChangeStatus(new AppCommand.ChangeStatus
             {
                 Id = this.Id,
                 Status = Status.Delete

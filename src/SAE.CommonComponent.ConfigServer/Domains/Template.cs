@@ -18,7 +18,7 @@ namespace SAE.CommonComponent.ConfigServer.Domains
         {
 
         }
-        public Template(TemplateCreateCommand command)
+        public Template(TemplateCommand.Create command)
         {
             this.Apply<TemplateCreateEvent>(command, e =>
             {
@@ -42,6 +42,6 @@ namespace SAE.CommonComponent.ConfigServer.Domains
         public DateTime CreateTime { get; set; }
 
 
-        public void Change(TemplateChangeCommand command) => this.Apply<TemplateChangeEvent>(command);
+        public void Change(TemplateCommand.Change command) => this.Apply<TemplateChangeEvent>(command);
     }
 }

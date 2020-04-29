@@ -53,7 +53,7 @@ namespace SAE.CommonComponent.Authorize
                     {
                         var mediator = provider.GetService<IMediator>();
 
-                        var dtos= mediator.Send<IEnumerable<PermissionDto>>(new PermissionQueryALLCommand())
+                        var dtos= mediator.Send<IEnumerable<PermissionDto>>(new PermissionCommand.QueryALL())
                                           .GetAwaiter()
                                           .GetResult()
                                           .OrderBy(s=>s.Id)

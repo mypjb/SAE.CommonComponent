@@ -32,7 +32,7 @@ namespace SAE.CommonComponent.Routing.Test
         [InlineData(null)]
         public async Task<MenuDto> Add(string parentId = null)
         {
-            var command = new MenuCreateCommand
+            var command = new MenuCommand.Create
             {
                 Name = this.GetRandom(),
                 ParentId = parentId,
@@ -54,7 +54,7 @@ namespace SAE.CommonComponent.Routing.Test
         {
             var menu = await this.Add();
             var message = new HttpRequestMessage(HttpMethod.Put, API);
-            var command = new MenuChangeCommand
+            var command = new MenuCommand.Change
             {
                 Id = menu.Id,
                 Path = $"/test/{this.GetRandom()}",

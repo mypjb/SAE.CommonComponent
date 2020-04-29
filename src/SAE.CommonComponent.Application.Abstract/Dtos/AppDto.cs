@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
-using SAE.CommonComponent.Application.Abstract.Domains;
 
-namespace SAE.CommonComponent.Application.Abstract.Dtos
+namespace SAE.CommonComponent.Application.Dtos
 {
     public class AppDto
     {

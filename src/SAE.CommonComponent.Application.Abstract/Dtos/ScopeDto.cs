@@ -1,4 +1,4 @@
-namespace SAE.CommonComponent.Application.Abstract.Dtos
+namespace SAE.CommonComponent.Application.Dtos
 {
     public class ScopeDto
     {

@@ -11,11 +11,11 @@ using SAE.CommonLibrary.EventStore.Document;
 namespace SAE.CommonComponent.ConfigServer.Handles
 {
     public class SolutionHandler : AbstractHandler<Solution>,
-        ICommandHandler<SolutionCreateCommand, string>,
-        ICommandHandler<SolutionChangeCommand>,
+        ICommandHandler<SolutionCommand.Create, string>,
+        ICommandHandler<SolutionCommand.Change>,
         ICommandHandler<RemoveCommand<Solution>>,
         ICommandHandler<string, SolutionDto>,
-        ICommandHandler<SolutionQueryCommand, IPagedList<SolutionDto>>
+        ICommandHandler<SolutionCommand.Query, IPagedList<SolutionDto>>
     {
         private readonly IStorage _storage;
         public SolutionHandler(IDocumentStore documentStore, IStorage storage) : base(documentStore)
@@ -23,13 +23,13 @@ namespace SAE.CommonComponent.ConfigServer.Handles
             this._storage = storage;
         }
 
-        public async Task<string> Handle(SolutionCreateCommand command)
+        public async Task<string> Handle(SolutionCommand.Create command)
         {
             var solution = await this.Add(new Solution(command));
             return solution.Id;
         }
 
-        public Task Handle(SolutionChangeCommand command)
+        public Task Handle(SolutionCommand.Change command)
         {
             return this.Update(command.Id, s => s.Change(command));
         }
@@ -45,7 +45,7 @@ namespace SAE.CommonComponent.ConfigServer.Handles
                 .FirstOrDefault(s => s.Id == command));
         }
 
-        public async Task<IPagedList<SolutionDto>> Handle(SolutionQueryCommand command)
+        public async Task<IPagedList<SolutionDto>> Handle(SolutionCommand.Query command)
         {
             var query = this._storage.AsQueryable<SolutionDto>();
             if (!string.IsNullOrWhiteSpace(command.Name))

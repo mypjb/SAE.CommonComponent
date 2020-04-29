@@ -25,7 +25,7 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
             this._mediator = mediator;
         }
         [HttpPost]
-        public async Task<object> Add(ConfigCreateCommand command)
+        public async Task<object> Add(ConfigCommand.Create command)
         {
             return await this._mediator.Send<string>(command);
         }
@@ -36,7 +36,7 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
             return ResponseResult.Success;
         }
         [HttpPut]
-        public async Task<object> Put(ConfigChangeCommand command)
+        public async Task<object> Put(ConfigCommand.Change command)
         {
             await this._mediator.Send(command);
             return ResponseResult.Success;
@@ -48,7 +48,7 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
         }
 
         [HttpGet("{action}")]
-        public async Task<object> Paging([FromQuery]ConfigQueryCommand command)
+        public async Task<object> Paging([FromQuery]ConfigCommand.Query command)
         {
             return await this._mediator.Send<IPagedList<ConfigDto>>(command);
         }

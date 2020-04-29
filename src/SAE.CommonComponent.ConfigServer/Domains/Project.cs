@@ -17,7 +17,7 @@ namespace SAE.CommonComponent.ConfigServer.Domains
 
         }
 
-        public Project(ProjectCreateCommand command)
+        public Project(ProjectCommand.Create command)
         {
             this.Apply<ProjectCreateEvent>(command, e =>
             {
@@ -38,7 +38,7 @@ namespace SAE.CommonComponent.ConfigServer.Domains
         }
 
 
-        public void Change(ProjectChangeCommand command) => this.Apply<ProjectChangeEvent>(command);
+        public void Change(ProjectCommand.Change command) => this.Apply<ProjectChangeEvent>(command);
         public void Cumulation()
         {
             this.Apply(new ProjectVersionCumulationEvent

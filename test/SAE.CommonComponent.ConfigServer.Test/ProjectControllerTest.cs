@@ -35,7 +35,7 @@ namespace SAE.CommonComponent.ConfigServer.Test
                 var solution = await this._solutionController.Add();
                 solutionId = solution.Id;
             }
-            var command = new ProjectCreateCommand
+            var command = new ProjectCommand.Create
             {
                 Name = this.GetRandom(),
                 SolutionId = solutionId
@@ -54,7 +54,7 @@ namespace SAE.CommonComponent.ConfigServer.Test
         {
             var config = await this._configController.Add();
             var project = await this.Add(config.SolutionId);
-            var command = new ProjectRelevanceConfigCommand
+            var command = new ProjectCommand.RelevanceConfig
             {
                 ProjectId = project.Id,
                 ConfigIds = new[] { config.Id }
@@ -83,7 +83,7 @@ namespace SAE.CommonComponent.ConfigServer.Test
         {
             var project = await this.Add();
             var message = new HttpRequestMessage(HttpMethod.Put, API);
-            var command = new ProjectChangeCommand
+            var command = new ProjectCommand.Change
             {
                 Id = project.Id,
                 Name = this.GetRandom()
@@ -111,7 +111,7 @@ namespace SAE.CommonComponent.ConfigServer.Test
         {
             var config = await this._configController.Add();
             var project = await this.Add(config.SolutionId);
-            var command = new ProjectRelevanceConfigCommand
+            var command = new ProjectCommand.RelevanceConfig
             {
                 ProjectId = project.Id,
                 ConfigIds = new[] { config.Id }
@@ -121,7 +121,7 @@ namespace SAE.CommonComponent.ConfigServer.Test
 
             var httpResponseMessage = await this.HttpClient.SendAsync(message);
 
-            var appConfigCommand = new AppConfigCommand
+            var appConfigCommand = new AppCommand.Config
             {
                 Id = project.Id
             };

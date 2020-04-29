@@ -16,7 +16,7 @@ namespace SAE.CommonComponent.Authorize.Domains
         {
 
         }
-        public Permission(PermissionCreateCommand command)
+        public Permission(PermissionCommand.Create command)
         {
             this.Apply<PermissionCreateEvent>(command, @event =>
              {
@@ -65,19 +65,19 @@ namespace SAE.CommonComponent.Authorize.Domains
         /// change permission basic info
         /// </summary>
         /// <param name="command"></param>
-        public void Change(PermissionChangeCommand command) =>
+        public void Change(PermissionCommand.Change command) =>
             this.Apply<PermissionChangeEvent>(command);
         /// <summary>
         /// change permission status 
         /// </summary>
         /// <param name="command"></param>
-        public void ChangeStatus(PermissionChangeStatusCommand command) =>
+        public void ChangeStatus(PermissionCommand.ChangeStatus command) =>
             this.Apply<PermissionChangeStatusEvent>(command);
         /// <summary>
         /// delete permission
         /// </summary>
         public void Remove() =>
-            this.ChangeStatus(new PermissionChangeStatusCommand
+            this.ChangeStatus(new PermissionCommand.ChangeStatus
             {
                 Status = Status.Delete
             });

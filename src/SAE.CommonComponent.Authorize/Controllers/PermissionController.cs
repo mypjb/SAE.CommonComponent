@@ -25,7 +25,7 @@ namespace SAE.CommonComponent.Authorize.Controllers
             this._mediator = mediator;
         }
         [HttpPost]
-        public async Task<object> Add(PermissionCreateCommand command)
+        public async Task<object> Add(PermissionCommand.Create command)
         {
             return await this._mediator.Send<string>(command);
         }
@@ -36,7 +36,7 @@ namespace SAE.CommonComponent.Authorize.Controllers
             return ResponseResult.Success;
         }
         [HttpPut]
-        public async Task<object> Put(PermissionChangeCommand command)
+        public async Task<object> Put(PermissionCommand.Change command)
         {
             await this._mediator.Send(command);
             return ResponseResult.Success;
@@ -47,7 +47,7 @@ namespace SAE.CommonComponent.Authorize.Controllers
             return await this._mediator.Send<PermissionDto>(id);
         }
         [HttpGet("{action}")]
-        public async Task<object> Paging([FromQuery]PermissionQueryCommand command)
+        public async Task<object> Paging([FromQuery]PermissionCommand.Query command)
         {
             return await this._mediator.Send<IPagedList<PermissionDto>>(command);
         }
@@ -55,11 +55,11 @@ namespace SAE.CommonComponent.Authorize.Controllers
         [HttpGet("{action}")]
         public async Task<object> ALL()
         {
-            return await this._mediator.Send<IEnumerable<PermissionDto>>(new PermissionQueryALLCommand());
+            return await this._mediator.Send<IEnumerable<PermissionDto>>(new PermissionCommand.QueryALL());
         }
 
         [HttpGet("{action}")]
-        public async Task<object> Location(IEnumerable<PermissionCreateCommand> commands)
+        public async Task<object> Location(IEnumerable<PermissionCommand.Create> commands)
         {
             return await this._mediator.Send<IEnumerable<BitmapEndpoint>>(commands);
         }

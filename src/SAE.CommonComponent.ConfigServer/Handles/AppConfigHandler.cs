@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SAE.CommonComponent.ConfigServer.Handles
 {
-    public class AppConfigHandler : ICommandHandler<AppConfigCommand, AppConfigDto>
+    public class AppConfigHandler : ICommandHandler<AppCommand.Config, AppConfigDto>
     {
         private readonly IStorage _storage;
 
@@ -17,7 +17,7 @@ namespace SAE.CommonComponent.ConfigServer.Handles
         {
             this._storage = storage;
         }
-        public async Task<AppConfigDto> Handle(AppConfigCommand command)
+        public async Task<AppConfigDto> Handle(AppCommand.Config command)
         {
             var app = new AppConfigDto();
 

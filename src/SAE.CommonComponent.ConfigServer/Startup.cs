@@ -61,10 +61,10 @@ namespace SAE.CommonComponent.ConfigServer
             services.AddMvc()
                     .AddResponseResult()
                     .AddNewtonsoftJson();
-                    
+
             services.AddServiceProvider()
-                    .AddMediator()
-                    .AddMemoryDocument()
+                    .AddMediator();
+            services.AddMemoryDocument()
                     .AddMemoryMessageQueue()
                     .AddDataPersistenceService();
         }

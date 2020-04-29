@@ -15,11 +15,11 @@ using System.Threading.Tasks;
 namespace SAE.CommonComponent.ConfigServer.Handles
 {
     public class ProjectConfigHandler : AbstractHandler<ProjectConfig>,
-                                        ICommandHandler<ProjectRelevanceConfigCommand>,
+                                        ICommandHandler<ProjectCommand.RelevanceConfig>,
                                         ICommandHandler<BatchRemoveCommand<ProjectConfig>>,
-                                        ICommandHandler<ProjectConfigQueryCommand, IPagedList<ProjectConfigDto>>,
-                                        ICommandHandler<ProjectConfigQueryCommand, IPagedList<ConfigDto>>,
-                                        ICommandHandler<ProjectConfigChangeAliasCommand>,
+                                        ICommandHandler<ProjectCommand.ConfigQuery, IPagedList<ProjectConfigDto>>,
+                                        ICommandHandler<ProjectCommand.ConfigQuery, IPagedList<ConfigDto>>,
+                                        ICommandHandler<ProjectCommand.ConfigChangeAlias>,
                                         ICommandHandler<string, ProjectConfigDto>
     {
         private readonly IMediator _mediator;
@@ -30,7 +30,7 @@ namespace SAE.CommonComponent.ConfigServer.Handles
             this._storage = storage;
         }
 
-        public async Task Handle(ProjectRelevanceConfigCommand command)
+        public async Task Handle(ProjectCommand.RelevanceConfig command)
         {
             if (!command.ConfigIds?.Any() ?? false)
             {
@@ -46,7 +46,7 @@ namespace SAE.CommonComponent.ConfigServer.Handles
 
             await this._documentStore.SaveAsync(projectConfigs);
 
-            await this._mediator.Send(new ProjectVersionCumulationCommand
+            await this._mediator.Send(new ProjectCommand.VersionCumulation
             {
                 ProjectId = project.Id
             });
@@ -60,19 +60,19 @@ namespace SAE.CommonComponent.ConfigServer.Handles
             }
             await this._documentStore.RemoveAsync<ProjectConfig>(command.Ids);
             var projectId = command.Ids.First().Split('_').First();
-            await this._mediator.Send(new ProjectVersionCumulationCommand
+            await this._mediator.Send(new ProjectCommand.VersionCumulation
             {
                 ProjectId = projectId
             });
         }
 
-        public async Task<IPagedList<ProjectConfigDto>> Handle(ProjectConfigQueryCommand command)
+        public async Task<IPagedList<ProjectConfigDto>> Handle(ProjectCommand.ConfigQuery command)
         {
             var query = this._storage.AsQueryable<ProjectConfigDto>().Where(s => s.ProjectId == command.ProjectId);
             return PagedList.Build(query, command);
         }
 
-        public async Task Handle(ProjectConfigChangeAliasCommand command)
+        public async Task Handle(ProjectCommand.ConfigChangeAlias command)
         {
             var projectConfig = await this._documentStore.FindAsync<ProjectConfig>(command.Id);
 
@@ -87,7 +87,7 @@ namespace SAE.CommonComponent.ConfigServer.Handles
 
             await this._documentStore.SaveAsync(projectConfig);
 
-            await this._mediator.Send(new ProjectVersionCumulationCommand
+            await this._mediator.Send(new ProjectCommand.VersionCumulation
             {
                 ProjectId = projectConfig.ProjectId
             });
@@ -98,7 +98,7 @@ namespace SAE.CommonComponent.ConfigServer.Handles
             return this._storage.AsQueryable<ProjectConfigDto>().First(s => s.Id == command);
         }
 
-        async Task<IPagedList<ConfigDto>> ICommandHandler<ProjectConfigQueryCommand, IPagedList<ConfigDto>>.Handle(ProjectConfigQueryCommand command)
+        async Task<IPagedList<ConfigDto>> ICommandHandler<ProjectCommand.ConfigQuery, IPagedList<ConfigDto>>.Handle(ProjectCommand.ConfigQuery command)
         {
             var project=await this._documentStore.FindAsync<Project>(command.ProjectId);
 

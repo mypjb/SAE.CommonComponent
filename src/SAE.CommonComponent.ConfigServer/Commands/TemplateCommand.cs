@@ -6,25 +6,27 @@ using System.Threading.Tasks;
 
 namespace SAE.CommonComponent.ConfigServer.Commands
 {
-    public class TemplateCreateCommand
+    public class TemplateCommand
     {
-        /// <summary>
-        /// 名称
-        /// </summary>
-        public string Name { get; set; }
-        /// <summary>
-        /// 格式
-        /// </summary>
-        public string Format { get; set; }
-    }
+        public class Create
+        {
+            /// <summary>
+            /// 名称
+            /// </summary>
+            public string Name { get; set; }
+            /// <summary>
+            /// 格式
+            /// </summary>
+            public string Format { get; set; }
+        }
 
-    public class TemplateChangeCommand : TemplateCreateCommand
-    {
-        public string Id { get; set; }
-    }
+        public class Change : Create
+        {
+            public string Id { get; set; }
+        }
 
-    public class TemplateQueryCommand : Paging
-    {
+        public class Query : Paging
+        {
+        }
     }
-
 }

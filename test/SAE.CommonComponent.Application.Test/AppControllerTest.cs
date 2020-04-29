@@ -1,13 +1,8 @@
 ﻿using Microsoft.AspNetCore.Hosting;
-using SAE.CommonComponent.Application;
-using SAE.CommonComponent.Application.Abstract.Commands;
-using SAE.CommonComponent.Application.Abstract.Domains;
-using SAE.CommonComponent.Application.Abstract.Dtos;
+using SAE.CommonComponent.Application.Commands;
+using SAE.CommonComponent.Application.Dtos;
 using SAE.CommonComponent.Test;
-using SAE.CommonLibrary;
-using SAE.CommonLibrary.EventStore.Document;
 using SAE.CommonLibrary.Extension;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -32,7 +27,7 @@ namespace SAE.CommonComponent.Application.Test
         [Fact]
         public async Task<AppDto> Add()
         {
-            var command = new AppCreateCommand
+            var command = new AppCommand.Create
             {
                 Name = this.GetRandom(),
                 Urls = new[] { "localhost" }
@@ -53,7 +48,7 @@ namespace SAE.CommonComponent.Application.Test
         {
             var app = await this.Add();
             var message = new HttpRequestMessage(HttpMethod.Put, API);
-            var command = new AppChangeCommand
+            var command = new AppCommand.Change
             {
                 Id = app.Id,
                 Name = this.GetRandom()
@@ -87,7 +82,7 @@ namespace SAE.CommonComponent.Application.Test
         {
             var app = await this.Add();
 
-            var command = new AppChangeStatusCommand
+            var command = new AppCommand.ChangeStatus
             {
                 Id = app.Id,
                 Status = app.Status == Status.Enable ? Status.Disable : Status.Enable

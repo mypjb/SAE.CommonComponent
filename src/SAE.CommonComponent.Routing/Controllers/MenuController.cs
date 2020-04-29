@@ -23,7 +23,7 @@ namespace SAE.CommonComponent.Routing.Controllers
             this._mediator = mediator;
         }
         [HttpPost]
-        public async Task<object> Add(MenuCreateCommand command)
+        public async Task<object> Add(MenuCommand.Create command)
         {
             return await this._mediator.Send<string>(command);
         }
@@ -34,7 +34,7 @@ namespace SAE.CommonComponent.Routing.Controllers
             return ResponseResult.Success;
         }
         [HttpPut]
-        public async Task<object> Put(MenuChangeCommand command)
+        public async Task<object> Put(MenuCommand.Change command)
         {
             await this._mediator.Send(command);
             return ResponseResult.Success;
@@ -52,7 +52,7 @@ namespace SAE.CommonComponent.Routing.Controllers
         [HttpGet("{action}")]
         public async Task<object> ALL()
         {
-            return await this._mediator.Send<IEnumerable<MenuItemDto>>(new MenuListCommand());
+            return await this._mediator.Send<IEnumerable<MenuItemDto>>(new MenuCommand.List());
         }
 
     }

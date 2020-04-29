@@ -16,7 +16,7 @@ namespace SAE.CommonComponent.ConfigServer.Domains
 
         }
 
-        public Solution(SolutionCreateCommand command)
+        public Solution(SolutionCommand.Create command)
         {
             this.Apply<SolutionCreateEvent>(command, e =>
             {
@@ -44,6 +44,6 @@ namespace SAE.CommonComponent.ConfigServer.Domains
         }
 
        
-        public void Change(SolutionChangeCommand Command) => this.Apply<SolutionChangeEvent>(Command);
+        public void Change(SolutionCommand.Change Command) => this.Apply<SolutionChangeEvent>(Command);
     }
 }

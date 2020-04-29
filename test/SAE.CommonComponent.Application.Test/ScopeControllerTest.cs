@@ -1,15 +1,12 @@
 ﻿using Microsoft.AspNetCore.Hosting;
-using SAE.CommonComponent.Application.Abstract.Commands;
-using SAE.CommonComponent.Application.Abstract.Dtos;
+using SAE.CommonComponent.Application.Commands;
+using SAE.CommonComponent.Application.Dtos;
 using SAE.CommonComponent.Test;
-using SAE.CommonLibrary;
-using SAE.CommonLibrary.EventStore.Document;
 using SAE.CommonLibrary.Extension;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
@@ -32,7 +29,7 @@ namespace SAE.CommonComponent.Application.Test
         [Fact]
         public async Task<ScopeDto> Add()
         {
-            var command = new ScopeCreateCommand
+            var command = new ScopeCommand.Create
             {
                 Name = this.GetRandom(),
                 Display = this.GetRandom()
@@ -54,7 +51,7 @@ namespace SAE.CommonComponent.Application.Test
         {
             var scope = await this.Add();
             var message = new HttpRequestMessage(HttpMethod.Delete, API);
-            message.AddJsonContent(new ScopeRemoveCommand
+            message.AddJsonContent(new ScopeCommand.Remove
             {
                 Name = scope.Name
             });

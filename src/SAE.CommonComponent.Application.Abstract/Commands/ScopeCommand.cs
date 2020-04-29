@@ -1,25 +1,26 @@
-using System.Collections;
-using System.Collections.Generic;
-using SAE.CommonComponent.Application.Abstract.Domains;
 using SAE.CommonLibrary.Abstract.Model;
 
-namespace SAE.CommonComponent.Application.Abstract.Commands
+namespace SAE.CommonComponent.Application.Commands
 {
-    public class ScopeCreateCommand
-    {
-        public string Name { get; set; }
-        public string Display { get; set; }
-    }
-
-    public class ScopeRemoveCommand 
-    {
-        public string Name { get; set; }
-    }
-    public class ScopeQueryCommand : Paging
+    public class ScopeCommand
     {
 
-    }
-    public class ScopeQueryALLCommand
-    {
+        public class Create
+        {
+            public string Name { get; set; }
+            public string Display { get; set; }
+        }
+
+        public class Remove
+        {
+            public string Name { get; set; }
+        }
+        public class Query : Paging
+        {
+
+        }
+        public class QueryALL
+        {
+        }
     }
 }

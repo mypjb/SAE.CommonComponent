@@ -29,7 +29,7 @@ namespace SAE.CommonComponent.ConfigServer.Test
         {
             var solution = await this._solutionController.Add();
             var template = await this._templateController.Add();
-            var commond = new ConfigCreateCommand
+            var commond = new ConfigCommand.Create
             {
                 Name = template.Name,
                 Content = template.Format,
@@ -52,7 +52,7 @@ namespace SAE.CommonComponent.ConfigServer.Test
             var config = await this.Add();
             var template = await this._templateController.Add();
             var message = new HttpRequestMessage(HttpMethod.Put, API);
-            var commond = new ConfigChangeCommand
+            var commond = new ConfigCommand.Change
             {
                 Id = config.Id,
                 Name = template.Name,

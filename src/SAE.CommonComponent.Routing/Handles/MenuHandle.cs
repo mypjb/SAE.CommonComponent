@@ -17,12 +17,12 @@ using SAE.CommonLibrary;
 namespace SAE.CommonComponent.ConfigServer.Handles
 {
     public class ConfigHandler : AbstractHandler<Menu>,
-                                 ICommandHandler<MenuCreateCommand, string>,
-                                 ICommandHandler<MenuChangeCommand>,
+                                 ICommandHandler<MenuCommand.Create, string>,
+                                 ICommandHandler<MenuCommand.Change>,
                                  ICommandHandler<BatchRemoveCommand<Menu>>,
                                  ICommandHandler<string, MenuDto>,
                                  //  ICommandHandler<MenuQueryCommand, IPagedList<MenuDto>>,
-                                 ICommandHandler<MenuListCommand, IEnumerable<MenuItemDto>>
+                                 ICommandHandler<MenuCommand.List, IEnumerable<MenuItemDto>>
     {
         private readonly IStorage _storage;
 
@@ -32,7 +32,7 @@ namespace SAE.CommonComponent.ConfigServer.Handles
 
         }
 
-        public async Task<string> Handle(MenuCreateCommand command)
+        public async Task<string> Handle(MenuCommand.Create command)
         {
             var menu = new Menu(command);
             await menu.ParentExist(this._documentStore.FindAsync<Menu>);
@@ -41,7 +41,7 @@ namespace SAE.CommonComponent.ConfigServer.Handles
             return menu.Id;
         }
 
-        public async Task Handle(MenuChangeCommand command)
+        public async Task Handle(MenuCommand.Change command)
         {
             var menu = await this._documentStore.FindAsync<Menu>(command.Id);
             await menu.Change(command, this._documentStore.FindAsync<Menu>, this.MenuIsExist);
@@ -65,7 +65,7 @@ namespace SAE.CommonComponent.ConfigServer.Handles
         //     return PagedList.Build(query, command);
         // }
 
-        public async Task<IEnumerable<MenuItemDto>> Handle(MenuListCommand command)
+        public async Task<IEnumerable<MenuItemDto>> Handle(MenuCommand.List command)
         {
             var menus = this._storage.AsQueryable<MenuDto>()
                                      .Select(s => new MenuItemDto

@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using SAE.CommonComponent.Application.Abstract.Commands;
-using SAE.CommonComponent.Application.Abstract.Dtos;
+using SAE.CommonComponent.Application.Commands;
+using SAE.CommonComponent.Application.Dtos;
 using SAE.CommonLibrary;
 using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.Abstract.Model;
@@ -25,47 +25,47 @@ namespace SAE.CommonComponent.Application.Controllers
         }
 
         [HttpPost]
-        public async Task<object> Add(AppCreateCommand command)
+        public async Task<object> Add(AppCommand.Create command)
         {
             return await this._mediator.Send<string>(command);
         }
 
         [HttpPut]
-        public async Task<object> Edit(AppChangeCommand command)
+        public async Task<object> Edit(AppCommand.Change command)
         {
             await this._mediator.Send(command);
             return ResponseResult.Success;
         }
         [HttpPut("{action}/{id}")]
-        public async Task<object> Refresh([FromRoute]AppRefreshSecretCommand command)
+        public async Task<object> Refresh([FromRoute]AppCommand.RefreshSecret command)
         {
             await this._mediator.Send(command);
             return ResponseResult.Success;
         }
 
         [HttpPut("{action}")]
-        public async Task<object> Status(AppChangeStatusCommand command)
+        public async Task<object> Status(AppCommand.ChangeStatus command)
         {
             await this._mediator.Send(command);
             return ResponseResult.Success;
         }
 
         [HttpPost("{action}")]
-        public async Task<object> ReferenceScope(AppReferenceScopeCommand command)
+        public async Task<object> ReferenceScope(AppCommand.ReferenceScope command)
         {
             await this._mediator.Send(command);
             return ResponseResult.Success;
         }
 
         [HttpPost("{action}")]
-        public async Task<object> CancelReferenceScope(AppCancelReferenceScopeCommand command)
+        public async Task<object> CancelReferenceScope(AppCommand.CancelReferenceScope command)
         {
             await this._mediator.Send(command);
             return ResponseResult.Success;
         }
 
         [HttpGet("{action}")]
-        public async Task<object> Paging([FromQuery]AppQueryCommand command)
+        public async Task<object> Paging([FromQuery]AppCommand.Query command)
         {
             return await this._mediator.Send<IPagedList<AppDto>>(command);
         }

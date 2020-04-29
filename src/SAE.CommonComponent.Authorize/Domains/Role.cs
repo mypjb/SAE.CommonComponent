@@ -16,7 +16,7 @@ namespace SAE.CommonComponent.Authorize.Domains
         {
 
         }
-        public Role(RoleCreateCommand command)
+        public Role(RoleCommand.Create command)
         {
             this.Apply<RoleCreateEvent>(command, @event =>
              {
@@ -65,20 +65,20 @@ namespace SAE.CommonComponent.Authorize.Domains
         /// change role base info
         /// </summary>
         /// <param name="command"></param>
-        public void Change(RoleChangeCommand command) =>
+        public void Change(RoleCommand.Change command) =>
             this.Apply<RoleChangeEvent>(command);
         /// <summary>
         /// change role status 
         /// </summary>
         /// <param name="command"></param>
-        public void ChangeStatus(RoleChangeStatusCommand command) =>
+        public void ChangeStatus(RoleCommand.ChangeStatus command) =>
             this.Apply<RoleChangeStatusEvent>(command);
         /// <summary>
         /// delete role
         /// </summary>
-        public void Remove() => this.ChangeStatus(new RoleChangeStatusCommand { Status = Status.Delete });
+        public void Remove() => this.ChangeStatus(new RoleCommand.ChangeStatus { Status = Status.Delete });
 
-        public void RelationPermission(RoleRelationPermissionCommand command)
+        public void RelationPermission(RoleCommand.RelationPermission command)
         {
             var permissionIds= this.PermissionIds.Concat(command.PermissionIds)
                                                  .Distinct()

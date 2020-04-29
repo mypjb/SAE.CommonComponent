@@ -19,7 +19,7 @@ namespace SAE.CommonComponent.Routing.Domains
             this.ParentId = DefaultId;
         }
 
-        public Menu(MenuCreateCommand command)
+        public Menu(MenuCommand.Create command)
         {
             if (command.ParentId.IsNullOrWhiteSpace())
             {
@@ -46,7 +46,7 @@ namespace SAE.CommonComponent.Routing.Domains
         public string ParentId { get; set; }
         public DateTime CreateTime { get; set; }
 
-        public async Task Change(MenuChangeCommand command, Func<string, Task<Menu>> parentProvider, Func<Menu, Task<bool>> menuProvider)
+        public async Task Change(MenuCommand.Change command, Func<string, Task<Menu>> parentProvider, Func<Menu, Task<bool>> menuProvider)
         {
             if (command.ParentId.IsNullOrWhiteSpace())
             {

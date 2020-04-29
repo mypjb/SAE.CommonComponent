@@ -2,13 +2,14 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using SAE.CommonComponent.Application.Abstract.Commands;
-using SAE.CommonComponent.Application.Abstract.Dtos;
+using SAE.CommonComponent.Application.Commands;
+using SAE.CommonComponent.Application.Dtos;
 using SAE.CommonComponent.Identity.Services;
 using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.Extension;
 using SAE.CommonLibrary.Plugin.AspNetCore;
 using System.Linq;
+using System.Reflection;
 
 namespace SAE.CommonComponent.Identity
 {
@@ -39,7 +40,7 @@ namespace SAE.CommonComponent.Identity
                 app.UseDeveloperExceptionPage();
 
                 Enumerable.Range(0, 10)
-                          .Select(s => new AppCreateCommand
+                          .Select(s => new AppCommand.Create
                           {
                               Name = s.ToString("000000"),
                               Urls = new[] { $"http://test{s}.com" }
@@ -48,7 +49,7 @@ namespace SAE.CommonComponent.Identity
                               mediator.Send(command).Wait();
                           });
 
-                mediator.Send(new ScopeCreateCommand() { Name = "config", Display = "config center" }).Wait();
+                mediator.Send(new ScopeCommand.Create() { Name = "config", Display = "config center" }).Wait();
             }
 
             app.UseRouting()
@@ -75,13 +76,16 @@ namespace SAE.CommonComponent.Identity
             services.AddMvc()
                     .AddResponseResult()
                     .AddNewtonsoftJson();
-            var assembly = typeof(AppDto).Assembly;
+
+            var assemblys = new[] { typeof(AppDto).Assembly, Assembly.GetExecutingAssembly() };
+
             services.AddServiceProvider()
-                    .AddMediator(assembly)
-                    .AddMemoryDocument()
+                    .AddMediator(assemblys);
+
+            services.AddMemoryDocument()
                     .AddMemoryMessageQueue()
                     .AddSaeMemoryDistributedCache()
-                    .AddDataPersistenceService(assembly);
+                    .AddDataPersistenceService(assemblys);
         }
 
         public override void PluginConfigure(IApplicationBuilder app)

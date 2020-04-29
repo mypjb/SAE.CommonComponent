@@ -6,18 +6,20 @@ using System.Threading.Tasks;
 
 namespace SAE.CommonComponent.ConfigServer.Commands
 {
-    public class SolutionCreateCommand
+    public class SolutionCommand
     {
-        public string Name { get; set; }
-    }
-    public class SolutionChangeCommand : SolutionCreateCommand
-    {
-        public string Id { get; set; }
-    }
+        public class Create
+        {
+            public string Name { get; set; }
+        }
+        public class Change : Create
+        {
+            public string Id { get; set; }
+        }
 
-    public class SolutionQueryCommand : Paging
-    {
-        public string Name { get; set; }
+        public class Query : Paging
+        {
+            public string Name { get; set; }
+        }
     }
-
 }

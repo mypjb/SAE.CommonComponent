@@ -14,11 +14,11 @@ using SAE.CommonLibrary.Extension;
 namespace SAE.CommonComponent.ConfigServer.Handles
 {
     public class ConfigHandler : AbstractHandler<Config>,
-                                 ICommandHandler<ConfigCreateCommand, string>,
-                                 ICommandHandler<ConfigChangeCommand>,
+                                 ICommandHandler<ConfigCommand.Create, string>,
+                                 ICommandHandler<ConfigCommand.Change>,
                                  ICommandHandler<RemoveCommand<Config>>,
                                  ICommandHandler<string, ConfigDto>,
-                                 ICommandHandler<ConfigQueryCommand, IPagedList<ConfigDto>>
+                                 ICommandHandler<ConfigCommand.Query, IPagedList<ConfigDto>>
     {
         private readonly IStorage _storage;
 
@@ -39,18 +39,18 @@ namespace SAE.CommonComponent.ConfigServer.Handles
             return this.Remove(command.Id);
         }
 
-        public async Task<string> Handle(ConfigCreateCommand command)
+        public async Task<string> Handle(ConfigCommand.Create command)
         {
             var config = await this.Add(new Config(command));
             return config.Id;
         }
 
-        public Task Handle(ConfigChangeCommand command)
+        public Task Handle(ConfigCommand.Change command)
         {
             return this.Update(command.Id, s => s.Change(command));
         }
 
-        public async Task<IPagedList<ConfigDto>> Handle(ConfigQueryCommand command)
+        public async Task<IPagedList<ConfigDto>> Handle(ConfigCommand.Query command)
         {
             var query = this._storage.AsQueryable<ConfigDto>()
                                      .Where(s => s.SolutionId == command.SolutionId);

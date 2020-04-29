@@ -13,12 +13,12 @@ using SAE.CommonLibrary.Extension;
 namespace SAE.CommonComponent.ConfigServer.Handles
 {
     public class ProjectHandler : AbstractHandler<Project>,
-                                  ICommandHandler<ProjectCreateCommand, string>,
-                                  ICommandHandler<ProjectChangeCommand>,
+                                  ICommandHandler<ProjectCommand.Create, string>,
+                                  ICommandHandler<ProjectCommand.Change>,
                                   ICommandHandler<RemoveCommand<Project>>,
                                   ICommandHandler<string, ProjectDto>,
-                                  ICommandHandler<ProjectQueryCommand, IPagedList<ProjectDto>>,
-                                  ICommandHandler<ProjectVersionCumulationCommand>
+                                  ICommandHandler<ProjectCommand.Query, IPagedList<ProjectDto>>,
+                                  ICommandHandler<ProjectCommand.VersionCumulation>
     {
         private readonly IStorage _storage;
 
@@ -27,13 +27,13 @@ namespace SAE.CommonComponent.ConfigServer.Handles
             this._storage = storage;
         }
 
-        public async Task<string> Handle(ProjectCreateCommand command)
+        public async Task<string> Handle(ProjectCommand.Create command)
         {
             var project = await this.Add(new Project(command));
             return project.Id;
         }
 
-        public Task Handle(ProjectChangeCommand command)
+        public Task Handle(ProjectCommand.Change command)
         {
             return this.Update(command.Id, s => s.Change(command));
         }
@@ -49,7 +49,7 @@ namespace SAE.CommonComponent.ConfigServer.Handles
                        .FirstOrDefault(s => s.Id == command));
         }
 
-        public async Task<IPagedList<ProjectDto>> Handle(ProjectQueryCommand command)
+        public async Task<IPagedList<ProjectDto>> Handle(ProjectCommand.Query command)
         {
             var query = this._storage.AsQueryable<ProjectDto>().Where(s => s.SolutionId == command.SolutionId);
             if (command.Name.IsNotNullOrWhiteSpace())
@@ -59,7 +59,7 @@ namespace SAE.CommonComponent.ConfigServer.Handles
             return PagedList.Build(query, command);
         }
 
-        public async Task Handle(ProjectVersionCumulationCommand command)
+        public async Task Handle(ProjectCommand.VersionCumulation command)
         {
            var project= await this._documentStore.FindAsync<Project>(command.ProjectId);
            project.Cumulation();

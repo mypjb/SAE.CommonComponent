@@ -50,7 +50,7 @@ namespace SAE.CommonComponent.ConfigServer.Domains
             return this.Id;
         }
 
-        internal void Change(ProjectConfigChangeAliasCommand command)
+        internal void Change(ProjectCommand.ConfigChangeAlias command)
         {
             this.Apply<ProjectConfigChangeAliasEvent>(command);
         }

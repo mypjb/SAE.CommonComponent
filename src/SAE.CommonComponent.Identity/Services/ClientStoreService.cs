@@ -1,6 +1,6 @@
 using IdentityServer4.Models;
 using IdentityServer4.Stores;
-using SAE.CommonComponent.Application.Abstract.Dtos;
+using SAE.CommonComponent.Application.Dtos;
 using SAE.CommonLibrary.Abstract.Mediator;
 using System.Linq;
 using System.Threading.Tasks;

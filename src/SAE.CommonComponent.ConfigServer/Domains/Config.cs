@@ -19,7 +19,7 @@ namespace SAE.CommonComponent.ConfigServer.Domains
         {
 
         }
-        public Config(ConfigCreateCommand command)
+        public Config(ConfigCommand.Create command)
         {
             this.Apply<ConfigCreateEvent>(command, e =>
             {
@@ -53,7 +53,7 @@ namespace SAE.CommonComponent.ConfigServer.Domains
         /// </summary>
         /// <value></value>
         public int Version { get; set; }
-        public void Change(ConfigChangeCommand command)
+        public void Change(ConfigCommand.Change command)
         {
             this.Apply<ConfigChangeEvent>(command, e => e.Version = this.Version + 1);
         }

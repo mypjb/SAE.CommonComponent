@@ -22,7 +22,7 @@ namespace SAE.CommonComponent.Authorize.Controllers
             this._mediator = mediator;
         }
         [HttpPost]
-        public async Task<object> Add(RoleCreateCommand command)
+        public async Task<object> Add(RoleCommand.Create command)
         {
             return await this._mediator.Send<string>(command);
         }
@@ -33,7 +33,7 @@ namespace SAE.CommonComponent.Authorize.Controllers
             return ResponseResult.Success;
         }
         [HttpPut]
-        public async Task<object> Put(RoleChangeCommand command)
+        public async Task<object> Put(RoleCommand.Change command)
         {
             await this._mediator.Send(command);
             return ResponseResult.Success;
@@ -44,7 +44,7 @@ namespace SAE.CommonComponent.Authorize.Controllers
             return await this._mediator.Send<RoleDto>(id);
         }
         [HttpGet("{action}")]
-        public async Task<object> Paging([FromQuery]RoleQueryCommand command)
+        public async Task<object> Paging([FromQuery]RoleCommand.Query command)
         {
             return await this._mediator.Send<IPagedList<RoleDto>>(command);
         }
