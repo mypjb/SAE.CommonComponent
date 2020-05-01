@@ -18,7 +18,7 @@ namespace SAE.CommonComponent.Authorize.Domains
         }
         public Permission(PermissionCommand.Create command)
         {
-            this.Apply<PermissionCreateEvent>(command, @event =>
+            this.Apply<PermissionEvent.Create>(command, @event =>
              {
                  @event.Id = Utils.GenerateId();
                  @event.CreateTime = DateTime.UtcNow;
@@ -66,13 +66,13 @@ namespace SAE.CommonComponent.Authorize.Domains
         /// </summary>
         /// <param name="command"></param>
         public void Change(PermissionCommand.Change command) =>
-            this.Apply<PermissionChangeEvent>(command);
+            this.Apply<PermissionEvent.Change>(command);
         /// <summary>
         /// change permission status 
         /// </summary>
         /// <param name="command"></param>
         public void ChangeStatus(PermissionCommand.ChangeStatus command) =>
-            this.Apply<PermissionChangeStatusEvent>(command);
+            this.Apply<PermissionEvent.ChangeStatus>(command);
         /// <summary>
         /// delete permission
         /// </summary>

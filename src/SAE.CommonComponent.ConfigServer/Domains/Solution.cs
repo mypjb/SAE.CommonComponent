@@ -18,7 +18,7 @@ namespace SAE.CommonComponent.ConfigServer.Domains
 
         public Solution(SolutionCommand.Create command)
         {
-            this.Apply<SolutionCreateEvent>(command, e =>
+            this.Apply<SolutionEvent.Create>(command, e =>
             {
                 e.Id = Utils.GenerateId();
                 e.CreateTime = DateTime.UtcNow;
@@ -44,6 +44,6 @@ namespace SAE.CommonComponent.ConfigServer.Domains
         }
 
        
-        public void Change(SolutionCommand.Change Command) => this.Apply<SolutionChangeEvent>(Command);
+        public void Change(SolutionCommand.Change Command) => this.Apply<SolutionEvent.Change>(Command);
     }
 }

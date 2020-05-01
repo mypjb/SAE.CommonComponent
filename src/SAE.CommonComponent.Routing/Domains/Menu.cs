@@ -25,7 +25,7 @@ namespace SAE.CommonComponent.Routing.Domains
             {
                 command.ParentId = DefaultId;
             }
-            this.Apply<MenuCreateEvent>(command, e => e.Id = Utils.GenerateId());
+            this.Apply<MenuEvent.Create>(command, e => e.Id = Utils.GenerateId());
         }
 
         public string Id { get; set; }
@@ -52,7 +52,7 @@ namespace SAE.CommonComponent.Routing.Domains
             {
                 command.ParentId = DefaultId;
             }
-            this.Apply<MenuChangeEvent>(command);
+            this.Apply<MenuEvent.Change>(command);
             await this.ParentExist(parentProvider);
             await this.NotExist(menuProvider);
         }

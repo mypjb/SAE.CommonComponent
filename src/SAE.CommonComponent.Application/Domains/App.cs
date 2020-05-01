@@ -16,7 +16,7 @@ namespace SAE.CommonComponent.Application.Abstract.Domains
         }
         public App(AppCommand.Create command)
         {
-            this.Apply<AppCreateEvent>(command, e =>
+            this.Apply<AppEvent.Create>(command, e =>
             {
                 e.Id = Utils.GenerateId();
                 e.CreateTime = DateTime.UtcNow;
@@ -62,12 +62,12 @@ namespace SAE.CommonComponent.Application.Abstract.Domains
 
         public void Change(AppCommand.Change command)
         {
-            this.Apply<AppChangeEvent>(command);
+            this.Apply<AppEvent.Change>(command);
         }
 
         public void RefreshSecret()
         {
-            this.Apply(new AppRefreshSecretEvent
+            this.Apply(new AppEvent.RefreshSecret
             {
                 Secret = Utils.GenerateId()
             });
@@ -79,7 +79,7 @@ namespace SAE.CommonComponent.Application.Abstract.Domains
 
             var scopes = this.Scopes.ToList();
             scopes.RemoveAll(command.Scopes.Contains);
-            this.Apply(new AppReferenceScopeEvent
+            this.Apply(new AppEvent.ReferenceScope
             {
                 Scopes = scopes
             });
@@ -90,7 +90,7 @@ namespace SAE.CommonComponent.Application.Abstract.Domains
 
             var scopes = this.Scopes.ToList();
             scopes.AddRange(command.Scopes);
-            this.Apply(new AppReferenceScopeEvent
+            this.Apply(new AppEvent.ReferenceScope
             {
                 Scopes = scopes.Distinct().ToArray()
             });
@@ -98,7 +98,7 @@ namespace SAE.CommonComponent.Application.Abstract.Domains
 
         public void ChangeStatus(AppCommand.ChangeStatus command)
         {
-            this.Apply<AppChangeStatusEvent>(command);
+            this.Apply<AppEvent.ChangeStatus>(command);
         }
 
         public void Remove()

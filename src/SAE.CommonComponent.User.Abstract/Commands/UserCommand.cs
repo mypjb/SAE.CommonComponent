@@ -59,9 +59,8 @@ namespace SAE.CommonComponent.User.Commands
 
         }
 
-
         /// <summary>
-        /// 
+        /// paging query
         /// </summary>
         public class Query : Paging
         {
@@ -69,5 +68,12 @@ namespace SAE.CommonComponent.User.Commands
             public Status Status { get; set; }
         }
 
+        /// <summary>
+        /// find user
+        /// </summary>
+        public class Find
+        {
+            public string AccountName { get; set; }
+        }
     }
 }

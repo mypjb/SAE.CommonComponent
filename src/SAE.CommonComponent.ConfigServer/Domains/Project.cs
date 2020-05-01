@@ -19,7 +19,7 @@ namespace SAE.CommonComponent.ConfigServer.Domains
 
         public Project(ProjectCommand.Create command)
         {
-            this.Apply<ProjectCreateEvent>(command, e =>
+            this.Apply<ProjectEvent.Create>(command, e =>
             {
                 e.Id = Utils.GenerateId();
                 e.CreateTime = DateTime.UtcNow;
@@ -38,10 +38,10 @@ namespace SAE.CommonComponent.ConfigServer.Domains
         }
 
 
-        public void Change(ProjectCommand.Change command) => this.Apply<ProjectChangeEvent>(command);
+        public void Change(ProjectCommand.Change command) => this.Apply<ProjectEvent.Change>(command);
         public void Cumulation()
         {
-            this.Apply(new ProjectVersionCumulationEvent
+            this.Apply(new ProjectEvent.VersionCumulation
             {
                 Version = this.Version + 1
             });

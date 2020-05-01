@@ -18,7 +18,7 @@ namespace SAE.CommonComponent.Authorize.Domains
         }
         public Role(RoleCommand.Create command)
         {
-            this.Apply<RoleCreateEvent>(command, @event =>
+            this.Apply<RoleEvent.Create>(command, @event =>
              {
                  @event.Id = Utils.GenerateId();
                  @event.CreateTime = DateTime.UtcNow;
@@ -66,13 +66,13 @@ namespace SAE.CommonComponent.Authorize.Domains
         /// </summary>
         /// <param name="command"></param>
         public void Change(RoleCommand.Change command) =>
-            this.Apply<RoleChangeEvent>(command);
+            this.Apply<RoleEvent.Change>(command);
         /// <summary>
         /// change role status 
         /// </summary>
         /// <param name="command"></param>
         public void ChangeStatus(RoleCommand.ChangeStatus command) =>
-            this.Apply<RoleChangeStatusEvent>(command);
+            this.Apply<RoleEvent.ChangeStatus>(command);
         /// <summary>
         /// delete role
         /// </summary>
@@ -84,7 +84,7 @@ namespace SAE.CommonComponent.Authorize.Domains
                                                  .Distinct()
                                                  .ToArray();
 
-            this.Apply(new RoleRelationPermissionEvent
+            this.Apply(new RoleEvent.RelationPermission
             {
                 PermissionIds = command.PermissionIds
             });

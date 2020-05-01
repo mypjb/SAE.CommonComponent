@@ -21,7 +21,7 @@ namespace SAE.CommonComponent.ConfigServer.Domains
         }
         public Config(ConfigCommand.Create command)
         {
-            this.Apply<ConfigCreateEvent>(command, e =>
+            this.Apply<ConfigEvent.Create>(command, e =>
             {
                 e.Id = Utils.GenerateId();
                 e.CreateTime = DateTime.UtcNow;
@@ -55,7 +55,7 @@ namespace SAE.CommonComponent.ConfigServer.Domains
         public int Version { get; set; }
         public void Change(ConfigCommand.Change command)
         {
-            this.Apply<ConfigChangeEvent>(command, e => e.Version = this.Version + 1);
+            this.Apply<ConfigEvent.Change>(command, e => e.Version = this.Version + 1);
         }
     }
 }
