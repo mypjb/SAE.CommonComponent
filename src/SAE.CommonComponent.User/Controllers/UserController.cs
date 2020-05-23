@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SAE.CommonComponent.User.Abstract.Dtos;
 using SAE.CommonComponent.User.Commands;
 using SAE.CommonLibrary.Abstract.Mediator;
+using SAE.CommonLibrary.Abstract.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,11 +21,37 @@ namespace SAE.CommonComponent.User.Controllers
             this._mediator = mediator;
         }
 
-        [HttpPost("{action}")]
-        public async Task<object> Register(UserCommand.Register register)
+        [HttpGet("{id}")]
+        public async Task<object> Get(string id)
         {
-            var id = await this._mediator.Send<string>(register);
+            var dto= await this._mediator.Send<UserDto>(id);
+            return dto;
+        }
+
+        [HttpPost("{action}")]
+        public async Task<object> Register(UserCommand.Register command)
+        {
+            var id = await this._mediator.Send<string>(command);
             return id;
+        }
+
+        [HttpPut("{action}")]
+        public Task Password(UserCommand.ChangePassword command)
+        {
+            return  this._mediator.Send(command);
+        }
+        [HttpPut("{action}")]
+        public Task Status(UserCommand.ChangeStatus command)
+        {
+            return this._mediator.Send(command);
+        }
+
+        [HttpGet]
+        [HttpPost]
+        [Route("{action}")]
+        public Task<IPagedList<UserDto>> Paging(UserCommand.Query command)
+        {
+            return this._mediator.Send<IPagedList<UserDto>>(command);
         }
     }
 }

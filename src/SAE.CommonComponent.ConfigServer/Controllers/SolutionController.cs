@@ -33,13 +33,13 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
         public async Task<object> Delete([FromRoute]RemoveCommand<Solution> command)
         {
             await this._mediator.Send(command);
-            return ResponseResult.Success;
+            return this.Ok();
         }
         [HttpPut]
         public async Task<object> Put(SolutionCommand.Change command)
         {
             await this._mediator.Send(command);
-            return ResponseResult.Success;
+            return this.Ok();
         }
         [HttpGet("{id}")]
         public async Task<object> Get(string id)

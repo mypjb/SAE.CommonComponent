@@ -22,13 +22,13 @@ namespace SAE.CommonComponent.Application.Controllers
         public async Task<object> Add(ScopeCommand.Create command)
         {
             await this._mediator.Send(command);
-            return ResponseResult.Success;
+            return this.Ok();
         }
         [HttpDelete]
         public async Task<object> Remove(ScopeCommand.Remove command)
         {
             await this._mediator.Send(command);
-            return ResponseResult.Success;
+            return this.Ok();
         }
         [HttpGet("{action}")]
         public async Task<object> Paging([FromQuery]ScopeCommand.Query command)

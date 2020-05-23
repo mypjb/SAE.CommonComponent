@@ -43,7 +43,8 @@ namespace SAE.CommonComponent.ConfigServer.Test
             var message = new HttpRequestMessage(HttpMethod.Post, API);
             message.AddJsonContent(command);
             var responseMessage = await this.HttpClient.SendAsync(message);
-            var id = await responseMessage.AsResult<string>();
+            responseMessage.EnsureSuccessStatusCode();
+            var id = await responseMessage.AsAsync<string>();
             var project = await this.Get(id);
             Assert.Equal(command.Name, project.Name);
             Assert.Equal(command.Version, project.Version);
@@ -69,7 +70,7 @@ namespace SAE.CommonComponent.ConfigServer.Test
 
             var responseMessage = await this.HttpClient.GetAsync($"{url}?{nameof(command.ProjectId)}={command.ProjectId}");
 
-            var configs = await responseMessage.AsResult<PagedList<ConfigDto>>();
+            var configs = await responseMessage.AsAsync<PagedList<ConfigDto>>();
             var configDto = configs.First();
 
             Assert.Equal(configDto.Id, config.Id);
@@ -90,7 +91,7 @@ namespace SAE.CommonComponent.ConfigServer.Test
             };
             message.AddJsonContent(command);
             var responseMessage = await this.HttpClient.SendAsync(message);
-            await responseMessage.AsResult();
+            responseMessage.EnsureSuccessStatusCode();
             var newProject = await this.Get(project.Id);
             Assert.NotEqual(newProject.Name, project.Name);
         }
@@ -101,9 +102,9 @@ namespace SAE.CommonComponent.ConfigServer.Test
             var project = await this.Add();
             var message = new HttpRequestMessage(HttpMethod.Delete, $"{API}/{project.Id}");
             var responseMessage = await this.HttpClient.SendAsync(message);
-            await responseMessage.AsResult();
+            responseMessage.EnsureSuccessStatusCode();
             var exception = await Assert.ThrowsAsync<SaeException>(() => this.Get(project.Id));
-            Assert.Equal(StatusCode.ResourcesNotExist, exception.Code);
+            Assert.Equal((int)StatusCodes.ResourcesNotExist, exception.Code);
         }
 
         [Fact]
@@ -129,7 +130,7 @@ namespace SAE.CommonComponent.ConfigServer.Test
             var requestMessage = new HttpRequestMessage(HttpMethod.Get, $"app/config?{nameof(appConfigCommand.Id)}={appConfigCommand.Id}&{appConfigCommand.Version}={appConfigCommand.Version}");
 
             var responseMessage = await this.HttpClient.SendAsync(requestMessage);
-            var appConfig = await responseMessage.AsResult<AppConfigDto>();
+            var appConfig = await responseMessage.AsAsync<AppConfigDto>();
 
             Assert.True(appConfig.Data.Count == 1);
             Assert.Equal(config.Content, appConfig.Data.First().Value.ToJsonString());
@@ -139,7 +140,7 @@ namespace SAE.CommonComponent.ConfigServer.Test
         {
             var message = new HttpRequestMessage(HttpMethod.Get, $"{API}/{id}");
             var responseMessage = await this.HttpClient.SendAsync(message);
-            return await responseMessage.AsResult<ProjectDto>();
+            return await responseMessage.AsAsync<ProjectDto>();
         }
 
     }

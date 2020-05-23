@@ -30,13 +30,13 @@ namespace SAE.CommonComponent.Authorize.Controllers
         public async Task<object> Delete([FromBody]BatchRemoveCommand<Role> command)
         {
             await this._mediator.Send(command);
-            return ResponseResult.Success;
+            return this.Ok();
         }
         [HttpPut]
         public async Task<object> Put(RoleCommand.Change command)
         {
             await this._mediator.Send(command);
-            return ResponseResult.Success;
+            return this.Ok();
         }
         [HttpGet("{id}")]
         public async Task<object> Get(string id)

@@ -29,7 +29,7 @@ namespace SAE.CommonComponent.ConfigServer.Test
             var message = new HttpRequestMessage(HttpMethod.Post, API);
             message.AddJsonContent(command);
             var responseMessage = await this.HttpClient.SendAsync(message);
-            var id = await responseMessage.AsResult<string>();
+            var id = await responseMessage.AsAsync<string>();
             var Solution = await this.Get(id);
             Assert.Equal(command.Name, Solution.Name);
             return Solution;
@@ -47,7 +47,7 @@ namespace SAE.CommonComponent.ConfigServer.Test
             };
             message.AddJsonContent(command);
             var responseMessage = await this.HttpClient.SendAsync(message);
-            await responseMessage.AsResult();
+            responseMessage.EnsureSuccessStatusCode();
             var newSolution = await this.Get(Solution.Id);
             Assert.NotEqual(command.Name, Solution.Name);
             Assert.Equal(command.Name, newSolution.Name);
@@ -59,16 +59,16 @@ namespace SAE.CommonComponent.ConfigServer.Test
             var Solution = await this.Add();
             var message = new HttpRequestMessage(HttpMethod.Delete, $"{API}/{Solution.Id}");
             var responseMessage = await this.HttpClient.SendAsync(message);
-            await responseMessage.AsResult();
+            responseMessage.EnsureSuccessStatusCode();
             var exception = await Assert.ThrowsAsync<SaeException>(() => this.Get(Solution.Id));
-            Assert.Equal(StatusCode.ResourcesNotExist, exception.Code);
+            Assert.Equal((int)StatusCodes.ResourcesNotExist, exception.Code);
         }
 
         private async Task<SolutionDto> Get(string id)
         {
             var message = new HttpRequestMessage(HttpMethod.Get, $"{API}/{id}");
             var responseMessage = await this.HttpClient.SendAsync(message);
-            return await responseMessage.AsResult<SolutionDto>();
+            return await responseMessage.AsAsync<SolutionDto>();
         }
 
         

@@ -34,34 +34,34 @@ namespace SAE.CommonComponent.Application.Controllers
         public async Task<object> Edit(AppCommand.Change command)
         {
             await this._mediator.Send(command);
-            return ResponseResult.Success;
+            return this.Ok();
         }
         [HttpPut("{action}/{id}")]
         public async Task<object> Refresh([FromRoute]AppCommand.RefreshSecret command)
         {
             await this._mediator.Send(command);
-            return ResponseResult.Success;
+            return this.Ok();
         }
 
         [HttpPut("{action}")]
         public async Task<object> Status(AppCommand.ChangeStatus command)
         {
             await this._mediator.Send(command);
-            return ResponseResult.Success;
+            return this.Ok();
         }
 
         [HttpPost("{action}")]
         public async Task<object> ReferenceScope(AppCommand.ReferenceScope command)
         {
             await this._mediator.Send(command);
-            return ResponseResult.Success;
+            return this.Ok();
         }
 
         [HttpPost("{action}")]
         public async Task<object> CancelReferenceScope(AppCommand.CancelReferenceScope command)
         {
             await this._mediator.Send(command);
-            return ResponseResult.Success;
+            return this.Ok();
         }
 
         [HttpGet("{action}")]

@@ -37,13 +37,13 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
         public async Task<object> Delete([FromRoute]RemoveCommand<Project> command)
         {
             await this._mediator.Send(command);
-            return ResponseResult.Success;
+            return this.Ok();
         }
         [HttpPut]
         public async Task<object> Put(ProjectCommand.Change command)
         {
             await this._mediator.Send(command);
-            return ResponseResult.Success;
+            return this.Ok();
         }
         [HttpGet("{id}")]
         public async Task<object> Get(string id)
@@ -56,7 +56,7 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
         {
             await this._mediator.Send(command);
 
-            return ResponseResult.Success;
+            return this.Ok();
         }
         
         [HttpGet("{action}/{id}")]
@@ -71,14 +71,14 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
         public async Task<object> ProjectConfig(ProjectCommand.ConfigChangeAlias command)
         {
             await this._mediator.Send(command);
-            return ResponseResult.Success;
+            return this.Ok();
         }
 
         [HttpDelete("config")]
         public async Task<object> ProjectConfig(BatchRemoveCommand<ProjectConfig> command)
         {
             await this._mediator.Send(command);
-            return ResponseResult.Success;
+            return this.Ok();
         }
 
         [HttpGet("{action}")]

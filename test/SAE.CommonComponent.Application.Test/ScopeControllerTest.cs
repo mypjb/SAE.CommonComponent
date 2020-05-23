@@ -56,7 +56,8 @@ namespace SAE.CommonComponent.Application.Test
                 Name = scope.Name
             });
             var responseMessage = await this.HttpClient.SendAsync(message);
-            await responseMessage.AsResult();
+
+            responseMessage.EnsureSuccessStatusCode();
 
             Assert.Null(await this.Get(scope.Name));
         }
@@ -66,7 +67,7 @@ namespace SAE.CommonComponent.Application.Test
         {
             var message = new HttpRequestMessage(HttpMethod.Get, $"{API}/all");
             var responseMessage = await this.HttpClient.SendAsync(message);
-            var scopes = await responseMessage.AsResult<IEnumerable<ScopeDto>>();
+            var scopes = await responseMessage.AsAsync<IEnumerable<ScopeDto>>();
             return scopes.FirstOrDefault(s => s.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
         }
     }

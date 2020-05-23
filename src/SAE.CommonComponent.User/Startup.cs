@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SAE.CommonComponent.User.Domains;
+using SAE.CommonComponent.User.Events;
+using SAE.CommonLibrary.ObjectMapper;
 
 namespace SAE.CommonComponent.User
 {
@@ -16,6 +19,10 @@ namespace SAE.CommonComponent.User
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            TinyMapper.Bind<UserEvent.ChangePassword, Domains.User>(config=>
+            {
+                config.Bind(@event => @event.Password, user => user.Account.Password);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -24,7 +31,7 @@ namespace SAE.CommonComponent.User
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-            }
+            }  
 
             app.UseRouting();
 

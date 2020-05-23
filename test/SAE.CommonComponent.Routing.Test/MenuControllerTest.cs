@@ -41,7 +41,7 @@ namespace SAE.CommonComponent.Routing.Test
             var message = new HttpRequestMessage(HttpMethod.Post, API);
             message.AddJsonContent(command);
             var responseMessage = await this.HttpClient.SendAsync(message);
-            var id = await responseMessage.AsResult<string>();
+            var id = await responseMessage.AsAsync<string>();
             var menu = await this.Get(id);
             Assert.Equal(command.Name, menu.Name);
             Assert.Equal(command.Path, menu.Path);
@@ -62,7 +62,7 @@ namespace SAE.CommonComponent.Routing.Test
             };
             message.AddJsonContent(command);
             var responseMessage = await this.HttpClient.SendAsync(message);
-            await responseMessage.AsResult();
+            responseMessage.EnsureSuccessStatusCode();
             var newMenu = await this.Get(menu.Id);
             Assert.NotEqual(newMenu.Name, menu.Name);
             Assert.NotEqual(newMenu.Path, menu.Path);
@@ -78,9 +78,9 @@ namespace SAE.CommonComponent.Routing.Test
                 Ids = new[] { menu.Id }
             });
             var responseMessage = await this.HttpClient.SendAsync(message);
-            await responseMessage.AsResult();
+            responseMessage.EnsureSuccessStatusCode();
             var exception = await Assert.ThrowsAsync<SaeException>(() => this.Get(menu.Id));
-            Assert.Equal(StatusCode.ResourcesNotExist, exception.Code);
+            Assert.Equal((int)StatusCodes.ResourcesNotExist, exception.Code);
         }
 
         [Fact]
@@ -89,7 +89,7 @@ namespace SAE.CommonComponent.Routing.Test
             var parent= await this.Add();
             var child = await this.Add(parent.Id);
             var responseMessage = await this.HttpClient.GetAsync($"{API}/{nameof(ALL)}");
-            var menus = await responseMessage.AsResult<IEnumerable<MenuItemDto>>();
+            var menus = await responseMessage.AsAsync<IEnumerable<MenuItemDto>>();
 
             var parentMenu = menus.First(s => s.Id == parent.Id);
             var childMenu = parentMenu.Items.First(s => s.Id == child.Id);
@@ -107,7 +107,7 @@ namespace SAE.CommonComponent.Routing.Test
         {
             var message = new HttpRequestMessage(HttpMethod.Get, $"{API}/{id}");
             var responseMessage = await this.HttpClient.SendAsync(message);
-            return await responseMessage.AsResult<MenuDto>();
+            return await responseMessage.AsAsync<MenuDto>();
         }
     }
 }

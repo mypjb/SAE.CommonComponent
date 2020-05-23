@@ -44,7 +44,7 @@ namespace SAE.CommonComponent.Authorize.Domains
         /// </summary>
         public DateTime CreateTime { get; set; }
         /// <summary>
-        /// permission name is exist? exist trigger <seealso cref="SaeException"/><seealso cref="StatusCode.ResourcesExist"/>
+        /// permission name is exist? exist trigger <seealso cref="SaeException"/><seealso cref="StatusCodes.ResourcesExist"/>
         /// </summary>
         /// <param name="provider">role provider</param>
         /// <returns></returns>
@@ -55,7 +55,7 @@ namespace SAE.CommonComponent.Authorize.Domains
             {
                 return;
             }
-            throw new SaeException(StatusCode.ResourcesExist, $"{nameof(Permission)} name exist");
+            throw new SaeException(StatusCodes.ResourcesExist, $"{nameof(Permission)} name exist");
         }
         /// <summary>
         /// permission status

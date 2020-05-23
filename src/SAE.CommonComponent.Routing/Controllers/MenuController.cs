@@ -31,13 +31,13 @@ namespace SAE.CommonComponent.Routing.Controllers
         public async Task<object> Remove([FromBody]BatchRemoveCommand<Menu> command)
         {
             await this._mediator.Send(command);
-            return ResponseResult.Success;
+            return this.Ok();
         }
         [HttpPut]
         public async Task<object> Put(MenuCommand.Change command)
         {
             await this._mediator.Send(command);
-            return ResponseResult.Success;
+            return this.Ok();
         }
         [HttpGet("{id}")]
         public async Task<object> Get(string id)

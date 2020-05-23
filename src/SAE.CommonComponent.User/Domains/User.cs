@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SAE.CommonLibrary.Extension;
+using System.ComponentModel.Design;
+using SAE.CommonComponent.User.Abstract.Dtos;
 
 namespace SAE.CommonComponent.User.Domains
 {
@@ -30,13 +32,18 @@ namespace SAE.CommonComponent.User.Domains
         /// set password
         /// </summary>
         /// <param name="password"></param>
-        public void SetPassword(string password)
+        public UserEvent.ChangePassword SetPassword(string password)
         {
             this.Slat = Guid.NewGuid()
                             .ToString("N")
                             .ToLower();
 
             this.Password = this.Encrypt(password);
+
+            return new UserEvent.ChangePassword
+            {
+                Password = this.Password
+            };
         }
 
         /// <summary>
@@ -99,5 +106,24 @@ namespace SAE.CommonComponent.User.Domains
         /// </summary>
         public DateTime CrateTime { get; set; }
 
+        /// <summary>
+        /// account is exist
+        /// </summary>
+        /// <param name="userProvider"></param>
+        /// <returns></returns>
+        public async Task AccountExist(Func<string, Task<bool>> userProvider)
+        {
+            Assert.Build(await userProvider.Invoke(this.Account.Name))
+                  .False($"{this.Account.Name} is exist");
+        }
+
+        public void ChangePassword(UserCommand.ChangePassword command)
+        {
+            Assert.Build(this.Account.CheckPassword(command.OriginalPassword))
+                  .True($"password inexactitude!");
+            var @event = this.Account.SetPassword(command.Password);
+
+            this.Apply(@event);
+        }
     }
 }

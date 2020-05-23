@@ -48,7 +48,7 @@ namespace SAE.CommonComponent.Authorize.Domains
         /// </summary>
         public Status Status { get; set; }
         /// <summary>
-        /// role name is exist? exist trigger <seealso cref="SaeException"/><seealso cref="StatusCode.ResourcesExist"/>
+        /// role name is exist? exist trigger <seealso cref="SaeException"/><seealso cref="StatusCodes.ResourcesExist"/>
         /// </summary>
         /// <param name="provider"></param>
         /// <returns></returns>
@@ -59,7 +59,7 @@ namespace SAE.CommonComponent.Authorize.Domains
             {
                 return;
             }
-            throw new SaeException(StatusCode.ResourcesExist, $"{nameof(Role)} name exist");
+            throw new SaeException(StatusCodes.ResourcesExist, $"{nameof(Role)} name exist");
         }
         /// <summary>
         /// change role base info

@@ -35,7 +35,7 @@ namespace SAE.CommonComponent.Application.Test
             var message = new HttpRequestMessage(HttpMethod.Post, API);
             message.AddJsonContent(command);
             var responseMessage = await this.HttpClient.SendAsync(message);
-            var id = await responseMessage.AsResult<string>();
+            var id = await responseMessage.AsAsync<string>();
             var app = await this.Get(id);
             Assert.Equal(command.Name, app.Name);
             Assert.True(app.Urls.All(command.Urls.Contains));
@@ -55,7 +55,7 @@ namespace SAE.CommonComponent.Application.Test
             };
             message.AddJsonContent(command);
             var responseMessage = await this.HttpClient.SendAsync(message);
-            await responseMessage.AsResult();
+            responseMessage.EnsureSuccessStatusCode();
             var newApp = await this.Get(app.Id);
             Assert.NotEqual(newApp.Name, app.Name);
         }
@@ -104,7 +104,7 @@ namespace SAE.CommonComponent.Application.Test
         {
             var message = new HttpRequestMessage(HttpMethod.Get, $"{API}/{id}");
             var responseMessage = await this.HttpClient.SendAsync(message);
-            return await responseMessage.AsResult<AppDto>();
+            return await responseMessage.AsAsync<AppDto>();
         }
     }
 }

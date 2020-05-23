@@ -38,7 +38,8 @@ namespace SAE.CommonComponent.ConfigServer.Test
             var message = new HttpRequestMessage(HttpMethod.Post, API);
             message.AddJsonContent(commond);
             var responseMessage = await this.HttpClient.SendAsync(message);
-            var id = await responseMessage.AsResult<string>();
+            responseMessage.EnsureSuccessStatusCode();
+            var id = await responseMessage.AsAsync<string>();
             var config = await this.Get(id);
             Assert.Equal(commond.Name, config.Name);
             Assert.Equal(commond.Content, config.Content);
@@ -60,7 +61,7 @@ namespace SAE.CommonComponent.ConfigServer.Test
             };
             message.AddJsonContent(commond);
             var responseMessage = await this.HttpClient.SendAsync(message);
-            await responseMessage.AsResult();
+            responseMessage.EnsureSuccessStatusCode();
             var newConfig = await this.Get(config.Id);
             Assert.NotEqual(commond.Name, config.Name);
             Assert.NotEqual(commond.Content, config.Content);
@@ -74,16 +75,16 @@ namespace SAE.CommonComponent.ConfigServer.Test
             var config = await this.Add();
             var message = new HttpRequestMessage(HttpMethod.Delete, $"{API}/{config.Id}");
             var responseMessage = await this.HttpClient.SendAsync(message);
-            await responseMessage.AsResult();
+            responseMessage.EnsureSuccessStatusCode();
             var exception = await Assert.ThrowsAsync<SaeException>(() => this.Get(config.Id));
-            Assert.Equal(StatusCode.ResourcesNotExist, exception.Code);
+            Assert.Equal((int)StatusCodes.ResourcesNotExist, exception.Code);
         }
 
         private async Task<ConfigDto> Get(string id)
         {
             var message = new HttpRequestMessage(HttpMethod.Get, $"{API}/{id}");
             var responseMessage = await this.HttpClient.SendAsync(message);
-            return await responseMessage.AsResult<ConfigDto>();
+            return await responseMessage.AsAsync<ConfigDto>();
         }
 
 
