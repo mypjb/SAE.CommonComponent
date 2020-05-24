@@ -6,6 +6,7 @@ using SAE.CommonComponent.Test;
 using SAE.CommonLibrary;
 using SAE.CommonLibrary.EventStore.Document;
 using SAE.CommonLibrary.Extension;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -80,7 +81,7 @@ namespace SAE.CommonComponent.Routing.Test
             var responseMessage = await this.HttpClient.SendAsync(message);
             responseMessage.EnsureSuccessStatusCode();
             var exception = await Assert.ThrowsAsync<SaeException>(() => this.Get(menu.Id));
-            Assert.Equal((int)StatusCodes.ResourcesNotExist, exception.Code);
+            Assert.Equal(exception.Code, (int)StatusCodes.ResourcesNotExist);
         }
 
         [Fact]
@@ -106,7 +107,9 @@ namespace SAE.CommonComponent.Routing.Test
         private async Task<MenuDto> Get(string id)
         {
             var message = new HttpRequestMessage(HttpMethod.Get, $"{API}/{id}");
+
             var responseMessage = await this.HttpClient.SendAsync(message);
+
             return await responseMessage.AsAsync<MenuDto>();
         }
     }

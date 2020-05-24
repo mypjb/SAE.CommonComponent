@@ -3,6 +3,7 @@ using SAE.CommonComponent.User.Commands;
 using SAE.CommonComponent.User.Domains;
 using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.Abstract.Model;
+using SAE.CommonLibrary.Data;
 using SAE.CommonLibrary.EventStore.Document;
 using System;
 using System.Collections.Generic;
@@ -18,8 +19,11 @@ namespace SAE.CommonComponent.User.Handles
                               ICommandHandler<UserCommand.Find,UserDto>,
                               ICommandHandler<UserCommand.Query,IPagedList<UserDto>>
     {
-        public UserHandle(IDocumentStore documentStore) : base(documentStore)
+        private readonly IStorage _storage;
+
+        public UserHandle(IDocumentStore documentStore,IStorage storage) : base(documentStore)
         {
+            this._storage = storage;
         }
 
         public async Task<string> Handle(UserCommand.Register command)
@@ -39,17 +43,28 @@ namespace SAE.CommonComponent.User.Handles
 
         public Task Handle(UserCommand.ChangeStatus command)
         {
-            throw new NotImplementedException();
+            return this.Update(command.Id, user =>
+            {
+                user.ChangeStatus(command);
+            });
         }
 
         public Task<UserDto> Handle(UserCommand.Find command)
         {
-            throw new NotImplementedException();
+            var user = this._storage.AsQueryable<UserDto>()
+                           .FirstOrDefault(s => s.AccountName.Equals(command.AccountName));
+            return Task.FromResult(user);
         }
 
         public Task<IPagedList<UserDto>> Handle(UserCommand.Query command)
         {
-            throw new NotImplementedException();
+            var query = this._storage.AsQueryable<UserDto>();
+            if (!string.IsNullOrWhiteSpace(command.Name))
+            {
+                query = query.Where(s => s.Name.Contains(command.Name));
+            }
+
+            return Task.FromResult(PagedList.Build(query, command));
         }
 
         /// <summary>

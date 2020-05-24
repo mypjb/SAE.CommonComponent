@@ -139,7 +139,9 @@ namespace SAE.CommonComponent.ConfigServer.Test
         private async Task<ProjectDto> Get(string id)
         {
             var message = new HttpRequestMessage(HttpMethod.Get, $"{API}/{id}");
+
             var responseMessage = await this.HttpClient.SendAsync(message);
+
             return await responseMessage.AsAsync<ProjectDto>();
         }
 

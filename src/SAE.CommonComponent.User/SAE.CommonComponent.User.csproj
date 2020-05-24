@@ -5,7 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\CommonLibrary\src\SAE.CommonLibrary.AspNetCore\SAE.CommonLibrary.AspNetCore.csproj" />
     <ProjectReference Include="..\..\..\CommonLibrary\src\SAE.CommonLibrary.EventStore.Document\SAE.CommonLibrary.EventStore.Document.csproj" />
+    <ProjectReference Include="..\..\..\CommonLibrary\src\SAE.CommonLibrary.Plugin.AspNetCore\SAE.CommonLibrary.Plugin.AspNetCore.csproj" />
     <ProjectReference Include="..\SAE.CommonComponent.User.Abstract\SAE.CommonComponent.User.Abstract.csproj" />
     <ProjectReference Include="..\SAE.CommonComponent\SAE.CommonComponent.csproj" />
   </ItemGroup>

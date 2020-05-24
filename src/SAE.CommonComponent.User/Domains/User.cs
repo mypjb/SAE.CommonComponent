@@ -125,5 +125,10 @@ namespace SAE.CommonComponent.User.Domains
 
             this.Apply(@event);
         }
+
+        internal void ChangeStatus(UserCommand.ChangeStatus command)
+        {
+            this.Apply<UserEvent.ChangeStatus>(command);
+        }
     }
 }

@@ -25,7 +25,7 @@ namespace SAE.CommonComponent.User.Events
             public string Password { get; set; }
         }
 
-        public class ChangeStatus
+        public class ChangeStatus:IEvent
         {
             public Status Status { get; set; }
         }
