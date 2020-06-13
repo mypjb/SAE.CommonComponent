@@ -23,9 +23,9 @@ namespace SAE.CommonComponent.Application.Abstract.Handles
                               ICommandHandler<AppCommand.ReferenceScope>,
                               ICommandHandler<AppCommand.RefreshSecret>,
                               ICommandHandler<AppCommand.Query, IPagedList<AppDto>>,
-                              ICommandHandler<string, AppDto>,
+                              ICommandHandler<AppCommand.Find, AppDto>,
                               ICommandHandler<ScopeCommand.Create>,
-                              ICommandHandler<ScopeCommand.QueryALL, IEnumerable<ScopeDto>>,
+                              ICommandHandler<ScopeCommand.List, IEnumerable<ScopeDto>>,
                               ICommandHandler<ScopeCommand.Query, IPagedList<ScopeDto>>,
                               ICommandHandler<ScopeCommand.Remove>
     {
@@ -70,10 +70,10 @@ namespace SAE.CommonComponent.Application.Abstract.Handles
             return this.Update<App>(command.Id, app => app.RefreshSecret());
         }
 
-        public Task<AppDto> Handle(string id)
+        public Task<AppDto> Handle(AppCommand.Find command)
         {
 
-            return Task.FromResult(Assert.Build(this._storage.AsQueryable<AppDto>().FirstOrDefault(s => s.Id == id))
+            return Task.FromResult(Assert.Build(this._storage.AsQueryable<AppDto>().FirstOrDefault(s => s.Id == command.Id))
                                          .NotNull()
                                          .Current);
         }
@@ -104,7 +104,7 @@ namespace SAE.CommonComponent.Application.Abstract.Handles
             }
         }
 
-        public async Task<IEnumerable<ScopeDto>> Handle(ScopeCommand.QueryALL command)
+        public async Task<IEnumerable<ScopeDto>> Handle(ScopeCommand.List command)
         {
             return (await this._distributedCache.GetAsync<IEnumerable<ScopeDto>>(ScopeKey))?.Distinct() ?? Enumerable.Empty<ScopeDto>();
         }

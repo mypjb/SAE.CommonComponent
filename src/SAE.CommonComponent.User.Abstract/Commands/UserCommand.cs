@@ -71,9 +71,15 @@ namespace SAE.CommonComponent.User.Commands
         /// <summary>
         /// find user
         /// </summary>
-        public class Find
+        public class GetByName
         {
             public string AccountName { get; set; }
         }
+
+        public class Find
+        {
+            public string Id { get; set; }
+        }
+        
     }
 }

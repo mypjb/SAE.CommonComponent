@@ -20,7 +20,7 @@ namespace SAE.CommonComponent.ConfigServer.Handles
                                  ICommandHandler<MenuCommand.Create, string>,
                                  ICommandHandler<MenuCommand.Change>,
                                  ICommandHandler<BatchRemoveCommand<Menu>>,
-                                 ICommandHandler<string, MenuDto>,
+                                 ICommandHandler<MenuCommand.Find, MenuDto>,
                                  //  ICommandHandler<MenuQueryCommand, IPagedList<MenuDto>>,
                                  ICommandHandler<MenuCommand.List, IEnumerable<MenuItemDto>>
     {
@@ -29,7 +29,6 @@ namespace SAE.CommonComponent.ConfigServer.Handles
         public ConfigHandler(IDocumentStore documentStore, IStorage storage) : base(documentStore)
         {
             this._storage = storage;
-
         }
 
         public async Task<string> Handle(MenuCommand.Create command)
@@ -48,10 +47,10 @@ namespace SAE.CommonComponent.ConfigServer.Handles
             await this._documentStore.SaveAsync(menu);
         }
 
-        public async Task<MenuDto> Handle(string command)
+        public async Task<MenuDto> Handle(MenuCommand.Find command)
         {
             var first = this._storage.AsQueryable<MenuDto>()
-                            .FirstOrDefault(s => s.Id == command);
+                            .FirstOrDefault(s => s.Id == command.Id);
             return first;
         }
 

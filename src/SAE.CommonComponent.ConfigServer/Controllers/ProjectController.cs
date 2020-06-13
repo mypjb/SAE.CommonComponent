@@ -46,9 +46,9 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
             return this.Ok();
         }
         [HttpGet("{id}")]
-        public async Task<object> Get(string id)
+        public async Task<object> Get([FromRoute] ProjectCommand.Find command)
         {
-            return await this._mediator.Send<ProjectDto>(id);
+            return await this._mediator.Send<ProjectDto>(command);
         }
 
         [HttpPost("config/{action}")]

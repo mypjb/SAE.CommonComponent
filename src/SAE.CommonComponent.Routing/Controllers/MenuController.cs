@@ -40,9 +40,9 @@ namespace SAE.CommonComponent.Routing.Controllers
             return this.Ok();
         }
         [HttpGet("{id}")]
-        public async Task<object> Get(string id)
+        public async Task<object> Get([FromRoute]MenuCommand.Find command)
         {
-            return await this._mediator.Send<MenuDto>(id);
+            return await this._mediator.Send<MenuDto>(command);
         }
         // [HttpGet("{action}")]
         // public async Task<object> Paging([FromQuery]MenuQueryCommand command)

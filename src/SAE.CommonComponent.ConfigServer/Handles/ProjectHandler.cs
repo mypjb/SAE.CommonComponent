@@ -16,7 +16,7 @@ namespace SAE.CommonComponent.ConfigServer.Handles
                                   ICommandHandler<ProjectCommand.Create, string>,
                                   ICommandHandler<ProjectCommand.Change>,
                                   ICommandHandler<RemoveCommand<Project>>,
-                                  ICommandHandler<string, ProjectDto>,
+                                  ICommandHandler<ProjectCommand.Find, ProjectDto>,
                                   ICommandHandler<ProjectCommand.Query, IPagedList<ProjectDto>>,
                                   ICommandHandler<ProjectCommand.VersionCumulation>
     {
@@ -43,10 +43,10 @@ namespace SAE.CommonComponent.ConfigServer.Handles
             return this.Remove(command.Id);
         }
 
-        public Task<ProjectDto> Handle(string command)
+        public Task<ProjectDto> Handle(ProjectCommand.Find command)
         {
             return Task.FromResult(this._storage.AsQueryable<ProjectDto>()
-                       .FirstOrDefault(s => s.Id == command));
+                       .FirstOrDefault(s => s.Id == command.Id));
         }
 
         public async Task<IPagedList<ProjectDto>> Handle(ProjectCommand.Query command)

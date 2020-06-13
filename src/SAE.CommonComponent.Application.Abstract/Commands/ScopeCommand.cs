@@ -19,7 +19,7 @@ namespace SAE.CommonComponent.Application.Commands
         {
 
         }
-        public class QueryALL
+        public class List
         {
         }
     }

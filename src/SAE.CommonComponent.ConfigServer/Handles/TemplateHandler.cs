@@ -15,7 +15,7 @@ namespace SAE.CommonComponent.ConfigServer.Handles
         ICommandHandler<TemplateCommand.Create, string>,
         ICommandHandler<TemplateCommand.Change>,
         ICommandHandler<RemoveCommand<Template>>,
-        ICommandHandler<string, TemplateDto>,
+        ICommandHandler<TemplateCommand.Find, TemplateDto>,
         ICommandHandler<TemplateCommand.Query, IPagedList<TemplateDto>>,
         ICommandHandler<ListCommand,IEnumerable<TemplateDto>>
     {
@@ -41,10 +41,10 @@ namespace SAE.CommonComponent.ConfigServer.Handles
             return this.Remove(command.Id);
         }
 
-        public Task<TemplateDto> Handle(string command)
+        public Task<TemplateDto> Handle(TemplateCommand.Find command)
         {
             return Task.FromResult(this._storage.AsQueryable<TemplateDto>()
-                .FirstOrDefault(s => s.Id == command));
+                .FirstOrDefault(s => s.Id == command.Id));
         }
 
         public async Task<IPagedList<TemplateDto>> Handle(TemplateCommand.Query command)

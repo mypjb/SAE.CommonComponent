@@ -19,9 +19,9 @@ namespace SAE.CommonComponent.Application.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<object> Get(string id)
+        public async Task<object> Get([FromRoute]AppCommand.Find command)
         {
-            return await this._mediator.Send<AppDto>(id);
+            return await this._mediator.Send<AppDto>(command);
         }
 
         [HttpPost]

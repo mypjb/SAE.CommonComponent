@@ -20,7 +20,7 @@ namespace SAE.CommonComponent.ConfigServer.Handles
                                         ICommandHandler<ProjectCommand.ConfigQuery, IPagedList<ProjectConfigDto>>,
                                         ICommandHandler<ProjectCommand.ConfigQuery, IPagedList<ConfigDto>>,
                                         ICommandHandler<ProjectCommand.ConfigChangeAlias>,
-                                        ICommandHandler<string, ProjectConfigDto>
+                                        ICommandHandler<ProjectCommand.Find, ProjectConfigDto>
     {
         private readonly IMediator _mediator;
         private readonly IStorage _storage;
@@ -93,9 +93,9 @@ namespace SAE.CommonComponent.ConfigServer.Handles
             });
         }
 
-        public async Task<ProjectConfigDto> Handle(string command)
+        public async Task<ProjectConfigDto> Handle(ProjectCommand.Find command)
         {
-            return this._storage.AsQueryable<ProjectConfigDto>().First(s => s.Id == command);
+            return this._storage.AsQueryable<ProjectConfigDto>().First(s => s.Id == command.Id);
         }
 
         async Task<IPagedList<ConfigDto>> ICommandHandler<ProjectCommand.ConfigQuery, IPagedList<ConfigDto>>.Handle(ProjectCommand.ConfigQuery command)

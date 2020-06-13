@@ -22,9 +22,9 @@ namespace SAE.CommonComponent.User.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<object> Get(string id)
+        public async Task<object> Get([FromRoute] UserCommand.Find find)
         {
-            var dto= await this._mediator.Send<UserDto>(id);
+            var dto= await this._mediator.Send<UserDto>(find);
             return dto;
         }
 

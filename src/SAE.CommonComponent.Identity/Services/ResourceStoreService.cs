@@ -27,7 +27,7 @@ namespace SAE.CommonComponent.Identity.Services
 
         public async Task<ApiResource> FindApiResourceAsync(string name)
         {
-            var scopes = await this._mediator.Send<IEnumerable<ScopeDto>>(new ScopeCommand.QueryALL());
+            var scopes = await this._mediator.Send<IEnumerable<ScopeDto>>(new ScopeCommand.List());
             var scope= scopes.FirstOrDefault(s => s.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
             if (scope == null)
             {
@@ -38,7 +38,7 @@ namespace SAE.CommonComponent.Identity.Services
 
         public async Task<IEnumerable<ApiResource>> FindApiResourcesByScopeAsync(IEnumerable<string> scopeNames)
         {
-            var scopes = await this._mediator.Send<IEnumerable<ScopeDto>>(new ScopeCommand.QueryALL());
+            var scopes = await this._mediator.Send<IEnumerable<ScopeDto>>(new ScopeCommand.List());
             return scopes.Where(s => scopeNames.Any(p => s.Name.Equals(p, StringComparison.OrdinalIgnoreCase)))
                          .Select(s => new ApiResource(s.Name,s.Display));
         }
@@ -50,7 +50,7 @@ namespace SAE.CommonComponent.Identity.Services
 
         public async Task<Resources> GetAllResourcesAsync()
         {
-            var scopes = await this._mediator.Send<IEnumerable<ScopeDto>>(new ScopeCommand.QueryALL());
+            var scopes = await this._mediator.Send<IEnumerable<ScopeDto>>(new ScopeCommand.List());
             return new Resources(this._identities, scopes.Select(s => new ApiResource(s.Name, s.Display)).ToArray());
         }
     }

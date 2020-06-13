@@ -42,9 +42,9 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
             return this.Ok();
         }
         [HttpGet("{id}")]
-        public async Task<object> Get(string id)
+        public async Task<object> Get([FromRoute] TemplateCommand.Find command)
         {
-            return await this._mediator.Send<TemplateDto>(id);
+            return await this._mediator.Send<TemplateDto>(command);
         }
         [HttpGet("{action}")]
         public async Task<object> Paging([FromQuery]TemplateCommand.Query command)

@@ -14,7 +14,7 @@ namespace SAE.CommonComponent.ConfigServer.Handles
         ICommandHandler<SolutionCommand.Create, string>,
         ICommandHandler<SolutionCommand.Change>,
         ICommandHandler<RemoveCommand<Solution>>,
-        ICommandHandler<string, SolutionDto>,
+        ICommandHandler<SolutionCommand.Find, SolutionDto>,
         ICommandHandler<SolutionCommand.Query, IPagedList<SolutionDto>>
     {
         private readonly IStorage _storage;
@@ -39,10 +39,10 @@ namespace SAE.CommonComponent.ConfigServer.Handles
             return this.Remove(command.Id);
         }
 
-        public Task<SolutionDto> Handle(string command)
+        public Task<SolutionDto> Handle(SolutionCommand.Find command)
         {
             return Task.FromResult(this._storage.AsQueryable<SolutionDto>()
-                .FirstOrDefault(s => s.Id == command));
+                .FirstOrDefault(s => s.Id == command.Id));
         }
 
         public async Task<IPagedList<SolutionDto>> Handle(SolutionCommand.Query command)

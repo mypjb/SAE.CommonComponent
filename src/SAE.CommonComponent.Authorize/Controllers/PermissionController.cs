@@ -42,9 +42,9 @@ namespace SAE.CommonComponent.Authorize.Controllers
             return this.Ok();
         }
         [HttpGet("{id}")]
-        public async Task<object> Get(string id)
+        public async Task<object> Get([FromRoute]PermissionCommand.Find command)
         {
-            return await this._mediator.Send<PermissionDto>(id);
+            return await this._mediator.Send<PermissionDto>(command);
         }
         [HttpGet("{action}")]
         public async Task<object> Paging([FromQuery]PermissionCommand.Query command)
@@ -55,7 +55,7 @@ namespace SAE.CommonComponent.Authorize.Controllers
         [HttpGet("{action}")]
         public async Task<object> ALL()
         {
-            return await this._mediator.Send<IEnumerable<PermissionDto>>(new PermissionCommand.QueryALL());
+            return await this._mediator.Send<IEnumerable<PermissionDto>>(new PermissionCommand.List());
         }
 
         [HttpGet("{action}")]

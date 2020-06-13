@@ -16,8 +16,9 @@ namespace SAE.CommonComponent.User.Handles
                               ICommandHandler<UserCommand.Register, string>,
                               ICommandHandler<UserCommand.ChangePassword>,
                               ICommandHandler<UserCommand.ChangeStatus>,
-                              ICommandHandler<UserCommand.Find,UserDto>,
-                              ICommandHandler<UserCommand.Query,IPagedList<UserDto>>
+                              ICommandHandler<UserCommand.GetByName,UserDto>,
+                              ICommandHandler<UserCommand.Query,IPagedList<UserDto>>,
+                              ICommandHandler<UserCommand.Find,UserDto>
     {
         private readonly IStorage _storage;
 
@@ -49,7 +50,7 @@ namespace SAE.CommonComponent.User.Handles
             });
         }
 
-        public Task<UserDto> Handle(UserCommand.Find command)
+        public Task<UserDto> Handle(UserCommand.GetByName command)
         {
             var user = this._storage.AsQueryable<UserDto>()
                            .FirstOrDefault(s => s.AccountName.Equals(command.AccountName));
@@ -67,6 +68,13 @@ namespace SAE.CommonComponent.User.Handles
             return Task.FromResult(PagedList.Build(query, command));
         }
 
+        public async Task<UserDto> Handle(UserCommand.Find command)
+        {
+           return  this._storage.AsQueryable<UserDto>()
+                                .FirstOrDefault(s => s.Id == command.Id);
+                         
+        }
+
         /// <summary>
         /// Whether the account exists 
         /// </summary>
@@ -74,7 +82,7 @@ namespace SAE.CommonComponent.User.Handles
         /// <returns></returns>
         private async Task<bool> AccountExist(string name)
         {
-            return (await this.Handle(new UserCommand.Find
+            return (await this.Handle(new UserCommand.GetByName
             {
                 AccountName = name
             })) != null;

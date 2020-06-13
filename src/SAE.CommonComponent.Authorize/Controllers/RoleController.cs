@@ -39,9 +39,9 @@ namespace SAE.CommonComponent.Authorize.Controllers
             return this.Ok();
         }
         [HttpGet("{id}")]
-        public async Task<object> Get(string id)
+        public async Task<object> Get([FromRoute]RoleCommand.Find command)
         {
-            return await this._mediator.Send<RoleDto>(id);
+            return await this._mediator.Send<RoleDto>(command.Id);
         }
         [HttpGet("{action}")]
         public async Task<object> Paging([FromQuery]RoleCommand.Query command)

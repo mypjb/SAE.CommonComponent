@@ -32,7 +32,13 @@ namespace SAE.CommonComponent.Authorize.Commands
         {
             public string Name { get; set; }
         }
-        public class QueryALL
+
+        public class Find
+        {
+            public string Id { get; set; }
+        }
+
+        public class List
         {
 
         }
