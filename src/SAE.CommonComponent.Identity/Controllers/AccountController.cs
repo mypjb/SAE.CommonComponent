@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace SAE.CommonComponent.Identity.Controllers
 {
+    [Route("{controller}/{action}")]
     [ApiController]
     public class AccountController : Controller
     {
@@ -18,6 +19,8 @@ namespace SAE.CommonComponent.Identity.Controllers
         {
             this._mediator = mediator;
         }
+
+        [HttpGet, HttpPost]
         public async Task<IActionResult> Login(AccountLoginCommand command)
         {
             var principal = await this._mediator.Send<IPrincipal>(command);
@@ -28,12 +31,13 @@ namespace SAE.CommonComponent.Identity.Controllers
 
             properties.IsPersistent = command.IsPersistent;
 
-            return this.SignIn(claimsPrincipal,
-                               properties,
-                               IdentityServerConstants.DefaultCookieAuthenticationScheme);
+
+            await this.HttpContext.SignInAsync(IdentityServerConstants.DefaultCookieAuthenticationScheme,claimsPrincipal, properties);
+
+            return this.Ok();
         }
 
-
+        [HttpGet, HttpPost]
         public IActionResult Logout()
         {
             return this.SignOut();

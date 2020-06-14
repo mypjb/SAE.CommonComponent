@@ -92,9 +92,7 @@ namespace SAE.CommonComponent.User.Handles
                     dto = null;
                 }
             }
-            Assert.Build(dto)
-                  .NotNull("Incorrect user name or password!");
-
+            
             return dto;
         }
 

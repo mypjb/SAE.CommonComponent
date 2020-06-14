@@ -44,7 +44,8 @@ namespace SAE.CommonComponent.User
                     .AddNewtonsoftJson();
 
             services.AddServiceProvider()
-                    .AddMediator();
+                    .AddMediator()
+                    .AddMediatorOrleansSilo();
             services.AddMemoryDocument()
                     .AddMemoryMessageQueue()
                     .AddDataPersistenceService(Assembly.GetExecutingAssembly(),
@@ -69,7 +70,7 @@ namespace SAE.CommonComponent.User
 
         public override void PluginConfigure(IApplicationBuilder app)
         {
-            
+            app.UseMediatorOrleansSilo();
         }
     }
 }

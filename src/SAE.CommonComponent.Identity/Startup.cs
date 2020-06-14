@@ -35,23 +35,7 @@ namespace SAE.CommonComponent.Identity
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IMediator mediator)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-
-                Enumerable.Range(0, 10)
-                          .Select(s => new AppCommand.Create
-                          {
-                              Name = s.ToString("000000"),
-                              Urls = new[] { $"http://test{s}.com" }
-                          }).ForEach(command =>
-                          {
-                              mediator.Send(command).Wait();
-                          });
-
-                mediator.Send(new ScopeCommand.Create() { Name = "config", Display = "config center" }).Wait();
-            }
-
+            
             app.UseRouting()
                .UseCors();
             
@@ -59,12 +43,31 @@ namespace SAE.CommonComponent.Identity
 
             app.UseEndpoints(endpoints =>
                {
-                   endpoints.MapControllers();
+                   endpoints.MapDefaultControllerRoute();
                });
+
+            //if (env.IsDevelopment())
+            //{
+            //    app.UseDeveloperExceptionPage();
+
+            //    Enumerable.Range(0, 10)
+            //              .Select(s => new AppCommand.Create
+            //              {
+            //                  Name = s.ToString("000000"),
+            //                  Urls = new[] { $"http://test{s}.com" }
+            //              }).ForEach(command =>
+            //              {
+            //                  mediator.Send(command).Wait();
+            //              });
+
+            //    mediator.Send(new ScopeCommand.Create() { Name = "config", Display = "config center" }).Wait();
+            //}
         }
 
         public override void PluginConfigureServices(IServiceCollection services)
         {
+            services.AddAuthentication().AddCookie();
+
             var build = services.AddIdentityServer()
                                 .AddJwtBearerClientAuthentication()
                                 .AddDeveloperSigningCredential()
@@ -80,7 +83,8 @@ namespace SAE.CommonComponent.Identity
             var assemblys = new[] { typeof(AppDto).Assembly, Assembly.GetExecutingAssembly() };
 
             services.AddServiceProvider()
-                    .AddMediator(assemblys);
+                    .AddMediator(assemblys)
+                    .AddMediatorOrleansClient();
 
             services.AddMemoryDocument()
                     .AddMemoryMessageQueue()
@@ -90,7 +94,10 @@ namespace SAE.CommonComponent.Identity
 
         public override void PluginConfigure(IApplicationBuilder app)
         {
-            app.UseIdentityServer();
+            app.UseAuthentication();
+
+            app.UseIdentityServer()
+               .UseMediatorOrleansSilo();
         }
     }
 }

@@ -1,11 +1,9 @@
-﻿using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Hosting;
 using SAE.CommonLibrary;
 using SAE.CommonLibrary.Extension;
 using System.Net.Http;
-using System.Threading.Tasks;
 using Xunit.Abstractions;
 
 namespace SAE.CommonComponent.Test
@@ -24,6 +22,7 @@ namespace SAE.CommonComponent.Test
                    .UseAutofacProviderFactory()
                    .ConfigureWebHost(webBuilder =>
                    {
+                       webBuilder.UseEnvironment(Environments.Development);
                        this.UseStartup(webBuilder.UseTestServer());
                    }).Start();
 

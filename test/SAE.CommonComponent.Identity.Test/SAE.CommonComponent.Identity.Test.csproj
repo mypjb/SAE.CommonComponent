@@ -19,4 +19,10 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\SAE.CommonComponent.Identity\SAE.CommonComponent.Identity.csproj" />
+    <ProjectReference Include="..\SAE.CommonComponent.Test\SAE.CommonComponent.Test.csproj" />
+    <ProjectReference Include="..\SAE.CommonComponent.User.Test\SAE.CommonComponent.User.Test.csproj" />
+  </ItemGroup>
+
 </Project>

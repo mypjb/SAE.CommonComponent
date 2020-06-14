@@ -1,0 +1,7 @@
+{
+  "profiles": {
+    "SAE.CommonComponent.Identity.Test": {
+      "commandName": "Project"
+    }
+  }
+}
