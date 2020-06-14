@@ -19,10 +19,10 @@ namespace SAE.CommonComponent.ConfigServer.Handles
     public class ConfigHandler : AbstractHandler<Menu>,
                                  ICommandHandler<MenuCommand.Create, string>,
                                  ICommandHandler<MenuCommand.Change>,
-                                 ICommandHandler<BatchRemoveCommand<Menu>>,
-                                 ICommandHandler<MenuCommand.Find, MenuDto>,
+                                 ICommandHandler<Command.BatchDelete<Menu>>,
+                                 ICommandHandler<Command.Find<MenuDto>, MenuDto>,
                                  //  ICommandHandler<MenuQueryCommand, IPagedList<MenuDto>>,
-                                 ICommandHandler<MenuCommand.List, IEnumerable<MenuItemDto>>
+                                 ICommandHandler<Command.List<MenuItemDto>, IEnumerable<MenuItemDto>>
     {
         private readonly IStorage _storage;
 
@@ -47,7 +47,7 @@ namespace SAE.CommonComponent.ConfigServer.Handles
             await this._documentStore.SaveAsync(menu);
         }
 
-        public async Task<MenuDto> Handle(MenuCommand.Find command)
+        public async Task<MenuDto> Handle(Command.Find<MenuDto> command)
         {
             var first = this._storage.AsQueryable<MenuDto>()
                             .FirstOrDefault(s => s.Id == command.Id);
@@ -64,7 +64,7 @@ namespace SAE.CommonComponent.ConfigServer.Handles
         //     return PagedList.Build(query, command);
         // }
 
-        public async Task<IEnumerable<MenuItemDto>> Handle(MenuCommand.List command)
+        public async Task<IEnumerable<MenuItemDto>> Handle(Command.List<MenuItemDto> command)
         {
             var menus = this._storage.AsQueryable<MenuDto>()
                                      .Select(s => new MenuItemDto
@@ -98,7 +98,7 @@ namespace SAE.CommonComponent.ConfigServer.Handles
                                 s.Path == menu.Path)) > 0;
         }
 
-        public Task Handle(BatchRemoveCommand<Menu> command)
+        public Task Handle(Command.BatchDelete<Menu> command)
         {
             return this._documentStore.RemoveAsync<Menu>(command.Ids);
         }

@@ -30,7 +30,7 @@ namespace SAE.CommonComponent.Authorize.Controllers
             return await this._mediator.Send<string>(command);
         }
         [HttpDelete]
-        public async Task<object> Delete([FromBody]BatchRemoveCommand<Permission> command)
+        public async Task<object> Delete([FromBody]Command.BatchDelete<Permission> command)
         {
             await this._mediator.Send(command);
             return this.Ok();
@@ -42,7 +42,7 @@ namespace SAE.CommonComponent.Authorize.Controllers
             return this.Ok();
         }
         [HttpGet("{id}")]
-        public async Task<object> Get([FromRoute]PermissionCommand.Find command)
+        public async Task<object> Get([FromRoute]Command.Find<PermissionDto> command)
         {
             return await this._mediator.Send<PermissionDto>(command);
         }
@@ -55,7 +55,7 @@ namespace SAE.CommonComponent.Authorize.Controllers
         [HttpGet("{action}")]
         public async Task<object> ALL()
         {
-            return await this._mediator.Send<IEnumerable<PermissionDto>>(new PermissionCommand.List());
+            return await this._mediator.Send<IEnumerable<PermissionDto>>(new Command.List<PermissionDto>());
         }
 
         [HttpGet("{action}")]

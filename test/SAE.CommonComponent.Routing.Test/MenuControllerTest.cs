@@ -74,7 +74,7 @@ namespace SAE.CommonComponent.Routing.Test
         {
             var menu = await this.Add();
             var message = new HttpRequestMessage(HttpMethod.Delete, API);
-            message.AddJsonContent(new BatchRemoveCommand<Menu>
+            message.AddJsonContent(new Command.BatchDelete<Menu>
             {
                 Ids = new[] { menu.Id }
             });

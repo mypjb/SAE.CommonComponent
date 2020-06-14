@@ -12,6 +12,7 @@ using SAE.CommonComponent.Authorize.Dtos;
 using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.AspNetCore.Authorization;
 using SAE.CommonLibrary.AspNetCore.Routing;
+using SAE.CommonLibrary.EventStore.Document;
 using SAE.CommonLibrary.Plugin.AspNetCore;
 
 namespace SAE.CommonComponent.Authorize
@@ -53,7 +54,7 @@ namespace SAE.CommonComponent.Authorize
                     {
                         var mediator = provider.GetService<IMediator>();
 
-                        var dtos= mediator.Send<IEnumerable<PermissionDto>>(new PermissionCommand.List())
+                        var dtos= mediator.Send<IEnumerable<PermissionDto>>(new Command.List<PermissionDto>())
                                           .GetAwaiter()
                                           .GetResult()
                                           .OrderBy(s=>s.Id)

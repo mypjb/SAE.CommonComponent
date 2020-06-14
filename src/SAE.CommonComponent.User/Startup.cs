@@ -22,17 +22,22 @@ namespace SAE.CommonComponent.User
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            TinyMapper.Bind<UserEvent.ChangePassword, Domains.User>(config =>
-            {
-                config.Bind(@event => @event.Password, user => user.Account.Password);
-            });
-
             services.AddControllers();
             this.PluginConfigureServices(services);
         }
 
         public override void PluginConfigureServices(IServiceCollection services)
         {
+            TinyMapper.Bind<UserEvent.ChangePassword, Domains.User>(config =>
+            {
+                config.Bind(@event => @event.Password, user => user.Account.Password);
+            });
+
+            TinyMapper.Bind<Domains.User, UserDto>(config =>
+            {
+                config.Bind(user => user.Account.Name, dto => dto.AccountName);
+            });
+
 
             services.AddMvc()
                     .AddResponseResult()

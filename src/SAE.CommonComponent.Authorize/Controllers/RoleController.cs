@@ -27,7 +27,7 @@ namespace SAE.CommonComponent.Authorize.Controllers
             return await this._mediator.Send<string>(command);
         }
         [HttpDelete]
-        public async Task<object> Delete([FromBody]BatchRemoveCommand<Role> command)
+        public async Task<object> Delete([FromBody]Command.BatchDelete<Role> command)
         {
             await this._mediator.Send(command);
             return this.Ok();
@@ -39,7 +39,7 @@ namespace SAE.CommonComponent.Authorize.Controllers
             return this.Ok();
         }
         [HttpGet("{id}")]
-        public async Task<object> Get([FromRoute]RoleCommand.Find command)
+        public async Task<object> Get([FromRoute]Command.Find<RoleDto> command)
         {
             return await this._mediator.Send<RoleDto>(command.Id);
         }

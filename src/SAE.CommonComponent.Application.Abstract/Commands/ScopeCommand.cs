@@ -11,16 +11,13 @@ namespace SAE.CommonComponent.Application.Commands
             public string Display { get; set; }
         }
 
-        public class Remove
+        public class Delete
         {
             public string Name { get; set; }
         }
         public class Query : Paging
         {
 
-        }
-        public class List
-        {
         }
     }
 }

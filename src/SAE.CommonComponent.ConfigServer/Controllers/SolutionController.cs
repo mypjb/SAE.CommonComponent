@@ -30,7 +30,7 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
             return await this._mediator.Send<string>(command);
         }
         [HttpDelete("{id}")]
-        public async Task<object> Delete([FromRoute]RemoveCommand<Solution> command)
+        public async Task<object> Delete([FromRoute]Command.Delete<Solution> command)
         {
             await this._mediator.Send(command);
             return this.Ok();
@@ -42,7 +42,7 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
             return this.Ok();
         }
         [HttpGet("{id}")]
-        public async Task<object> Get([FromRoute]SolutionCommand.Find command)
+        public async Task<object> Get([FromRoute]Command.Find<SolutionDto> command)
         {
             return await this._mediator.Send<SolutionDto>(command);
         }

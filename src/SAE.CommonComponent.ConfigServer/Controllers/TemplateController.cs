@@ -30,7 +30,7 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
             return await this._mediator.Send<string>(command);
         }
         [HttpDelete("{id}")]
-        public async Task<object> Delete([FromRoute]RemoveCommand<Template> command)
+        public async Task<object> Delete([FromRoute]Command.Delete<Template> command)
         {
             await this._mediator.Send(command);
             return this.Ok();
@@ -42,7 +42,7 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
             return this.Ok();
         }
         [HttpGet("{id}")]
-        public async Task<object> Get([FromRoute] TemplateCommand.Find command)
+        public async Task<object> Get([FromRoute] Command.Find<TemplateDto> command)
         {
             return await this._mediator.Send<TemplateDto>(command);
         }
@@ -55,7 +55,7 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
         [HttpGet("{action}")]
         public async Task<object> List()
         {
-            return await this._mediator.Send<IEnumerable<TemplateDto>>(new ListCommand());
+            return await this._mediator.Send<IEnumerable<TemplateDto>>(new Command.List<TemplateDto>());
         }
     }
 }

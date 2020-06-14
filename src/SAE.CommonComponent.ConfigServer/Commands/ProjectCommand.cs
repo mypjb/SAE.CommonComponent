@@ -8,10 +8,6 @@ namespace SAE.CommonComponent.ConfigServer.Commands
 {
     public class ProjectCommand
     {
-        public class Find
-        {
-            public string Id { get; set; }
-        }
         public class Create
         {
             public string Name { get; set; }

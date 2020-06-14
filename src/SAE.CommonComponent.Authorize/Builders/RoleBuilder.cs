@@ -4,6 +4,7 @@ using SAE.CommonComponent.Authorize.Dtos;
 using SAE.CommonLibrary.Abstract.Builder;
 using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.Data;
+using SAE.CommonLibrary.EventStore.Document;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +24,7 @@ namespace SAE.CommonComponent.Authorize.Builders
         }
         public async Task Build(IEnumerable<RoleDto> models)
         {
-            var permissionDtos=await this._mediator.Send<IEnumerable<PermissionDto>>(new PermissionCommand.List());
+            var permissionDtos=await this._mediator.Send<IEnumerable<PermissionDto>>(new Command.List<PermissionDto>());
 
             foreach(RoleDto dto in models)
             {

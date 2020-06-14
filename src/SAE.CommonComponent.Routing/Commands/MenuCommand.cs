@@ -26,13 +26,5 @@ namespace SAE.CommonComponent.Routing.Commands
         //     public string Name { get; set; }
         // }
 
-        public class List
-        {
-        }
-
-        public class Find
-        {
-            public string Id { get; set; }
-        }
     }
 }

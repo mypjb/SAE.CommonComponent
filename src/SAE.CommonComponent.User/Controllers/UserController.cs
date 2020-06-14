@@ -3,6 +3,7 @@ using SAE.CommonComponent.User.Abstract.Dtos;
 using SAE.CommonComponent.User.Commands;
 using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.Abstract.Model;
+using SAE.CommonLibrary.EventStore.Document;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,9 +23,9 @@ namespace SAE.CommonComponent.User.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<object> Get([FromRoute] UserCommand.Find find)
+        public async Task<object> Get([FromRoute]Command.Find<UserDto> command)
         {
-            var dto= await this._mediator.Send<UserDto>(find);
+            var dto= await this._mediator.Send<UserDto>(command);
             return dto;
         }
 

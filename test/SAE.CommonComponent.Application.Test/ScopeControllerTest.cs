@@ -51,7 +51,7 @@ namespace SAE.CommonComponent.Application.Test
         {
             var scope = await this.Add();
             var message = new HttpRequestMessage(HttpMethod.Delete, API);
-            message.AddJsonContent(new ScopeCommand.Remove
+            message.AddJsonContent(new ScopeCommand.Delete
             {
                 Name = scope.Name
             });

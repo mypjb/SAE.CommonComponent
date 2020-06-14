@@ -75,11 +75,11 @@ namespace SAE.CommonComponent.User.Commands
         {
             public string AccountName { get; set; }
         }
-
-        public class Find
-        {
-            public string Id { get; set; }
-        }
         
+        public class Authentication
+        {
+            public string AccountName { get; set; }
+            public string Password { get; set; }
+        }
     }
 }

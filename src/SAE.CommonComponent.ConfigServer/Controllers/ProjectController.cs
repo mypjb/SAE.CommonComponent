@@ -34,7 +34,7 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<object> Delete([FromRoute]RemoveCommand<Project> command)
+        public async Task<object> Delete([FromRoute]Command.Delete<Project> command)
         {
             await this._mediator.Send(command);
             return this.Ok();
@@ -46,7 +46,7 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
             return this.Ok();
         }
         [HttpGet("{id}")]
-        public async Task<object> Get([FromRoute] ProjectCommand.Find command)
+        public async Task<object> Get([FromRoute] Command.Find<ProjectDto> command)
         {
             return await this._mediator.Send<ProjectDto>(command);
         }
@@ -75,7 +75,7 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
         }
 
         [HttpDelete("config")]
-        public async Task<object> ProjectConfig(BatchRemoveCommand<ProjectConfig> command)
+        public async Task<object> ProjectConfig(Command.BatchDelete<ProjectConfig> command)
         {
             await this._mediator.Send(command);
             return this.Ok();

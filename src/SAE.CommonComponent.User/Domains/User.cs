@@ -117,6 +117,11 @@ namespace SAE.CommonComponent.User.Domains
                   .False($"{this.Account.Name} is exist");
         }
 
+        public bool Authentication(string password)
+        {
+            return this.Account.CheckPassword(password);
+        }
+
         public void ChangePassword(UserCommand.ChangePassword command)
         {
             Assert.Build(this.Account.CheckPassword(command.OriginalPassword))
@@ -130,5 +135,6 @@ namespace SAE.CommonComponent.User.Domains
         {
             this.Apply<UserEvent.ChangeStatus>(command);
         }
+
     }
 }

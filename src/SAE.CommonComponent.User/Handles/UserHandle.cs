@@ -1,10 +1,12 @@
 ﻿using SAE.CommonComponent.User.Abstract.Dtos;
 using SAE.CommonComponent.User.Commands;
 using SAE.CommonComponent.User.Domains;
+using SAE.CommonLibrary;
 using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.Abstract.Model;
 using SAE.CommonLibrary.Data;
 using SAE.CommonLibrary.EventStore.Document;
+using SAE.CommonLibrary.Extension;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,13 +18,14 @@ namespace SAE.CommonComponent.User.Handles
                               ICommandHandler<UserCommand.Register, string>,
                               ICommandHandler<UserCommand.ChangePassword>,
                               ICommandHandler<UserCommand.ChangeStatus>,
-                              ICommandHandler<UserCommand.GetByName,UserDto>,
-                              ICommandHandler<UserCommand.Query,IPagedList<UserDto>>,
-                              ICommandHandler<UserCommand.Find,UserDto>
+                              ICommandHandler<UserCommand.GetByName, UserDto>,
+                              ICommandHandler<UserCommand.Query, IPagedList<UserDto>>,
+                              ICommandHandler<Command.Find<UserDto>, UserDto>,
+                              ICommandHandler<UserCommand.Authentication, UserDto>
     {
         private readonly IStorage _storage;
 
-        public UserHandle(IDocumentStore documentStore,IStorage storage) : base(documentStore)
+        public UserHandle(IDocumentStore documentStore, IStorage storage) : base(documentStore)
         {
             this._storage = storage;
         }
@@ -33,13 +36,14 @@ namespace SAE.CommonComponent.User.Handles
             await user.AccountExist(this.AccountExist);
             await this._documentStore.SaveAsync(user);
 
-            return user.Account.Name;
+            return user.Id;
         }
 
         public async Task Handle(UserCommand.ChangePassword command)
         {
             var user = await this.GetById(command.Id);
-            
+            user.ChangePassword(command);
+            await this._documentStore.SaveAsync(user);
         }
 
         public Task Handle(UserCommand.ChangeStatus command)
@@ -68,11 +72,30 @@ namespace SAE.CommonComponent.User.Handles
             return Task.FromResult(PagedList.Build(query, command));
         }
 
-        public async Task<UserDto> Handle(UserCommand.Find command)
+        public async Task<UserDto> Handle(Command.Find<UserDto> command)
         {
-           return  this._storage.AsQueryable<UserDto>()
-                                .FirstOrDefault(s => s.Id == command.Id);
-                         
+            return this._storage.AsQueryable<UserDto>()
+                                 .FirstOrDefault(s => s.Id == command.Id);
+
+        }
+
+        public async Task<UserDto> Handle(UserCommand.Authentication command)
+        {
+            var dto = this._storage.AsQueryable<UserDto>()
+                                     .FirstOrDefault(s => s.AccountName == command.AccountName);
+
+            if (dto != null)
+            {
+                var user = await this._documentStore.FindAsync<Domains.User>(dto.Id);
+                if (user == null || !user.Authentication(command.Password))
+                {
+                    dto = null;
+                }
+            }
+            Assert.Build(dto)
+                  .NotNull("Incorrect user name or password!");
+
+            return dto;
         }
 
         /// <summary>

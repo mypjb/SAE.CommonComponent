@@ -16,8 +16,8 @@ namespace SAE.CommonComponent.ConfigServer.Handles
     public class ConfigHandler : AbstractHandler<Config>,
                                  ICommandHandler<ConfigCommand.Create, string>,
                                  ICommandHandler<ConfigCommand.Change>,
-                                 ICommandHandler<RemoveCommand<Config>>,
-                                 ICommandHandler<ConfigCommand.Find, ConfigDto>,
+                                 ICommandHandler<Command.Delete<Config>>,
+                                 ICommandHandler<Command.Find<ConfigDto>, ConfigDto>,
                                  ICommandHandler<ConfigCommand.Query, IPagedList<ConfigDto>>
     {
         private readonly IStorage _storage;
@@ -28,13 +28,13 @@ namespace SAE.CommonComponent.ConfigServer.Handles
 
         }
 
-        public Task<ConfigDto> Handle(ConfigCommand.Find command)
+        public Task<ConfigDto> Handle(Command.Find<ConfigDto> command)
         {
             return Task.FromResult(this._storage.AsQueryable<ConfigDto>()
                      .FirstOrDefault(s => s.Id == command.Id));
         }
 
-        public Task Handle(RemoveCommand<Config> command)
+        public Task Handle(Command.Delete<Config> command)
         {
             return this.Remove(command.Id);
         }

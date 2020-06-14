@@ -21,10 +21,5 @@ namespace SAE.CommonComponent.ConfigServer.Commands
         {
             public string Name { get; set; }
         }
-
-        public class Find
-        {
-            public string Id { get; set; }
-        }
     }
 }

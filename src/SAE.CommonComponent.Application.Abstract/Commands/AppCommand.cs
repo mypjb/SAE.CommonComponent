@@ -5,10 +5,6 @@ namespace SAE.CommonComponent.Application.Commands
 {
     public class AppCommand
     {
-        public class Find
-        {
-            public string Id { get; set; }
-        }
         public class Query : Paging
         {
             public string Name { get; set; }

@@ -4,6 +4,7 @@ using SAE.CommonComponent.Application.Dtos;
 using SAE.CommonLibrary;
 using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.Abstract.Model;
+using SAE.CommonLibrary.EventStore.Document;
 using System.Threading.Tasks;
 
 namespace SAE.CommonComponent.Application.Controllers
@@ -19,7 +20,7 @@ namespace SAE.CommonComponent.Application.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<object> Get([FromRoute]AppCommand.Find command)
+        public async Task<object> Get([FromRoute]Command.Find<AppDto> command)
         {
             return await this._mediator.Send<AppDto>(command);
         }

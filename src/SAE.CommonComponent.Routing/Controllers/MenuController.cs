@@ -28,7 +28,7 @@ namespace SAE.CommonComponent.Routing.Controllers
             return await this._mediator.Send<string>(command);
         }
         [HttpDelete]
-        public async Task<object> Remove([FromBody]BatchRemoveCommand<Menu> command)
+        public async Task<object> Remove([FromBody] Command.BatchDelete<Menu> command)
         {
             await this._mediator.Send(command);
             return this.Ok();
@@ -40,7 +40,7 @@ namespace SAE.CommonComponent.Routing.Controllers
             return this.Ok();
         }
         [HttpGet("{id}")]
-        public async Task<object> Get([FromRoute]MenuCommand.Find command)
+        public async Task<object> Get([FromRoute] Command.Find<MenuDto> command)
         {
             return await this._mediator.Send<MenuDto>(command);
         }
@@ -52,7 +52,7 @@ namespace SAE.CommonComponent.Routing.Controllers
         [HttpGet("{action}")]
         public async Task<object> ALL()
         {
-            return await this._mediator.Send<IEnumerable<MenuItemDto>>(new MenuCommand.List());
+            return await this._mediator.Send<IEnumerable<MenuItemDto>>(new Command.List<MenuItemDto>());
         }
 
     }

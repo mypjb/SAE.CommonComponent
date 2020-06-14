@@ -23,11 +23,11 @@ namespace SAE.CommonComponent.Application.Abstract.Handles
                               ICommandHandler<AppCommand.ReferenceScope>,
                               ICommandHandler<AppCommand.RefreshSecret>,
                               ICommandHandler<AppCommand.Query, IPagedList<AppDto>>,
-                              ICommandHandler<AppCommand.Find, AppDto>,
+                              ICommandHandler<Command.Find<AppDto>, AppDto>,
                               ICommandHandler<ScopeCommand.Create>,
-                              ICommandHandler<ScopeCommand.List, IEnumerable<ScopeDto>>,
+                              ICommandHandler<Command.List<ScopeDto>, IEnumerable<ScopeDto>>,
                               ICommandHandler<ScopeCommand.Query, IPagedList<ScopeDto>>,
-                              ICommandHandler<ScopeCommand.Remove>
+                              ICommandHandler<ScopeCommand.Delete>
     {
         private readonly IDistributedCache _distributedCache;
         private readonly IStorage _storage;
@@ -70,7 +70,7 @@ namespace SAE.CommonComponent.Application.Abstract.Handles
             return this.Update<App>(command.Id, app => app.RefreshSecret());
         }
 
-        public Task<AppDto> Handle(AppCommand.Find command)
+        public Task<AppDto> Handle(Command.Find<AppDto> command)
         {
 
             return Task.FromResult(Assert.Build(this._storage.AsQueryable<AppDto>().FirstOrDefault(s => s.Id == command.Id))
@@ -104,7 +104,7 @@ namespace SAE.CommonComponent.Application.Abstract.Handles
             }
         }
 
-        public async Task<IEnumerable<ScopeDto>> Handle(ScopeCommand.List command)
+        public async Task<IEnumerable<ScopeDto>> Handle(Command.List<ScopeDto> command)
         {
             return (await this._distributedCache.GetAsync<IEnumerable<ScopeDto>>(ScopeKey))?.Distinct() ?? Enumerable.Empty<ScopeDto>();
         }
@@ -115,7 +115,7 @@ namespace SAE.CommonComponent.Application.Abstract.Handles
             return PagedList.Build(scopes?.AsQueryable(), command);
         }
 
-        public async Task Handle(ScopeCommand.Remove command)
+        public async Task Handle(ScopeCommand.Delete command)
         {
             var scopes = await this._distributedCache.GetAsync<List<ScopeDto>>(ScopeKey);
             if (scopes != null && scopes.Any(s => s.Name.Equals(command.Name, StringComparison.OrdinalIgnoreCase)))

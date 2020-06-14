@@ -16,11 +16,11 @@ namespace SAE.CommonComponent.ConfigServer.Handles
 {
     public class ProjectConfigHandler : AbstractHandler<ProjectConfig>,
                                         ICommandHandler<ProjectCommand.RelevanceConfig>,
-                                        ICommandHandler<BatchRemoveCommand<ProjectConfig>>,
+                                        ICommandHandler<Command.BatchDelete<ProjectConfig>>,
                                         ICommandHandler<ProjectCommand.ConfigQuery, IPagedList<ProjectConfigDto>>,
                                         ICommandHandler<ProjectCommand.ConfigQuery, IPagedList<ConfigDto>>,
                                         ICommandHandler<ProjectCommand.ConfigChangeAlias>,
-                                        ICommandHandler<ProjectCommand.Find, ProjectConfigDto>
+                                        ICommandHandler<Command.Find<ProjectDto>, ProjectConfigDto>
     {
         private readonly IMediator _mediator;
         private readonly IStorage _storage;
@@ -52,7 +52,7 @@ namespace SAE.CommonComponent.ConfigServer.Handles
             });
         }
 
-        public async Task Handle(BatchRemoveCommand<ProjectConfig> command)
+        public async Task Handle(Command.BatchDelete<ProjectConfig> command)
         {
             if (!command.Ids?.Any() ?? false)
             {
@@ -93,7 +93,7 @@ namespace SAE.CommonComponent.ConfigServer.Handles
             });
         }
 
-        public async Task<ProjectConfigDto> Handle(ProjectCommand.Find command)
+        public async Task<ProjectConfigDto> Handle(Command.Find<ProjectDto> command)
         {
             return this._storage.AsQueryable<ProjectConfigDto>().First(s => s.Id == command.Id);
         }

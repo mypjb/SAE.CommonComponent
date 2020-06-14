@@ -28,9 +28,5 @@ namespace SAE.CommonComponent.ConfigServer.Commands
         public class Query : Paging
         {
         }
-        public class Find
-        {
-            public string Id { get; set; }
-        }
     }
 }

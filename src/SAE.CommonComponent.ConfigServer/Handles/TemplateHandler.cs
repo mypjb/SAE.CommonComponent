@@ -14,10 +14,10 @@ namespace SAE.CommonComponent.ConfigServer.Handles
     public class TemplateHandler : AbstractHandler<Template>,
         ICommandHandler<TemplateCommand.Create, string>,
         ICommandHandler<TemplateCommand.Change>,
-        ICommandHandler<RemoveCommand<Template>>,
-        ICommandHandler<TemplateCommand.Find, TemplateDto>,
+        ICommandHandler<Command.Delete<Template>>,
+        ICommandHandler<Command.Find<TemplateDto>, TemplateDto>,
         ICommandHandler<TemplateCommand.Query, IPagedList<TemplateDto>>,
-        ICommandHandler<ListCommand,IEnumerable<TemplateDto>>
+        ICommandHandler<Command.List<TemplateDto>, IEnumerable<TemplateDto>>
     {
         private readonly IStorage _storage;
         public TemplateHandler(IDocumentStore documentStore, IStorage storage) : base(documentStore)
@@ -36,12 +36,12 @@ namespace SAE.CommonComponent.ConfigServer.Handles
             return this.Update(command.Id, s => s.Change(command));
         }
 
-        public Task Handle(RemoveCommand<Template> command)
+        public Task Handle(Command.Delete<Template> command)
         {
             return this.Remove(command.Id);
         }
 
-        public Task<TemplateDto> Handle(TemplateCommand.Find command)
+        public Task<TemplateDto> Handle(Command.Find<TemplateDto> command)
         {
             return Task.FromResult(this._storage.AsQueryable<TemplateDto>()
                 .FirstOrDefault(s => s.Id == command.Id));
@@ -52,7 +52,7 @@ namespace SAE.CommonComponent.ConfigServer.Handles
             return PagedList.Build(this._storage.AsQueryable<TemplateDto>(), command);
         }
 
-        public async Task<IEnumerable<TemplateDto>> Handle(ListCommand command)
+        public async Task<IEnumerable<TemplateDto>> Handle(Command.List<TemplateDto> command)
         {
             return this._storage.AsQueryable<TemplateDto>().ToList();
         }
