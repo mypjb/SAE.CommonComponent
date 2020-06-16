@@ -16,7 +16,9 @@ using System.Threading.Tasks;
 
 namespace SAE.CommonComponent.Authorize.Controllers
 {
-    public class PermissionController:Controller
+    [Route("{controller}")]
+    [ApiController]
+    public class PermissionController : Controller
     {
         private readonly IMediator _mediator;
 
@@ -30,7 +32,7 @@ namespace SAE.CommonComponent.Authorize.Controllers
             return await this._mediator.Send<string>(command);
         }
         [HttpDelete]
-        public async Task<object> Delete([FromBody]Command.BatchDelete<Permission> command)
+        public async Task<object> Delete([FromBody] Command.BatchDelete<Permission> command)
         {
             await this._mediator.Send(command);
             return this.Ok();
@@ -42,12 +44,12 @@ namespace SAE.CommonComponent.Authorize.Controllers
             return this.Ok();
         }
         [HttpGet("{id}")]
-        public async Task<object> Get([FromRoute]Command.Find<PermissionDto> command)
+        public async Task<object> Get([FromRoute] Command.Find<PermissionDto> command)
         {
             return await this._mediator.Send<PermissionDto>(command);
         }
         [HttpGet("{action}")]
-        public async Task<object> Paging([FromQuery]PermissionCommand.Query command)
+        public async Task<object> Paging([FromQuery] PermissionCommand.Query command)
         {
             return await this._mediator.Send<IPagedList<PermissionDto>>(command);
         }
@@ -58,10 +60,11 @@ namespace SAE.CommonComponent.Authorize.Controllers
             return await this._mediator.Send<IEnumerable<PermissionDto>>(new Command.List<PermissionDto>());
         }
 
-        [HttpGet("{action}")]
+        [HttpGet, HttpPost]
+        [Route("{action}")]
         public async Task<object> Location(IEnumerable<PermissionCommand.Create> commands)
         {
-            return await this._mediator.Send<IEnumerable<BitmapEndpoint>>(commands);
+            return await this._mediator.Send<IEnumerable<PermissionCommand.Create>, IEnumerable<BitmapEndpoint>>(commands);
         }
     }
 }

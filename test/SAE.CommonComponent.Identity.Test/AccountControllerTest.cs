@@ -48,14 +48,9 @@ namespace SAE.CommonComponent.Identity.Test
 
             var httpResponse = await this.HttpClient.SendAsync(request);
 
-            var dto =await httpResponse.AsAsync<UserDto>();
+            Assert.True(httpResponse.IsSuccessStatusCode);
 
-            Assert.NotNull(dto);
-            Assert.Equal(dto.AccountName, user.AccountName);
-            Assert.Equal(dto.Id, user.Id);
-            Assert.Equal(dto.Status, user.Status);
-            Assert.Equal(dto.CreateTime, user.CreateTime);
-            Assert.Equal(dto.Name, user.Name);
+            this.WriteLine(httpResponse.Headers);
             
         }
     }

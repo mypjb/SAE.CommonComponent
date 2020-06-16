@@ -13,6 +13,8 @@ using System.Threading.Tasks;
 
 namespace SAE.CommonComponent.Authorize.Controllers
 {
+    [Route("{controller}")]
+    [ApiController]
     public class RoleController : Controller
     {
         private readonly IMediator _mediator;

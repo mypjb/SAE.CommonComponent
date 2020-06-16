@@ -49,6 +49,13 @@ namespace SAE.CommonComponent.Authorize
             services.AddMvc()
                     .AddResponseResult();
 
+            services.AddServiceProvider()
+                    .AddMediator();
+
+            services.AddMemoryDocument()
+                    .AddMemoryMessageQueue()
+                    .AddDataPersistenceService();
+
             services.AddBitmapAuthorization()
                     .AddLocalBitmapEndpointProvider(provider =>
                     {
@@ -67,7 +74,7 @@ namespace SAE.CommonComponent.Authorize
                             endpoints.Add(new BitmapEndpoint
                             {
                                 Index = i,
-                                Path =dtos[i].Path,
+                                Path =dtos[i].Flag,
                                 Name=dtos[i].Name
                             });
                         }

@@ -32,7 +32,7 @@ namespace SAE.CommonComponent.Identity.Controllers
             properties.IsPersistent = command.IsPersistent;
 
 
-            await this.HttpContext.SignInAsync(IdentityServerConstants.DefaultCookieAuthenticationScheme,claimsPrincipal, properties);
+            await this.HttpContext.SignInAsync(claimsPrincipal, properties);
 
             return this.Ok();
         }

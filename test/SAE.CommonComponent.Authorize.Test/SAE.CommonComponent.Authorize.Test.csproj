@@ -19,4 +19,9 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\SAE.CommonComponent.Authorize\SAE.CommonComponent.Authorize.csproj" />
+    <ProjectReference Include="..\SAE.CommonComponent.Test\SAE.CommonComponent.Test.csproj" />
+  </ItemGroup>
+
 </Project>

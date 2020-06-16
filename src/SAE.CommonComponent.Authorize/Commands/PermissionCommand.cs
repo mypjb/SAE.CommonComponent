@@ -13,7 +13,7 @@ namespace SAE.CommonComponent.Authorize.Commands
             public string Name { get; set; }
             public string Descriptor { get; set; }
 
-            public string Path { get; set; }
+            public string Flag { get; set; }
         }
 
 

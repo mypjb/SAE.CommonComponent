@@ -54,7 +54,7 @@ namespace SAE.CommonComponent.Test
         /// <returns></returns>
         protected string GetRandom()
         {
-            return Utils.GenerateId().ToMd5(true);
+            return Utils.GenerateId().ToMd5(true).Replace("-", string.Empty);
         }
 
     }
