@@ -94,7 +94,7 @@ namespace SAE.CommonComponent.Authorize.Handles
         {
             var dto = this._storage.AsQueryable<RoleDto>()
                                    .FirstOrDefault(s => s.Name.Contains(name));
-            return Task.FromResult(dto.Name ?? string.Empty);
+            return Task.FromResult(dto?.Name ?? string.Empty);
         }
     }
 }

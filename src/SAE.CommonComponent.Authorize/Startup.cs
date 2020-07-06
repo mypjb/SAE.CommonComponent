@@ -24,7 +24,6 @@ namespace SAE.CommonComponent.Authorize
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-
             this.PluginConfigureServices(services);
         }
 
@@ -52,7 +51,8 @@ namespace SAE.CommonComponent.Authorize
             services.AddServiceProvider()
                     .AddMediator();
 
-            services.AddMemoryDocument()
+            services.AddDecorator()
+                    .AddMemoryDocument()
                     .AddMemoryMessageQueue()
                     .AddDataPersistenceService();
 
@@ -85,7 +85,8 @@ namespace SAE.CommonComponent.Authorize
 
         public override void PluginConfigure(IApplicationBuilder app)
         {
-            
+            //app.UseRoutingScanning()
+            //   .UseBitmapAuthorization();
         }
     }
 }

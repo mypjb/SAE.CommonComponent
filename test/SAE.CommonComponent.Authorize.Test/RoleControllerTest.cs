@@ -19,10 +19,10 @@ using Assert = Xunit.Assert;
 
 namespace SAE.CommonComponent.Authorize.Test
 {
-    public class PermissionControllerTest : BaseTest
+    public class RoleControllerTest : BaseTest
     {
-        public const string API = "permission";
-        public PermissionControllerTest(ITestOutputHelper output) : base(output)
+        public const string API = "Role";
+        public RoleControllerTest(ITestOutputHelper output) : base(output)
         {
         }
 
@@ -32,46 +32,42 @@ namespace SAE.CommonComponent.Authorize.Test
         }
 
         [Fact]
-        public async Task<PermissionDto> Add()
+        public async Task<RoleDto> Add()
         {
-            var command = new PermissionCommand.Create
+            var command = new RoleCommand.Create
             {
                 Name = $"test_{this.GetRandom()}",
-                Descriptor = "add permission",
-                Flag = "/"
+                Descriptor = "add Role"
             };
             var request = new HttpRequestMessage(HttpMethod.Post, $"{API}");
             request.AddJsonContent(command);
             var httpResponse = await this.HttpClient.SendAsync(request);
             var id = await httpResponse.AsAsync<string>();
-            var permission = await this.Get(id);
+            var Role = await this.Get(id);
 
-            Assert.Equal(permission.Name, command.Name);
-            Assert.Equal(permission.Descriptor, command.Descriptor);
-            Assert.Equal(permission.Flag, command.Flag);
-            this.WriteLine(permission);
-            return permission;
+            Assert.Equal(Role.Name, command.Name);
+            Assert.Equal(Role.Descriptor, command.Descriptor);
+            this.WriteLine(Role);
+            return Role;
         }
         [Fact]
         public async Task Edit()
         {
             var dto = await this.Add();
-            var command = new PermissionCommand.Change
+            var command = new RoleCommand.Change
             {
                 Id = dto.Id,
                 Name = $"edit_{this.GetRandom()}",
-                Descriptor = "edit permission",
-                Flag = "/edit"
+                Descriptor = "edit Role",
             };
             var request = new HttpRequestMessage(HttpMethod.Put, $"{API}");
             request.AddJsonContent(command);
             var httpResponse = await this.HttpClient.SendAsync(request);
-            var permission = await this.Get(dto.Id);
+            var Role = await this.Get(dto.Id);
 
-            Assert.Equal(permission.Name, command.Name);
-            Assert.Equal(permission.Descriptor, command.Descriptor);
-            Assert.Equal(permission.Flag, command.Flag);
-            this.WriteLine(permission);
+            Assert.Equal(Role.Name, command.Name);
+            Assert.Equal(Role.Descriptor, command.Descriptor);
+            this.WriteLine(Role);
         }
 
         [Fact]
@@ -79,7 +75,7 @@ namespace SAE.CommonComponent.Authorize.Test
         {
             var dto = await this.Add();
 
-            var command = new Command.BatchDelete<Permission>
+            var command = new Command.BatchDelete<Role>
             {
                 Ids = new[] { dto.Id }
             };
@@ -92,38 +88,12 @@ namespace SAE.CommonComponent.Authorize.Test
 
         }
 
-        [Fact]
-        public async Task Location()
-        {
-            var commands = Enumerable.Range(0, 1000)
-                      .Select(s => new PermissionCommand.Create
-                      {
-                          Name = $"localtion_{s}",
-                          Descriptor = $"location {s}",
-                          Flag = $"/location/{s}"
-                      });
-
-            var request = new HttpRequestMessage(HttpMethod.Post, $"{API}/{nameof(Location)}");
-
-            request.AddJsonContent(commands);
-
-            var httpResponse = await this.HttpClient.SendAsync(request);
-
-            var endpoints = await httpResponse.AsAsync<IEnumerable<BitmapEndpoint>>();
-
-            foreach (var command in commands)
-            {
-                Assert.Contains(endpoints, s => s.Name.Equals(command.Name) && s.Path.Equals(command.Flag));
-            }
-            this.WriteLine(endpoints);
-        }
-
-
-        private async Task<PermissionDto> Get(string id)
+        
+        private async Task<RoleDto> Get(string id)
         {
             var message = new HttpRequestMessage(HttpMethod.Get, $"{API}/{id}");
             var responseMessage = await this.HttpClient.SendAsync(message);
-            return await responseMessage.AsAsync<PermissionDto>();
+            return await responseMessage.AsAsync<RoleDto>();
         }
     }
 }
