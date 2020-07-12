@@ -30,8 +30,9 @@ namespace SAE.CommonComponent.Test
                                .UseDefaultExceptionHandler());
         }
 
-        public BaseTest(ITestOutputHelper output, HttpClient httpClient) : this(output)
+        public BaseTest(ITestOutputHelper output, HttpClient httpClient)
         {
+            this._output = output;
             this.HttpClient = httpClient;
         }
 

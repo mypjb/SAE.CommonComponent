@@ -37,7 +37,7 @@ namespace SAE.CommonComponent.Identity.Handlers
             identity.AddClaim(new Claim(JwtClaimTypes.Subject, dto.Id));
             identity.AddClaim(new Claim(JwtClaimTypes.Name, dto.Name));
             identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, dto.AccountName));
-            identity.AddClaim(new Claim("",dto.Flag));
+            identity.AddClaim(new Claim("",dto.AuthorizeCode));
             var principal = new ClaimsPrincipal(identity);
 
             return principal;

@@ -14,10 +14,14 @@ namespace SAE.CommonComponent.ConfigServer.Test
     {
         public ConfigControllerTest(ITestOutputHelper output) : base(output)
         {
-            this._templateController = new TemplateControllerTest(output);
-            this._solutionController = new SolutionControllerTest(output);
-            this._templateController.UseClient(this.HttpClient);
-            this._solutionController.UseClient(this.HttpClient);
+            this._templateController = new TemplateControllerTest(output, this.HttpClient);
+            this._solutionController = new SolutionControllerTest(output, this.HttpClient);
+        }
+
+        internal ConfigControllerTest(ITestOutputHelper output, HttpClient httpClient) :  base(output, httpClient)
+        {
+            this._templateController = new TemplateControllerTest(output, this.HttpClient);
+            this._solutionController = new SolutionControllerTest(output, this.HttpClient);
         }
 
         public const string API = "Config";

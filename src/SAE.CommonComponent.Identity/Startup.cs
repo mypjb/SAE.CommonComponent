@@ -96,8 +96,7 @@ namespace SAE.CommonComponent.Identity
         {
             app.UseAuthentication();
 
-            app.UseIdentityServer()
-               .UseMediatorOrleansSilo();
+            app.UseIdentityServer();
         }
     }
 }

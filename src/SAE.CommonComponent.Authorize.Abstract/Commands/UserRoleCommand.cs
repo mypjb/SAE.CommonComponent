@@ -15,15 +15,6 @@ namespace SAE.CommonComponent.Authorize.Commands
         public class DeleteReference : Reference
         {
         }
-
-        public class QueryUserRole
-        {
-            public string UserId { get; set; }
-        }
-        public class QueryRolePermission
-        {
-            public string RoleId { get; set; }
-        }
         
         public class QueryUserAuthorizeCode
         {

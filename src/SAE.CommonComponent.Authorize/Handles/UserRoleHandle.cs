@@ -17,7 +17,8 @@ namespace SAE.CommonComponent.Authorize.Handles
     public class UserRoleHandle : AbstractHandler<UserRole>,
                                   ICommandHandler<UserRoleCommand.Reference>,
                                   ICommandHandler<UserRoleCommand.DeleteReference>,
-                                  ICommandHandler<UserRoleCommand.QueryUserRole, IEnumerable<RoleDto>>,
+                                  ICommandHandler<Command.Find<UserRoleDto>, IEnumerable<UserRoleDto>>,
+                                  ICommandHandler<Command.Find<UserRoleDto>, IEnumerable<RoleDto>>,
                                   ICommandHandler<Command.List<BitmapEndpoint>, IEnumerable<BitmapEndpoint>>,
                                   ICommandHandler<UserRoleCommand.QueryUserAuthorizeCode, string>
     {
@@ -60,15 +61,21 @@ namespace SAE.CommonComponent.Authorize.Handles
         //    return role.Permissions;
         //}
 
-        public async Task<IEnumerable<RoleDto>> Handle(UserRoleCommand.QueryUserRole command)
+        public async Task<IEnumerable<RoleDto>> Handle(Command.Find<UserRoleDto> command)
         {
             var roleIds = this._storage.AsQueryable<UserRoleDto>()
-                                       .Where(s => s.UserId == command.UserId)
+                                       .Where(s => s.UserId == command.Id)
                                        .Select(s => s.RoleId)
                                        .ToArray();
-            return this._storage.AsQueryable<RoleDto>()
-                                .Where(s => roleIds.Contains(s.Id))
-                                .ToArray();
+
+            var roles = this._storage.AsQueryable<RoleDto>()
+                                     .Where(s => roleIds.Contains(s.Id))
+                                     .AsEnumerable();
+
+
+            await this._director.Build(roles);
+
+            return roles;
         }
 
         public async Task<IEnumerable<BitmapEndpoint>> Handle(Command.List<BitmapEndpoint> command)
@@ -95,9 +102,9 @@ namespace SAE.CommonComponent.Authorize.Handles
 
         public async Task<string> Handle(UserRoleCommand.QueryUserAuthorizeCode command)
         {
-            var roles = await this._mediator.Send<IEnumerable<RoleDto>>(new UserRoleCommand.QueryUserRole
+            var roles = await this._mediator.Send<IEnumerable<RoleDto>>(new Command.Find<UserRoleDto>
             {
-                UserId = command.UserId
+                Id = command.UserId
             });
 
             var endpoints = (await this._mediator.Send<IEnumerable<BitmapEndpoint>>(new Command.List<BitmapEndpoint>()))
@@ -114,9 +121,20 @@ namespace SAE.CommonComponent.Authorize.Handles
                 }
             }
 
-            var code= this._bitmapAuthorization.GeneratePermissionCode(permissionBits);
+            var code = this._bitmapAuthorization.GeneratePermissionCode(permissionBits);
 
             return code;
+        }
+
+        async Task<IEnumerable<UserRoleDto>> ICommandHandler<Command.Find<UserRoleDto>, IEnumerable<UserRoleDto>>.Handle(Command.Find<UserRoleDto> command)
+        {
+            var userRoles = this._storage.AsQueryable<UserRoleDto>()
+                                         .Where(s => s.UserId == command.Id)
+                                         .AsEnumerable();
+
+            await this._director.Build(userRoles);
+
+            return userRoles;
         }
     }
 }

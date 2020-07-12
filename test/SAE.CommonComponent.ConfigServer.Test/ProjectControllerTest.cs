@@ -16,10 +16,8 @@ namespace SAE.CommonComponent.ConfigServer.Test
     {
         public ProjectControllerTest(ITestOutputHelper output) : base(output)
         {
-            this._configController = new ConfigControllerTest(this._output);
-            this._solutionController = new SolutionControllerTest(output);
-            this._configController.UseClient(this.HttpClient);
-            this._solutionController.UseClient(this.HttpClient);
+            this._configController = new ConfigControllerTest(this._output, this.HttpClient);
+            this._solutionController = new SolutionControllerTest(output, this.HttpClient);
         }
 
         public const string API = "Project";

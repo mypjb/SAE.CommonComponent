@@ -48,7 +48,7 @@ namespace SAE.CommonComponent.Authorize.Controllers
         [HttpGet("{action}")]
         public async Task<object> Paging([FromQuery]RoleCommand.Query command)
         {
-            return await this._mediator.Send<IPagedList<RoleDto>>(command);
+            return await this._mediator.Send<RoleCommand.Query,IPagedList<RoleDto>>(command);
         }
 
         [HttpPost("{action}")]

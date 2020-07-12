@@ -26,6 +26,10 @@ namespace SAE.CommonComponent.Authorize.Test
         {
         }
 
+        internal PermissionControllerTest(ITestOutputHelper output, HttpClient httpClient) : base(output, httpClient)
+        {
+        }
+
         protected override IWebHostBuilder UseStartup(IWebHostBuilder builder)
         {
             return builder.UseStartup<Startup>();

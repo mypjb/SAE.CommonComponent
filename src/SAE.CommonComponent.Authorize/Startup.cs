@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -48,13 +49,16 @@ namespace SAE.CommonComponent.Authorize
             services.AddMvc()
                     .AddResponseResult();
 
-            services.AddServiceProvider()
-                    .AddMediator();
+            var assemblys = new[] { typeof(UserRoleDto).Assembly, Assembly.GetExecutingAssembly() };
 
-            services.AddDecorator()
+            services.AddServiceProvider()
+                    .AddMediator(assemblys)
+                    .AddMediatorOrleansProxy();
+
+            services.AddBuilder()
                     .AddMemoryDocument()
                     .AddMemoryMessageQueue()
-                    .AddDataPersistenceService();
+                    .AddDataPersistenceService(assemblys);
 
             services.AddBitmapAuthorization()
                     .AddLocalBitmapEndpointProvider(provider =>
@@ -70,6 +74,7 @@ namespace SAE.CommonComponent.Authorize
 
         public override void PluginConfigure(IApplicationBuilder app)
         {
+            app.UseMediatorOrleansSilo();
             //app.UseRoutingScanning()
             //   .UseBitmapAuthorization();
         }

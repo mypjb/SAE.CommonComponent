@@ -18,6 +18,9 @@ namespace SAE.CommonComponent.ConfigServer.Test
         {
         }
 
+        internal TemplateControllerTest(ITestOutputHelper output, HttpClient httpClient) : base(output, httpClient)
+        {
+        }
 
         [Fact]
         public async Task<TemplateDto> Add()

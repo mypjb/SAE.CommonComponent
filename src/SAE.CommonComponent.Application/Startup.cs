@@ -44,7 +44,8 @@ namespace SAE.CommonComponent.Application
             var assemblys =new[] { typeof(AppDto).Assembly, Assembly.GetExecutingAssembly() };
 
             services.AddServiceProvider()
-                    .AddMediator(assemblys);
+                    .AddMediator(assemblys)
+                    .AddMediatorOrleansClient();
             services.AddMemoryDocument()
                     .AddMemoryMessageQueue()
                     .AddSaeMemoryDistributedCache()
@@ -53,6 +54,7 @@ namespace SAE.CommonComponent.Application
 
         public override void PluginConfigure(IApplicationBuilder app)
         {
+            app.UseMediatorOrleansSilo();
         }
     }
 }

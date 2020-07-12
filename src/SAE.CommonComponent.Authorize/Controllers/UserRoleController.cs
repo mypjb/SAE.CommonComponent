@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SAE.CommonComponent.Authorize.Commands;
+using SAE.CommonComponent.Authorize.Dtos;
 using SAE.CommonLibrary.Abstract.Mediator;
+using SAE.CommonLibrary.EventStore.Document;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,6 +33,12 @@ namespace SAE.CommonComponent.Authorize.Controllers
         {
             await this._mediator.Send(command);
             return this.Ok();
+        }
+
+        [HttpGet("{id}")]
+        public async Task<object> Query([FromRoute]Command.Find<UserRoleDto> command)
+        {
+            return await this._mediator.Send<IEnumerable<UserRoleDto>>(command);
         }
 
     }

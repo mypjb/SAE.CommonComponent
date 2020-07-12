@@ -16,7 +16,10 @@ namespace SAE.CommonComponent.ConfigServer.Test
         {
         }
 
-       
+        internal SolutionControllerTest(ITestOutputHelper output, HttpClient httpClient) : base(output, httpClient)
+        {
+        }
+
         public const string API = "solution";
 
         [Fact]

@@ -26,8 +26,12 @@ namespace SAE.CommonComponent.Authorize.Test
 
         public RoleControllerTest(ITestOutputHelper output) : base(output)
         {
-            this._permissionController = new PermissionControllerTest(output);
-            this._permissionController.UseClient(this.HttpClient);
+            this._permissionController = new PermissionControllerTest(output, this.HttpClient);
+        }
+
+        internal RoleControllerTest(ITestOutputHelper output, HttpClient httpClient) : base(output, httpClient)
+        {
+            this._permissionController = new PermissionControllerTest(output, this.HttpClient);
         }
 
         protected override IWebHostBuilder UseStartup(IWebHostBuilder builder)

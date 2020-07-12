@@ -39,17 +39,19 @@ namespace SAE.CommonComponent.User
             });
 
 
+            var assemblies = new[] { Assembly.GetExecutingAssembly(), typeof(UserDto).Assembly };
+
             services.AddMvc()
                     .AddResponseResult()
                     .AddNewtonsoftJson();
 
             services.AddServiceProvider()
-                    .AddMediator()
-                    .AddMediatorOrleansSilo();
+                    .AddMediator(assemblies)
+                    .AddMediatorOrleansProxy();
+
             services.AddMemoryDocument()
                     .AddMemoryMessageQueue()
-                    .AddDataPersistenceService(Assembly.GetExecutingAssembly(),
-                                               typeof(UserDto).Assembly);
+                    .AddDataPersistenceService(assemblies);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
