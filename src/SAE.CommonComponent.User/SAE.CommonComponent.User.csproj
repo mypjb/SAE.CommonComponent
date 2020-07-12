@@ -13,6 +13,7 @@
     <ProjectReference Include="..\..\..\CommonLibrary\src\SAE.CommonLibrary.EventStore.Document\SAE.CommonLibrary.EventStore.Document.csproj" />
     <ProjectReference Include="..\..\..\CommonLibrary\src\SAE.CommonLibrary.Mediator.Orleans\SAE.CommonLibrary.Mediator.Orleans.csproj" />
     <ProjectReference Include="..\..\..\CommonLibrary\src\SAE.CommonLibrary.Plugin.AspNetCore\SAE.CommonLibrary.Plugin.AspNetCore.csproj" />
+    <ProjectReference Include="..\SAE.CommonComponent.Authorize.Abstract\SAE.CommonComponent.Authorize.Abstract.csproj" />
     <ProjectReference Include="..\SAE.CommonComponent.User.Abstract\SAE.CommonComponent.User.Abstract.csproj" />
     <ProjectReference Include="..\SAE.CommonComponent\SAE.CommonComponent.csproj" />
   </ItemGroup>

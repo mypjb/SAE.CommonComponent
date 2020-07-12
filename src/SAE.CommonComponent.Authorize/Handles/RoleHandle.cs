@@ -1,6 +1,7 @@
 ﻿using SAE.CommonComponent.Authorize.Commands;
 using SAE.CommonComponent.Authorize.Domains;
 using SAE.CommonComponent.Authorize.Dtos;
+using SAE.CommonLibrary;
 using SAE.CommonLibrary.Abstract.Builder;
 using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.Abstract.Model;
@@ -18,6 +19,8 @@ namespace SAE.CommonComponent.Authorize.Handles
                               ICommandHandler<RoleCommand.Create, string>,
                               ICommandHandler<RoleCommand.Change>,
                               ICommandHandler<RoleCommand.ChangeStatus>,
+                              ICommandHandler<RoleCommand.RelationPermission>,
+                              ICommandHandler<RoleCommand.DeletePermission>,
                               ICommandHandler<Command.BatchDelete<Role>>,
                               ICommandHandler<Command.Find<RoleDto>,RoleDto>,
                               ICommandHandler<RoleCommand.Query, IPagedList<RoleDto>>
@@ -88,6 +91,30 @@ namespace SAE.CommonComponent.Authorize.Handles
             var dto= this._storage.AsQueryable<RoleDto>()
                                   .FirstOrDefault(s => s.Id == command.Id&& s.Status!= Status.Delete);
             return dto;
+        }
+
+        public async Task Handle(RoleCommand.RelationPermission command)
+        {
+            var role =await this.GetById(command.Id);
+
+            Assert.Build(role)
+                  .IsNotNull();
+
+            role.RelationPermission(command);
+
+            await this._documentStore.SaveAsync(role);
+        }
+
+        public async Task Handle(RoleCommand.DeletePermission command)
+        {
+            var role = await this.GetById(command.Id);
+
+            Assert.Build(role)
+                  .IsNotNull();
+
+            role.RemovePermission(command);
+
+            await this._documentStore.SaveAsync(role);
         }
 
         private Task<string> FindRole(string name)

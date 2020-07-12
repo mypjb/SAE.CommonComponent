@@ -29,13 +29,13 @@ namespace SAE.CommonComponent.Authorize.Controllers
             return await this._mediator.Send<string>(command);
         }
         [HttpDelete]
-        public async Task<object> Delete([FromBody]Command.BatchDelete<Role> command)
+        public async Task<IActionResult> Delete([FromBody]Command.BatchDelete<Role> command)
         {
             await this._mediator.Send(command);
             return this.Ok();
         }
         [HttpPut]
-        public async Task<object> Put(RoleCommand.Change command)
+        public async Task<IActionResult> Put(RoleCommand.Change command)
         {
             await this._mediator.Send(command);
             return this.Ok();
@@ -49,6 +49,20 @@ namespace SAE.CommonComponent.Authorize.Controllers
         public async Task<object> Paging([FromQuery]RoleCommand.Query command)
         {
             return await this._mediator.Send<IPagedList<RoleDto>>(command);
+        }
+
+        [HttpPost("{action}")]
+        public async Task<IActionResult> RelationPermission(RoleCommand.RelationPermission command)
+        {
+            await this._mediator.Send(command);
+            return this.Ok();
+        }
+
+        [HttpDelete(nameof(RelationPermission))]
+        public async Task<IActionResult> DeletePermission(RoleCommand.DeletePermission command)
+        {
+            await this._mediator.Send(command);
+            return this.Ok();
         }
 
     }

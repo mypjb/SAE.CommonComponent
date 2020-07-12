@@ -58,7 +58,7 @@ namespace SAE.CommonComponent.ConfigServer.Handles
             {
                 return;
             }
-            await this._documentStore.RemoveAsync<ProjectConfig>(command.Ids);
+            await this._documentStore.DeleteAsync<ProjectConfig>(command.Ids);
             var projectId = command.Ids.First().Split('_').First();
             await this._mediator.Send(new ProjectCommand.VersionCumulation
             {

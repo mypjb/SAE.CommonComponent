@@ -16,5 +16,18 @@ namespace SAE.CommonComponent.Authorize.Commands
         {
         }
 
+        public class QueryUserRole
+        {
+            public string UserId { get; set; }
+        }
+        public class QueryRolePermission
+        {
+            public string RoleId { get; set; }
+        }
+        
+        public class QueryUserAuthorizeCode
+        {
+            public string UserId { get; set; }
+        }
     }
 }

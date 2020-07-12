@@ -22,8 +22,12 @@ namespace SAE.CommonComponent.Authorize.Test
     public class RoleControllerTest : BaseTest
     {
         public const string API = "Role";
+        private readonly PermissionControllerTest _permissionController;
+
         public RoleControllerTest(ITestOutputHelper output) : base(output)
         {
+            this._permissionController = new PermissionControllerTest(output);
+            this._permissionController.UseClient(this.HttpClient);
         }
 
         protected override IWebHostBuilder UseStartup(IWebHostBuilder builder)
@@ -88,7 +92,61 @@ namespace SAE.CommonComponent.Authorize.Test
 
         }
 
-        
+        [Fact]
+        public async Task<RoleDto> RelationPermission()
+        {
+            var roleDto = await this.Add();
+            var permissionDtos = new List<PermissionDto>();
+            await Enumerable.Range(0, 10)
+                       .ForEachAsync(async s =>
+                       {
+                           permissionDtos.Add(await this._permissionController.Add());
+                       });
+
+            var command = new RoleCommand.RelationPermission
+            {
+                Id = roleDto.Id,
+                PermissionIds = permissionDtos.Select(s => s.Id).ToArray()
+            };
+
+            var request = new HttpRequestMessage(HttpMethod.Post, $"{API}/{nameof(RelationPermission)}");
+            request.AddJsonContent(command);
+            var httpResponse = await this.HttpClient.SendAsync(request);
+
+            httpResponse.EnsureSuccessStatusCode();
+
+            var role = await this.Get(roleDto.Id);
+
+            Assert.True(role.PermissionIds.All(s => command.PermissionIds.Contains(s)));
+
+            return role;
+
+        }
+
+        [Fact]
+        public async Task DeletePermission()
+        {
+            var roleDto = await this.RelationPermission();
+
+            var command = new RoleCommand.RelationPermission
+            {
+                Id = roleDto.Id,
+                PermissionIds = new[] { roleDto.PermissionIds.First() }
+            };
+
+            var request = new HttpRequestMessage(HttpMethod.Delete, $"{API}/{nameof(RelationPermission)}");
+            request.AddJsonContent(command);
+            var httpResponse = await this.HttpClient.SendAsync(request);
+
+            httpResponse.EnsureSuccessStatusCode();
+
+            var role = await this.Get(roleDto.Id);
+
+            Assert.True(!role.PermissionIds.Any(s => command.PermissionIds.Contains(s)));
+        }
+
+
+
         private async Task<RoleDto> Get(string id)
         {
             var message = new HttpRequestMessage(HttpMethod.Get, $"{API}/{id}");

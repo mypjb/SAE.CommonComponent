@@ -1,4 +1,5 @@
-﻿using SAE.CommonComponent.User.Abstract.Dtos;
+﻿using SAE.CommonComponent.Authorize.Commands;
+using SAE.CommonComponent.User.Abstract.Dtos;
 using SAE.CommonComponent.User.Commands;
 using SAE.CommonComponent.User.Domains;
 using SAE.CommonLibrary;
@@ -24,10 +25,14 @@ namespace SAE.CommonComponent.User.Handles
                               ICommandHandler<UserCommand.Authentication, UserDto>
     {
         private readonly IStorage _storage;
+        private readonly IMediator _mediator;
 
-        public UserHandle(IDocumentStore documentStore, IStorage storage) : base(documentStore)
+        public UserHandle(IDocumentStore documentStore, 
+                          IStorage storage,
+                          IMediator mediator) : base(documentStore)
         {
             this._storage = storage;
+            this._mediator = mediator;
         }
 
         public async Task<string> Handle(UserCommand.Register command)
@@ -82,7 +87,7 @@ namespace SAE.CommonComponent.User.Handles
         public async Task<UserDto> Handle(UserCommand.Authentication command)
         {
             var dto = this._storage.AsQueryable<UserDto>()
-                                     .FirstOrDefault(s => s.AccountName == command.AccountName);
+                                   .FirstOrDefault(s => s.AccountName == command.AccountName);
 
             if (dto != null)
             {
@@ -91,6 +96,13 @@ namespace SAE.CommonComponent.User.Handles
                 {
                     dto = null;
                 }
+
+                var code = await this._mediator.Send<string>(new UserRoleCommand.QueryUserAuthorizeCode
+                {
+                    UserId = dto.Id
+                });
+
+                dto.AuthorizeCode = code;
             }
             
             return dto;

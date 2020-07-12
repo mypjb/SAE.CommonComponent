@@ -100,7 +100,7 @@ namespace SAE.CommonComponent.ConfigServer.Handles
 
         public Task Handle(Command.BatchDelete<Menu> command)
         {
-            return this._documentStore.RemoveAsync<Menu>(command.Ids);
+            return this._documentStore.DeleteAsync<Menu>(command.Ids);
         }
     }
 }

@@ -14,9 +14,9 @@ namespace SAE.CommonComponent.Authorize.Domains
     {
         public Role()
         {
-
+            this.PermissionIds = Enumerable.Empty<string>();
         }
-        public Role(RoleCommand.Create command)
+        public Role(RoleCommand.Create command):this()
         {
             this.Apply<RoleEvent.Create>(command, @event =>
              {
@@ -86,7 +86,22 @@ namespace SAE.CommonComponent.Authorize.Domains
 
             this.Apply(new RoleEvent.RelationPermission
             {
-                PermissionIds = command.PermissionIds
+                PermissionIds = permissionIds
+            });
+        }
+
+        public void RemovePermission(RoleCommand.DeletePermission command)
+        {
+
+            if (!command?.PermissionIds.Any() ?? false) return;
+
+            var permissionIds = this.PermissionIds.ToList();
+
+            permissionIds.RemoveAll(s => command.PermissionIds.Contains(s));
+
+            this.Apply(new RoleEvent.RelationPermission
+            {
+                PermissionIds = permissionIds
             });
         }
     }

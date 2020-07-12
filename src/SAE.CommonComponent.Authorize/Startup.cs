@@ -60,25 +60,10 @@ namespace SAE.CommonComponent.Authorize
                     .AddLocalBitmapEndpointProvider(provider =>
                     {
                         var mediator = provider.GetService<IMediator>();
-
-                        var dtos= mediator.Send<IEnumerable<PermissionDto>>(new Command.List<PermissionDto>())
-                                          .GetAwaiter()
-                                          .GetResult()
-                                          .OrderBy(s=>s.Id)
-                                          .ToArray();
-
-                        var endpoints = new List<BitmapEndpoint>(dtos.Count());
-
-                        for (int i = 0; i < dtos.Length; i++)
-                        {
-                            endpoints.Add(new BitmapEndpoint
-                            {
-                                Index = i,
-                                Path =dtos[i].Flag,
-                                Name=dtos[i].Name
-                            });
-                        }
-                        return endpoints;
+                        
+                        return mediator.Send<Command.List<BitmapEndpoint>,IEnumerable<BitmapEndpoint>>(new Command.List<BitmapEndpoint>())
+                                       .GetAwaiter()
+                                       .GetResult();
                     });
 
         }

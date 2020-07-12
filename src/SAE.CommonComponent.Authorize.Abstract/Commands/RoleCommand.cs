@@ -30,6 +30,12 @@ namespace SAE.CommonComponent.Authorize.Commands
             public string Id { get; set; }
             public IEnumerable<string> PermissionIds { get; set; }
         }
+
+        public class DeletePermission
+        {
+            public string Id { get; set; }
+            public IEnumerable<string> PermissionIds { get; set; }
+        }
         public class Query : Paging
         {
             public string Name { get; set; }

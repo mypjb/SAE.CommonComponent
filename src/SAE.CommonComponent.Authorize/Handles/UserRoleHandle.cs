@@ -1,7 +1,10 @@
 ﻿using SAE.CommonComponent.Authorize.Commands;
 using SAE.CommonComponent.Authorize.Domains;
+using SAE.CommonComponent.Authorize.Dtos;
+using SAE.CommonLibrary.Abstract.Builder;
 using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.AspNetCore.Authorization;
+using SAE.CommonLibrary.Data;
 using SAE.CommonLibrary.EventStore.Document;
 using System;
 using System.Collections.Generic;
@@ -14,37 +17,106 @@ namespace SAE.CommonComponent.Authorize.Handles
     public class UserRoleHandle : AbstractHandler<UserRole>,
                                   ICommandHandler<UserRoleCommand.Reference>,
                                   ICommandHandler<UserRoleCommand.DeleteReference>,
-                                  ICommandHandler<Command.List<UserRole>,IEnumerable<Permission>>,
-                                  ICommandHandler<Command.List<UserRole>, IEnumerable<Role>>,
-                                  ICommandHandler<Command.List<UserRole>, IEnumerable<BitmapEndpoint>>
+                                  ICommandHandler<UserRoleCommand.QueryUserRole, IEnumerable<RoleDto>>,
+                                  ICommandHandler<Command.List<BitmapEndpoint>, IEnumerable<BitmapEndpoint>>,
+                                  ICommandHandler<UserRoleCommand.QueryUserAuthorizeCode, string>
     {
-        public UserRoleHandle(IDocumentStore documentStore) : base(documentStore)
+        private readonly IStorage _storage;
+        private readonly IMediator _mediator;
+        private readonly IDirector _director;
+        private readonly IBitmapAuthorization _bitmapAuthorization;
+
+        public UserRoleHandle(IDocumentStore documentStore,
+                              IStorage storage,
+                              IMediator mediator,
+                              IDirector director,
+                              IBitmapAuthorization bitmapAuthorization) : base(documentStore)
         {
+            this._storage = storage;
+            this._mediator = mediator;
+            this._director = director;
+            this._bitmapAuthorization = bitmapAuthorization;
         }
 
-        public Task Handle(UserRoleCommand.Reference command)
+
+        public async Task Handle(UserRoleCommand.Reference command)
         {
-            throw new NotImplementedException();
+            var userRoles = command.Ids.Select(s => new UserRole(command.UserId, s));
+            await this._documentStore.SaveAsync(userRoles);
         }
 
         public Task Handle(UserRoleCommand.DeleteReference command)
         {
-            throw new NotImplementedException();
+            return this._documentStore.DeleteAsync<UserRole>(command.Ids);
         }
 
-        public Task<IEnumerable<Role>> Handle(Command.List<UserRole> command)
+        //public async Task<IEnumerable<PermissionDto>> Handle(UserRoleCommand.QueryRolePermission command)
+        //{
+        //    var role =await this._mediator.Send<Command.Find<RoleDto>, RoleDto>(new Command.Find<RoleDto>
+        //    {
+        //         Id=command.RoleId
+        //    });
+
+        //    return role.Permissions;
+        //}
+
+        public async Task<IEnumerable<RoleDto>> Handle(UserRoleCommand.QueryUserRole command)
         {
-            throw new NotImplementedException();
+            var roleIds = this._storage.AsQueryable<UserRoleDto>()
+                                       .Where(s => s.UserId == command.UserId)
+                                       .Select(s => s.RoleId)
+                                       .ToArray();
+            return this._storage.AsQueryable<RoleDto>()
+                                .Where(s => roleIds.Contains(s.Id))
+                                .ToArray();
         }
 
-        Task<IEnumerable<BitmapEndpoint>> ICommandHandler<Command.List<UserRole>, IEnumerable<BitmapEndpoint>>.Handle(Command.List<UserRole> command)
+        public async Task<IEnumerable<BitmapEndpoint>> Handle(Command.List<BitmapEndpoint> command)
         {
-            throw new NotImplementedException();
+
+            var dtos = this._storage.AsQueryable<PermissionDto>()
+                                    .OrderBy(s => s.Id)
+                                    .ToArray();
+
+            var endpoints = new List<BitmapEndpoint>(dtos.Count());
+
+            for (int i = 0; i < dtos.Length; i++)
+            {
+                endpoints.Add(new BitmapEndpoint
+                {
+                    Index = i,
+                    Path = dtos[i].Flag,
+                    Name = dtos[i].Name
+                });
+            }
+
+            return endpoints;
         }
 
-        Task<IEnumerable<Permission>> ICommandHandler<Command.List<UserRole>, IEnumerable<Permission>>.Handle(Command.List<UserRole> command)
+        public async Task<string> Handle(UserRoleCommand.QueryUserAuthorizeCode command)
         {
-            throw new NotImplementedException();
+            var roles = await this._mediator.Send<IEnumerable<RoleDto>>(new UserRoleCommand.QueryUserRole
+            {
+                UserId = command.UserId
+            });
+
+            var endpoints = (await this._mediator.Send<IEnumerable<BitmapEndpoint>>(new Command.List<BitmapEndpoint>()))
+                                       .ToList();
+
+            var permissionBits = new List<int>();
+
+            foreach (var role in roles)
+            {
+                foreach (var permission in role.Permissions)
+                {
+                    var index = endpoints.FindIndex(s => s.Name.Equals(permission.Name, StringComparison.OrdinalIgnoreCase));
+                    permissionBits.Add(index);
+                }
+            }
+
+            var code= this._bitmapAuthorization.GeneratePermissionCode(permissionBits);
+
+            return code;
         }
     }
 }
