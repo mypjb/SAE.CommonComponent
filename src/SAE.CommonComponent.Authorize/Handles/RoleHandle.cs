@@ -86,7 +86,7 @@ namespace SAE.CommonComponent.Authorize.Handles
         public async Task<RoleDto> Handle(Command.Find<RoleDto> command)
         {
             var dto= this._storage.AsQueryable<RoleDto>()
-                                  .FirstOrDefault(s => s.Id == command.Id);
+                                  .FirstOrDefault(s => s.Id == command.Id&& s.Status!= Status.Delete);
             return dto;
         }
 
