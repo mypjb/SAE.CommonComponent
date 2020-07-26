@@ -53,7 +53,8 @@ namespace SAE.CommonComponent.Authorize
 
             services.AddServiceProvider()
                     .AddMediator(assemblys)
-                    .AddMediatorOrleansProxy();
+                    //.AddMediatorOrleansProxy()
+                    ;
 
             services.AddBuilder()
                     .AddMemoryDocument()

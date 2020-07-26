@@ -84,7 +84,8 @@ namespace SAE.CommonComponent.Identity
 
             services.AddServiceProvider()
                     .AddMediator(assemblys)
-                    .AddMediatorOrleansClient();
+                    //.AddMediatorOrleansClient()
+                    ;
 
             services.AddMemoryDocument()
                     .AddMemoryMessageQueue()

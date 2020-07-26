@@ -47,7 +47,8 @@ namespace SAE.CommonComponent.User
 
             services.AddServiceProvider()
                     .AddMediator(assemblies)
-                    .AddMediatorOrleansProxy();
+                    // .AddMediatorOrleansProxy()
+                    ;
 
             services.AddMemoryDocument()
                     .AddMemoryMessageQueue()
@@ -72,7 +73,7 @@ namespace SAE.CommonComponent.User
 
         public override void PluginConfigure(IApplicationBuilder app)
         {
-            app.UseMediatorOrleansSilo();
+            //app.UseMediatorOrleansSilo();
         }
     }
 }

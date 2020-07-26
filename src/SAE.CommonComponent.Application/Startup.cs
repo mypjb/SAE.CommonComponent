@@ -45,7 +45,8 @@ namespace SAE.CommonComponent.Application
 
             services.AddServiceProvider()
                     .AddMediator(assemblys)
-                    .AddMediatorOrleansClient();
+                    //.AddMediatorOrleansClient()
+                    ;
             services.AddMemoryDocument()
                     .AddMemoryMessageQueue()
                     .AddSaeMemoryDistributedCache()
