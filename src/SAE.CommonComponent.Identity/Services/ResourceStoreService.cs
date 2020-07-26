@@ -37,14 +37,25 @@ namespace SAE.CommonComponent.Identity.Services
             return new ApiResource(scope.Name,scope.Display);
         }
 
-        public async Task<IEnumerable<ApiResource>> FindApiResourcesByScopeAsync(IEnumerable<string> scopeNames)
+        public Task<IEnumerable<ApiResource>> FindApiResourcesByNameAsync(IEnumerable<string> apiResourceNames)
+        {
+            return this.FindApiResourcesByScopeNameAsync(apiResourceNames);
+        }
+
+        public async Task<IEnumerable<ApiResource>> FindApiResourcesByScopeNameAsync(IEnumerable<string> scopeNames)
         {
             var scopes = await this._mediator.Send<IEnumerable<ScopeDto>>(new Command.List<ScopeDto>());
             return scopes.Where(s => scopeNames.Any(p => s.Name.Equals(p, StringComparison.OrdinalIgnoreCase)))
                          .Select(s => new ApiResource(s.Name,s.Display));
         }
 
-        public Task<IEnumerable<IdentityResource>> FindIdentityResourcesByScopeAsync(IEnumerable<string> scopeNames)
+        public async Task<IEnumerable<ApiScope>> FindApiScopesByNameAsync(IEnumerable<string> scopeNames)
+        {
+            var scopes = await this._mediator.Send<IEnumerable<ScopeDto>>(new Command.List<ScopeDto>());
+            return scopes.Select(s => new ApiScope(s.Name,s.Display)).ToArray();
+        }
+
+        public Task<IEnumerable<IdentityResource>> FindIdentityResourcesByScopeNameAsync(IEnumerable<string> scopeNames)
         {
             return Task.FromResult(this._identities.Where(s => scopeNames.Any(p => s.Name.Equals(s.Name, StringComparison.OrdinalIgnoreCase))));
         }
@@ -52,7 +63,10 @@ namespace SAE.CommonComponent.Identity.Services
         public async Task<Resources> GetAllResourcesAsync()
         {
             var scopes = await this._mediator.Send<IEnumerable<ScopeDto>>(new Command.List<ScopeDto>());
-            return new Resources(this._identities, scopes.Select(s => new ApiResource(s.Name, s.Display)).ToArray());
+            return new Resources(this._identities, 
+                                 scopes.Select(s => new ApiResource(s.Name, s.Display)).ToArray(),
+                                 scopes.Select(s => new ApiScope(s.Name, s.Display)).ToArray());
         }
+
     }
 }

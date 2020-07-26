@@ -13,6 +13,7 @@ using System.Linq;
 using SAE.CommonLibrary.Extension;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using SAE.CommonLibrary.Plugin.AspNetCore;
+using Microsoft.Extensions.Logging;
 
 namespace SAE.CommonComponent.ConfigServer
 {
@@ -32,7 +33,6 @@ namespace SAE.CommonComponent.ConfigServer
             });
 
             services.AddControllers();
-
             this.PluginConfigureServices(services);
         }
 
