@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SAE.CommonComponent.Authorize.Commands;
@@ -46,7 +47,10 @@ namespace SAE.CommonComponent.Authorize
 
         public override void PluginConfigureServices(IServiceCollection services)
         {
-            services.AddMvc()
+            services.AddMvc(options=>
+            {
+                options.Filters.Add<AuthorizeFilter>();
+            })
                     .AddResponseResult();
 
             var assemblys = new[] { typeof(UserRoleDto).Assembly, Assembly.GetExecutingAssembly() };
@@ -75,9 +79,9 @@ namespace SAE.CommonComponent.Authorize
 
         public override void PluginConfigure(IApplicationBuilder app)
         {
-            app.UseMediatorOrleansSilo();
-            //app.UseRoutingScanning()
-            //   .UseBitmapAuthorization();
+            //app.UseMediatorOrleansSilo();
+            app.UseRoutingScanning()
+               .UseBitmapAuthorization();
         }
     }
 }

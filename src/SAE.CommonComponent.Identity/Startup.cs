@@ -8,6 +8,7 @@ using SAE.CommonComponent.Identity.Services;
 using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.Extension;
 using SAE.CommonLibrary.Plugin.AspNetCore;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 
@@ -96,6 +97,8 @@ namespace SAE.CommonComponent.Identity
         public override void PluginConfigure(IApplicationBuilder app)
         {
             app.UseAuthentication();
+
+            var file= FileVersionInfo.GetVersionInfo(typeof(IdentityServer4.Hosting.IdentityServerMiddleware).Assembly.Location);
 
             app.UseIdentityServer();
         }
