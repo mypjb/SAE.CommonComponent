@@ -1,5 +1,6 @@
 ﻿using IdentityServer4;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SAE.CommonComponent.Identity.Commands;
 using SAE.CommonLibrary.Abstract.Mediator;
@@ -19,7 +20,8 @@ namespace SAE.CommonComponent.Identity.Controllers
         {
             this._mediator = mediator;
         }
-
+        
+        [AllowAnonymous]
         [HttpGet, HttpPost]
         public async Task<IActionResult> Login(AccountLoginCommand command)
         {
@@ -36,7 +38,7 @@ namespace SAE.CommonComponent.Identity.Controllers
 
             return this.Ok();
         }
-
+        
         [HttpGet, HttpPost]
         public IActionResult Logout()
         {

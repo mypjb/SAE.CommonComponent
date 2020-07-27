@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -19,7 +20,7 @@ using SAE.CommonLibrary.Plugin.AspNetCore;
 
 namespace SAE.CommonComponent.Authorize
 {
-    public class Startup:WebPlugin
+    public class Startup : WebPlugin
     {
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
@@ -47,11 +48,10 @@ namespace SAE.CommonComponent.Authorize
 
         public override void PluginConfigureServices(IServiceCollection services)
         {
-            services.AddMvc(options=>
+            services.AddControllers(options =>
             {
-                options.Filters.Add<AuthorizeFilter>();
-            })
-                    .AddResponseResult();
+                options.Filters.Add(new AuthorizeFilter());
+            }).AddResponseResult();
 
             var assemblys = new[] { typeof(UserRoleDto).Assembly, Assembly.GetExecutingAssembly() };
 
@@ -69,8 +69,8 @@ namespace SAE.CommonComponent.Authorize
                     .AddLocalBitmapEndpointProvider(provider =>
                     {
                         var mediator = provider.GetService<IMediator>();
-                        
-                        return mediator.Send<Command.List<BitmapEndpoint>,IEnumerable<BitmapEndpoint>>(new Command.List<BitmapEndpoint>())
+
+                        return mediator.Send<Command.List<BitmapEndpoint>, IEnumerable<BitmapEndpoint>>(new Command.List<BitmapEndpoint>())
                                        .GetAwaiter()
                                        .GetResult();
                     });
