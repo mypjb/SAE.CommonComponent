@@ -12,15 +12,15 @@ namespace SAE.CommonComponent.Application.Abstract.Domains
     {
         public App()
         {
-
+            this.Scopes = Enumerable.Empty<string>();
         }
-        public App(AppCommand.Create command)
+        public App(AppCommand.Create command) : this()
         {
             this.Apply<AppEvent.Create>(command, e =>
             {
-                e.Id = Utils.GenerateId();
+                e.Id = command.Id ?? Utils.GenerateId();
                 e.CreateTime = DateTime.UtcNow;
-                e.Secret = Utils.GenerateId();
+                e.Secret = command.Secret ?? Utils.GenerateId();
             });
         }
 

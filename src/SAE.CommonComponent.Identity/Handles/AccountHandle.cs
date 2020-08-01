@@ -1,4 +1,5 @@
-﻿using IdentityModel;
+﻿using Microsoft.VisualBasic;
+using IdentityModel;
 using IdentityServer4;
 using SAE.CommonComponent.Identity.Commands;
 using SAE.CommonComponent.User.Abstract.Dtos;
@@ -37,7 +38,7 @@ namespace SAE.CommonComponent.Identity.Handlers
             identity.AddClaim(new Claim(JwtClaimTypes.Subject, dto.Id));
             identity.AddClaim(new Claim(JwtClaimTypes.Name, dto.Name));
             identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, dto.AccountName));
-            identity.AddClaim(new Claim("",dto.AuthorizeCode));
+            identity.AddClaim(new Claim(SAE.CommonLibrary.AspNetCore.Constant.PermissionBits,dto.AuthorizeCode));
             var principal = new ClaimsPrincipal(identity);
 
             return principal;

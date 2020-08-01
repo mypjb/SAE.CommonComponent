@@ -9,10 +9,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SAE.CommonComponent.User.Abstract.Dtos;
+using SAE.CommonComponent.User.Commands;
 using SAE.CommonComponent.User.Domains;
 using SAE.CommonComponent.User.Events;
-using SAE.CommonLibrary.ObjectMapper;
+using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.Plugin.AspNetCore;
+using SAE.CommonLibrary.ObjectMapper;
 
 namespace SAE.CommonComponent.User
 {
@@ -73,6 +75,18 @@ namespace SAE.CommonComponent.User
 
         public override void PluginConfigure(IApplicationBuilder app)
         {
+            var environment = app.ApplicationServices.GetService<IHostEnvironment>();
+
+            if (environment.IsDevelopment())
+            {
+                var mediator = app.ApplicationServices.GetService<IMediator>();
+                mediator.Send<string>(new UserCommand.Register
+                {
+                    Name = "admin",
+                    Password = "admin",
+                    ConfirmPassword = "admin"
+                }).GetAwaiter().GetResult();
+            }
             //app.UseMediatorOrleansSilo();
         }
     }

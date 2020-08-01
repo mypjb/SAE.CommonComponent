@@ -12,12 +12,14 @@ namespace SAE.CommonComponent.Application.Commands
         }
         public class Create
         {
+            public string Id { get; set; }
+            public string Secret { get; set; }
             public string Name { get; set; }
             public IEnumerable<string> Urls { get; set; }
         }
         public class Change : Create
         {
-            public string Id { get; set; }
+            //public string Id { get; set; }
         }
         public class RefreshSecret
         {

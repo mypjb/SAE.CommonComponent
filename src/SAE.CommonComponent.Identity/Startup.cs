@@ -14,9 +14,9 @@ using System.Reflection;
 
 namespace SAE.CommonComponent.Identity
 {
-    public class Startup:WebPlugin
+    public class Startup : WebPlugin
     {
-        
+
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
@@ -36,33 +36,16 @@ namespace SAE.CommonComponent.Identity
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IMediator mediator)
         {
-            
+
             app.UseRouting()
                .UseCors();
-            
+
             this.PluginConfigure(app);
 
             app.UseEndpoints(endpoints =>
                {
                    endpoints.MapDefaultControllerRoute();
                });
-
-            //if (env.IsDevelopment())
-            //{
-            //    app.UseDeveloperExceptionPage();
-
-            //    Enumerable.Range(0, 10)
-            //              .Select(s => new AppCommand.Create
-            //              {
-            //                  Name = s.ToString("000000"),
-            //                  Urls = new[] { $"http://test{s}.com" }
-            //              }).ForEach(command =>
-            //              {
-            //                  mediator.Send(command).Wait();
-            //              });
-
-            //    mediator.Send(new ScopeCommand.Create() { Name = "config", Display = "config center" }).Wait();
-            //}
         }
 
         public override void PluginConfigureServices(IServiceCollection services)
@@ -96,10 +79,8 @@ namespace SAE.CommonComponent.Identity
 
         public override void PluginConfigure(IApplicationBuilder app)
         {
+
             app.UseAuthentication();
-
-            var file= FileVersionInfo.GetVersionInfo(typeof(IdentityServer4.Hosting.IdentityServerMiddleware).Assembly.Location);
-
             app.UseIdentityServer();
         }
     }
