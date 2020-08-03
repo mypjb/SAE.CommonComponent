@@ -96,13 +96,16 @@ namespace SAE.CommonComponent.User.Handles
                 {
                     dto = null;
                 }
-
-                var code = await this._mediator.Send<string>(new UserRoleCommand.QueryUserAuthorizeCode
+                else
                 {
-                    UserId = dto.Id
-                });
+                    var code = await this._mediator.Send<string>(new UserRoleCommand.QueryUserAuthorizeCode
+                    {
+                        UserId = dto.Id
+                    });
 
-                dto.AuthorizeCode = code;
+                    dto.AuthorizeCode = code;
+                }
+
             }
             
             return dto;

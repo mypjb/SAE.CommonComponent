@@ -29,13 +29,15 @@ namespace SAE.CommonComponent.Master
             services.AddCors(options =>
             {
                 options.AddDefaultPolicy(
-                    builder => builder.WithOrigins("http://localhost:8000", "http://localhost:8001")
+                    builder => builder.WithOrigins("http://dev.sae.com:8000", "http://dev.sae.com:8001")
                                       .AllowAnyHeader()
                                       .AllowAnyMethod()
                                       .AllowCredentials());
             });
             services.AddControllers();
-            services.AddRoutingScanning();
+            services.AddRoutingScanning()
+                    .AddServiceFacade();
+                    
             services.AddPluginManage("../../../../../plugin");
         }
 
@@ -48,7 +50,7 @@ namespace SAE.CommonComponent.Master
             }
 
             //app.UseHttpsRedirection();
-
+            app.UseServiceFacade();
             app.UseRouting()
                .UseCors()
                .UsePluginManage()

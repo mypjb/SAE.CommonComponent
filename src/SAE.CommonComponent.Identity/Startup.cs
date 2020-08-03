@@ -66,7 +66,7 @@ namespace SAE.CommonComponent.Identity
 
             var assemblys = new[] { typeof(AppDto).Assembly, Assembly.GetExecutingAssembly() };
 
-            services.AddServiceProvider()
+            services.AddServiceFacade()
                     .AddMediator(assemblys)
                     //.AddMediatorOrleansClient()
                     ;
@@ -79,7 +79,7 @@ namespace SAE.CommonComponent.Identity
 
         public override void PluginConfigure(IApplicationBuilder app)
         {
-
+            app.UseServiceFacade();
             app.UseAuthentication();
             app.UseIdentityServer();
         }

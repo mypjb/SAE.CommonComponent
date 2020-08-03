@@ -90,6 +90,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SAE.CommonComponent.Authori
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SAE.CommonLibrary.Logging.Microsoft", "..\CommonLibrary\src\SAE.CommonLibrary.Logging.Microsoft\SAE.CommonLibrary.Logging.Microsoft.csproj", "{9C6DF247-5543-4D17-BE88-B6469FAD39AE}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SAE.CommonLibrary.ObjectMapper.TinyMapper", "..\CommonLibrary\src\SAE.CommonLibrary.ObjectMapper.TinyMapper\SAE.CommonLibrary.ObjectMapper.TinyMapper.csproj", "{2DEB698E-20C2-440A-8266-ED3B8FA739B2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -244,6 +246,10 @@ Global
 		{9C6DF247-5543-4D17-BE88-B6469FAD39AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9C6DF247-5543-4D17-BE88-B6469FAD39AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9C6DF247-5543-4D17-BE88-B6469FAD39AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2DEB698E-20C2-440A-8266-ED3B8FA739B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2DEB698E-20C2-440A-8266-ED3B8FA739B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2DEB698E-20C2-440A-8266-ED3B8FA739B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2DEB698E-20C2-440A-8266-ED3B8FA739B2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -286,6 +292,7 @@ Global
 		{D44A5B9E-BDAF-4DB0-93C0-19CA636D798C} = {683BBBDB-B4DC-4B36-B42F-504CC8B6A794}
 		{9C8A19E2-12B0-4438-A937-D22C73FE9C11} = {6D4B2D09-B108-452D-B80A-C66817BE846D}
 		{9C6DF247-5543-4D17-BE88-B6469FAD39AE} = {683BBBDB-B4DC-4B36-B42F-504CC8B6A794}
+		{2DEB698E-20C2-440A-8266-ED3B8FA739B2} = {683BBBDB-B4DC-4B36-B42F-504CC8B6A794}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E3F15B03-989E-49CA-AC48-4DA76E675671}

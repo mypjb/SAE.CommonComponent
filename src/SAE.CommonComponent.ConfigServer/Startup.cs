@@ -62,7 +62,7 @@ namespace SAE.CommonComponent.ConfigServer
                     .AddResponseResult()
                     .AddNewtonsoftJson();
 
-            services.AddServiceProvider()
+            services.AddServiceFacade()
                     .AddMediator();
             services.AddMemoryDocument()
                     .AddMemoryMessageQueue()
@@ -71,6 +71,7 @@ namespace SAE.CommonComponent.ConfigServer
 
         public override void PluginConfigure(IApplicationBuilder app)
         {
+            app.UseServiceFacade();
         }
     }
 }
