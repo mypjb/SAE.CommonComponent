@@ -2,6 +2,7 @@ using SAE.CommonComponent.Application.Abstract.Events;
 using SAE.CommonComponent.Application.Commands;
 using SAE.CommonLibrary;
 using SAE.CommonLibrary.EventStore.Document;
+using SAE.CommonLibrary.Extension;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -77,11 +78,18 @@ namespace SAE.CommonComponent.Application.Abstract.Domains
         {
             if (!command.Scopes.Any()) return;
 
+            if (this.Scopes == null)
+            {
+                this.Scopes = Enumerable.Empty<string>();
+            }
+
             var scopes = this.Scopes.ToList();
-            scopes.RemoveAll(command.Scopes.Contains);
+
+            scopes.AddRange(command.Scopes);
+            
             this.Apply(new AppEvent.ReferenceScope
             {
-                Scopes = scopes
+                Scopes = scopes.Distinct().ToList()
             });
         }
         public void CancelReference(AppCommand.CancelReferenceScope command)

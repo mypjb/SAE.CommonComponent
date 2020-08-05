@@ -21,6 +21,10 @@ namespace SAE.CommonComponent.Identity.Commands
         /// <summary>
         /// is persistent
         /// </summary>
-        public bool IsPersistent { get; set; }
+        public bool Remember { get; set; }
+        /// <summary>
+        /// return url
+        /// </summary>
+        public string ReturnUrl { get; set; }
     }
 }
