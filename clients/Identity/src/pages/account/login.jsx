@@ -1,6 +1,6 @@
 import { Row, Col, Input, Table, Button, Modal, Form, Checkbox } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import { connect, Link } from 'umi';
+import { connect, useLocation } from 'umi';
 
 const layout = {
     labelCol: {
@@ -20,11 +20,16 @@ const tailLayout = {
 
 export default connect()(({ dispatch }) => {
 
+    const query = useLocation().query;
+
     const [form] = Form.useForm();
 
     const handlerSubmit = (payload) => {
-        console.log(payload);
-        dispatch({ type: 'account/login', payload });
+        const params = {
+            ...query,
+            ...payload
+        };
+        dispatch({ type: 'account/login', payload: params });
     }
 
     return (

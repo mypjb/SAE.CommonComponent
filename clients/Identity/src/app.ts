@@ -1,25 +1,29 @@
 import { RequestConfig } from 'umi';
 
 export const request: RequestConfig = {
-    prefix: "http://localhost:5000",
+    prefix: "http://sae.com:8002",
     errorConfig: {
-        adaptor: (resData, context) => {
-            if (resData.statusCode === 0) {
-                context.res = resData.body;
+        adaptor: function (resData, context) {
+            if (resData === context.res) {
+                return {
+                    ...resData,
+                    success: true
+                }
             }
             return {
                 ...resData,
-                success: resData.statusCode === 0,
-                errorMessage: resData.message,
+                success: false,
+                errorMessage: resData.message || resData.title || resData.statusText,
             };
-        },
+        }
     }
 };
 
-// export const dva = {
-//     config: {
-//       onError(e: Error) {
-//         console.error(e.message);
-//       },
-//     },
-//   };
+export const dva = {
+    config: {
+        onError(e) {
+            e.preventDefault();
+            console.error(e);
+        },
+    },
+};

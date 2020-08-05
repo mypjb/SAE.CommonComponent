@@ -1,11 +1,12 @@
 import request from "../service";
+import { history } from 'umi';
 
 export default {
     state: {
         account: {
             name: "",
             password: "",
-            IsPersistent: true
+            Remember: true
         }
     },
     reducers: {
@@ -14,7 +15,7 @@ export default {
                 ...state, account: {
                     name: "",
                     password: "",
-                    IsPersistent: true
+                    Remember: true
                 }
             };
         }
@@ -22,13 +23,14 @@ export default {
     effects: {
         *login({ payload }, { call, put }) {
             const data = yield call(request.login, payload);
-            yield put({ type: "clear" });
+            //yield put({ type: "clear" });
+            location.href = data.returnUrl;
         }
     },
     subscriptions: {
         setup({ dispatch, history }) {
             history.listen(({ pathname }) => {
-                if (pathname === '/login') {
+                if (pathname === '/account/login') {
                     dispatch({
                         type: 'clear',
                     });
