@@ -30,15 +30,17 @@ namespace SAE.CommonComponent.User
 
         public override void PluginConfigureServices(IServiceCollection services)
         {
-            TinyMapper.Bind<UserEvent.ChangePassword, Domains.User>(config =>
-            {
-                config.Bind(@event => @event.Password, user => user.Account.Password);
-            });
-
-            TinyMapper.Bind<Domains.User, UserDto>(config =>
-            {
-                config.Bind(user => user.Account.Name, dto => dto.AccountName);
-            });
+            services.AddTinyMapper()
+                    .AddBuilder(builder =>
+                    {
+                        builder.Bind<UserEvent.ChangePassword, Domains.User>(config =>
+                         {
+                             config.Bind(@event => @event.Password, user => user.Account.Password);
+                         }).Bind<Domains.User, UserDto>(config =>
+                         {
+                             config.Bind(user => user.Account.Name, dto => dto.AccountName);
+                         });
+                    });
 
 
             var assemblies = new[] { Assembly.GetExecutingAssembly(), typeof(UserDto).Assembly };
@@ -47,7 +49,7 @@ namespace SAE.CommonComponent.User
                     .AddResponseResult()
                     .AddNewtonsoftJson();
 
-            services.AddServiceProvider()
+            services.AddServiceFacade()
                     .AddMediator(assemblies)
                     // .AddMediatorOrleansProxy()
                     ;

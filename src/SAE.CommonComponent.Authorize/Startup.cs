@@ -55,7 +55,7 @@ namespace SAE.CommonComponent.Authorize
 
             var assemblys = new[] { typeof(UserRoleDto).Assembly, Assembly.GetExecutingAssembly() };
 
-            services.AddServiceProvider()
+            services.AddServiceFacade()
                     .AddMediator(assemblys)
                     //.AddMediatorOrleansProxy()
                     ;
@@ -80,7 +80,8 @@ namespace SAE.CommonComponent.Authorize
         public override void PluginConfigure(IApplicationBuilder app)
         {
             //app.UseMediatorOrleansSilo();
-            app.UseRoutingScanning()
+            app.UseServiceFacade()
+               .UseRoutingScanning()
                .UseBitmapAuthorization();
         }
     }

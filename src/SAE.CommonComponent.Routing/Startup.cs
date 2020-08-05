@@ -44,7 +44,7 @@ namespace SAE.CommonComponent.Routing
         }
         public override void PluginConfigure(IApplicationBuilder app)
         {
-
+            app.UseServiceFacade();
         }
         public override void PluginConfigureServices(IServiceCollection services)
         {
@@ -52,7 +52,7 @@ namespace SAE.CommonComponent.Routing
                     .AddNewtonsoftJson()
                     .AddResponseResult();
 
-            services.AddServiceProvider()
+            services.AddServiceFacade()
                     .AddMediator();
             services.AddMemoryDocument()
                     .AddMemoryMessageQueue()

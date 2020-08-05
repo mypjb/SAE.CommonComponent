@@ -48,7 +48,7 @@ namespace SAE.CommonComponent.Application
                     .AddNewtonsoftJson();
             var assemblys = new[] { typeof(AppDto).Assembly, Assembly.GetExecutingAssembly() };
 
-            services.AddServiceProvider()
+            services.AddServiceFacade()
                     .AddMediator(assemblys)
                     //.AddMediatorOrleansClient()
                     ;
@@ -60,6 +60,7 @@ namespace SAE.CommonComponent.Application
 
         public override void PluginConfigure(IApplicationBuilder app)
         {
+            app.UseServiceFacade();
 
             var environment = app.ApplicationServices.GetService<IHostEnvironment>();
 
