@@ -1,7 +1,7 @@
 import { RequestConfig } from 'umi';
 
 export const request: RequestConfig = {
-    prefix: "http://sae.com:8002",
+    prefix: "http://api.sae.com:8080",
     errorConfig: {
         adaptor: function (resData, context) {
             if (resData === context.res) {

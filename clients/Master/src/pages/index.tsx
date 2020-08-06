@@ -1,9 +1,10 @@
-import React from 'react';
-import styles from './index.less';
+import React from 'react'
+import {MicroApp} from 'umi'
 
 export default () => {
   return (
-    <div id="root-subapp">
+    <div>
+      <MicroApp name='identity'></MicroApp>
     </div>
   );
 }
