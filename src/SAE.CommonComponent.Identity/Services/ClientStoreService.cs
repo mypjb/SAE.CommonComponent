@@ -1,7 +1,9 @@
+using IdentityServer4;
 using IdentityServer4.Models;
 using IdentityServer4.Stores;
 using SAE.CommonComponent.Application.Dtos;
 using SAE.CommonLibrary.Abstract.Mediator;
+using SAE.CommonLibrary.EventStore.Document;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -19,9 +21,13 @@ namespace SAE.CommonComponent.Identity.Services
         }
         public async Task<Client> FindClientByIdAsync(string clientId)
         {
-            var app = await this._mediator.Send<AppDto>(clientId);
+            var app = await this._mediator.Send<AppDto>(new Command.Find<AppDto> { Id = clientId });
 
             var host = app.Urls.First();
+
+            var scopes = app.Scopes.ToList();
+            scopes.Add(IdentityServerConstants.StandardScopes.OpenId);
+            scopes.Add(IdentityServerConstants.StandardScopes.Profile);
 
             return new Client
             {
@@ -31,13 +37,14 @@ namespace SAE.CommonComponent.Identity.Services
                 {
                     new Secret(app.Secret.Sha256())
                 },
-                AllowedScopes = app.Scopes.ToArray(),
+                AllowedScopes = scopes,
                 Enabled = app.Status == Status.Enable,
                 AccessTokenType = AccessTokenType.Jwt,
                 AuthorizationCodeLifetime = this._option.AuthorizationCodeLifetime,
-                AllowedGrantTypes = GrantTypes.HybridAndClientCredentials,
+                AllowedGrantTypes = GrantTypes.ImplicitAndClientCredentials,
                 AllowRememberConsent = false,
                 AlwaysIncludeUserClaimsInIdToken = true,
+                AllowAccessTokensViaBrowser=true,
                 RedirectUris = new[] { $"{host}/signin-oidc" },
                 PostLogoutRedirectUris = new[] { $"{host}/signout-callback-oidc" }
             };

@@ -43,7 +43,7 @@ namespace SAE.CommonComponent.Identity.Test
 
             var command = new AccountLoginCommand
             {
-                IsPersistent = true,
+                Remember = true,
                 Name = user.Name,
                 Password = UserControllerTest.DefaultPassword
             };

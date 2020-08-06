@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Logging;
 using SAE.CommonComponent.Application.Commands;
 using SAE.CommonComponent.Application.Dtos;
 using SAE.CommonComponent.Identity.Services;
@@ -24,7 +25,7 @@ namespace SAE.CommonComponent.Identity
             services.AddCors(options =>
             {
                 options.AddDefaultPolicy(
-                    builder => builder.WithOrigins("http://localhost:8000")
+                    builder => builder.WithOrigins(Constants.DefaultMaster)
                                       .AllowAnyHeader()
                                       .AllowAnyMethod()
                                       .AllowCredentials());
@@ -50,6 +51,7 @@ namespace SAE.CommonComponent.Identity
 
         public override void PluginConfigureServices(IServiceCollection services)
         {
+
             services.AddAuthentication().AddCookie();
 
             var build = services.AddIdentityServer()
@@ -79,6 +81,11 @@ namespace SAE.CommonComponent.Identity
 
         public override void PluginConfigure(IApplicationBuilder app)
         {
+            var hostEnvironment= app.ApplicationServices.GetService<IHostEnvironment>();
+            if (hostEnvironment.IsDevelopment())
+            {
+                IdentityModelEventSource.ShowPII = true;
+            }
             app.UseServiceFacade();
             app.UseAuthentication();
             app.UseIdentityServer();
