@@ -79,7 +79,7 @@ namespace SAE.CommonComponent.Application
                     Id = Constants.DefalutAppId,
                     Secret = Constants.DefalutSecret,
                     Name = Constants.DefalutAppName,
-                    Urls = new[] { Constants.DefaultUrl }
+                    Urls = new[] { Constants.DefaultMaster }
                 };
 
                 mediator.Send<string>(appCommand).GetAwaiter().GetResult();

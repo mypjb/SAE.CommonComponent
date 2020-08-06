@@ -50,7 +50,7 @@ namespace SAE.CommonComponent.Identity.Controllers
         [HttpGet]
         public IActionResult Login()
         {
-            return this.Redirect($"{Constants.DefaultUrl}{this.Request.Path}{this.Request.QueryString}");
+            return this.Redirect($"{Constants.DefaultMaster}{this.Request.Path}{this.Request.QueryString}");
         }
 
         [AllowAnonymous]

@@ -29,7 +29,7 @@ namespace SAE.CommonComponent.Master
             services.AddCors(options =>
             {
                 options.AddDefaultPolicy(
-                    builder => builder.WithOrigins("http://dev.sae.com:8000", "http://dev.sae.com:8001")
+                    builder => builder.WithOrigins(Constants.DefaultMaster)
                                       .AllowAnyHeader()
                                       .AllowAnyMethod()
                                       .AllowCredentials());
