@@ -18,8 +18,8 @@ const findApp = (pathname, routes) => {
 }
 
 const routeList = [{
-  path: '/account',
-  microApp: 'account'
+  path: '/identity',
+  microApp: 'identity'
 },
 {
   path: '/oauth',

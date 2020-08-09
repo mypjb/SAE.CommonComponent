@@ -1,5 +1,29 @@
 import { RequestConfig } from 'umi';
 
+
+const menuData = [
+    {
+        path: '/oauth',
+        name: 'login',
+        icon: 'icon-smile',
+        // children: [
+        //     {
+        //         path: '/welcome',
+        //         name: 'one',
+        //         icon: 'icon-menu',
+        //         children: [
+        //             {
+        //                 path: '/welcome/welcome',
+        //                 name: 'two',
+        //                 exact: true,
+        //                 icon: 'icon-user'
+        //             },
+        //         ],
+        //     },
+        // ],
+    }
+];
+
 export const qiankun = function () {
     return {
         // 注册子应用信息
@@ -9,7 +33,7 @@ export const qiankun = function () {
             //   entry: '//dev.sae.com:8001', // html entry
             // },
             {
-                name: 'account', // 唯一 id
+                name: 'identity', // 唯一 id
                 entry: '//dev.sae.com:8002', // html entry
             },
             {
@@ -23,39 +47,11 @@ export const qiankun = function () {
             },
         }
     }
-}
-const menuData = [
-    {
-        path: '/',
-        name: 'welcome',
-        icon: 'icon-smile',
-        children: [
-            {
-                path: '/welcome',
-                name: 'one',
-                icon: 'icon-menu',
-                children: [
-                    {
-                        path: '/welcome/welcome',
-                        name: 'two',
-                        exact: true,
-                        icon: 'icon-user'
-                    },
-                ],
-            },
-        ],
-    },
-    {
-        path: '/user',
-        name: '用户',
-        icon: 'icon-user'
-    },
-];
+};
 
 export const layout = {
     name: "SAE",
     menuDataRender: () => {
-        debugger;
         return menuData;
     }
 };

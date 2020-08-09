@@ -1,6 +1,7 @@
 import { defineConfig } from 'umi';
 
 export default defineConfig({
+    layout: {},
     routes: [
         { exact: false, path: '/', component: 'index' }
     ],
