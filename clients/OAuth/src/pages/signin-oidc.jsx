@@ -1,8 +1,17 @@
 import { useLocation } from 'umi'
 import oidc from 'oidc-client'
+import { Fragment } from 'react';
 
-export default () => {
-    new oidc.UserManager({ response_mode: "query" }).signinRedirectCallback().then(user => {
+export default ({ location }) => {
+    const oidcConfig = {
+        response_mode: "query"
+    };
+
+    const signinCallbackUrl = window.location.origin + window.location.pathname + (location.search || ('?' + location.hash.substr(1)));
+
+    console.log(signinCallbackUrl);
+
+    new oidc.UserManager(oidcConfig).signinRedirectCallback(signinCallbackUrl).then((user) => {
         console.log(user);
     }).catch(e => {
         console.error(e);
