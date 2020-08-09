@@ -35,6 +35,7 @@ namespace SAE.CommonComponent.Master
                                       .AllowCredentials());
             });
             services.AddControllers();
+            services.AddRouting(options => options.LowercaseUrls = true);
             services.AddRoutingScanning()
                     .AddServiceFacade();
                     

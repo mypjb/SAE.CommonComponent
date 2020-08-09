@@ -1,14 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SAE.CommonComponent.Routing.Commands;
 using SAE.CommonComponent.Routing.Domains;
 using SAE.CommonComponent.Routing.Dtos;
-using SAE.CommonLibrary;
 using SAE.CommonLibrary.Abstract.Mediator;
-using SAE.CommonLibrary.Abstract.Model;
 using SAE.CommonLibrary.EventStore.Document;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SAE.CommonComponent.Routing.Controllers
 {

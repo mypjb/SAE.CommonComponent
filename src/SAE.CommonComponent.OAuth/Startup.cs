@@ -62,8 +62,9 @@ namespace SAE.CommonComponent.OAuth
                   options.ResponseType = "id_token token";
                   options.RequireHttpsMetadata = false;
                   options.Scope.Add(Constants.Scope);
-
                   options.SaveTokens = true;
+                  options.CorrelationCookie.Domain = "sae.com";
+                  options.NonceCookie.Domain = ".sae.com";
               });
         }
 

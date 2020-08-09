@@ -52,7 +52,10 @@ namespace SAE.CommonComponent.Identity
         public override void PluginConfigureServices(IServiceCollection services)
         {
 
-            services.AddAuthentication().AddCookie();
+            services.AddAuthentication().AddCookie(options=>
+            {
+                options.Cookie.Domain = "sae.com";
+            });
 
             var build = services.AddIdentityServer()
                                 .AddJwtBearerClientAuthentication()

@@ -45,8 +45,8 @@ namespace SAE.CommonComponent.Identity.Services
                 AllowRememberConsent = false,
                 AlwaysIncludeUserClaimsInIdToken = true,
                 AllowAccessTokensViaBrowser=true,
-                RedirectUris = new[] { $"{host}/signin-oidc" },
-                PostLogoutRedirectUris = new[] { $"{host}/signout-callback-oidc" }
+                RedirectUris = new[] { $"{host}/oauth/signin-oidc" },
+                PostLogoutRedirectUris = new[] { $"{host}/oauth/signout-callback-oidc" }
             };
         }
     }

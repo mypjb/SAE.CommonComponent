@@ -50,7 +50,7 @@ namespace SAE.CommonComponent.Identity.Controllers
         [HttpGet]
         public IActionResult Login()
         {
-            return this.Redirect($"{Constants.DefaultMaster}{this.Request.Path}{this.Request.QueryString}");
+            return this.Redirect($"{Constants.DefaultMaster}{"/identity/login"}{this.Request.QueryString}");
         }
 
         [AllowAnonymous]
@@ -70,7 +70,8 @@ namespace SAE.CommonComponent.Identity.Controllers
 
             return new
             {
-                returnUrl = command.ReturnUrl.IsNullOrWhiteSpace() ? "/" : command.ReturnUrl
+                returnUrl = command.ReturnUrl.IsNullOrWhiteSpace() ? "/" :
+                $"{this.Request.Scheme}://{this.Request.Host}{command.ReturnUrl}"
             };
         }
 
