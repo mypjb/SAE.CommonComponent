@@ -6,6 +6,8 @@ echo start childs app
 # start childs
 cd ../Identity && tyarn start &
 cd ../OAuth && tyarn start &
+cd ../Routing && tyarn start &
+cd ../ConfigServer && tyarn start &
 
 echo start master app
 # start master 
