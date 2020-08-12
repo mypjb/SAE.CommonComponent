@@ -23,18 +23,23 @@ namespace SAE.CommonComponent.Identity.Services
             this._option = option;
             this._identities = new List<IdentityResource>();
             this._identities.Add(new IdentityResources.Profile());
-            this._identities.Add(new IdentityResources.OpenId());
+            var openId = new IdentityResources.OpenId();
+            openId.UserClaims.Add(SAE.CommonLibrary.AspNetCore.Constant.Administrator);
+            this._identities.Add(openId);
         }
 
         public async Task<ApiResource> FindApiResourceAsync(string name)
         {
             var scopes = await this._mediator.Send<IEnumerable<ScopeDto>>(new Command.List<ScopeDto>());
-            var scope= scopes.FirstOrDefault(s => s.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+            var scope = scopes.FirstOrDefault(s => s.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
             if (scope == null)
             {
                 return null;
             }
-            return new ApiResource(scope.Name,scope.Display);
+            var apiResource = new ApiResource(scope.Name, scope.Display);
+            apiResource.UserClaims.Add(SAE.CommonLibrary.AspNetCore.Constant.Administrator);
+            apiResource.UserClaims.Add(SAE.CommonLibrary.AspNetCore.Constant.PermissionBits);
+            return apiResource;
         }
 
         public Task<IEnumerable<ApiResource>> FindApiResourcesByNameAsync(IEnumerable<string> apiResourceNames)
@@ -46,13 +51,25 @@ namespace SAE.CommonComponent.Identity.Services
         {
             var scopes = await this._mediator.Send<IEnumerable<ScopeDto>>(new Command.List<ScopeDto>());
             return scopes.Where(s => scopeNames.Any(p => s.Name.Equals(p, StringComparison.OrdinalIgnoreCase)))
-                         .Select(s => new ApiResource(s.Name,s.Display));
+                         .Select(s =>
+                         {
+                             var apiResource = new ApiResource(s.Name, s.Display);
+                             apiResource.UserClaims.Add(SAE.CommonLibrary.AspNetCore.Constant.Administrator);
+                             apiResource.UserClaims.Add(SAE.CommonLibrary.AspNetCore.Constant.PermissionBits);
+                             return apiResource;
+                         });
         }
 
         public async Task<IEnumerable<ApiScope>> FindApiScopesByNameAsync(IEnumerable<string> scopeNames)
         {
             var scopes = await this._mediator.Send<IEnumerable<ScopeDto>>(new Command.List<ScopeDto>());
-            return scopes.Select(s => new ApiScope(s.Name,s.Display)).ToArray();
+            return scopes.Select(s =>
+            {
+                var apiResource = new ApiScope(s.Name, s.Display);
+                apiResource.UserClaims.Add(SAE.CommonLibrary.AspNetCore.Constant.Administrator);
+                apiResource.UserClaims.Add(SAE.CommonLibrary.AspNetCore.Constant.PermissionBits);
+                return apiResource;
+            }).ToArray();
         }
 
         public Task<IEnumerable<IdentityResource>> FindIdentityResourcesByScopeNameAsync(IEnumerable<string> scopeNames)
@@ -63,9 +80,21 @@ namespace SAE.CommonComponent.Identity.Services
         public async Task<Resources> GetAllResourcesAsync()
         {
             var scopes = await this._mediator.Send<IEnumerable<ScopeDto>>(new Command.List<ScopeDto>());
-            return new Resources(this._identities, 
-                                 scopes.Select(s => new ApiResource(s.Name, s.Display)).ToArray(),
-                                 scopes.Select(s => new ApiScope(s.Name, s.Display)).ToArray());
+            return new Resources(this._identities,
+                                 scopes.Select(s =>
+                                 {
+                                     var apiResource = new ApiResource(s.Name, s.Display);
+                                     apiResource.UserClaims.Add(SAE.CommonLibrary.AspNetCore.Constant.Administrator);
+                                     apiResource.UserClaims.Add(SAE.CommonLibrary.AspNetCore.Constant.PermissionBits);
+                                     return apiResource;
+                                 }).ToArray(),
+                                 scopes.Select(s =>
+                                 {
+                                     var apiResource = new ApiScope(s.Name, s.Display);
+                                     apiResource.UserClaims.Add(SAE.CommonLibrary.AspNetCore.Constant.Administrator);
+                                     apiResource.UserClaims.Add(SAE.CommonLibrary.AspNetCore.Constant.PermissionBits);
+                                     return apiResource;
+                                 }).ToArray());
         }
 
     }

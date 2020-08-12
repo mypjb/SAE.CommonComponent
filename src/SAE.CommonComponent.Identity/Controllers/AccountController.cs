@@ -66,7 +66,9 @@ namespace SAE.CommonComponent.Identity.Controllers
             properties.IsPersistent = command.Remember;
 
 
-            await this.HttpContext.SignInAsync(claimsPrincipal, properties);
+            await this.HttpContext.SignInAsync(
+                claimsPrincipal,
+                properties);
 
             return new
             {
