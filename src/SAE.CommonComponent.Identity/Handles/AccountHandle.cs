@@ -10,6 +10,7 @@ using SAE.CommonLibrary.Extension;
 using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace SAE.CommonComponent.Identity.Handlers
 {
@@ -33,12 +34,13 @@ namespace SAE.CommonComponent.Identity.Handlers
             Assert.Build(dto)
                   .NotNull("Incorrect user name or password!");
 
-            var identity = new ClaimsIdentity(IdentityServerConstants.DefaultCookieAuthenticationScheme);
+            var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
 
-            identity.AddClaim(new Claim(JwtClaimTypes.Subject, dto.Id));
+            identity.AddClaim(new Claim(JwtClaimTypes.Subject, dto.Id.ToLower()));
             identity.AddClaim(new Claim(JwtClaimTypes.Name, dto.Name));
             identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, dto.AccountName));
-            identity.AddClaim(new Claim(SAE.CommonLibrary.AspNetCore.Constant.PermissionBits,dto.AuthorizeCode));
+            identity.AddClaim(new Claim(CommonLibrary.AspNetCore.Constant.PermissionBits,dto.AuthorizeCode));
+            identity.AddClaim(new Claim(CommonLibrary.AspNetCore.Constant.Administrator, "1"));
             var principal = new ClaimsPrincipal(identity);
 
             return principal;

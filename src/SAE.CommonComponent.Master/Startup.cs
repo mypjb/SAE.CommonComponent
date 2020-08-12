@@ -54,6 +54,8 @@ namespace SAE.CommonComponent.Master
             app.UseServiceFacade();
             app.UseRouting()
                .UseCors()
+               .UseAuthentication()
+               .UseAuthorization()
                .UsePluginManage()
                .UseEndpoints(endpoints =>
                {

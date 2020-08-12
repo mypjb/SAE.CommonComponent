@@ -41,11 +41,11 @@ namespace SAE.CommonComponent.Routing.Controllers
         {
             return await this._mediator.Send<MenuDto>(command);
         }
-        // [HttpGet("{action}")]
-        // public async Task<object> Paging([FromQuery]MenuQueryCommand command)
-        // {
-        //     return await this._mediator.Send<IPagedList<MenuDto>>(command);
-        // }
+        //[HttpGet("{action}")]
+        //public async Task<object> Paging([FromQuery]MenuCommand. command)
+        //{
+        //    return await this._mediator.Send<IPagedList<MenuDto>>(command);
+        //}
         [HttpGet("{action}")]
         public async Task<object> ALL()
         {

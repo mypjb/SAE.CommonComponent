@@ -63,7 +63,7 @@ namespace SAE.CommonComponent.OAuth
                   options.RequireHttpsMetadata = false;
                   options.Scope.Add(Constants.Scope);
                   options.SaveTokens = true;
-                  options.CorrelationCookie.Domain = "sae.com";
+                  options.CorrelationCookie.Domain = ".sae.com";
                   options.NonceCookie.Domain = ".sae.com";
               });
         }

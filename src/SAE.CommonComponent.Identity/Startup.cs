@@ -1,3 +1,6 @@
+using IdentityServer4.Services;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -51,17 +54,28 @@ namespace SAE.CommonComponent.Identity
 
         public override void PluginConfigureServices(IServiceCollection services)
         {
-
-            services.AddAuthentication().AddCookie(options=>
-            {
-                options.Cookie.Domain = "sae.com";
-            });
-
-            var build = services.AddIdentityServer()
+            var build = services.AddTransient<ICorsPolicyService,CorsPolicyService>()
+                                .AddTransient<IClaimsService, ClaimsService>()
+                                .AddIdentityServer()
                                 .AddJwtBearerClientAuthentication()
                                 .AddDeveloperSigningCredential()
                                 .AddClientStore<ClientStoreService>()
                                 .AddResourceStore<ResourceStoreService>();
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                    .AddCookie(options=>
+                    {
+                        options.Cookie.Domain = ".sae.com";
+                        options.ForwardChallenge = IdentityServer4.IdentityServerConstants.DefaultCookieAuthenticationScheme;
+                    });
+
+            
+
+            services.PostConfigure<AuthenticationOptions>(options =>
+            {
+                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            });
+
 
             services.AddSingleton<IdentityOption>();
 
