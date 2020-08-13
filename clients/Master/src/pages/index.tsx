@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, Fragment } from 'react'
 import { MicroApp } from 'umi'
 import { format } from 'prettier';
 
@@ -7,7 +7,7 @@ const findApp = (pathname, routes) => {
     for (let i = 0; i < routes.length; i++) {
       const route = routes[i];
       if (pathname.toLowerCase().startsWith(route.path)) {
-        return route;
+        return <MicroApp key={route.microApp} name={route.microApp}></MicroApp>;
       } else {
         if (route.routes) {
           return findApp(pathname, route.routes);
@@ -15,7 +15,7 @@ const findApp = (pathname, routes) => {
       }
     }
   }
-  return null;
+  return <Fragment key={401}></Fragment>;
 }
 
 const routeList = [{
@@ -37,14 +37,13 @@ const routeList = [{
 
 export default ({ location }) => {
 
+  const [element, setElement] = useState(0);
+
   const app = findApp(location.pathname, routeList);
 
-  const element = (app) ? (<MicroApp name={app.microApp} ></MicroApp>) : (<div>404</div>);
-
-  console.log(app);
-  return (
-    <div>
-      {element}
-    </div>
-  );
+  if (element === 0 || element.key !== app.key) {
+    setElement(app);
+  }
+  
+  return element;
 }
