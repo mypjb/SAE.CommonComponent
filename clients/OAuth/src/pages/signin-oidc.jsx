@@ -12,7 +12,8 @@ export default ({ location }) => {
     console.log(signinCallbackUrl);
 
     new oidc.UserManager(oidcConfig).signinRedirectCallback(signinCallbackUrl).then((user) => {
-        console.log(user);
+        window.localStorage.setItem("user",JSON.stringify(user));
+        window.location.href="/";
     }).catch(e => {
         console.error(e);
     });

@@ -2,6 +2,22 @@ import { RequestConfig } from 'umi';
 
 export const request: RequestConfig = {
     prefix: "http://api.sae.com:8080",
+    credentials: "include",
+    requestInterceptors: [(url, options) => {
+        const userJson = localStorage.getItem("user");
+
+        const token = userJson ? JSON.parse(userJson).access_token : '';
+        console.info(token);
+        return {
+            url,
+            options: {
+                ...options,
+                headers: {
+                    Authorization: "Bearer " + token
+                }
+            },
+        };
+    }],
     errorConfig: {
         adaptor: function (resData, context) {
             if (resData === context.res) {
