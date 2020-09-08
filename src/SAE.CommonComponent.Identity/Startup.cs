@@ -6,14 +6,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Logging;
-using SAE.CommonComponent.Application.Commands;
 using SAE.CommonComponent.Application.Dtos;
 using SAE.CommonComponent.Identity.Services;
 using SAE.CommonLibrary.Abstract.Mediator;
-using SAE.CommonLibrary.Extension;
 using SAE.CommonLibrary.Plugin.AspNetCore;
-using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
 
 namespace SAE.CommonComponent.Identity

@@ -1,19 +1,9 @@
-using System.Net.Mime;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using SAE.CommonComponent.ConfigServer.Dtos;
-using SAE.CommonComponent.ConfigServer.Domains;
-using System;
 using SAE.CommonLibrary.Abstract.Mediator;
-using SAE.CommonComponent.ConfigServer.Commands;
-using System.Linq;
-using SAE.CommonLibrary.Extension;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using SAE.CommonLibrary.Plugin.AspNetCore;
-using Microsoft.Extensions.Logging;
 
 namespace SAE.CommonComponent.ConfigServer
 {

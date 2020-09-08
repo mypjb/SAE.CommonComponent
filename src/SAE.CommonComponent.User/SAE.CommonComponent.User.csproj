@@ -5,14 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.6" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.8" />
+    <PackageReference Include="SAE.CommonLibrary.AspNetCore" Version="1.0.0" />
+    <PackageReference Include="SAE.CommonLibrary.EventStore.Document" Version="1.0.0" />
+    <PackageReference Include="SAE.CommonLibrary.Plugin.AspNetCore" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\CommonLibrary\src\SAE.CommonLibrary.AspNetCore\SAE.CommonLibrary.AspNetCore.csproj" />
-    <ProjectReference Include="..\..\..\CommonLibrary\src\SAE.CommonLibrary.EventStore.Document\SAE.CommonLibrary.EventStore.Document.csproj" />
-    <ProjectReference Include="..\..\..\CommonLibrary\src\SAE.CommonLibrary.Mediator.Orleans\SAE.CommonLibrary.Mediator.Orleans.csproj" />
-    <ProjectReference Include="..\..\..\CommonLibrary\src\SAE.CommonLibrary.Plugin.AspNetCore\SAE.CommonLibrary.Plugin.AspNetCore.csproj" />
     <ProjectReference Include="..\SAE.CommonComponent.Authorize.Abstract\SAE.CommonComponent.Authorize.Abstract.csproj" />
     <ProjectReference Include="..\SAE.CommonComponent.User.Abstract\SAE.CommonComponent.User.Abstract.csproj" />
     <ProjectReference Include="..\SAE.CommonComponent\SAE.CommonComponent.csproj" />

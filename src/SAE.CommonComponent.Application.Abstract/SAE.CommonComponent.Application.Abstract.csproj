@@ -5,9 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\CommonLibrary\src\SAE.CommonLibrary.Abstract\SAE.CommonLibrary.Abstract.csproj" />
-    <ProjectReference Include="..\..\..\CommonLibrary\src\SAE.CommonLibrary.Caching\SAE.CommonLibrary.Caching.csproj" />
-    <ProjectReference Include="..\..\..\CommonLibrary\src\SAE.CommonLibrary.EventStore.Document\SAE.CommonLibrary.EventStore.Document.csproj" />
+    <PackageReference Include="SAE.CommonLibrary.Abstract" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\SAE.CommonComponent\SAE.CommonComponent.csproj" />
   </ItemGroup>
 

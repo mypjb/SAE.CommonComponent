@@ -24,7 +24,7 @@ namespace SAE.CommonComponent.Identity.Services
             this._identities = new List<IdentityResource>();
             this._identities.Add(new IdentityResources.Profile());
             var openId = new IdentityResources.OpenId();
-            openId.UserClaims.Add(SAE.CommonLibrary.AspNetCore.Constant.Administrator);
+            openId.UserClaims.Add(SAE.CommonLibrary.AspNetCore.Constants.Administrator);
             this._identities.Add(openId);
         }
 
@@ -37,8 +37,8 @@ namespace SAE.CommonComponent.Identity.Services
                 return null;
             }
             var apiResource = new ApiResource(scope.Name, scope.Display);
-            apiResource.UserClaims.Add(SAE.CommonLibrary.AspNetCore.Constant.Administrator);
-            apiResource.UserClaims.Add(SAE.CommonLibrary.AspNetCore.Constant.PermissionBits);
+            apiResource.UserClaims.Add(SAE.CommonLibrary.AspNetCore.Constants.Administrator);
+            apiResource.UserClaims.Add(SAE.CommonLibrary.AspNetCore.Constants.PermissionBits);
             return apiResource;
         }
 
@@ -54,8 +54,8 @@ namespace SAE.CommonComponent.Identity.Services
                          .Select(s =>
                          {
                              var apiResource = new ApiResource(s.Name, s.Display);
-                             apiResource.UserClaims.Add(SAE.CommonLibrary.AspNetCore.Constant.Administrator);
-                             apiResource.UserClaims.Add(SAE.CommonLibrary.AspNetCore.Constant.PermissionBits);
+                             apiResource.UserClaims.Add(SAE.CommonLibrary.AspNetCore.Constants.Administrator);
+                             apiResource.UserClaims.Add(SAE.CommonLibrary.AspNetCore.Constants.PermissionBits);
                              return apiResource;
                          });
         }
@@ -66,8 +66,8 @@ namespace SAE.CommonComponent.Identity.Services
             return scopes.Select(s =>
             {
                 var apiResource = new ApiScope(s.Name, s.Display);
-                apiResource.UserClaims.Add(SAE.CommonLibrary.AspNetCore.Constant.Administrator);
-                apiResource.UserClaims.Add(SAE.CommonLibrary.AspNetCore.Constant.PermissionBits);
+                apiResource.UserClaims.Add(SAE.CommonLibrary.AspNetCore.Constants.Administrator);
+                apiResource.UserClaims.Add(SAE.CommonLibrary.AspNetCore.Constants.PermissionBits);
                 return apiResource;
             }).ToArray();
         }
@@ -84,15 +84,15 @@ namespace SAE.CommonComponent.Identity.Services
                                  scopes.Select(s =>
                                  {
                                      var apiResource = new ApiResource(s.Name, s.Display);
-                                     apiResource.UserClaims.Add(SAE.CommonLibrary.AspNetCore.Constant.Administrator);
-                                     apiResource.UserClaims.Add(SAE.CommonLibrary.AspNetCore.Constant.PermissionBits);
+                                     apiResource.UserClaims.Add(SAE.CommonLibrary.AspNetCore.Constants.Administrator);
+                                     apiResource.UserClaims.Add(SAE.CommonLibrary.AspNetCore.Constants.PermissionBits);
                                      return apiResource;
                                  }).ToArray(),
                                  scopes.Select(s =>
                                  {
                                      var apiResource = new ApiScope(s.Name, s.Display);
-                                     apiResource.UserClaims.Add(SAE.CommonLibrary.AspNetCore.Constant.Administrator);
-                                     apiResource.UserClaims.Add(SAE.CommonLibrary.AspNetCore.Constant.PermissionBits);
+                                     apiResource.UserClaims.Add(SAE.CommonLibrary.AspNetCore.Constants.Administrator);
+                                     apiResource.UserClaims.Add(SAE.CommonLibrary.AspNetCore.Constants.PermissionBits);
                                      return apiResource;
                                  }).ToArray());
         }

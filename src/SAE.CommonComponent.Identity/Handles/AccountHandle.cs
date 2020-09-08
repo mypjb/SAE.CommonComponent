@@ -39,8 +39,8 @@ namespace SAE.CommonComponent.Identity.Handlers
             identity.AddClaim(new Claim(JwtClaimTypes.Subject, dto.Id.ToLower()));
             identity.AddClaim(new Claim(JwtClaimTypes.Name, dto.Name));
             identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, dto.AccountName));
-            identity.AddClaim(new Claim(CommonLibrary.AspNetCore.Constant.PermissionBits,dto.AuthorizeCode));
-            identity.AddClaim(new Claim(CommonLibrary.AspNetCore.Constant.Administrator, "1"));
+            identity.AddClaim(new Claim(CommonLibrary.AspNetCore.Constants.PermissionBits,dto.AuthorizeCode));
+            identity.AddClaim(new Claim(CommonLibrary.AspNetCore.Constants.Administrator, "1"));
             var principal = new ClaimsPrincipal(identity);
 
             return principal;
