@@ -1,9 +1,0 @@
-{
-  "private": true,
-  "workspaces": [
-    "*"
-  ],
-  "dependencies": {
-    "umi": "^3"
-  }
-}
