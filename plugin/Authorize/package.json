@@ -1,0 +1,7 @@
+{
+    "Name": "Authorize",
+    "Path": "SAE.CommonComponent.Authorize.dll",
+    "Description": "this is a Authorize plugin",
+    "Version": "1.0.0.0",
+    "Status":1
+}
