@@ -44,8 +44,7 @@ namespace SAE.CommonComponent.Application
         {
 
             services.AddMvc()
-                    .AddResponseResult()
-                    .AddNewtonsoftJson();
+                    .AddResponseResult();
             var assemblys = new[] { typeof(AppDto).Assembly, Assembly.GetExecutingAssembly() };
 
             services.AddServiceFacade()

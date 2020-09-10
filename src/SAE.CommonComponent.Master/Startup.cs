@@ -16,9 +16,12 @@ namespace SAE.CommonComponent.Master
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        private readonly IHostEnvironment _env;
+
+        public Startup(IConfiguration configuration,IHostEnvironment environment)
         {
             Configuration = configuration;
+            this._env = environment;
         }
 
         public IConfiguration Configuration { get; }
@@ -38,8 +41,8 @@ namespace SAE.CommonComponent.Master
             services.AddRouting(options => options.LowercaseUrls = true);
             services.AddRoutingScanning()
                     .AddServiceFacade();
-                    
-            services.AddPluginManage("../../../../../plugin");
+
+            services.AddPluginManage(this._env.IsDevelopment() ? "../../../../../plugin" : string.Empty);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

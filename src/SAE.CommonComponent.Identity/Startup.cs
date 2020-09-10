@@ -76,8 +76,7 @@ namespace SAE.CommonComponent.Identity
             services.AddSingleton<IdentityOption>();
 
             services.AddMvc()
-                    .AddResponseResult()
-                    .AddNewtonsoftJson();
+                    .AddResponseResult();
 
             var assemblys = new[] { typeof(AppDto).Assembly, Assembly.GetExecutingAssembly() };
 

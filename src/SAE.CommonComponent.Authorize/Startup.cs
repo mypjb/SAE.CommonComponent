@@ -1,29 +1,21 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http.Headers;
-using System.Reflection;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Primitives;
 using Microsoft.IdentityModel.Tokens;
-using SAE.CommonComponent.Authorize.Commands;
 using SAE.CommonComponent.Authorize.Dtos;
 using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.AspNetCore.Authorization;
-using SAE.CommonLibrary.AspNetCore.Routing;
 using SAE.CommonLibrary.EventStore.Document;
 using SAE.CommonLibrary.Plugin.AspNetCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Reflection;
 
 namespace SAE.CommonComponent.Authorize
 {

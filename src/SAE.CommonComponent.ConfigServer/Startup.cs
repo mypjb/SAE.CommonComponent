@@ -47,10 +47,9 @@ namespace SAE.CommonComponent.ConfigServer
 
         public override void PluginConfigureServices(IServiceCollection services)
         {
-            
+
             services.AddMvc()
-                    .AddResponseResult()
-                    .AddNewtonsoftJson();
+                    .AddResponseResult();
 
             services.AddServiceFacade()
                     .AddMediator();

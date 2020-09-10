@@ -49,7 +49,6 @@ namespace SAE.CommonComponent.Routing
         public override void PluginConfigureServices(IServiceCollection services)
         {
             services.AddControllers()
-                    .AddNewtonsoftJson()
                     .AddResponseResult();
 
             services.AddServiceFacade()

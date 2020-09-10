@@ -46,8 +46,7 @@ namespace SAE.CommonComponent.User
             var assemblies = new[] { Assembly.GetExecutingAssembly(), typeof(UserDto).Assembly };
 
             services.AddMvc()
-                    .AddResponseResult()
-                    .AddNewtonsoftJson();
+                    .AddResponseResult();
 
             services.AddServiceFacade()
                     .AddMediator(assemblies)
