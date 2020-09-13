@@ -17,7 +17,6 @@ pipeline {
         }
     }
     stage('Build') {
-      parallel {
             stage('API') {
              when {
                 not {
@@ -78,6 +77,4 @@ pipeline {
             }
       }
     }
-
-  }
 }
