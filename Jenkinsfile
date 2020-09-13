@@ -2,12 +2,28 @@ pipeline {
   agent any
   stages {
     stage('Select'){
-        input message: 'Please select build process', parameters: [choice(choices: ['0', '1', '2'], description: '', name: 'BUILD_TYPE')]
+        input {
+                message "Please select build process"
+                ok "Select"
+                parameters {
+                    choice(choices: ['ALL', 'API', 'Client'], description: '', name: 'BUILD_TYPE_TEMP')
+                }
+            }
+        
+        steps{
+            script {
+                BUILD_TYPE = BUILD_TYPE_TEMP
+              }
+        }
     }
-    stage('API') {
+    stage('Build') {
       parallel {
-      if(BUILD_TYPE != 2) {
-            stage('Build') {
+            stage('API') {
+             when {
+                not {
+                   equals expected: 'Client', actual: BUILD_TYPE
+                }
+              }
               agent {
                 docker {
                   image 'mypjb/dotnet-core-sdk:3.1'
@@ -27,16 +43,19 @@ pipeline {
     dotnet publish -c release -o $RELEASE_DIR/User src/SAE.CommonComponent.User
     '''
               }
-            }
+            
         }
-        if(BUILD_TYPE != 1) {
         stage('Client') {
+              when {
+                not {
+                   equals expected: 'API', actual: BUILD_TYPE
+                }
+              }
               agent {
                 docker {
                   image 'andrewmackrodt/nodejs:12'
                   args '-v yarn:/usr/local/share/.cache/yarn'
                 }
-
               }
               steps {
                 sh '''cd clients
@@ -57,8 +76,6 @@ pipeline {
     yarn build'''
               }
             }
-        }
-
       }
     }
 
