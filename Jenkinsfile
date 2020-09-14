@@ -13,7 +13,7 @@ pipeline {
           }
           steps {
             sh 'echo dotnet test -v n'
-            sh 'bash ./build.sh $RELEASE_DIR'
+            sh 'bash ./build.sh $RELEASE_DIR/API'
           }
         }
 
