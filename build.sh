@@ -22,7 +22,7 @@ echo -e "	output_dir:${output_dir}	\n	project_file:${project_file}	\n	version:${
 
 if [ $project != 'Master' ]
 then
-echo > $plugin_setting_file << EOF
+cat << EOF > $plugin_setting_file
 {
 	"Name": "${project}",
 	"Path": "SAE.CommonComponent.${project}.dll",

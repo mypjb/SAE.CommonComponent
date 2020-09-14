@@ -3,7 +3,7 @@ base_dir=$(cd $(dirname $0) && pwd)
 
 release_dir=$1
 
-echo "build workspace"
+echo -e "build workspace ${base_dir}"
 
 yarn
 
