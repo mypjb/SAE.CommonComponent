@@ -1,9 +1,9 @@
 pipeline {
   agent any
   stages {
-    stage('API') {
+    stage('Build') {
       parallel {
-        stage('Build') {
+        stage('API') {
           agent {
             docker {
               image 'mypjb/dotnet-core-sdk:3.1'
@@ -13,15 +13,7 @@ pipeline {
           }
           steps {
             sh 'echo dotnet test -v n'
-            sh '''dotnet publish -c release -o $RELEASE_DIR/Application src/SAE.CommonComponent.Application
-dotnet publish -c release -o $RELEASE_DIR/Authorize src/SAE.CommonComponent.Authorize
-dotnet publish -c release -o $RELEASE_DIR/ConfigServer src/SAE.CommonComponent.ConfigServer
-dotnet publish -c release -o $RELEASE_DIR/Identity src/SAE.CommonComponent.Identity
-dotnet publish -c release -o $RELEASE_DIR/Master src/SAE.CommonComponent.Master
-dotnet publish -c release -o $RELEASE_DIR/OAuth src/SAE.CommonComponent.OAuth
-dotnet publish -c release -o $RELEASE_DIR/Routing src/SAE.CommonComponent.Routing
-dotnet publish -c release -o $RELEASE_DIR/User src/SAE.CommonComponent.User
-'''
+            sh './build.sh $RELEASE_DIR'
           }
         }
 
@@ -34,22 +26,7 @@ dotnet publish -c release -o $RELEASE_DIR/User src/SAE.CommonComponent.User
 
           }
           steps {
-            sh '''cd clients
-yarn
-cd ConfigServer
-yarn build
-cd ../Identity
-yarn
-yarn build
-cd ../Master
-yarn
-yarn build
-cd ../OAuth
-yarn
-yarn build
-cd ../Routing
-yarn
-yarn build'''
+            sh './clients/build.sh $RELEASE_DIR/client'
           }
         }
 

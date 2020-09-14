@@ -10,7 +10,7 @@ echo "start build $project"
 
 output_dir=${release_dir}/${project}
 
-plugin_setting_file=${output_dir}/${project}.json
+plugin_setting_file=${output_dir}/package.json
 
 project_file=src/SAE.CommonComponent.${project}/SAE.CommonComponent.${project}.csproj
 
