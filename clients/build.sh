@@ -3,6 +3,8 @@ base_dir=$(cd $(dirname $0) && pwd)
 
 release_dir=$1
 
+mkdir -p $release_dir
+
 echo -e "build workspace ${base_dir}"
 
 project_array=(ConfigServer Identity Master OAuth Routing)
