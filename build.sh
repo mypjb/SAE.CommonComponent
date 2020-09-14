@@ -20,6 +20,8 @@ version=$(grep -Po "<Version>([\d\.a-zA-Z])+</Version>" $project_file | grep -Po
 
 echo -e "	output_dir:${output_dir}	\n	project_file:${project_file}	\n	version:${version}"
 
+dotnet publish -c release -o ${output_dir} "src/SAE.CommonComponent.${project}"
+
 if [ $project != 'Master' ]
 then
 cat << EOF > $plugin_setting_file
@@ -35,8 +37,6 @@ EOF
 echo -e "${project} plugin setting ↓↓↓↓↓↓↓↓↓"
 cat $plugin_setting_file
 fi
-
-dotnet publish -c release -o ${output_dir} "src/SAE.CommonComponent.${project}"
 
 echo "build $project end"
 

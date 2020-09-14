@@ -5,8 +5,6 @@ release_dir=$1
 
 echo -e "build workspace ${base_dir}"
 
-yarn
-
 project_array=(ConfigServer Identity Master OAuth Routing)
 
 for project in ${project_array[@]};do
@@ -20,6 +18,7 @@ project_dir=$base_dir/$project
 echo -e "	project_dir:${project_dir}"
 
 cd $project_dir
+yarn
 
 yarn build
 
