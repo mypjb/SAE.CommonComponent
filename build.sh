@@ -4,6 +4,10 @@ base_dir=$(cd $(dirname $0) && pwd)
 
 release_dir=$1
 
+plugin_dir=$release_dir/Master/plugins
+
+mkdir -p $plugin_dir
+
 project_array=(Application Authorize ConfigServer Identity OAuth Routing User Master)
 
 for project in ${project_array[@]};do
@@ -36,6 +40,9 @@ EOF
 
 echo -e "${project} plugin setting ↓↓↓↓↓↓↓↓↓"
 cat $plugin_setting_file
+
+mv -f $output_dir $plugin_dir
+
 fi
 
 echo "build $project end"
