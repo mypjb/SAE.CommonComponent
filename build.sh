@@ -1,5 +1,7 @@
 #!/bin/bash
 
+base_dir=$(cd $(dirname $0) && pwd)
+
 release_dir=$1
 
 project_array=(Application Authorize ConfigServer Identity OAuth Routing User Master)
@@ -20,7 +22,7 @@ echo -e "	output_dir:${output_dir}	\n	project_file:${project_file}	\n	version:${
 
 if [ $project != 'Master' ]
 then
-cat > $plugin_setting_file << EOF
+echo > $plugin_setting_file << EOF
 {
 	"Name": "${project}",
 	"Path": "SAE.CommonComponent.${project}.dll",

@@ -13,13 +13,13 @@ for project in ${project_array[@]};do
 
 echo "start build $project"
 
-project_release_dir=$release_dir/{project}
+project_release_dir=$release_dir/$project
 
-project_dir=${base_dir}/${project}
+project_dir=$base_dir/$project
 
 echo -e "	project_dir:${project_dir}"
 
-cd project_dir
+cd $project_dir
 
 yarn build
 
