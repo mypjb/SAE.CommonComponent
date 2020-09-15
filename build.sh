@@ -4,7 +4,9 @@ base_dir=$(cd $(dirname $0) && pwd)
 
 release_dir=$1
 
-plugin_dir=$release_dir/Master/plugins
+main_dir=$release_dir/Master
+
+plugin_dir=$main_dir/plugins
 
 mkdir -p $plugin_dir
 
@@ -46,5 +48,7 @@ mv -f $output_dir $plugin_dir
 fi
 
 echo "build $project end"
+
+cp -f Dockerfile $main_dir
 
 done

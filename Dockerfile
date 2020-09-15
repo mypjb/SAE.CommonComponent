@@ -1,27 +1,13 @@
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS builder
+FROM mypjb/dotnet-core-aspnet:3.1
 
-WORKDIR /code
+ARG MAIN_PROGRAM
 
-RUN pwd
-
-COPY . .
-
-RUN ["dotnet","nuget","add","source","https://nuget.cdn.azure.cn/v3/index.json","-n","azure.org"]
-
-
-RUN ["dotnet","publish","CommonComponent/src/SAE.CommonComponent.Routing/SAE.CommonComponent.Routing.csproj","-o","/app"]
-
-RUN ls 
-
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
+ENV PROGRAM=${MAIN_PROGRAM}
 
 WORKDIR /app
 
-COPY --from=builder /app .
+COPY . .
 
-RUN ls 
+EXPOSE 80
 
-EXPOSE 5000
-EXPOSE 5001
-
-ENTRYPOINT ["dotnet","SAE.CommonComponent.Routing.dll"]
+CMD dotnet $PROGRAM
