@@ -12,7 +12,6 @@ pipeline {
 
           }
           steps {
-            sh 'echo dotnet test -v n'
             sh 'bash ./build.sh $RELEASE_DIR/API'
           }
         }
@@ -26,10 +25,26 @@ pipeline {
 
           }
           steps {
-            sh 'bash ./clients/build.sh $RELEASE_DIR/Client'
+			echo 'build client'
+            //sh 'bash ./clients/build.sh $RELEASE_DIR/Client'
           }
         }
 
+      }
+    }
+	
+	stage('Pack') {
+	
+      environment {
+		DOCKER_BUILD_DIR = "${RELEASE_LOCAL_DIR}/API/Master"
+		MAIN_PROGRAM = 'SAE.CommonComponent.Master.dll'
+		DOCKER_NAME = 'mypjb/sae-commoncomponent-master'
+		DOCKER_TAG = '1.0.0'
+	  }
+	  
+      steps {
+        sh '''cd $DOCKER_BUILD_DIR
+docker build --rm --build-arg MAIN_PROGRAM=$MAIN_PROGRAM -t $DOCKER_NAME:$DOCKER_TAG .'''
       }
     }
 
