@@ -36,7 +36,7 @@ pipeline {
 	stage('Pack') {
 	
       environment {
-		DOCKER_BUILD_DIR = "${RELEASE_LOCAL_DIR}/API/Master"
+		DOCKER_BUILD_DIR = "${RELEASE_DIR}/API/Master"
 		MAIN_PROGRAM = 'SAE.CommonComponent.Master.dll'
 		DOCKER_NAME = 'mypjb/sae-commoncomponent-master'
 		DOCKER_TAG = '1.0.0'
