@@ -67,8 +67,8 @@ docker build --rm --build-arg MAIN_PROGRAM=$MAIN_PROGRAM -t $DOCKER_NAME:$DOCKER
 			DOCKER_PORT='sae.com:80'
           }
           steps {
-            sh '''docker rm -f $DOCKER_CONTAINER_NAME
-			docker run -d --name DOCKER_CONTAINER_NAME -p $DOCKER_PORT:80 $DOCKER_NAME:$DOCKER_TAG '''
+            sh '''docker rm -f $(docker ps -f ancestor=$DOCKER_NAME -q)
+docker run -d --name $DOCKER_CONTAINER_NAME -p $DOCKER_PORT:80 $DOCKER_NAME:$DOCKER_TAG '''
           }
         }
 
