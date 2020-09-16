@@ -64,11 +64,10 @@ docker build --rm --build-arg MAIN_PROGRAM=$MAIN_PROGRAM -t $DOCKER_NAME:$DOCKER
             DOCKER_NAME = 'mypjb/sae-commoncomponent-master'
             DOCKER_TAG = '1.0.0'
 			DOCKER_CONTAINER_NAME="sae-commoncomponent-master"
-			DOCKER_PORT='sae.com:80'
           }
           steps {
             sh '''if [ $(docker ps -q -f name=$DOCKER_CONTAINER_NAME  | wc -l) != 0 ]; then docker stop $(docker ps -q -f name=$DOCKER_CONTAINER_NAME); fi
-docker run -d --name $DOCKER_CONTAINER_NAME -p $DOCKER_PORT:80 $DOCKER_NAME:$DOCKER_TAG '''
+docker run -d --name $DOCKER_CONTAINER_NAME --net=$DOCKER_CLUSTER_NETWORK $DOCKER_NAME:$DOCKER_TAG '''
           }
         }
 
