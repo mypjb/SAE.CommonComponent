@@ -3,7 +3,13 @@ base_dir=$(cd $(dirname $0) && pwd)
 
 release_dir=$1
 
-mkdir -p $release_dir
+app_dir=$release_dir/app
+
+main_dir=$release_dir/Master
+
+plugin_dir=$main_dir/plugins
+
+mkdir -p $plugin_dir
 
 echo -e "build workspace ${base_dir}"
 
@@ -24,8 +30,15 @@ yarn
 
 yarn build
 
+if [ $project != 'Master' ]
+then
+	project_release_dir=$plugin_dir/$project
+fi
+
 mv -f dist $project_release_dir
 
 echo "build $project end"
 
 done
+
+mv $main_dir $app_dir
