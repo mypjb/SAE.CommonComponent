@@ -36,4 +36,5 @@ echo "build $project end"
 
 done
 
+cp -f $base_dir/default.conf $release_dir
 cp -f $base_dir/Dockerfile $release_dir
