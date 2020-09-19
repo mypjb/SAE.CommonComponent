@@ -71,7 +71,7 @@ docker build --rm -t $DOCKER_NAME:$DOCKER_TAG .'''
 			DOCKER_CONTAINER_NAME="sae-commoncomponent-master"
           }
           steps {
-            sh '''if [ $(docker ps -q -f name=$DOCKER_CONTAINER_NAME  | wc -l) != 0 ]; then docker rm -f $(docker ps -q -f name=$DOCKER_CONTAINER_NAME); fi
+            sh '''if [ $(docker ps -q -a -f name=$DOCKER_CONTAINER_NAME  | wc -l) != 0 ]; then docker rm -f $(docker ps -q -a -f name=$DOCKER_CONTAINER_NAME); fi
 docker run -d --name $DOCKER_CONTAINER_NAME --net=$DOCKER_CLUSTER_NETWORK $DOCKER_NAME:$DOCKER_TAG '''
           }
         }
@@ -83,7 +83,7 @@ docker run -d --name $DOCKER_CONTAINER_NAME --net=$DOCKER_CLUSTER_NETWORK $DOCKE
 			DOCKER_CONTAINER_NAME="sae-commoncomponent-client"
           }
           steps {
-            sh '''if [ $(docker ps -q -f name=$DOCKER_CONTAINER_NAME  | wc -l) != 0 ]; then docker rm -f $(docker ps -q -f name=$DOCKER_CONTAINER_NAME); fi
+            sh '''if [ $(docker ps -q -a -f name=$DOCKER_CONTAINER_NAME  | wc -l) != 0 ]; then docker rm -f $(docker ps -q -a -f name=$DOCKER_CONTAINER_NAME); fi
 docker run -d --name $DOCKER_CONTAINER_NAME --net=$DOCKER_CLUSTER_NETWORK $DOCKER_NAME:$DOCKER_TAG '''
           }
         }
