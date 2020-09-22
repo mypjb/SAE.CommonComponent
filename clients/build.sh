@@ -12,7 +12,7 @@ echo -e "build workspace ${base_dir}"
 project_array=(ConfigServer Identity Master OAuth Routing)
 
 for project in ${project_array[@]};do
-{
+
 echo "start build $project"
 
 project_release_dir=$app_dir/$project
@@ -33,11 +33,8 @@ echo -e "	project_release_dir:$project_release_dir"
 mv -f dist $project_release_dir
 
 echo "build $project end"
-}&
 
 done
-
-wait
 
 cp -f $base_dir/default.conf $release_dir
 cp -f $base_dir/Dockerfile $release_dir

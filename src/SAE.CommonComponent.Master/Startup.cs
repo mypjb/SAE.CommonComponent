@@ -42,7 +42,7 @@ namespace SAE.CommonComponent.Master
             services.AddRoutingScanning()
                     .AddServiceFacade();
 
-            services.AddPluginManage(this._env.IsDevelopment() ? "../../../../../plugin" : string.Empty);
+            services.AddPluginManage(!this._env.IsDevelopment() ? "../../../../../plugin" : string.Empty);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
