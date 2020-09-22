@@ -5,11 +5,12 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Logging;
 using SAE.CommonLibrary.Plugin.AspNetCore;
 
 namespace SAE.CommonComponent.OAuth
 {
-    public class Startup:WebPlugin
+    public class Startup : WebPlugin
     {
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
@@ -49,6 +50,7 @@ namespace SAE.CommonComponent.OAuth
             //{
             //    authenticationBuilder.AddCookie();
             //}
+            IdentityModelEventSource.ShowPII = true;
 
             authenticationBuilder.AddOpenIdConnect(options =>
               {
