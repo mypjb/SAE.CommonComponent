@@ -90,6 +90,12 @@ docker run -d --name $DOCKER_CONTAINER_NAME --net=$DOCKER_CLUSTER_NETWORK $DOCKE
 		
       }
     }
+	
+	stage('Reload Nginx') {
+      steps {
+            sh 'docker restart nginx'
+          }
+    }
 
   }
 }
