@@ -72,7 +72,7 @@ docker build --rm -t $DOCKER_NAME:$DOCKER_TAG .'''
           }
           steps {
             sh '''if [ $(docker ps -q -a -f name=$DOCKER_CONTAINER_NAME  | wc -l) != 0 ]; then docker rm -f $(docker ps -q -a -f name=$DOCKER_CONTAINER_NAME); fi
-docker run -d --name $DOCKER_CONTAINER_NAME --net=$DOCKER_CLUSTER_NETWORK $DOCKER_NAME:$DOCKER_TAG '''
+docker run -d --name $DOCKER_CONTAINER_NAME --net=$DOCKER_CLUSTER_NETWORK -e ASPNETCORE_ENVIRONMENT=Development $DOCKER_NAME:$DOCKER_TAG '''
           }
         }
 
