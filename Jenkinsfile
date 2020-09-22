@@ -1,9 +1,13 @@
 pipeline {
   agent any
+  parameters {
+        choice(choices: ['API', 'Client', 'ALL'], description: '', name: 'BUILD_TARGET')
+  }
   stages {
     stage('Build') {
       parallel {
         stage('API') {
+		  when { not { environment name: 'BUILD_TARGET', value: 'Client'} }
           agent {
             docker {
               image 'mypjb/dotnet-core-sdk:3.1'
@@ -17,6 +21,7 @@ pipeline {
         }
 
         stage('Client') {
+		  when { not { environment name: 'BUILD_TARGET', value: 'API'} }
           agent {
             docker {
               image 'andrewmackrodt/nodejs:12'
@@ -35,6 +40,7 @@ pipeline {
 	stage('Pack') {
       parallel {
         stage('API') {
+		  when { not { environment name: 'BUILD_TARGET', value: 'Client'} }
           environment {
             DOCKER_BUILD_DIR = "${RELEASE_DIR}/API/Master"
             MAIN_PROGRAM = 'SAE.CommonComponent.Master.dll'
@@ -48,6 +54,7 @@ docker build --rm --build-arg MAIN_PROGRAM=$MAIN_PROGRAM -t $DOCKER_NAME:$DOCKER
         }
 
         stage('Client') {
+		  when { not { environment name: 'BUILD_TARGET', value: 'API'} }
 		  environment {
             DOCKER_BUILD_DIR = "${RELEASE_DIR}/Client"
             DOCKER_NAME = 'mypjb/sae-commoncomponent-client'
@@ -65,6 +72,7 @@ docker build --rm -t $DOCKER_NAME:$DOCKER_TAG .'''
 	stage('Deploy') {
       parallel {
         stage('API') {
+		  when { not { environment name: 'BUILD_TARGET', value: 'Client'} }
           environment {
             DOCKER_NAME = 'mypjb/sae-commoncomponent-master'
             DOCKER_TAG = '1.0.0'
@@ -77,6 +85,7 @@ docker run -d --name $DOCKER_CONTAINER_NAME --net=$DOCKER_CLUSTER_NETWORK -e ASP
         }
 
         stage('Client') {
+		  when { not { environment name: 'BUILD_TARGET', value: 'API'} }
 		  environment {
             DOCKER_NAME = 'mypjb/sae-commoncomponent-client'
             DOCKER_TAG = '1.0.0'
