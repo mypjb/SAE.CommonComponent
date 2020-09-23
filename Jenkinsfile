@@ -45,7 +45,7 @@ pipeline {
             DOCKER_BUILD_DIR = "${RELEASE_DIR}/API/Master"
             MAIN_PROGRAM = 'SAE.CommonComponent.Master.dll'
             DOCKER_NAME = 'mypjb/sae-commoncomponent-master'
-            DOCKER_TAG = '1.0.0'
+            DOCKER_TAG = $BRANCH_NAME
           }
           steps {
             sh '''cd $DOCKER_BUILD_DIR
@@ -58,7 +58,7 @@ docker build --rm --build-arg MAIN_PROGRAM=$MAIN_PROGRAM -t $DOCKER_NAME:$DOCKER
 		  environment {
             DOCKER_BUILD_DIR = "${RELEASE_DIR}/Client"
             DOCKER_NAME = 'mypjb/sae-commoncomponent-client'
-            DOCKER_TAG = '1.0.0'
+            DOCKER_TAG = $BRANCH_NAME
           }
           steps {
             sh '''cd $DOCKER_BUILD_DIR
@@ -75,7 +75,7 @@ docker build --rm -t $DOCKER_NAME:$DOCKER_TAG .'''
 		  when { not { environment name: 'BUILD_TARGET', value: 'Client'} }
           environment {
             DOCKER_NAME = 'mypjb/sae-commoncomponent-master'
-            DOCKER_TAG = '1.0.0'
+            DOCKER_TAG = $BRANCH_NAME
 			DOCKER_CONTAINER_NAME="sae-commoncomponent-master"
           }
           steps {
@@ -88,7 +88,7 @@ docker run -d --name $DOCKER_CONTAINER_NAME --net=$DOCKER_CLUSTER_NETWORK -e ASP
 		  when { not { environment name: 'BUILD_TARGET', value: 'API'} }
 		  environment {
             DOCKER_NAME = 'mypjb/sae-commoncomponent-client'
-            DOCKER_TAG = '1.0.0'
+            DOCKER_TAG = $BRANCH_NAME
 			DOCKER_CONTAINER_NAME="sae-commoncomponent-client"
           }
           steps {
