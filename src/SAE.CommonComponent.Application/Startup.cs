@@ -10,6 +10,7 @@ using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.Plugin.AspNetCore;
 using System.Reflection;
 using Microsoft.AspNetCore.Http;
+using SAE.CommonComponent.Application.Commands;
 
 namespace SAE.CommonComponent.Application
 {
@@ -59,51 +60,20 @@ namespace SAE.CommonComponent.Application
 
         public override void PluginConfigure(IApplicationBuilder app)
         {
-            app.UseServiceFacade();
-
-            var environment = app.ApplicationServices.GetService<IHostEnvironment>();
-
-            if (environment.IsDevelopment())
+            var hostEnvironment = app.ApplicationServices.GetService<IHostEnvironment>();
+            if (hostEnvironment.IsDevelopment())
             {
-                var mediator = app.ApplicationServices.GetService<IMediator>();
-                var scopeCommand = new Commands.ScopeCommand.Create
-                {
-                    Name = Constants.Scope,
-                    Display = Constants.Scope
-                };
-                mediator.Send(scopeCommand).GetAwaiter().GetResult();
-
-                var appCommand = new Commands.AppCommand.Create
-                {
-                    Id = Constants.DefalutAppId,
-                    Secret = Constants.DefalutSecret,
-                    Name = Constants.DefalutAppName,
-                    Urls = new[] { Constants.DefaultMaster }
-                };
-
-                mediator.Send<string>(appCommand).GetAwaiter().GetResult();
-
-                mediator.Send(new Commands.AppCommand.ReferenceScope
-                {
-                    Id = Constants.DefalutAppId,
-                    Scopes = new[] { Constants.Scope }
-                }).GetAwaiter().GetResult();
-
-                mediator.Send(new Commands.AppCommand.ChangeStatus
-                {
-                    Id = Constants.DefalutAppId,
-                    Status = Status.Enable
-                }).GetAwaiter().GetResult();
-
                 app.Map("/.apps", build =>
                 {
                     build.Run(async context =>
                     {
-                        var paging = await mediator.Send<CommonLibrary.Abstract.Model.IPagedList<AppDto>>(new Commands.AppCommand.Query());
+                        var mediator = context.RequestServices.GetService<IMediator>();
+                        var paging = await mediator.Send<CommonLibrary.Abstract.Model.IPagedList<AppDto>>(new AppCommand.Query());
                         await context.Response.WriteAsync(Newtonsoft.Json.JsonConvert.SerializeObject(paging));
                     });
                 });
             }
+            app.UseServiceFacade();
             //app.UseMediatorOrleansSilo();
         }
     }

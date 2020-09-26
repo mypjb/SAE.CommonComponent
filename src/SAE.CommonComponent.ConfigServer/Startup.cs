@@ -2,8 +2,10 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SAE.CommonComponent.ConfigServer.Dtos;
 using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.Plugin.AspNetCore;
+using System.Reflection;
 
 namespace SAE.CommonComponent.ConfigServer
 {
@@ -13,15 +15,6 @@ namespace SAE.CommonComponent.ConfigServer
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors(options =>
-            {
-                options.AddDefaultPolicy(
-                    builder => builder.WithOrigins("http://localhost:8000")
-                                      .AllowAnyHeader()
-                                      .AllowAnyMethod()
-                                      .AllowCredentials());
-            });
-
             services.AddControllers();
             this.PluginConfigureServices(services);
         }
@@ -47,6 +40,7 @@ namespace SAE.CommonComponent.ConfigServer
 
         public override void PluginConfigureServices(IServiceCollection services)
         {
+            var assemblys = new[] { typeof(ConfigDto).Assembly, Assembly.GetExecutingAssembly() };
 
             services.AddMvc()
                     .AddResponseResult();
@@ -55,7 +49,7 @@ namespace SAE.CommonComponent.ConfigServer
                     .AddMediator();
             services.AddMemoryDocument()
                     .AddMemoryMessageQueue()
-                    .AddDataPersistenceService();
+                    .AddDataPersistenceService(assemblys);
         }
 
         public override void PluginConfigure(IApplicationBuilder app)

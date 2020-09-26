@@ -5,10 +5,22 @@ namespace SAE.CommonComponent
     public class Constants
     {
         public const string Scope = "api";
-        public const string DefalutAppId = "localhost.test";
-        public const string DefalutSecret = "localhost.test";
-        public const string DefalutAppName = "master";
-        public const string DefaultMaster = "http://dev.sae.com:8000";
-        public const string DefaultAuthority = "http://identity.sae.com:8080";
+        
+        public class Production
+        {
+            public const string AppId = "localhost.test";
+            public const string Secret = "localhost.test";
+            public const string AppName = "master";
+            public const string Master = "http://master.client.sae.com";
+            public const string Authority = "http://identity.sae.com";
+        }
+        public class Development
+        {
+            public const string AppId = "localhost.test";
+            public const string Secret = "localhost.test";
+            public const string AppName = "master";
+            public const string Master = "http://localhost:8000";
+            public const string Authority = "http://localhost:8080";
+        }
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -10,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using SAE.CommonComponent.Routing.Dtos;
 using SAE.CommonLibrary.Plugin.AspNetCore;
 
 namespace SAE.CommonComponent.Routing
@@ -48,14 +50,16 @@ namespace SAE.CommonComponent.Routing
         }
         public override void PluginConfigureServices(IServiceCollection services)
         {
+            var assemblys = new[] { typeof(MenuDto).Assembly, Assembly.GetExecutingAssembly() };
             services.AddControllers()
                     .AddResponseResult();
 
             services.AddServiceFacade()
                     .AddMediator();
+
             services.AddMemoryDocument()
                     .AddMemoryMessageQueue()
-                    .AddDataPersistenceService();
+                    .AddDataPersistenceService(assemblys);
         }
     }
 }

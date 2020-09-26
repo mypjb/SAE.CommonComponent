@@ -46,12 +46,6 @@ namespace SAE.CommonComponent.OAuth
                  options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
              });
 
-            //if (!services.IsRegister<CookieAuthenticationHandler>())
-            //{
-            //    authenticationBuilder.AddCookie();
-            //}
-            IdentityModelEventSource.ShowPII = true;
-
             authenticationBuilder.AddOpenIdConnect(options =>
               {
                   options.Authority = Constants.DefaultAuthority;
@@ -62,6 +56,8 @@ namespace SAE.CommonComponent.OAuth
                   options.SaveTokens = true;
                   options.CorrelationCookie.Domain = ".sae.com";
                   options.NonceCookie.Domain = ".sae.com";
+                  options.CorrelationCookie.SameSite = SameSiteMode.Lax;
+                  options.NonceCookie.SameSite = SameSiteMode.Lax;
               });
         }
 

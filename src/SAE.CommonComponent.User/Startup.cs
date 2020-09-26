@@ -76,18 +76,6 @@ namespace SAE.CommonComponent.User
 
         public override void PluginConfigure(IApplicationBuilder app)
         {
-            var environment = app.ApplicationServices.GetService<IHostEnvironment>();
-
-            if (environment.IsDevelopment())
-            {
-                var mediator = app.ApplicationServices.GetService<IMediator>();
-                mediator.Send<string>(new UserCommand.Register
-                {
-                    Name = "admin",
-                    Password = "admin",
-                    ConfirmPassword = "admin"
-                }).GetAwaiter().GetResult();
-            }
             //app.UseMediatorOrleansSilo();
         }
     }
