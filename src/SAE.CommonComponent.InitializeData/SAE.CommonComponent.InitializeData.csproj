@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <Version>1.0.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,6 +16,10 @@
     <ProjectReference Include="..\SAE.CommonComponent.ConfigServer.Abstract\SAE.CommonComponent.ConfigServer.Abstract.csproj" />
     <ProjectReference Include="..\SAE.CommonComponent.Routing.Abstract\SAE.CommonComponent.Routing.Abstract.csproj" />
     <ProjectReference Include="..\SAE.CommonComponent.User.Abstract\SAE.CommonComponent.User.Abstract.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
   </ItemGroup>
 
 </Project>

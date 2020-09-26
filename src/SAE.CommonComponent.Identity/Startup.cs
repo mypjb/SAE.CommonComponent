@@ -21,14 +21,6 @@ namespace SAE.CommonComponent.Identity
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors(options =>
-            {
-                options.AddDefaultPolicy(
-                    builder => builder.WithOrigins(Constants.DefaultMaster)
-                                      .AllowAnyHeader()
-                                      .AllowAnyMethod()
-                                      .AllowCredentials());
-            });
             services.AddControllers();
             this.PluginConfigureServices(services);
         }

@@ -10,7 +10,7 @@ plugin_dir=$main_dir/plugins
 
 mkdir -p $plugin_dir
 
-project_array=(Application Authorize ConfigServer Identity OAuth Routing User Master)
+project_array=(Application Authorize ConfigServer Identity OAuth Routing User InitializeData Master)
 
 for project in ${project_array[@]};do
 

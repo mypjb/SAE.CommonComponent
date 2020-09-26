@@ -3,6 +3,7 @@ using IdentityServer4.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
 using SAE.CommonComponent.Identity.Commands;
 using SAE.CommonLibrary;
 using SAE.CommonLibrary.Abstract.Mediator;
@@ -21,14 +22,17 @@ namespace SAE.CommonComponent.Identity.Controllers
         private readonly IMediator _mediator;
         private readonly IIdentityServerInteractionService _interaction;
         private readonly ILogging _logging;
+        private readonly IHostEnvironment _environment;
 
         public AccountController(IMediator mediator,
                                  IIdentityServerInteractionService interaction,
-                                 ILogging<AccountController> logging)
+                                 ILogging<AccountController> logging,
+                                 IHostEnvironment environment)
         {
             this._mediator = mediator;
             this._interaction = interaction;
             this._logging = logging;
+            this._environment = environment;
         }
         [Route("~/home/error")]
         [AllowAnonymous]
@@ -50,7 +54,11 @@ namespace SAE.CommonComponent.Identity.Controllers
         [HttpGet]
         public IActionResult Login()
         {
-            return this.Redirect($"{Constants.DefaultMaster}{"/identity/login"}{this.Request.QueryString}");
+            var host = this._environment.IsDevelopment() ?
+                       Constants.Development.Master :
+                       Constants.Production.Master;
+
+            return this.Redirect($"{host}{"/identity/login"}{this.Request.QueryString}");
         }
 
         [AllowAnonymous]

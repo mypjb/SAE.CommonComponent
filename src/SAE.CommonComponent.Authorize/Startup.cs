@@ -77,7 +77,7 @@ namespace SAE.CommonComponent.Authorize
             services.AddAuthentication()
                     .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
                      {
-                         options.Authority = Constants.DefaultAuthority;
+                         options.Authority = Constants.Production.Authority;
                          options.TokenValidationParameters = new TokenValidationParameters
                          {
                              ValidateAudience = false

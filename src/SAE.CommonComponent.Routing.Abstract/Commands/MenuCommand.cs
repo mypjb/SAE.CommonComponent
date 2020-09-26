@@ -1,10 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using SAE.CommonLibrary.Abstract.Model;
-using SAE.CommonLibrary.EventStore;
-using SAE.CommonLibrary.EventStore.Document;
-
 namespace SAE.CommonComponent.Routing.Commands
 {
     public class MenuCommand
