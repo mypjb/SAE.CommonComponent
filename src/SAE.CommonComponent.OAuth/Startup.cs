@@ -54,10 +54,8 @@ namespace SAE.CommonComponent.OAuth
                   options.RequireHttpsMetadata = false;
                   options.Scope.Add(Constants.Scope);
                   options.SaveTokens = true;
-                  options.CorrelationCookie.Domain = ".sae.com";
-                  options.NonceCookie.Domain = ".sae.com";
-                  options.CorrelationCookie.SameSite = SameSiteMode.Lax;
-                  options.NonceCookie.SameSite = SameSiteMode.Lax;
+                  options.CorrelationCookie.SameSite = SameSiteMode.Unspecified;
+                  options.NonceCookie.SameSite = SameSiteMode.Unspecified;
               });
         }
 

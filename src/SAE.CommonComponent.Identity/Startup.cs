@@ -53,8 +53,8 @@ namespace SAE.CommonComponent.Identity
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                     .AddCookie(options=>
                     {
-                        options.Cookie.Domain = ".sae.com";
-                        options.ForwardChallenge = IdentityServer4.IdentityServerConstants.DefaultCookieAuthenticationScheme;
+                        //options.Cookie.Domain = ".sae.com";
+                        //options.ForwardChallenge = IdentityServer4.IdentityServerConstants.DefaultCookieAuthenticationScheme;
                     });
 
             
