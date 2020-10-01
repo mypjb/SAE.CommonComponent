@@ -86,10 +86,10 @@ namespace SAE.CommonComponent.Identity
         public override void PluginConfigure(IApplicationBuilder app)
         {
             var hostEnvironment= app.ApplicationServices.GetService<IHostEnvironment>();
-            if (hostEnvironment.IsDevelopment())
-            {
+            //if (!hostEnvironment.IsDevelopment())
+            //{
                 IdentityModelEventSource.ShowPII = true;
-            }
+            //}
             app.UseServiceFacade();
             app.UseAuthentication();
             app.UseIdentityServer();

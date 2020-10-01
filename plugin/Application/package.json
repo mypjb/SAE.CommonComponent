@@ -1,7 +1,0 @@
-{
-    "Name": "Application",
-    "Path": "SAE.CommonComponent.Application.dll",
-    "Description": "this is a Application plugin",
-    "Version": "1.0.0.0",
-    "Status":1
-}

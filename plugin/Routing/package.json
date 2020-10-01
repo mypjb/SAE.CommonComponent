@@ -1,7 +1,0 @@
-{
-    "Name": "Routing",
-    "Path": "SAE.CommonComponent.Routing.dll",
-    "Description": "this is a Routing plugin",
-    "Version": "1.0.0.0",
-    "Status":1
-}

@@ -1,7 +1,0 @@
-{
-    "Name": "ConfigServer",
-    "Path": "SAE.CommonComponent.ConfigServer.dll",
-    "Description": "this is a ConfigServer plugin",
-    "Version": "1.0.0.0",
-    "Status":true
-  }

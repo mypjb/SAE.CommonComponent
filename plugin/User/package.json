@@ -1,7 +1,0 @@
-{
-    "Name": "User",
-    "Path": "SAE.CommonComponent.User.dll",
-    "Description": "this is a User plugin",
-    "Version": "1.0.0.0",
-    "Status":1
-}

@@ -10,6 +10,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D6AB6A02-EF9D-4743-90EF-D3704567A4B7}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		build.local.sh = build.local.sh
 		build.sh = build.sh
 		Database.sql = Database.sql
 		Dockerfile = Dockerfile
@@ -57,11 +58,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SAE.CommonComponent.Authori
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SAE.CommonComponent.OAuth", "src\SAE.CommonComponent.OAuth\SAE.CommonComponent.OAuth.csproj", "{9981F2B3-E290-4D43-9F61-D549EFAB915B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAE.CommonComponent.InitializeData", "src\SAE.CommonComponent.InitializeData\SAE.CommonComponent.InitializeData.csproj", "{9E058F54-6737-4312-8767-A6F57AD04EF4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SAE.CommonComponent.InitializeData", "src\SAE.CommonComponent.InitializeData\SAE.CommonComponent.InitializeData.csproj", "{9E058F54-6737-4312-8767-A6F57AD04EF4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAE.CommonComponent.ConfigServer.Abstract", "src\SAE.CommonComponent.ConfigServer.Abstract\SAE.CommonComponent.ConfigServer.Abstract.csproj", "{A44B9544-F88D-43E3-A4A2-EC2295706EEC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SAE.CommonComponent.ConfigServer.Abstract", "src\SAE.CommonComponent.ConfigServer.Abstract\SAE.CommonComponent.ConfigServer.Abstract.csproj", "{A44B9544-F88D-43E3-A4A2-EC2295706EEC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAE.CommonComponent.Routing.Abstract", "src\SAE.CommonComponent.Routing.Abstract\SAE.CommonComponent.Routing.Abstract.csproj", "{C09E5355-EAD1-44D8-81C1-451B66DB0FCE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SAE.CommonComponent.Routing.Abstract", "src\SAE.CommonComponent.Routing.Abstract\SAE.CommonComponent.Routing.Abstract.csproj", "{C09E5355-EAD1-44D8-81C1-451B66DB0FCE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
