@@ -44,7 +44,7 @@ namespace SAE.CommonComponent.Master
                         .AddMongoDB();
             }
 
-            services.AddPluginManage(this._env.IsDevelopment() ? string.Empty : "../../../../../plugin");
+            services.AddPluginManage(this._env.IsDevelopment() ? "../../../../../plugin" : string.Empty);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
