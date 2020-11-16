@@ -7,7 +7,12 @@ pipeline {
     stage('Build') {
       parallel {
         stage('Config') {
-		  when { not { environment name: 'BUILD_TARGET', value: 'Client'} }
+		  when { 
+            anyOf {
+                environment name: 'BUILD_TARGET', value: 'Config'
+                environment name: 'BUILD_TARGET', value: 'ALL'
+            }
+          }
           agent {
             docker {
               image 'mypjb/dotnet-core-sdk:3.1'
@@ -21,7 +26,12 @@ pipeline {
         }
 
         stage('API') {
-		  when { not { environment name: 'BUILD_TARGET', value: 'Client'} }
+		  when { 
+            anyOf {
+                environment name: 'BUILD_TARGET', value: 'API'
+                environment name: 'BUILD_TARGET', value: 'ALL'
+            }
+          }
           agent {
             docker {
               image 'mypjb/dotnet-core-sdk:3.1'
@@ -35,7 +45,12 @@ pipeline {
         }
 
         stage('Client') {
-		  when { not { environment name: 'BUILD_TARGET', value: 'API'} }
+		  when { 
+            anyOf {
+                environment name: 'BUILD_TARGET', value: 'Client'
+                environment name: 'BUILD_TARGET', value: 'ALL'
+            }
+          }
           agent {
             docker {
               image 'andrewmackrodt/nodejs:12'
@@ -54,7 +69,12 @@ pipeline {
 	stage('Pack') {
       parallel {
         stage('Config') {
-		  when { not { environment name: 'BUILD_TARGET', value: 'Config'} }
+		  when { 
+            anyOf {
+                environment name: 'BUILD_TARGET', value: 'Config'
+                environment name: 'BUILD_TARGET', value: 'ALL'
+            }
+          }
           environment {
             DOCKER_BUILD_DIR = "${RELEASE_DIR}/Config/Master"
             MAIN_PROGRAM = 'SAE.CommonComponent.Master.dll'
@@ -68,7 +88,12 @@ docker build --rm --build-arg MAIN_PROGRAM=$MAIN_PROGRAM -t $DOCKER_NAME:$DOCKER
         }
 
         stage('API') {
-		  when { not { environment name: 'BUILD_TARGET', value: 'Client'} }
+		  when { 
+            anyOf {
+                environment name: 'BUILD_TARGET', value: 'API'
+                environment name: 'BUILD_TARGET', value: 'ALL'
+            }
+          }
           environment {
             DOCKER_BUILD_DIR = "${RELEASE_DIR}/API/Master"
             MAIN_PROGRAM = 'SAE.CommonComponent.Master.dll'
@@ -82,7 +107,12 @@ docker build --rm --build-arg MAIN_PROGRAM=$MAIN_PROGRAM -t $DOCKER_NAME:$DOCKER
         }
 
         stage('Client') {
-		  when { not { environment name: 'BUILD_TARGET', value: 'API'} }
+		  when { 
+            anyOf {
+                environment name: 'BUILD_TARGET', value: 'Client'
+                environment name: 'BUILD_TARGET', value: 'ALL'
+            }
+          }
 		  environment {
             DOCKER_BUILD_DIR = "${RELEASE_DIR}/Client"
             DOCKER_NAME = 'mypjb/sae-commoncomponent-client'
@@ -100,7 +130,12 @@ docker build --rm -t $DOCKER_NAME:$DOCKER_TAG .'''
 	stage('Deploy') {
       parallel {
         stage('Config') {
-		  when { not { environment name: 'BUILD_TARGET', value: 'Config'} }
+		  when { 
+            anyOf {
+                environment name: 'BUILD_TARGET', value: 'Config'
+                environment name: 'BUILD_TARGET', value: 'ALL'
+            }
+          }
           environment {
             DOCKER_NAME = 'mypjb/sae-commoncomponent-config'
             DOCKER_TAG = "${BRANCH_NAME}"
@@ -114,7 +149,12 @@ docker run -d --name $DOCKER_CONTAINER_NAME --net=$DOCKER_CLUSTER_NETWORK -p $DO
         }
 
         stage('API') {
-		  when { not { environment name: 'BUILD_TARGET', value: 'Client'} }
+		  when { 
+            anyOf {
+                environment name: 'BUILD_TARGET', value: 'API'
+                environment name: 'BUILD_TARGET', value: 'ALL'
+            }
+          }
           environment {
             DOCKER_NAME = 'mypjb/sae-commoncomponent-master'
             DOCKER_TAG = "${BRANCH_NAME}"
@@ -128,7 +168,12 @@ docker run -d --name $DOCKER_CONTAINER_NAME --net=$DOCKER_CLUSTER_NETWORK -p $DO
         }
 
         stage('Client') {
-		  when { not { environment name: 'BUILD_TARGET', value: 'API'} }
+		  when { 
+            anyOf {
+                environment name: 'BUILD_TARGET', value: 'Client'
+                environment name: 'BUILD_TARGET', value: 'ALL'
+            }
+          }
 		  environment {
             DOCKER_NAME = 'mypjb/sae-commoncomponent-client'
             DOCKER_TAG = "${BRANCH_NAME}"
