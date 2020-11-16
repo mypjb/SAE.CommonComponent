@@ -1,7 +1,7 @@
 pipeline {
   agent any
   parameters {
-        choice(choices: ['API', 'Client', 'ALL'], description: '', name: 'BUILD_TARGET')
+        choice(choices: ['Config','API', 'Client', 'ALL'], description: '', name: 'BUILD_TARGET')
   }
   stages {
     stage('Build') {
