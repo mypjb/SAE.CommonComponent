@@ -39,7 +39,7 @@
     <None Update="Config\redis.Development.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Config\redis.bak.json">
+    <None Update="Config\redis.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
