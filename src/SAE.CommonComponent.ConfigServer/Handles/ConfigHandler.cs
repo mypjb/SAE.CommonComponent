@@ -1,15 +1,13 @@
 ﻿using SAE.CommonComponent.ConfigServer.Commands;
-using SAE.CommonComponent.ConfigServer.Dtos;
 using SAE.CommonComponent.ConfigServer.Domains;
+using SAE.CommonComponent.ConfigServer.Dtos;
 using SAE.CommonLibrary.Abstract.Mediator;
+using SAE.CommonLibrary.Abstract.Model;
 using SAE.CommonLibrary.Data;
 using SAE.CommonLibrary.EventStore.Document;
-using System;
-using System.Collections.Generic;
+using SAE.CommonLibrary.Extension;
 using System.Linq;
 using System.Threading.Tasks;
-using SAE.CommonLibrary.Abstract.Model;
-using SAE.CommonLibrary.Extension;
 
 namespace SAE.CommonComponent.ConfigServer.Handles
 {

@@ -29,7 +29,7 @@ namespace SAE.CommonComponent.ConfigServer.Handles
             {
                 
                 var projectConfigs = this._storage.AsQueryable<ProjectConfigDto>()
-                                                              .Where(s => s.ProjectId == command.Id);
+                                                  .Where(s => s.ProjectId == command.Id);
 
                 var configs = this._storage.AsQueryable<ConfigDto>()
                                            .Where(s => projectConfigs.Any(pc => pc.ConfigId == s.Id))

@@ -1,0 +1,7 @@
+﻿{
+  "appId": "localhost.test",
+  "appSecret": "localhost.test",
+  "appName": "master",
+  "master": "http://localhost:8000",
+  "authority": "http://localhost:8080"
+}

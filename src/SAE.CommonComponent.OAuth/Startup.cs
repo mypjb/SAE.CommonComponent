@@ -48,8 +48,8 @@ namespace SAE.CommonComponent.OAuth
 
             authenticationBuilder.AddOpenIdConnect(options =>
               {
-                  options.Authority = Constants.Production.Authority;
-                  options.ClientId = Constants.Production.AppId;
+                  options.Authority = SiteConfig.Get(Constants.Config.Authority);
+                  options.ClientId = SiteConfig.Get(Constants.Config.AppId);
                   options.ResponseType = "id_token token";
                   options.RequireHttpsMetadata = false;
                   options.Scope.Add(Constants.Scope);

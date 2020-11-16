@@ -32,7 +32,9 @@ namespace SAE.CommonComponent.Master
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
             services.AddRouting(options => options.LowercaseUrls = true);
+
             services.AddRoutingScanning()
                     .AddServiceFacade()
                     .AddNlogLogger();

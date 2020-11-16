@@ -1,17 +1,17 @@
-﻿using SAE.CommonComponent.Application.Commands;
+﻿using Microsoft.Extensions.DependencyInjection;
+using SAE.CommonComponent.Application.Commands;
+using SAE.CommonComponent.ConfigServer.Commands;
 using SAE.CommonComponent.User.Commands;
 using SAE.CommonLibrary.Abstract.Mediator;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
-using SAE.CommonLibrary.Logging;
 using SAE.CommonLibrary.Extension;
+using SAE.CommonLibrary.Logging;
+using System;
+using System.Threading.Tasks;
+using AppCommand = SAE.CommonComponent.Application.Commands.AppCommand;
 
 namespace SAE.CommonComponent.InitializeData
 {
-    public class InitializeService: IInitializeService
+    public class InitializeService : IInitializeService
     {
         protected readonly IMediator _mediator;
         protected readonly ILogging _logging;
@@ -37,10 +37,10 @@ namespace SAE.CommonComponent.InitializeData
 
             var appCommand = new AppCommand.Create
             {
-                Id = Constants.Production.AppId,
-                Secret = Constants.Production.Secret,
-                Name = Constants.Production.AppName,
-                Urls = new[] { Constants.Production.Master }
+                Id = SiteConfig.Get(Constants.Config.AppId),
+                Secret = SiteConfig.Get(Constants.Config.Secret),
+                Name = SiteConfig.Get(Constants.Config.AppName),
+                Urls = new[] { SiteConfig.Get(Constants.Config.Master) }
             };
 
             await this._mediator.Send<string>(appCommand);
@@ -51,13 +51,13 @@ namespace SAE.CommonComponent.InitializeData
 
             await this._mediator.Send(new AppCommand.ReferenceScope
             {
-                Id = Constants.Production.AppId,
+                Id = appCommand.Id,
                 Scopes = new[] { Constants.Scope }
             });
 
             await this._mediator.Send(new AppCommand.ChangeStatus
             {
-                Id = Constants.Production.AppId,
+                Id = appCommand.Id,
                 Status = Status.Enable
             });
         }
@@ -69,10 +69,25 @@ namespace SAE.CommonComponent.InitializeData
 
         public virtual async Task ConfigServer()
         {
+            var slnId =await this._mediator.Send<string>(new SolutionCommand.Create
+            {
+                Name = Constants.SolutionName
+            });
+
+            var projectId = await this._mediator.Send<string>(new ProjectCommand.Create
+            {
+                Name = SiteConfig.Get(Constants.Config.AppName),
+                SolutionId = slnId
+            });
+
         }
 
         public virtual async Task Initial()
         {
+            this._logging.Info($"start initial {nameof(ConfigServer)}");
+            await this.ConfigServer();
+            this._logging.Info($"end initial {nameof(ConfigServer)}");
+
             this._logging.Info($"start initial {nameof(Application)}");
             await this.Application();
             this._logging.Info($"end initial {nameof(Application)}");
@@ -80,10 +95,6 @@ namespace SAE.CommonComponent.InitializeData
             this._logging.Info($"start initial {nameof(Authorize)}");
             await this.Authorize();
             this._logging.Info($"end initial {nameof(Authorize)}");
-
-            this._logging.Info($"start initial {nameof(ConfigServer)}");
-            await this.ConfigServer();
-            this._logging.Info($"end initial {nameof(ConfigServer)}");
 
             this._logging.Info($"start initial {nameof(Routing)}");
             await this.Routing();
@@ -102,9 +113,9 @@ namespace SAE.CommonComponent.InitializeData
         {
             await this._mediator.Send<string>(new UserCommand.Register
             {
-                Name = "admin",
-                Password = "admin",
-                ConfirmPassword = "admin"
+                Name = Constants.User.Name,
+                Password = Constants.User.Password,
+                ConfirmPassword = Constants.User.Password
             });
         }
     }

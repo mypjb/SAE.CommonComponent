@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Primitives;
 using Microsoft.IdentityModel.Tokens;
 using SAE.CommonComponent.Authorize.Dtos;
+using SAE.CommonLibrary;
 using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.AspNetCore.Authorization;
 using SAE.CommonLibrary.EventStore.Document;
@@ -77,7 +78,7 @@ namespace SAE.CommonComponent.Authorize
             services.AddAuthentication()
                     .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
                      {
-                         options.Authority = Constants.Production.Authority;
+                         options.Authority = SiteConfig.Get(Constants.Config.Authority);
                          options.TokenValidationParameters = new TokenValidationParameters
                          {
                              ValidateAudience = false

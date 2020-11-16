@@ -50,6 +50,10 @@ namespace SAE.CommonComponent.ConfigServer
             services.AddMemoryDocument()
                     .AddMemoryMessageQueue()
                     .AddDataPersistenceService(assemblys);
+
+            //services.AddSaeOptions<ConfigOptions>("config");
+
+            //services.AddOptionsProvider<ConfigServerProvider>();
         }
 
         public override void PluginConfigure(IApplicationBuilder app)

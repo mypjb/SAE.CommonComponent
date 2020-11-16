@@ -17,38 +17,40 @@ namespace SAE.CommonComponent.InitializeData
 
         public override async Task Application()
         {
-            var scopeCommand = new ScopeCommand.Create
-            {
-                Name = Constants.Scope,
-                Display = Constants.Scope
-            };
+            //var scopeCommand = new ScopeCommand.Create
+            //{
+            //    Name = Constants.Scope,
+            //    Display = Constants.Scope
+            //};
 
-            this._logging.Info($"add default scope:{scopeCommand.ToJsonString()}");
+            //this._logging.Info($"add default scope:{scopeCommand.ToJsonString()}");
 
-            await this._mediator.Send(scopeCommand);
+            //await this._mediator.Send(scopeCommand);
 
-            var appCommand = new AppCommand.Create
-            {
-                Id = Constants.Development.AppId,
-                Secret = Constants.Development.Secret,
-                Name = Constants.Development.AppName,
-                Urls = new[] { Constants.Development.Master }
-            };
+            //var appCommand = new AppCommand.Create
+            //{
+            //    Id = SiteConfig.Get(Constants.Config.AppId),
+            //    Secret = SiteConfig.Get(Constants.Config.Secret),
+            //    Name = SiteConfig.Get(Constants.Config.AppName),
+            //    Urls = new[] { SiteConfig.Get(Constants.Config.Master) }
+            //};
 
-            this._logging.Info($"add default app:{appCommand.ToJsonString()}");
-            await this._mediator.Send<string>(appCommand);
+            //this._logging.Info($"add default app:{appCommand.ToJsonString()}");
+            //await this._mediator.Send<string>(appCommand);
 
-            await this._mediator.Send(new AppCommand.ReferenceScope
-            {
-                Id = Constants.Development.AppId,
-                Scopes = new[] { Constants.Scope }
-            });
+            //await this._mediator.Send(new AppCommand.ReferenceScope
+            //{
+            //    Id = appCommand.Id,
+            //    Scopes = new[] { Constants.Scope }
+            //});
 
-            await this._mediator.Send(new AppCommand.ChangeStatus
-            {
-                Id = Constants.Development.AppId,
-                Status = Status.Enable
-            });
+            //await this._mediator.Send(new AppCommand.ChangeStatus
+            //{
+            //    Id = appCommand.Id,
+            //    Status = Status.Enable
+            //});
+
+            await base.Application();
         }
 
         public override Task Authorize()

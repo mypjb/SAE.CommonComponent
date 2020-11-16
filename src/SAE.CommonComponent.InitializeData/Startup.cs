@@ -9,45 +9,63 @@ using SAE.CommonLibrary.Abstract.Model;
 using SAE.CommonLibrary.Plugin.AspNetCore;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace SAE.CommonComponent.InitializeData
 {
     public class Startup : WebPlugin
     {
+        private const string KeyPath = "keys";
         public override void PluginConfigure(IApplicationBuilder app)
         {
-            var serviceProvider = app.ApplicationServices;
-            var initializeService = serviceProvider.GetService<IInitializeService>();
-            var mediator = serviceProvider.GetService<IMediator>();
-            var command = new AppCommand.Query
+            
+            if (File.Exists(KeyPath))
             {
-                PageIndex = 1,
-                PageSize = 1
-            };
+                return;
+            }
 
-            var apps = mediator.Send<IPagedList<AppDto>>(command).GetAwaiter().GetResult();
+            var key = Guid.NewGuid().ToString("N");
 
-            if (apps.TotalCount == 0)
-                initializeService.Initial().GetAwaiter().GetResult();
+            File.AppendAllText(KeyPath, key);
+
+            var provider = app.ApplicationServices;
+
+            var hostEnvironment = provider.GetService<IHostEnvironment>();
+
+            IInitializeService initializeService;
+
+            if (hostEnvironment.IsDevelopment())
+            {
+                initializeService= new DevelopmentInitializeService(provider);
+            }
+            else
+            {
+                initializeService= new InitializeService(provider);
+            }
+
+            initializeService.Initial();
         }
+
 
         public override void PluginConfigureServices(IServiceCollection services)
         {
-            services.AddTransient<IInitializeService>(provider =>
-            {
-                var hostEnvironment = provider.GetService<IHostEnvironment>();
+            //services.AddTransient<IInitializeService>(provider =>
+            //{
+            //    var hostEnvironment = provider.GetService<IHostEnvironment>();
 
-                if (hostEnvironment.IsDevelopment())
-                {
-                    return new DevelopmentInitializeService(provider);
-                }
-                else
-                {
-                    return new InitializeService(provider);
-                }
-            });
+            //    if (hostEnvironment.IsDevelopment())
+            //    {
+            //        return new DevelopmentInitializeService(provider);
+            //    }
+            //    else
+            //    {
+            //        return new InitializeService(provider);
+            //    }
+            //});
         }
     }
 }

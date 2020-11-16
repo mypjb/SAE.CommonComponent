@@ -51,13 +51,7 @@ namespace SAE.CommonComponent.Identity
                                 .AddResourceStore<ResourceStoreService>();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                    .AddCookie(options=>
-                    {
-                        //options.Cookie.Domain = ".sae.com";
-                        //options.ForwardChallenge = IdentityServer4.IdentityServerConstants.DefaultCookieAuthenticationScheme;
-                    });
-
-            
+                    .AddCookie();
 
             services.PostConfigure<AuthenticationOptions>(options =>
             {
@@ -86,10 +80,10 @@ namespace SAE.CommonComponent.Identity
         public override void PluginConfigure(IApplicationBuilder app)
         {
             var hostEnvironment= app.ApplicationServices.GetService<IHostEnvironment>();
-            //if (!hostEnvironment.IsDevelopment())
-            //{
+            if (hostEnvironment.IsDevelopment())
+            {
                 IdentityModelEventSource.ShowPII = true;
-            //}
+            }
             app.UseServiceFacade();
             app.UseAuthentication();
             app.UseIdentityServer();

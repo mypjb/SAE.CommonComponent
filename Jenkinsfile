@@ -6,6 +6,20 @@ pipeline {
   stages {
     stage('Build') {
       parallel {
+        stage('Config') {
+		  when { not { environment name: 'BUILD_TARGET', value: 'Client'} }
+          agent {
+            docker {
+              image 'mypjb/dotnet-core-sdk:3.1'
+              args '-v nuget:/root/.nuget -v release:/root/release'
+            }
+
+          }
+          steps {
+            sh 'bash ./build.config.sh $RELEASE_DIR/Config'
+          }
+        }
+
         stage('API') {
 		  when { not { environment name: 'BUILD_TARGET', value: 'Client'} }
           agent {
@@ -39,6 +53,20 @@ pipeline {
 	
 	stage('Pack') {
       parallel {
+        stage('Config') {
+		  when { not { environment name: 'BUILD_TARGET', value: 'Config'} }
+          environment {
+            DOCKER_BUILD_DIR = "${RELEASE_DIR}/Config/Master"
+            MAIN_PROGRAM = 'SAE.CommonComponent.Master.dll'
+            DOCKER_NAME = 'mypjb/sae-commoncomponent-config'
+            DOCKER_TAG = "${BRANCH_NAME}"
+          }
+          steps {
+            sh '''cd $DOCKER_BUILD_DIR
+docker build --rm --build-arg MAIN_PROGRAM=$MAIN_PROGRAM -t $DOCKER_NAME:$DOCKER_TAG .'''
+          }
+        }
+
         stage('API') {
 		  when { not { environment name: 'BUILD_TARGET', value: 'Client'} }
           environment {
@@ -71,16 +99,31 @@ docker build --rm -t $DOCKER_NAME:$DOCKER_TAG .'''
 	
 	stage('Deploy') {
       parallel {
+        stage('Config') {
+		  when { not { environment name: 'BUILD_TARGET', value: 'Config'} }
+          environment {
+            DOCKER_NAME = 'mypjb/sae-commoncomponent-config'
+            DOCKER_TAG = "${BRANCH_NAME}"
+			DOCKER_CONTAINER_NAME="sae-commoncomponent-config"
+            DOCKER_PORT = "9001"
+          }
+          steps {
+            sh '''if [ $(docker ps -q -a -f name=$DOCKER_CONTAINER_NAME  | wc -l) != 0 ]; then docker rm -f $(docker ps -q -a -f name=$DOCKER_CONTAINER_NAME); fi
+docker run -d --name $DOCKER_CONTAINER_NAME --net=$DOCKER_CLUSTER_NETWORK -p $DOCKER_PORT:80 $DOCKER_NAME:$DOCKER_TAG '''
+          }
+        }
+
         stage('API') {
 		  when { not { environment name: 'BUILD_TARGET', value: 'Client'} }
           environment {
             DOCKER_NAME = 'mypjb/sae-commoncomponent-master'
             DOCKER_TAG = "${BRANCH_NAME}"
 			DOCKER_CONTAINER_NAME="sae-commoncomponent-master"
+            DOCKER_PORT = "9002"
           }
           steps {
             sh '''if [ $(docker ps -q -a -f name=$DOCKER_CONTAINER_NAME  | wc -l) != 0 ]; then docker rm -f $(docker ps -q -a -f name=$DOCKER_CONTAINER_NAME); fi
-docker run -d --name $DOCKER_CONTAINER_NAME --net=$DOCKER_CLUSTER_NETWORK $DOCKER_NAME:$DOCKER_TAG '''
+docker run -d --name $DOCKER_CONTAINER_NAME --net=$DOCKER_CLUSTER_NETWORK -p $DOCKER_PORT:80 $DOCKER_NAME:$DOCKER_TAG '''
           }
         }
 
@@ -90,21 +133,22 @@ docker run -d --name $DOCKER_CONTAINER_NAME --net=$DOCKER_CLUSTER_NETWORK $DOCKE
             DOCKER_NAME = 'mypjb/sae-commoncomponent-client'
             DOCKER_TAG = "${BRANCH_NAME}"
 			DOCKER_CONTAINER_NAME="sae-commoncomponent-client"
+            DOCKER_PORT = "9003"
           }
           steps {
             sh '''if [ $(docker ps -q -a -f name=$DOCKER_CONTAINER_NAME  | wc -l) != 0 ]; then docker rm -f $(docker ps -q -a -f name=$DOCKER_CONTAINER_NAME); fi
-docker run -d --name $DOCKER_CONTAINER_NAME --net=$DOCKER_CLUSTER_NETWORK $DOCKER_NAME:$DOCKER_TAG '''
+docker run -d --name $DOCKER_CONTAINER_NAME --net=$DOCKER_CLUSTER_NETWORK -p $DOCKER_PORT:80 $DOCKER_NAME:$DOCKER_TAG '''
           }
         }
 		
       }
     }
 	
-	stage('Reload Nginx') {
-      steps {
-            sh 'docker restart nginx'
-          }
-    }
+	//stage('Reload Nginx') {
+    //  steps {
+    //        sh 'docker restart nginx'
+    //      }
+    //}
 
   }
 }
