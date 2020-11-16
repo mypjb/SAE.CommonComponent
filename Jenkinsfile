@@ -82,7 +82,7 @@ pipeline {
             DOCKER_TAG = "${BRANCH_NAME}"
           }
           steps {
-            sh '''cd $(echo $DOCKER_BUILD_DIR | sed 's/%2F/\//g')
+            sh '''cd $(echo $DOCKER_BUILD_DIR | sed 's/%2F/\\//g')
 docker build --rm --build-arg MAIN_PROGRAM=$MAIN_PROGRAM -t $DOCKER_NAME:$(echo $DOCKER_TAG | sed "s/\\//-/g") .'''
           }
         }
@@ -101,7 +101,7 @@ docker build --rm --build-arg MAIN_PROGRAM=$MAIN_PROGRAM -t $DOCKER_NAME:$(echo 
             DOCKER_TAG = "${BRANCH_NAME}"
           }
           steps {
-            sh '''cd $(echo $DOCKER_BUILD_DIR | sed 's/%2F/\//g')
+            sh '''cd $(echo $DOCKER_BUILD_DIR | sed 's/%2F/\\//g')
 docker build --rm --build-arg MAIN_PROGRAM=$MAIN_PROGRAM -t $DOCKER_NAME:$(echo $DOCKER_TAG | sed "s/\\//-/g") .'''
           }
         }
@@ -119,7 +119,7 @@ docker build --rm --build-arg MAIN_PROGRAM=$MAIN_PROGRAM -t $DOCKER_NAME:$(echo 
             DOCKER_TAG = "${BRANCH_NAME}"
           }
           steps {
-            sh '''cd $(echo $DOCKER_BUILD_DIR | sed 's/%2F/\//g')
+            sh '''cd $(echo $DOCKER_BUILD_DIR | sed 's/%2F/\\//g')
 docker build --rm -t $DOCKER_NAME:$(echo $DOCKER_TAG | sed "s/\\//-/g") .'''
           }
         }
