@@ -1,4 +1,5 @@
-﻿using SAE.CommonLibrary;
+﻿using Microsoft.Extensions.Options;
+using SAE.CommonLibrary;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,15 +8,17 @@ namespace SAE.CommonComponent
 {
     public class SiteConfig : Dictionary<string, string>
     {
+        public const string Option = nameof(SiteConfig);
         public SiteConfig()
         {
         }
 
         public static string Get(string key)
         {
-            var config = ServiceFacade.GetService<SiteConfig>();
+            var optionsSnapshot = ServiceFacade.GetService<IOptionsSnapshot<SiteConfig>>();
+            var option = optionsSnapshot.Value;
             string value;
-            if(config.TryGetValue(key,out value))
+            if(option.TryGetValue(key,out value))
             {
                 return value;
             }

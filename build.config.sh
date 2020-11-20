@@ -10,7 +10,9 @@ plugin_dir=$main_dir/plugins
 
 mkdir -p $plugin_dir
 
-project_array=(ConfigServer Master)
+project_array=(Master ConfigServer InitializeData)
+
+index=0
 
 for project in ${project_array[@]};do
 
@@ -36,9 +38,12 @@ cat << EOF > $plugin_setting_file
 	"Path": "SAE.CommonComponent.${project}.dll",
 	"Description": "this is a ${project} plugin",
 	"Version": "${version}",
-	"Status":1
+	"Status":1,
+	"Order":${index}
 }
 EOF
+
+let "index=index + 1";
 
 echo -e "${project} plugin setting ↓↓↓↓↓↓↓↓↓"
 cat $plugin_setting_file

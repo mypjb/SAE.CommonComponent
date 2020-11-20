@@ -5,14 +5,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SAE.CommonLibrary.DependencyInjection" Version="1.0.0" />
+    <PackageReference Include="SAE.CommonLibrary.Configuration.Microsoft" Version="1.0.1.2" />
+    <PackageReference Include="SAE.CommonLibrary.DependencyInjection" Version="1.0.1.2" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Config\config.Development.json">
+    <None Update="Config\siteConfig.Development.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Config\config.json">
+    <None Update="Config\siteConfig.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Config\logging.json">

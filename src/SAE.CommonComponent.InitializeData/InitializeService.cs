@@ -80,6 +80,11 @@ namespace SAE.CommonComponent.InitializeData
                 SolutionId = slnId
             });
 
+            await this._mediator.Send<string>(new TemplateCommand.Create
+            {
+                Name = ""
+            });
+
         }
 
         public virtual async Task Initial()
