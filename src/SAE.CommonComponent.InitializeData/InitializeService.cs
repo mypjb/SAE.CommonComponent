@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using SAE.CommonComponent.Application.Commands;
 using SAE.CommonComponent.ConfigServer.Commands;
 using SAE.CommonComponent.User.Commands;
@@ -6,21 +7,33 @@ using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.Extension;
 using SAE.CommonLibrary.Logging;
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using AppCommand = SAE.CommonComponent.Application.Commands.AppCommand;
+using System.Linq;
+using System.Text;
+using SAE.CommonComponent.ConfigServer.Dtos;
+using SAE.CommonLibrary.EventStore.Document;
 
 namespace SAE.CommonComponent.InitializeData
 {
     public class InitializeService : IInitializeService
     {
+        internal const string ConfigExtensionName = ".json";
+        internal const char Separator = '.';
         protected readonly IMediator _mediator;
         protected readonly ILogging _logging;
+        private readonly IServiceProvider _serviceProvider;
+        private readonly IConfiguration _configuration;
 
         public InitializeService(IServiceProvider serviceProvider)
         {
             this._mediator = serviceProvider.GetService<IMediator>();
             var loggingFactory = serviceProvider.GetService<ILoggingFactory>();
             this._logging = loggingFactory.Create(this.GetType().Name);
+            this._serviceProvider = serviceProvider;
+            this._configuration = this._serviceProvider.GetService<IConfiguration>();
         }
 
         public virtual async Task Application()
@@ -69,21 +82,97 @@ namespace SAE.CommonComponent.InitializeData
 
         public virtual async Task ConfigServer()
         {
-            var slnId =await this._mediator.Send<string>(new SolutionCommand.Create
+            var configPath = this._configuration.GetValue<string>(SAE.CommonLibrary.Configuration.Constants.ConfigDirectory);
+
+            if (configPath.IsNullOrWhiteSpace() || !Directory.Exists(configPath))
+            {
+                this._logging.Warn($"not exist config paht '{configPath}'");
+                return;
+            }
+
+            var slnId = await this._mediator.Send<string>(new SolutionCommand.Create
             {
                 Name = Constants.SolutionName
             });
 
-            var projectId = await this._mediator.Send<string>(new ProjectCommand.Create
-            {
-                Name = SiteConfig.Get(Constants.Config.AppName),
-                SolutionId = slnId
-            });
+            Dictionary<string, Dictionary<string, string>> dictionary = new Dictionary<string, Dictionary<string, string>>();
 
-            await this._mediator.Send<string>(new TemplateCommand.Create
+            foreach (var fileName in Directory.GetFiles(configPath, $"*{ConfigExtensionName}"))
             {
-                Name = ""
-            });
+                string key = "Production";
+                if (fileName.Count(s => s.Equals(Separator)) > 1)
+                {
+                    var start = fileName.IndexOf(Separator) + 1;
+                    var length = fileName.LastIndexOf(Separator) - start;
+                    key = fileName.Substring(start, length);
+                }
+                Dictionary<string, string> pairs;
+                if (dictionary.ContainsKey(key))
+                {
+                    pairs = dictionary[key];
+                }
+                else
+                {
+                    pairs = new Dictionary<string, string>();
+                    dictionary[key] = pairs;
+                }
+
+                foreach (var keyValue in File.ReadAllText(fileName, Encoding.UTF8)
+                                             .ToObject<Dictionary<string, object>>())
+                {
+                    pairs[keyValue.Key] = keyValue.Value.ToJsonString();
+                }
+            }
+
+
+            foreach (var kvs in dictionary)
+            {
+                var projectName = $"{SiteConfig.Get(Constants.Config.AppName)}_{kvs.Key}";
+                var projectId = await this._mediator.Send<string>(new ProjectCommand.Create
+                {
+                    Name = projectName,
+                    SolutionId = slnId
+                });
+
+                var configIds = new List<string>();
+
+                foreach (var kv in kvs.Value)
+                {
+                    var templateDtos = await this._mediator.Send<IEnumerable<TemplateDto>>(new Command.List<TemplateDto>());
+
+                    if (!templateDtos.Any(s => s.Name.Equals(kv.Key)))
+                    {
+                        var templateId = await this._mediator.Send<string>(new TemplateCommand.Create
+                        {
+                            Format = kv.Value,
+                            Name = kv.Key
+                        });
+                    }
+
+                    var configId = await this._mediator.Send<string>(new ConfigCommand.Create
+                    {
+                        SolutionId=slnId,
+                        Content = kv.Value,
+                        Name = kv.Value
+                    });
+
+                    configIds.Add(configId);
+                }
+
+                await this._mediator.Send(new ProjectCommand.RelevanceConfig
+                {
+                    ProjectId = projectId,
+                    ConfigIds = configIds
+                });
+
+                var appConfigDto = await this._mediator.Send<AppConfigDto>(new SAE.CommonComponent.ConfigServer.Commands.AppCommand.Config
+                {
+                    Id = projectId
+                });
+
+                this._logging.Info($"Add {projectName} project : {appConfigDto.ToJsonString()}");
+            }
+
 
         }
 

@@ -5,11 +5,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SAE.CommonLibrary.Configuration.Microsoft" Version="1.0.1.2" />
-    <PackageReference Include="SAE.CommonLibrary.DependencyInjection" Version="1.0.1.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
+    <PackageReference Include="SAE.CommonLibrary.Configuration.Microsoft" Version="1.0.1.3" />
+    <PackageReference Include="SAE.CommonLibrary.DependencyInjection" Version="1.0.1.3" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Config\logging.Development.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Config\siteConfig.Development.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

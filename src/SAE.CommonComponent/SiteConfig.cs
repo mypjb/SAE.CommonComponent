@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using SAE.CommonLibrary;
 using System;
 using System.Collections.Generic;
@@ -15,15 +16,12 @@ namespace SAE.CommonComponent
 
         public static string Get(string key)
         {
-            var optionsSnapshot = ServiceFacade.GetService<IOptionsSnapshot<SiteConfig>>();
-            var option = optionsSnapshot.Value;
-            string value;
-            if(option.TryGetValue(key,out value))
-            {
-                return value;
-            }
+            var configuration = ServiceFacade.GetService<IConfiguration>()
+                                             .GetSection(Option);
 
-            throw new SaeException(StatusCodes.ResourcesNotExist, $"'{nameof(SiteConfig)}' not exist '{key}' index");
+            var value = configuration.GetValue<string>(key);
+
+            return value;
         }
     }
 }

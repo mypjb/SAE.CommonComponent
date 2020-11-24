@@ -9,11 +9,11 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.8" />
-    <PackageReference Include="SAE.CommonLibrary.Abstract" Version="1.0.1.2" />
-    <PackageReference Include="SAE.CommonLibrary.AspNetCore" Version="1.0.1.2" />
-    <PackageReference Include="SAE.CommonLibrary.Caching" Version="1.0.1.2" />
-    <PackageReference Include="SAE.CommonLibrary.EventStore.Document" Version="1.0.1.2" />
-    <PackageReference Include="SAE.CommonLibrary.Plugin.AspNetCore" Version="1.0.1.2" />
+    <PackageReference Include="SAE.CommonLibrary.Abstract" Version="1.0.1.3" />
+    <PackageReference Include="SAE.CommonLibrary.AspNetCore" Version="1.0.1.3" />
+    <PackageReference Include="SAE.CommonLibrary.Caching" Version="1.0.1.3" />
+    <PackageReference Include="SAE.CommonLibrary.EventStore.Document" Version="1.0.1.3" />
+    <PackageReference Include="SAE.CommonLibrary.Plugin.AspNetCore" Version="1.0.1.3" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,11 +1,9 @@
 ﻿using Microsoft.Extensions.Hosting;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
-namespace SAE.CommonComponent
-{
+namespace Microsoft.AspNetCore.Hosting
+{ 
     public static class DefaultHostBuilderExtensions
     {
         public static IHostBuilder ConfigureDefault(this IHostBuilder builder)

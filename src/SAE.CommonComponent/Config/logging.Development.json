@@ -14,7 +14,7 @@
     "rules": [
       {
         "logger": "*",
-        "minlevel": "Info",
+        "minlevel": "Trace",
         "writeTo": "FileTarget"
       }
     ]

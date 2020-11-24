@@ -28,10 +28,6 @@ namespace SAE.CommonComponent.InitializeData
                 return;
             }
 
-            var key = Guid.NewGuid().ToString("N");
-
-            File.AppendAllText(KeyPath, key);
-
             var provider = app.ApplicationServices;
 
             var hostEnvironment = provider.GetService<IHostEnvironment>();
@@ -48,6 +44,10 @@ namespace SAE.CommonComponent.InitializeData
             }
 
             initializeService.Initial();
+
+            var key = Guid.NewGuid().ToString("N");
+
+            File.AppendAllText(KeyPath, key);
         }
 
 
