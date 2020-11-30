@@ -24,6 +24,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\SAE.CommonComponent\SAE.CommonComponent.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="Config\logging.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

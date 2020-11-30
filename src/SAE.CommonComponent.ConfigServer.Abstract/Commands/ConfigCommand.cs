@@ -22,6 +22,10 @@ namespace SAE.CommonComponent.ConfigServer.Commands
             /// 内容
             /// </summary>
             public string Content { get; set; }
+            /// <summary>
+            /// 
+            /// </summary>
+            public string EnvironmentId { get; set; }
         }
         public class Change
         {
@@ -42,6 +46,7 @@ namespace SAE.CommonComponent.ConfigServer.Commands
             /// 解决方案Id
             /// </summary>
             public string SolutionId { get; set; }
+            public string EnvironmentId { get; set; }
             public string Name { get; set; }
         }
 

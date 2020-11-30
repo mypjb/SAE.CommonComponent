@@ -16,18 +16,32 @@ namespace SAE.CommonComponent.ConfigServer.Test
         {
             this._templateController = new TemplateControllerTest(output, this.HttpClient);
             this._solutionController = new SolutionControllerTest(output, this.HttpClient);
+            this._environmentControllerTest = new EnvironmentControllerTest(output, this.HttpClient);
+            this._environmentId = this._environmentControllerTest
+                                      .Add()
+                                      .GetAwaiter()
+                                      .GetResult()
+                                      .Id;
         }
 
-        internal ConfigControllerTest(ITestOutputHelper output, HttpClient httpClient) :  base(output, httpClient)
+        internal ConfigControllerTest(ITestOutputHelper output, HttpClient httpClient) : base(output, httpClient)
         {
             this._templateController = new TemplateControllerTest(output, this.HttpClient);
             this._solutionController = new SolutionControllerTest(output, this.HttpClient);
+            this._environmentControllerTest = new EnvironmentControllerTest(output, this.HttpClient);
+            this._environmentId = this._environmentControllerTest
+                                      .Add()
+                                      .GetAwaiter()
+                                      .GetResult()
+                                      .Id;
         }
+
 
         public const string API = "Config";
         private readonly TemplateControllerTest _templateController;
         private readonly SolutionControllerTest _solutionController;
-
+        private readonly EnvironmentControllerTest _environmentControllerTest;
+        private readonly string _environmentId;
         [Fact]
         public async Task<ConfigDto> Add()
         {
@@ -37,7 +51,8 @@ namespace SAE.CommonComponent.ConfigServer.Test
             {
                 Name = template.Name,
                 Content = template.Format,
-                SolutionId = solution.Id
+                SolutionId = solution.Id,
+                EnvironmentId=this._environmentId
             };
             var message = new HttpRequestMessage(HttpMethod.Post, API);
             message.AddJsonContent(commond);
@@ -47,6 +62,7 @@ namespace SAE.CommonComponent.ConfigServer.Test
             var config = await this.Get(id);
             Assert.Equal(commond.Name, config.Name);
             Assert.Equal(commond.Content, config.Content);
+            Assert.Equal(commond.EnvironmentId, config.EnvironmentId);
             Assert.Equal(commond.SolutionId, config.SolutionId);
             return config;
         }

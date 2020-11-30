@@ -15,6 +15,7 @@ using System.Linq;
 using System.Text;
 using SAE.CommonComponent.ConfigServer.Dtos;
 using SAE.CommonLibrary.EventStore.Document;
+using Microsoft.Extensions.Hosting;
 
 namespace SAE.CommonComponent.InitializeData
 {
@@ -84,9 +85,11 @@ namespace SAE.CommonComponent.InitializeData
         {
             var configPath = this._configuration.GetValue<string>(SAE.CommonLibrary.Configuration.Constants.ConfigDirectory);
 
+            var environmentName = this._configuration.GetValue<string>(HostDefaults.EnvironmentKey);
+
             if (configPath.IsNullOrWhiteSpace() || !Directory.Exists(configPath))
             {
-                this._logging.Warn($"not exist config paht '{configPath}'");
+                this._logging.Warn($"Not exist config path '{configPath}'");
                 return;
             }
 
@@ -95,10 +98,23 @@ namespace SAE.CommonComponent.InitializeData
                 Name = Constants.SolutionName
             });
 
+            this._logging.Info($"Create solution '{slnId}'-'{Constants.SolutionName}'");
+
+            var projectName = SiteConfig.Get(Constants.Config.AppName);
+
+            var projectId = await this._mediator.Send<string>(new ProjectCommand.Create
+            {
+                Name = projectName,
+                SolutionId = slnId
+            });
+
+            this._logging.Info($"Create project '{projectName}'-'{projectId}'");
+
             Dictionary<string, Dictionary<string, string>> dictionary = new Dictionary<string, Dictionary<string, string>>();
 
             foreach (var fileName in Directory.GetFiles(configPath, $"*{ConfigExtensionName}"))
             {
+                this._logging.Info($"Load '{fileName}' config file");
                 string key = "Production";
                 if (fileName.Count(s => s.Equals(Separator)) > 1)
                 {
@@ -124,15 +140,16 @@ namespace SAE.CommonComponent.InitializeData
                 }
             }
 
+            
 
             foreach (var kvs in dictionary)
             {
-                var projectName = $"{SiteConfig.Get(Constants.Config.AppName)}_{kvs.Key}";
-                var projectId = await this._mediator.Send<string>(new ProjectCommand.Create
+                var environmentId = await this._mediator.Send<string>(new EnvironmentVariableCommand.Create
                 {
-                    Name = projectName,
-                    SolutionId = slnId
+                    Name = kvs.Key
                 });
+
+                this._logging.Info($"Create EnvironmentVariable '{kvs.Key}'");
 
                 var configIds = new List<string>();
 
@@ -142,22 +159,26 @@ namespace SAE.CommonComponent.InitializeData
 
                     if (!templateDtos.Any(s => s.Name.Equals(kv.Key)))
                     {
+                        this._logging.Info($"Create template '{kv.Key}'");
                         var templateId = await this._mediator.Send<string>(new TemplateCommand.Create
                         {
                             Format = kv.Value,
                             Name = kv.Key
                         });
                     }
-
+                    this._logging.Info($"Create config {kv.Key}-{kvs.Key}");
                     var configId = await this._mediator.Send<string>(new ConfigCommand.Create
                     {
                         SolutionId=slnId,
                         Content = kv.Value,
-                        Name = kv.Value
+                        Name = kv.Key,
+                        EnvironmentId= environmentId
                     });
 
                     configIds.Add(configId);
                 }
+
+                this._logging.Info($"Relevance {configIds.Aggregate((a, b) => $"{a},{b}")}");
 
                 await this._mediator.Send(new ProjectCommand.RelevanceConfig
                 {
@@ -165,19 +186,21 @@ namespace SAE.CommonComponent.InitializeData
                     ConfigIds = configIds
                 });
 
-                var appConfigDto = await this._mediator.Send<AppConfigDto>(new SAE.CommonComponent.ConfigServer.Commands.AppCommand.Config
+                var appConfigDto = await this._mediator.Send<AppConfigDto>(new ConfigServer.Commands.AppCommand.Config
                 {
-                    Id = projectId
+                    Id = projectId,
+                    Env = kvs.Key
                 });
 
-                this._logging.Info($"Add {projectName} project : {appConfigDto.ToJsonString()}");
+                this._logging.Info($"Add project config {projectName}-{kvs.Key} : {appConfigDto.ToJsonString()}");
             }
-
 
         }
 
         public virtual async Task Initial()
         {
+            var templates =await this._mediator.Send<IEnumerable<TemplateDto>>(new Command.List<TemplateDto>());
+            if (templates.Any()) return;
             this._logging.Info($"start initial {nameof(ConfigServer)}");
             await this.ConfigServer();
             this._logging.Info($"end initial {nameof(ConfigServer)}");

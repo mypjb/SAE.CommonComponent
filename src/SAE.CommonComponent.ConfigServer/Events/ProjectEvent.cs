@@ -23,6 +23,7 @@ namespace SAE.CommonComponent.ConfigServer.Events
             public string ProjectId { get; set; }
             public string ConfigId { get; set; }
             public string Alias { get; set; }
+            public string Env { get; set; }
         }
 
         public class ConfigChangeAlias : IEvent

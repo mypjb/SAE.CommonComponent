@@ -53,19 +53,7 @@ namespace SAE.CommonComponent.InitializeData
 
         public override void PluginConfigureServices(IServiceCollection services)
         {
-            //services.AddTransient<IInitializeService>(provider =>
-            //{
-            //    var hostEnvironment = provider.GetService<IHostEnvironment>();
-
-            //    if (hostEnvironment.IsDevelopment())
-            //    {
-            //        return new DevelopmentInitializeService(provider);
-            //    }
-            //    else
-            //    {
-            //        return new InitializeService(provider);
-            //    }
-            //});
+            
         }
     }
 }

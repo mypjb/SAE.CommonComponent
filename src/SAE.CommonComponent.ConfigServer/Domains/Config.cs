@@ -37,6 +37,10 @@ namespace SAE.CommonComponent.ConfigServer.Domains
         /// </summary>
         public string SolutionId { get; set; }
         /// <summary>
+        /// environment
+        /// </summary>
+        public string EnvironmentId { get; set; }
+        /// <summary>
         /// 名称
         /// </summary>
         public string Name { get; set; }
