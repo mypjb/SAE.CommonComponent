@@ -6,6 +6,7 @@ using SAE.CommonComponent.Application.Commands;
 using SAE.CommonComponent.Application.Dtos;
 using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.Abstract.Model;
+using SAE.CommonLibrary.Logging;
 using SAE.CommonLibrary.Plugin.AspNetCore;
 using System;
 using System.Collections.Generic;
@@ -42,9 +43,15 @@ namespace SAE.CommonComponent.InitializeData
             {
                 initializeService= new InitializeService(provider);
             }
-
-            initializeService.Initial();
-
+            try
+            {
+                initializeService.Initial();
+            }catch(Exception ex)
+            {
+                app.ApplicationServices.GetService<ILogging<IInitializeService>>()
+                                       .Error(ex,"Initial fail");
+                throw ex;
+            }
             var key = Guid.NewGuid().ToString("N");
 
             File.AppendAllText(KeyPath, key);
