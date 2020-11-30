@@ -48,7 +48,7 @@ namespace SAE.CommonComponent.ConfigServer.Handles
                                                            s.EnvironmentId == environment.Id)
                                                .ToArray();
 
-                    foreach (var projectConfig in projectConfigs.Where(s => configIds.Contains(s.ConfigId))
+                    foreach (var projectConfig in projectConfigs.Where(s => configs.Any(c => c.Id == s.ConfigId))
                                                                 .ToArray())
                     {
                         app.Add(projectConfig, configs.FirstOrDefault(s => s.Id == projectConfig.ConfigId));
