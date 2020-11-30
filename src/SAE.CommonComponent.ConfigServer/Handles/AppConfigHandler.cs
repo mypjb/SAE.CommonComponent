@@ -38,14 +38,17 @@ namespace SAE.CommonComponent.ConfigServer.Handles
                 var environment = this._storage.AsQueryable<EnvironmentVariable>()
                                      .FirstOrDefault(e => e.Name == command.Env);
 
-                var configs = this._storage.AsQueryable<ConfigDto>()
-                                           .Where(s => projectConfigs.Any(pc => pc.ConfigId == s.Id) &&
-                                                       s.EnvironmentId == environment.Id)
-                                           .ToArray();
-
-                foreach (var projectConfig in projectConfigs.Where(s => configs.Any(c => c.Id == s.ConfigId)))
+                if (environment != null)
                 {
-                    app.Add(projectConfig, configs.FirstOrDefault(s => s.Id == projectConfig.ConfigId));
+                    var configs = this._storage.AsQueryable<ConfigDto>()
+                                               .Where(s => projectConfigs.Any(pc => pc.ConfigId == s.Id) &&
+                                                           s.EnvironmentId == environment.Id)
+                                               .ToArray();
+
+                    foreach (var projectConfig in projectConfigs.Where(s => configs.Any(c => c.Id == s.ConfigId)))
+                    {
+                        app.Add(projectConfig, configs.FirstOrDefault(s => s.Id == projectConfig.ConfigId));
+                    }
                 }
             }
 

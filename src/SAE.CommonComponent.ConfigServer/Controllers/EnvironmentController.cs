@@ -50,7 +50,7 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
         [HttpGet("{action}")]
         public async Task<object> List()
         {
-            return await this._mediator.Send<IEnumerable<EnvironmentVariable>>(new Command.List<EnvironmentVariable>());
+            return await this._mediator.Send<IEnumerable<EnvironmentVariableDto>>(new Command.List<EnvironmentVariableDto>());
         }
     }
 }
