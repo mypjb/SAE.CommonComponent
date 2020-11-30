@@ -33,19 +33,23 @@ namespace SAE.CommonComponent.ConfigServer.Handles
             {
 
                 var projectConfigs = this._storage.AsQueryable<ProjectConfigDto>()
-                                                  .Where(s => s.ProjectId == command.Id);
+                                                  .Where(s => s.ProjectId == command.Id)
+                                                  .ToArray();
 
                 var environment = this._storage.AsQueryable<EnvironmentVariable>()
                                      .FirstOrDefault(e => e.Name == command.Env);
 
                 if (environment != null)
                 {
+                    var configIds = projectConfigs.Select(p => p.ConfigId).ToArray();
+
                     var configs = this._storage.AsQueryable<ConfigDto>()
-                                               .Where(s => projectConfigs.Any(pc => pc.ConfigId == s.Id) &&
+                                               .Where(s => configIds.Contains(s.Id) &&
                                                            s.EnvironmentId == environment.Id)
                                                .ToArray();
 
-                    foreach (var projectConfig in projectConfigs.Where(s => configs.Any(c => c.Id == s.ConfigId)))
+                    foreach (var projectConfig in projectConfigs.Where(s => configIds.Contains(s.ConfigId))
+                                                                .ToArray())
                     {
                         app.Add(projectConfig, configs.FirstOrDefault(s => s.Id == projectConfig.ConfigId));
                     }
