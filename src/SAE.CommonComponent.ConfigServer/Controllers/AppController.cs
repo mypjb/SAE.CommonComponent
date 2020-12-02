@@ -31,7 +31,7 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
             }
             else
             {
-                return this.Json(appConfig);
+                return this.Json(appConfig.Data);
             }
         }
     }
