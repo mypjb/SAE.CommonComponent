@@ -21,12 +21,12 @@ namespace Microsoft.AspNetCore.Hosting
                               if (!ctx.HostingEnvironment.IsDevelopment() && configuration.Exists())
                               {
                                   var options = configuration.Get<SAEOptions>();
-                                  Console.WriteLine($"采用远程配置:{options.ToJsonString()}");
+                                  Console.WriteLine($"Adopt remote configuration:{options.ToJsonString()}");
                                   builder.AddRemoteSource(options);
                               }
                               else
                               {
-                                  Console.WriteLine("采用本地配置文件");
+                                  Console.WriteLine("Adopt local configuration");
                                   builder.AddJsonFileDirectory();
                               }
                           })
