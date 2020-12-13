@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Logging;
@@ -61,7 +62,10 @@ namespace SAE.CommonComponent.Identity
 
             services.AddSingleton<IdentityOption>();
 
-            services.AddMvc()
+            services.AddMvc(options =>
+                    {
+                        options.Filters.Add(new AuthorizeFilter());
+                    })
                     .AddResponseResult();
 
             var assemblys = new[] { typeof(AppDto).Assembly, Assembly.GetExecutingAssembly() };

@@ -115,6 +115,8 @@ namespace SAE.CommonComponent.ConfigServer.Test
                 ProjectId = project.Id,
                 ConfigIds = new[] { config.Id }
             };
+
+
             var message = new HttpRequestMessage(HttpMethod.Post, $"{API}/config/{nameof(Relevance)}")
                               .AddJsonContent(command);
 
@@ -122,16 +124,17 @@ namespace SAE.CommonComponent.ConfigServer.Test
 
             var appConfigCommand = new AppCommand.Config
             {
-                Id = project.Id
+                Id = project.Id,
+                Env = EnvironmentControllerTest.DefaultEnv
             };
 
-            var requestMessage = new HttpRequestMessage(HttpMethod.Get, $"app/config?{nameof(appConfigCommand.Id)}={appConfigCommand.Id}&{appConfigCommand.Version}={appConfigCommand.Version}");
+            var requestMessage = new HttpRequestMessage(HttpMethod.Get, $"app/config?{nameof(appConfigCommand.Id)}={appConfigCommand.Id}&{nameof(appConfigCommand.Env)}={appConfigCommand.Env}&{nameof(appConfigCommand.Version)}={appConfigCommand.Version}");
 
             var responseMessage = await this.HttpClient.SendAsync(requestMessage);
-            var appConfig = await responseMessage.AsAsync<AppConfigDto>();
 
-            Assert.True(appConfig.Data.Count == 1);
-            Assert.Equal(config.Content, appConfig.Data.First().Value.ToJsonString());
+            var content = await responseMessage.Content.ReadAsStringAsync();
+           
+            Assert.Contains(config.Content, content);
         }
 
         private async Task<ProjectDto> Get(string id)

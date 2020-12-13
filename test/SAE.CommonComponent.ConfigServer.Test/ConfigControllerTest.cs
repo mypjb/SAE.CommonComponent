@@ -36,7 +36,6 @@ namespace SAE.CommonComponent.ConfigServer.Test
                                       .Id;
         }
 
-
         public const string API = "Config";
         private readonly TemplateControllerTest _templateController;
         private readonly SolutionControllerTest _solutionController;

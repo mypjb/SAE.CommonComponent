@@ -15,12 +15,16 @@ namespace SAE.CommonComponent.ConfigServer.Test
     public class EnvironmentControllerTest : ControllerTest
     {
         public const string API = "env";
+        private readonly bool _depend;
+        public const string DefaultEnv = "Development";
         public EnvironmentControllerTest(ITestOutputHelper output) : base(output)
         {
+            this._depend = false;
         }
 
         internal EnvironmentControllerTest(ITestOutputHelper output, HttpClient httpClient) : base(output, httpClient)
         {
+            this._depend = true;
         }
 
         [Fact]
@@ -28,7 +32,7 @@ namespace SAE.CommonComponent.ConfigServer.Test
         {
             var command = new EnvironmentVariableCommand.Create
             {
-                Name = this.GetRandom()
+                Name =this._depend? DefaultEnv : this.GetRandom()
             };
             var message = new HttpRequestMessage(HttpMethod.Post, API);
             message.AddJsonContent(command);
