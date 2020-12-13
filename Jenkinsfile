@@ -144,7 +144,7 @@ docker build --rm -t $DOCKER_NAME:$(echo $DOCKER_TAG | sed "s/\\//-/g") .'''
           }
           steps {
             sh '''if [ $(docker ps -q -a -f name=$DOCKER_CONTAINER_NAME  | wc -l) != 0 ]; then docker rm -f $(docker ps -q -a -f name=$DOCKER_CONTAINER_NAME); fi
-docker run -d --name $DOCKER_CONTAINER_NAME --net=$DOCKER_CLUSTER_NETWORK -e ConfigServer__Url=http://config.sae.com/app/config?id=0dbbcfdf123f44baad50ac830106c87b&env=Production -e ConfigServer__PollInterval=00:00:05  -p $DOCKER_PORT:80 $DOCKER_NAME:$(echo $DOCKER_TAG | sed "s/\\//-/g") '''
+docker run -d --name $DOCKER_CONTAINER_NAME --net=$DOCKER_CLUSTER_NETWORK -e ASPNETCORE_ConfigServer__Url=http://config.sae.com/app/config?id=0dbbcfdf123f44baad50ac830106c87b&env=Production -e ASPNETCORE_ConfigServer__PollInterval=00:00:05  -p $DOCKER_PORT:80 $DOCKER_NAME:$(echo $DOCKER_TAG | sed "s/\\//-/g") '''
           }
         }
 
