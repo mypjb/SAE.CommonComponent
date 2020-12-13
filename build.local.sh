@@ -6,7 +6,7 @@ release_dir=${1:-"plugin"}
 
 mkdir -p $release_dir
 
-project_array=(Application Authorize ConfigServer Identity OAuth Routing User InitializeData)
+project_array=(Application Authorize Identity OAuth Routing User InitializeData)
 
 index=0
 
