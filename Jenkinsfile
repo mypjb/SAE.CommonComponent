@@ -16,7 +16,7 @@ pipeline {
           agent {
             docker {
               image 'mypjb/dotnet-core-sdk:5.0'
-              args '-v nuget:/root/.nuget -v release:/root/release'
+              args '-v nuget:/root/.nuget -v release:/root/release --net=cluster '
             }
 
           }
@@ -35,7 +35,7 @@ pipeline {
           agent {
             docker {
               image 'mypjb/dotnet-core-sdk:5.0'
-              args '-v nuget:/root/.nuget -v release:/root/release'
+              args '-v nuget:/root/.nuget -v release:/root/release --net=cluster '
             }
 
           }
@@ -54,7 +54,7 @@ pipeline {
           agent {
             docker {
               image 'andrewmackrodt/nodejs:12'
-              args '-v yarn:/usr/local/share/.cache/yarn -v release:/root/release'
+              args '-v yarn:/usr/local/share/.cache/yarn -v release:/root/release --net=cluster '
             }
 
           }
