@@ -2,7 +2,7 @@
 
 base_dir=$(cd $(dirname $0) && pwd)
 
-release_dir=$1
+release_dir=$(echo $1 | sed 's/%2F/\//g')
 
 main_dir=$release_dir/Master
 
@@ -10,7 +10,9 @@ plugin_dir=$main_dir/plugins
 
 mkdir -p $plugin_dir
 
-project_array=(Application Authorize ConfigServer Identity OAuth Routing User InitializeData Master)
+project_array=(Application Authorize Identity OAuth Routing User InitializeData Master)
+
+index=0
 
 for project in ${project_array[@]};do
 
@@ -36,9 +38,12 @@ cat << EOF > $plugin_setting_file
 	"Path": "SAE.CommonComponent.${project}.dll",
 	"Description": "this is a ${project} plugin",
 	"Version": "${version}",
-	"Status":1
+	"Status":1,
+	"Order":${index}
 }
 EOF
+
+let "index=index + 1";
 
 echo -e "${project} plugin setting ↓↓↓↓↓↓↓↓↓"
 cat $plugin_setting_file

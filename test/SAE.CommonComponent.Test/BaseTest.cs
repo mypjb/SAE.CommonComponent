@@ -19,12 +19,12 @@ namespace SAE.CommonComponent.Test
         {
             _output = output;
             var host = new HostBuilder()
-                   .UseAutofacProviderFactory()
                    .ConfigureWebHost(webBuilder =>
                    {
                        webBuilder.UseEnvironment(Environments.Development);
                        this.UseStartup(webBuilder.UseTestServer());
-                   }).Start();
+                   }).ConfigureDefault()
+                   .Start();
 
             this.UseClient(host.GetTestClient()
                                .UseDefaultExceptionHandler());

@@ -2,11 +2,15 @@
 
 base_dir=$(cd $(dirname $0) && pwd)
 
-release_dir=${1:-"plugin"}
+release_dir=$(echo $1 | sed 's/%2F/\//g')
 
-mkdir -p $release_dir
+main_dir=$release_dir/Master
 
-project_array=(Application Authorize Identity OAuth Routing User InitializeData)
+plugin_dir=$main_dir/plugins
+
+mkdir -p $plugin_dir
+
+project_array=(Master ConfigServer InitializeData)
 
 index=0
 
@@ -24,7 +28,7 @@ version=$(grep -Po "<Version>([\d\.a-zA-Z])+</Version>" $project_file | grep -Po
 
 echo -e "	output_dir:${output_dir}	\n	project_file:${project_file}	\n	version:${version}"
 
-dotnet publish -o ${output_dir} "src/SAE.CommonComponent.${project}"
+dotnet publish -c release -o ${output_dir} "src/SAE.CommonComponent.${project}"
 
 if [ $project != 'Master' ]
 then
@@ -44,8 +48,12 @@ let "index=index + 1";
 echo -e "${project} plugin setting ↓↓↓↓↓↓↓↓↓"
 cat $plugin_setting_file
 
+mv -f $output_dir $plugin_dir
+
 fi
 
 echo "build $project end"
+
+cp -f Dockerfile $main_dir
 
 done

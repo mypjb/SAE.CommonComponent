@@ -54,9 +54,7 @@ namespace SAE.CommonComponent.Identity.Controllers
         [HttpGet]
         public IActionResult Login()
         {
-            var host = this._environment.IsDevelopment() ?
-                       Constants.Development.Master :
-                       Constants.Production.Master;
+            var host = SiteConfig.Get(Constants.Config.Master);
 
             return this.Redirect($"{host}{"/identity/login"}{this.Request.QueryString}");
         }

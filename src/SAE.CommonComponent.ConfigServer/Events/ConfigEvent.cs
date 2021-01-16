@@ -15,6 +15,10 @@ namespace SAE.CommonComponent.ConfigServer.Events
             /// 创建时间
             /// </summary>
             public DateTime CreateTime { get; set; }
+            /// <summary>
+            /// 
+            /// </summary>
+            public string EnvironmentId { get; set; }
             public string Id { get; set; }
         }
 

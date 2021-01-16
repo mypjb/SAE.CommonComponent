@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Logging;
@@ -51,13 +52,7 @@ namespace SAE.CommonComponent.Identity
                                 .AddResourceStore<ResourceStoreService>();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                    .AddCookie(options=>
-                    {
-                        //options.Cookie.Domain = ".sae.com";
-                        //options.ForwardChallenge = IdentityServer4.IdentityServerConstants.DefaultCookieAuthenticationScheme;
-                    });
-
-            
+                    .AddCookie();
 
             services.PostConfigure<AuthenticationOptions>(options =>
             {
@@ -67,7 +62,10 @@ namespace SAE.CommonComponent.Identity
 
             services.AddSingleton<IdentityOption>();
 
-            services.AddMvc()
+            services.AddMvc(options =>
+                    {
+                        options.Filters.Add(new AuthorizeFilter());
+                    })
                     .AddResponseResult();
 
             var assemblys = new[] { typeof(AppDto).Assembly, Assembly.GetExecutingAssembly() };
@@ -86,10 +84,10 @@ namespace SAE.CommonComponent.Identity
         public override void PluginConfigure(IApplicationBuilder app)
         {
             var hostEnvironment= app.ApplicationServices.GetService<IHostEnvironment>();
-            //if (!hostEnvironment.IsDevelopment())
-            //{
+            if (hostEnvironment.IsDevelopment())
+            {
                 IdentityModelEventSource.ShowPII = true;
-            //}
+            }
             app.UseServiceFacade();
             app.UseAuthentication();
             app.UseIdentityServer();

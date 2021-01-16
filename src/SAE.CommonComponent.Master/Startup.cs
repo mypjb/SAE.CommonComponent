@@ -1,18 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using SAE.CommonLibrary.Database;
+using Newtonsoft.Json.Linq;
 using SAE.CommonLibrary.Plugin;
+using System;
+using System.Collections.Generic;
 
 namespace SAE.CommonComponent.Master
 {
@@ -32,19 +27,22 @@ namespace SAE.CommonComponent.Master
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
             services.AddRouting(options => options.LowercaseUrls = true);
+
             services.AddRoutingScanning()
                     .AddServiceFacade()
                     .AddNlogLogger();
 
-            services.AddDefaultConfiguration();
+            services.AddOptions<SiteConfig>(SiteConfig.Option)
+                    .Bind();
+            
             if (!this._env.IsDevelopment())
             {
                 services.AddMySqlDocument()
                         .AddMongoDB();
             }
-
-            services.AddPluginManage(this._env.IsDevelopment() ? "../../../../../plugin" : string.Empty);
+            services.AddPluginManage(this.Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -54,7 +52,6 @@ namespace SAE.CommonComponent.Master
             {
                 app.UseDeveloperExceptionPage();
             }
-
             //app.UseHttpsRedirection();
             app.UseServiceFacade();
             app.UseRouting()

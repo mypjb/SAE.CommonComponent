@@ -4,10 +4,12 @@ using System.Threading.Tasks;
 using SAE.CommonComponent.ConfigServer.Commands;
 using SAE.CommonComponent.ConfigServer.Domains;
 using SAE.CommonComponent.ConfigServer.Dtos;
+using SAE.CommonLibrary;
 using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.Abstract.Model;
 using SAE.CommonLibrary.Data;
 using SAE.CommonLibrary.EventStore.Document;
+using SAE.CommonLibrary.Extension;
 
 namespace SAE.CommonComponent.ConfigServer.Handles
 {
@@ -27,12 +29,20 @@ namespace SAE.CommonComponent.ConfigServer.Handles
 
         public async Task<string> Handle(TemplateCommand.Create command)
         {
+            Assert.Build(this._storage.AsQueryable<TemplateDto>()
+                             .Any(s => s.Name.Equals(command.Name)))
+                  .False($"Tempate '{command.Name}' exist");
+
             var template = await this.Add(new Template(command));
             return template.Id;
         }
 
         public Task Handle(TemplateCommand.Change command)
         {
+            Assert.Build(this._storage.AsQueryable<TemplateDto>()
+                             .Any(s => s.Name.Equals(command.Name) && s.Id != command.Id))
+                  .False($"Tempate '{command.Name}' exist");
+
             return this.Update(command.Id, s => s.Change(command));
         }
 

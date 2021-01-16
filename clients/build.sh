@@ -1,7 +1,7 @@
 #!/bin/bash
 base_dir=$(cd $(dirname $0) && pwd)
 
-release_dir=$1
+release_dir=$(echo $1 | sed 's/%2F/\//g')
 
 app_dir=$release_dir/app
 

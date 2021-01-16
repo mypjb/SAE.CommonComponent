@@ -15,6 +15,7 @@ namespace SAE.CommonComponent.ConfigServer.Dtos
         /// 解决方案Id
         /// </summary>
         public string SolutionId { get; set; }
+        public string EnvironmentId { get; set; }
         /// <summary>
         /// 名称
         /// </summary>

@@ -8,8 +8,10 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Primitives;
 using Microsoft.IdentityModel.Tokens;
 using SAE.CommonComponent.Authorize.Dtos;
+using SAE.CommonLibrary;
 using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.AspNetCore.Authorization;
+using SAE.CommonLibrary.AspNetCore.Routing;
 using SAE.CommonLibrary.EventStore.Document;
 using SAE.CommonLibrary.Plugin.AspNetCore;
 using System.Collections.Generic;
@@ -39,6 +41,7 @@ namespace SAE.CommonComponent.Authorize
 
             app.UseRouting();
             this.PluginConfigure(app);
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapDefaultControllerRoute();
@@ -47,10 +50,7 @@ namespace SAE.CommonComponent.Authorize
 
         public override void PluginConfigureServices(IServiceCollection services)
         {
-            services.AddControllers(options =>
-            {
-                options.Filters.Add(new AuthorizeFilter());
-            }).AddResponseResult();
+            services.AddControllers().AddResponseResult();
 
             var assemblys = new[] { typeof(UserRoleDto).Assembly, Assembly.GetExecutingAssembly() };
 
@@ -77,7 +77,7 @@ namespace SAE.CommonComponent.Authorize
             services.AddAuthentication()
                     .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
                      {
-                         options.Authority = Constants.Production.Authority;
+                         options.Authority = SiteConfig.Get(Constants.Config.Authority);
                          options.TokenValidationParameters = new TokenValidationParameters
                          {
                              ValidateAudience = false
@@ -89,8 +89,6 @@ namespace SAE.CommonComponent.Authorize
 
             services.PostConfigure<CookieAuthenticationOptions>(CookieAuthenticationDefaults.AuthenticationScheme, options =>
             {
-                //options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
-                //options.Cookie.Domain = ".sae.com";
                 options.ForwardDefaultSelector = (ctx) =>
                 {
                     StringValues sv;
@@ -110,9 +108,7 @@ namespace SAE.CommonComponent.Authorize
         public override void PluginConfigure(IApplicationBuilder app)
         {
             //app.UseMediatorOrleansSilo();
-            app.UseServiceFacade()
-               .UseRoutingScanning()
-               .UseBitmapAuthorization();
+            app.UseServiceFacade();
         }
     }
 }

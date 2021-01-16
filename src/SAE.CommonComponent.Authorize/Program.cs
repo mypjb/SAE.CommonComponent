@@ -21,6 +21,6 @@ namespace SAE.CommonComponent.Authorize
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                }).UseAutofacProviderFactory();
+                }).ConfigureDefault();
     }
 }

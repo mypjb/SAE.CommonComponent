@@ -65,7 +65,6 @@ namespace SAE.CommonComponent.User
             {
                 app.UseDeveloperExceptionPage();
             }
-
             app.UseRouting();
             this.PluginConfigure(app);
             app.UseEndpoints(endpoints =>
@@ -76,6 +75,7 @@ namespace SAE.CommonComponent.User
 
         public override void PluginConfigure(IApplicationBuilder app)
         {
+            app.UseServiceFacade();
             //app.UseMediatorOrleansSilo();
         }
     }

@@ -25,7 +25,6 @@ namespace SAE.CommonComponent.Identity.Test
         {
             this._userController = new UserControllerTest(this._output);
             this._userRoleController = new UserRoleControllerTest(this._output);
-
         }
 
         protected override IWebHostBuilder UseStartup(IWebHostBuilder builder)

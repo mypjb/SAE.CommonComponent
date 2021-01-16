@@ -21,6 +21,6 @@ namespace SAE.CommonComponent.User
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                });
+                }).ConfigureDefault();
     }
 }

@@ -37,11 +37,10 @@ namespace SAE.CommonComponent.User.Handles
 
         public async Task<string> Handle(UserCommand.Register command)
         {
-            var user = new Domains.User(command);
-            await user.AccountExist(this.AccountExist);
-            await this._documentStore.SaveAsync(user);
-
-            return user.Id;
+                var user = new Domains.User(command);
+                await user.AccountExist(this.AccountExist);
+                await this._documentStore.SaveAsync(user);
+                return user.Id;
         }
 
         public async Task Handle(UserCommand.ChangePassword command)

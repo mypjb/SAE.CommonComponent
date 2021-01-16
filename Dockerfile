@@ -1,4 +1,4 @@
-FROM mypjb/dotnet-core-aspnet:3.1
+FROM mypjb/dotnet-core-aspnet:5.0
 
 ARG MAIN_PROGRAM
 
