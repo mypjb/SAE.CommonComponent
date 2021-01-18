@@ -3,7 +3,7 @@
 base_dir=$(cd $(dirname $0) && pwd)
 
 # running Unit test
-dotnet test -v n
+#dotnet test -v n
 
 release_dir=$(echo $1 | sed 's/%2F/\//g')
 
