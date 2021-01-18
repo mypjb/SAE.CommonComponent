@@ -15,6 +15,8 @@ using SAE.CommonComponent.User.Events;
 using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.Plugin.AspNetCore;
 using SAE.CommonLibrary.ObjectMapper;
+using SAE.CommonComponent.User.Converts;
+using System.ComponentModel;
 
 namespace SAE.CommonComponent.User
 {
@@ -30,15 +32,14 @@ namespace SAE.CommonComponent.User
 
         public override void PluginConfigureServices(IServiceCollection services)
         {
+            TypeDescriptor.AddAttributes(typeof(User.Domains.User), new TypeConverterAttribute(typeof(UserConvert)));
+
             services.AddTinyMapper()
                     .AddBuilder(builder =>
                     {
                         builder.Bind<UserEvent.ChangePassword, Domains.User>(config =>
                          {
                              config.Bind(@event => @event.Password, user => user.Account.Password);
-                         }).Bind<Domains.User, UserDto>(config =>
-                         {
-                             config.Bind(user => user.Account.Name, dto => dto.AccountName);
                          });
                     });
 

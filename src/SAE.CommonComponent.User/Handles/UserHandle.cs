@@ -27,9 +27,10 @@ namespace SAE.CommonComponent.User.Handles
         private readonly IStorage _storage;
         private readonly IMediator _mediator;
 
-        public UserHandle(IDocumentStore documentStore, 
+        public UserHandle(IDocumentStore documentStore,
                           IStorage storage,
-                          IMediator mediator) : base(documentStore)
+                          IMediator mediator,
+                          SAE.CommonLibrary.ObjectMapper.IObjectMapper objectMapper) : base(documentStore)
         {
             this._storage = storage;
             this._mediator = mediator;
@@ -37,10 +38,10 @@ namespace SAE.CommonComponent.User.Handles
 
         public async Task<string> Handle(UserCommand.Register command)
         {
-                var user = new Domains.User(command);
-                await user.AccountExist(this.AccountExist);
-                await this._documentStore.SaveAsync(user);
-                return user.Id;
+            var user = new Domains.User(command);
+            await user.AccountExist(this.AccountExist);
+            await this._documentStore.SaveAsync(user);
+            return user.Id;
         }
 
         public async Task Handle(UserCommand.ChangePassword command)
@@ -85,8 +86,8 @@ namespace SAE.CommonComponent.User.Handles
 
         public async Task<UserDto> Handle(UserCommand.Authentication command)
         {
-            var dto = this._storage.AsQueryable<UserDto>()
-                                   .FirstOrDefault(s => s.AccountName == command.AccountName);
+            var dtos = this._storage.AsQueryable<UserDto>().ToList();
+            var dto = dtos.FirstOrDefault(s => s.AccountName == command.AccountName);
 
             if (dto != null)
             {
@@ -106,7 +107,7 @@ namespace SAE.CommonComponent.User.Handles
                 }
 
             }
-            
+
             return dto;
         }
 
