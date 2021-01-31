@@ -19,17 +19,18 @@ namespace SAE.CommonComponent.OAuth
                  options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
              });
 
+
             authenticationBuilder.AddOpenIdConnect(options =>
-              {
-                  options.Authority = SiteConfig.Get(Constants.Config.Authority);
-                  options.ClientId = SiteConfig.Get(Constants.Config.AppId);
-                  options.ResponseType = "id_token token";
-                  options.RequireHttpsMetadata = false;
-                  options.Scope.Add(Constants.Scope);
-                  options.SaveTokens = true;
-                  options.CorrelationCookie.SameSite = SameSiteMode.Unspecified;
-                  options.NonceCookie.SameSite = SameSiteMode.Unspecified;
-              });
+            {
+                options.Authority = SiteConfig.Get(Constants.Config.Authority);
+                options.ClientId = SiteConfig.Get(Constants.Config.AppId);
+                options.ResponseType = "id_token token";
+                options.RequireHttpsMetadata = false;
+                options.Scope.Add(Constants.Scope);
+                options.SaveTokens = true;
+                options.CorrelationCookie.SameSite = SameSiteMode.Unspecified;
+                options.NonceCookie.SameSite = SameSiteMode.Unspecified;
+            });
         }
 
         public override void PluginConfigure(IApplicationBuilder app)

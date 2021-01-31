@@ -10,6 +10,7 @@ using Xunit;
 using Xunit.Abstractions;
 using SAE.CommonLibrary.Extension;
 using SAE.CommonComponent.User.Abstract.Dtos;
+using Assert = Xunit.Assert;
 
 namespace SAE.CommonComponent.User.Test
 {

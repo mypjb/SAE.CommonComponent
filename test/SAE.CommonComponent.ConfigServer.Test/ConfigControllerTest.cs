@@ -95,7 +95,7 @@ namespace SAE.CommonComponent.ConfigServer.Test
             var message = new HttpRequestMessage(HttpMethod.Delete, $"{API}/{config.Id}");
             var responseMessage = await this.HttpClient.SendAsync(message);
             responseMessage.EnsureSuccessStatusCode();
-            var exception = await Assert.ThrowsAsync<SaeException>(() => this.Get(config.Id));
+            var exception = await Assert.ThrowsAsync<SAEException>(() => this.Get(config.Id));
             Assert.Equal((int)StatusCodes.ResourcesNotExist, exception.Code);
         }
 

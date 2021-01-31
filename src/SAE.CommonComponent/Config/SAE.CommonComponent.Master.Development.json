@@ -1,0 +1,47 @@
+{
+  "Nlog": {
+    "autoReload": "true",
+    "internalLogLevel": "Warn",
+    "internalLogFile": "logs/internal-nlog.log",
+    "targets": {
+      "FileTarget": {
+        "type": "File",
+        "fileName": "logs/${shortdate}.log",
+        "layout": "${level}: ${logger}[${threadid}] ${longdate}${newline}        ${message} ${exception:message,stacktrace}",
+        "MaxArchiveFiles": "10"
+      }
+    },
+    "rules": [
+      {
+        "logger": "*",
+        "minlevel": "Trace",
+        "writeTo": "FileTarget"
+      }
+    ]
+  },
+  "database": [
+    {
+      "Name": "default",
+      "Provider": "mysql",
+      "ConnectionString": "Data Source=mysql.db.lass.net;Database=SAE_DEV;User ID=root;Password=Aa123456;pooling=true;port=3306;sslmode=none;CharSet=utf8;allowPublicKeyRetrieval=true"
+    }
+  ],
+  "mongodb": {
+    "connection": "mongodb://root:Aa123456@mongo.db.lass.net:27017/",
+    "db": "sae.dev"
+  },
+  "plugin": {
+    "path": "../../../../../plugin"
+  },
+  "redis": {
+    "connection": "redis.cache.lass.net:6379,allowadmin=true,syncTimeout=5000,password=Aa123456",
+    "db": 2
+  },
+  "siteConfig": {
+    "appId": "localhost.test",
+    "appSecret": "localhost.test",
+    "appName": "master",
+    "master": "http://localhost:8000",
+    "authority": "http://localhost:8080"
+  }
+}

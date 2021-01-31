@@ -83,7 +83,7 @@ namespace SAE.CommonComponent.InitializeData
 
         public virtual async Task ConfigServer()
         {
-            var configPath = this._configuration.GetValue<string>(SAE.CommonLibrary.Configuration.Constants.ConfigDirectory);
+            var configPath = this._configuration.GetValue<string>("SAE:CONFIG:URL");
 
             var environmentName = this._configuration.GetValue<string>(HostDefaults.EnvironmentKey);
 

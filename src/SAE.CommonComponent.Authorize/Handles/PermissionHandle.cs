@@ -74,7 +74,7 @@ namespace SAE.CommonComponent.Authorize.Handles
         {
             var query = this.GetStorage();
 
-            if (command.Name.IsNotNullOrWhiteSpace())
+            if (!command.Name.IsNullOrWhiteSpace())
                 query = query.Where(s => s.Name.Contains(command.Name));
 
             return Task.FromResult(PagedList.Build(query, command));

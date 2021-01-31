@@ -80,7 +80,7 @@ namespace SAE.CommonComponent.Routing.Test
             });
             var responseMessage = await this.HttpClient.SendAsync(message);
             responseMessage.EnsureSuccessStatusCode();
-            var exception = await Assert.ThrowsAsync<SaeException>(() => this.Get(menu.Id));
+            var exception = await Assert.ThrowsAsync<SAEException>(() => this.Get(menu.Id));
             Assert.Equal(exception.Code, (int)StatusCodes.ResourcesNotExist);
         }
 

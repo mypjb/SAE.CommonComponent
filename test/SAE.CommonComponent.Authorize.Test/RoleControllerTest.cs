@@ -90,7 +90,7 @@ namespace SAE.CommonComponent.Authorize.Test
             var request = new HttpRequestMessage(HttpMethod.Delete, $"{API}");
             request.AddJsonContent(command);
             var httpResponse = await this.HttpClient.SendAsync(request);
-            var exception = await Assert.ThrowsAnyAsync<SaeException>(() => this.Get(dto.Id));
+            var exception = await Assert.ThrowsAnyAsync<SAEException>(() => this.Get(dto.Id));
 
             Assert.Equal(exception.Code, (int)StatusCodes.ResourcesNotExist);
 

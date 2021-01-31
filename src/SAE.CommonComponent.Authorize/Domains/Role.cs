@@ -59,7 +59,7 @@ namespace SAE.CommonComponent.Authorize.Domains
             {
                 return;
             }
-            throw new SaeException(StatusCodes.ResourcesExist, $"{nameof(Role)} name exist");
+            throw new SAEException(StatusCodes.ResourcesExist, $"{nameof(Role)} name exist");
         }
         /// <summary>
         /// change role base info

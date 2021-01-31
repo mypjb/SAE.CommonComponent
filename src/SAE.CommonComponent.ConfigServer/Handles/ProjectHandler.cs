@@ -52,7 +52,7 @@ namespace SAE.CommonComponent.ConfigServer.Handles
         public async Task<IPagedList<ProjectDto>> Handle(ProjectCommand.Query command)
         {
             var query = this._storage.AsQueryable<ProjectDto>().Where(s => s.SolutionId == command.SolutionId);
-            if (command.Name.IsNotNullOrWhiteSpace())
+            if (!command.Name.IsNullOrWhiteSpace())
             {
                 query = query.Where(s => s.Name.Contains(command.Name));
             }

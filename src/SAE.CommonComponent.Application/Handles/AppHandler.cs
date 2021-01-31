@@ -81,12 +81,12 @@ namespace SAE.CommonComponent.Application.Abstract.Handles
         public Task<IPagedList<AppDto>> Handle(AppCommand.Query command)
         {
             var query = this._storage.AsQueryable<AppDto>();
-            if (command.Name.IsNotNullOrWhiteSpace())
+            if (!command.Name.IsNullOrWhiteSpace())
             {
                 query = query.Where(s => s.Name.Contains(command.Name));
             }
 
-            if (command.Url.IsNotNullOrWhiteSpace())
+            if (!command.Url.IsNullOrWhiteSpace())
             {
                 query = query.Where(s => s.Urls.Contains(command.Url));
             }

@@ -55,7 +55,7 @@ namespace SAE.CommonComponent.Authorize.Domains
             {
                 return;
             }
-            throw new SaeException(StatusCodes.ResourcesExist, $"{nameof(Permission)} name exist");
+            throw new SAEException(StatusCodes.ResourcesExist, $"{nameof(Permission)} name exist");
         }
         /// <summary>
         /// permission status
