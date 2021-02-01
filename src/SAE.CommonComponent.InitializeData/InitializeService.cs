@@ -140,8 +140,6 @@ namespace SAE.CommonComponent.InitializeData
                 }
             }
 
-            
-
             foreach (var kvs in dictionary)
             {
                 var environmentId = await this._mediator.Send<string>(new EnvironmentVariableCommand.Create

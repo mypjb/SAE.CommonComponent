@@ -24,10 +24,10 @@ namespace SAE.CommonComponent.InitializeData
         public override void PluginConfigure(IApplicationBuilder app)
         {
             
-            if (File.Exists(KeyPath))
-            {
-                return;
-            }
+            //if (File.Exists(KeyPath))
+            //{
+            //    return;
+            //}
 
             var provider = app.ApplicationServices;
 
@@ -52,9 +52,9 @@ namespace SAE.CommonComponent.InitializeData
                                        .Error(ex,"Initial fail");
                 throw ex;
             }
-            var key = Guid.NewGuid().ToString("N");
+            //var key = Guid.NewGuid().ToString("N");
 
-            File.AppendAllText(KeyPath, key);
+            //File.AppendAllText(KeyPath, key);
         }
 
 
