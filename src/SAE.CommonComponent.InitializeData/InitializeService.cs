@@ -21,8 +21,7 @@ namespace SAE.CommonComponent.InitializeData
 {
     public class InitializeService : IInitializeService
     {
-        internal const string ConfigExtensionName = ".json";
-        internal const char Separator = '.';
+        
         protected readonly IMediator _mediator;
         protected readonly ILogging _logging;
         private readonly IServiceProvider _serviceProvider;
@@ -83,7 +82,7 @@ namespace SAE.CommonComponent.InitializeData
 
         public virtual async Task ConfigServer()
         {
-            var configPath = this._configuration.GetValue<string>("SAE:CONFIG:URL");
+            var configPath = this._configuration.GetValue<string>(SAE.CommonLibrary.Configuration.Constants.ConfigRootDirectoryKey);
 
             var environmentName = this._configuration.GetValue<string>(HostDefaults.EnvironmentKey);
 
@@ -112,14 +111,14 @@ namespace SAE.CommonComponent.InitializeData
 
             Dictionary<string, Dictionary<string, string>> dictionary = new Dictionary<string, Dictionary<string, string>>();
 
-            foreach (var fileName in Directory.GetFiles(configPath, $"*{ConfigExtensionName}"))
+            foreach (var fileName in Directory.GetFiles(configPath, $"*{Constants.Config.ConfigExtensionName}"))
             {
                 this._logging.Info($"Load '{fileName}' config file");
                 string key = "Production";
-                if (fileName.Count(s => s.Equals(Separator)) > 1)
+                if (fileName.Count(s => s.Equals(Constants.Config.Separator)) > 1)
                 {
-                    var start = fileName.IndexOf(Separator) + 1;
-                    var length = fileName.LastIndexOf(Separator) - start;
+                    var start = fileName.IndexOf(Constants.Config.Separator) + 1;
+                    var length = fileName.LastIndexOf(Constants.Config.Separator) - start;
                     key = fileName.Substring(start, length);
                 }
                 Dictionary<string, string> pairs;

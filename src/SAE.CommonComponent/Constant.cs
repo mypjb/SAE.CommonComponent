@@ -6,8 +6,6 @@ namespace SAE.CommonComponent
     {
         public const string Scope = "api";
         public const string SolutionName = "Default";
-        public const string Application = "SAE_APPLICATION";
-        public const string ConfigPath = "Config";
         public class Config
         {
             public const string AppId = "appId";
@@ -15,6 +13,8 @@ namespace SAE.CommonComponent
             public const string AppName = "appName";
             public const string Master = "master";
             public const string Authority = "authority";
+            public const string ConfigExtensionName = ".json";
+            public const char Separator = '.';
         }
 
         public class User
