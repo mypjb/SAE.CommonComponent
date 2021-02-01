@@ -22,7 +22,7 @@ namespace SAE.CommonComponent.InitializeData
 {
     public class InitializeService : IInitializeService
     {
-        
+
         protected readonly IMediator _mediator;
         protected readonly ILogging _logging;
         private readonly IServiceProvider _serviceProvider;
@@ -39,7 +39,7 @@ namespace SAE.CommonComponent.InitializeData
 
         public virtual async Task Application()
         {
-            var solutions=await this._mediator.Send<IPagedList<SolutionDto>>(new SolutionCommand.Query());
+            var solutions = await this._mediator.Send<IPagedList<SolutionDto>>(new SolutionCommand.Query());
             if (!solutions.Any())
             {
                 return;
@@ -66,11 +66,11 @@ namespace SAE.CommonComponent.InitializeData
 
             foreach (var project in projects)
             {
-                var pairs= await FindConfigAsync(project,Constants.Development);
+                var pairs = await FindConfigAsync(project, Constants.Development);
 
                 var appCommand = new AppCommand.Create
                 {
-                    Id = pairs.First(s=>s.Key.Equals(Constants.Config.AppId,StringComparison.OrdinalIgnoreCase)).Value,
+                    Id = pairs.First(s => s.Key.Equals(Constants.Config.AppId, StringComparison.OrdinalIgnoreCase)).Value,
                     Secret = pairs.First(s => s.Key.Equals(Constants.Config.Secret, StringComparison.OrdinalIgnoreCase)).Value,
                     Name = pairs.First(s => s.Key.Equals(Constants.Config.AppName, StringComparison.OrdinalIgnoreCase)).Value,
                     Urls = new[] { pairs.First(s => s.Key.Equals(Constants.Config.Authority, StringComparison.OrdinalIgnoreCase)).Value }
@@ -96,18 +96,18 @@ namespace SAE.CommonComponent.InitializeData
             }
         }
 
-        private async Task<IDictionary<string,string>> FindConfigAsync(ProjectDto project,string env)
+        private async Task<IDictionary<string, string>> FindConfigAsync(ProjectDto project, string env)
         {
             var appConfig = await this._mediator.Send<AppConfigDto>(new ConfigServer.Commands.AppCommand.Config
             {
                 Id = project.Id,
                 Env = env
             });
-            KeyValuePair<string,object> siteConfigData= appConfig.Data
-                                            .FirstOrDefault(s => s.Key.Equals(SiteConfig.Option, StringComparison.OrdinalIgnoreCase));
-            if (siteConfigData.Key==null)
+            IEnumerable<KeyValuePair<string, object>> siteConfigDatas = appConfig.Data
+                                            .Where(s => s.Key.Equals(SiteConfig.Option, StringComparison.OrdinalIgnoreCase));
+            if (siteConfigDatas.Any())
             {
-                var pairs = siteConfigData.ToJsonString().ToObject<SiteConfig>();
+                var pairs = siteConfigDatas.First().Value.ToJsonString().ToObject<Dictionary<string,string>>();
                 return pairs;
             }
 
@@ -205,10 +205,10 @@ namespace SAE.CommonComponent.InitializeData
                     this._logging.Info($"Create config {kv.Key}-{kvs.Key}");
                     var configId = await this._mediator.Send<string>(new ConfigCommand.Create
                     {
-                        SolutionId=slnId,
+                        SolutionId = slnId,
                         Content = kv.Value,
                         Name = kv.Key,
-                        EnvironmentId= environmentId
+                        EnvironmentId = environmentId
                     });
 
                     configIds.Add(configId);
@@ -235,7 +235,7 @@ namespace SAE.CommonComponent.InitializeData
 
         public virtual async Task Initial()
         {
-            var templates =await this._mediator.Send<IEnumerable<TemplateDto>>(new Command.List<TemplateDto>());
+            var templates = await this._mediator.Send<IEnumerable<TemplateDto>>(new Command.List<TemplateDto>());
             if (templates.Any()) return;
             this._logging.Info($"start initial {nameof(ConfigServer)}");
 
