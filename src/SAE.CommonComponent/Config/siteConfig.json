@@ -2,8 +2,8 @@
   "siteConfig": {
     "appId": "localhost.test",
     "appSecret": "localhost.test",
-    "appName": "master",
-    "master": "http://localhost:8000",
-    "authority": "http://localhost:8080"
+    "appName": "master.test",
+    "master": "http://client.sae.com",
+    "authority": "http://api.sae.com"
   }
 }

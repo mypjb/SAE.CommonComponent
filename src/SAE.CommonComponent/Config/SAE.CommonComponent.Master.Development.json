@@ -38,10 +38,10 @@
     "db": 2
   },
   "siteConfig": {
-    "appId": "localhost.test",
-    "appSecret": "localhost.test",
-    "appName": "master",
+    "appId": "localhost.dev",
+    "appSecret": "localhost.dev",
+    "appName": "master.dev",
     "master": "http://localhost:8000",
-    "authority": "http://localhost:8080"
+    "authority": "http://api.sae.com"
   }
 }

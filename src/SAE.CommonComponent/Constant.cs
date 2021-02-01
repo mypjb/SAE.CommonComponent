@@ -6,6 +6,8 @@ namespace SAE.CommonComponent
     {
         public const string Scope = "api";
         public const string SolutionName = "Default";
+        public const string Development = nameof(Development);
+        public const string Production = nameof(Production);
         public class Config
         {
             public const string AppId = "appId";

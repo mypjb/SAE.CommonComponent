@@ -16,6 +16,7 @@ using System.Text;
 using SAE.CommonComponent.ConfigServer.Dtos;
 using SAE.CommonLibrary.EventStore.Document;
 using Microsoft.Extensions.Hosting;
+using SAE.CommonLibrary.Abstract.Model;
 
 namespace SAE.CommonComponent.InitializeData
 {
@@ -38,6 +39,21 @@ namespace SAE.CommonComponent.InitializeData
 
         public virtual async Task Application()
         {
+            var solutions=await this._mediator.Send<IPagedList<SolutionDto>>(new SolutionCommand.Query());
+            if (!solutions.Any())
+            {
+                return;
+            }
+            var solution = solutions.First();
+
+            var projects = await this._mediator.Send<IPagedList<ProjectDto>>(new ProjectCommand.Query
+            {
+                SolutionId = solution.Id
+            });
+
+            if (!projects.Any()) { return; }
+
+
             var scopeCommand = new ScopeCommand.Create
             {
                 Name = Constants.Scope,
@@ -48,31 +64,54 @@ namespace SAE.CommonComponent.InitializeData
 
             await this._mediator.Send(scopeCommand);
 
-            var appCommand = new AppCommand.Create
+            foreach (var project in projects)
             {
-                Id = SiteConfig.Get(Constants.Config.AppId),
-                Secret = SiteConfig.Get(Constants.Config.Secret),
-                Name = SiteConfig.Get(Constants.Config.AppName),
-                Urls = new[] { SiteConfig.Get(Constants.Config.Master) }
-            };
+                var pairs= await FindConfigAsync(project,Constants.Development);
 
-            await this._mediator.Send<string>(appCommand);
+                var appCommand = new AppCommand.Create
+                {
+                    Id = pairs.First(s=>s.Key.Equals(Constants.Config.AppId,StringComparison.OrdinalIgnoreCase)).Value,
+                    Secret = pairs.First(s => s.Key.Equals(Constants.Config.Secret, StringComparison.OrdinalIgnoreCase)).Value,
+                    Name = pairs.First(s => s.Key.Equals(Constants.Config.AppName, StringComparison.OrdinalIgnoreCase)).Value,
+                    Urls = new[] { pairs.First(s => s.Key.Equals(Constants.Config.Authority, StringComparison.OrdinalIgnoreCase)).Value }
+                };
 
-            appCommand.Secret = "************";
+                await this._mediator.Send<string>(appCommand);
 
-            this._logging.Info($"add default app:{appCommand.ToJsonString()}");
+                appCommand.Secret = "************";
 
-            await this._mediator.Send(new AppCommand.ReferenceScope
+                this._logging.Info($"add default app:{appCommand.ToJsonString()}");
+
+                await this._mediator.Send(new AppCommand.ReferenceScope
+                {
+                    Id = appCommand.Id,
+                    Scopes = new[] { Constants.Scope }
+                });
+
+                await this._mediator.Send(new AppCommand.ChangeStatus
+                {
+                    Id = appCommand.Id,
+                    Status = Status.Enable
+                });
+            }
+        }
+
+        private async Task<IDictionary<string,string>> FindConfigAsync(ProjectDto project,string env)
+        {
+            var appConfig = await this._mediator.Send<AppConfigDto>(new ConfigServer.Commands.AppCommand.Config
             {
-                Id = appCommand.Id,
-                Scopes = new[] { Constants.Scope }
+                Id = project.Id,
+                Env = env
             });
-
-            await this._mediator.Send(new AppCommand.ChangeStatus
+            KeyValuePair<string,object> siteConfigData= appConfig.Data
+                                            .FirstOrDefault(s => s.Key.Equals(SiteConfig.Option, StringComparison.OrdinalIgnoreCase));
+            if (siteConfigData.Key==null)
             {
-                Id = appCommand.Id,
-                Status = Status.Enable
-            });
+                var pairs = siteConfigData.ToJsonString().ToObject<SiteConfig>();
+                return pairs;
+            }
+
+            return new Dictionary<string, string>();
         }
 
         public virtual async Task Authorize()
