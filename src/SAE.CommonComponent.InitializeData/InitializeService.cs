@@ -199,7 +199,9 @@ namespace SAE.CommonComponent.InitializeData
             var templates =await this._mediator.Send<IEnumerable<TemplateDto>>(new Command.List<TemplateDto>());
             if (templates.Any()) return;
             this._logging.Info($"start initial {nameof(ConfigServer)}");
+
             await this.ConfigServer();
+
             this._logging.Info($"end initial {nameof(ConfigServer)}");
 
             this._logging.Info($"start initial {nameof(Application)}");
