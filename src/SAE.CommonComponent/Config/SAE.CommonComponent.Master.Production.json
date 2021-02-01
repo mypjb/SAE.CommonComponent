@@ -37,7 +37,7 @@
     "connection": "redis.cache.lass.net:6379,allowadmin=true,syncTimeout=5000,password=Aa123456",
     "db": 1
   },
-  "plugin": { "path": "../../../../../plugin" },
+  "plugin": { "path": "" },
   "mongodb": {
     "connection": "mongodb://root:Aa123456@mongo.db.lass.net:27017/",
     "db": "sae"
