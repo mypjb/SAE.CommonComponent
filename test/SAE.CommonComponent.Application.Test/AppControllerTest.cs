@@ -30,7 +30,12 @@ namespace SAE.CommonComponent.Application.Test
             var command = new AppCommand.Create
             {
                 Name = this.GetRandom(),
-                Urls = new[] { "localhost" }
+                Endpoint = new Abstract.Dtos.EndpointDto
+                {
+                    PostLogoutRedirectUris = new[] { this.GetRandom() },
+                    RedirectUris = new[] { this.GetRandom() },
+                    SignIn = this.GetRandom()
+                }
             };
             var message = new HttpRequestMessage(HttpMethod.Post, API);
             message.AddJsonContent(command);
@@ -38,7 +43,9 @@ namespace SAE.CommonComponent.Application.Test
             var id = await responseMessage.AsAsync<string>();
             var app = await this.Get(id);
             Assert.Equal(command.Name, app.Name);
-            Assert.True(app.Urls.All(command.Urls.Contains));
+            Assert.Equal(command.Endpoint.SignIn, app.Endpoint.SignIn);
+            Assert.Equal(command.Endpoint.PostLogoutRedirectUris.First(), app.Endpoint.PostLogoutRedirectUris.First());
+            Assert.Equal(command.Endpoint.RedirectUris.First(), app.Endpoint.RedirectUris.First());
 
             return app;
         }

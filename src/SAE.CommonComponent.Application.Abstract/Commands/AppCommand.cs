@@ -1,3 +1,4 @@
+using SAE.CommonComponent.Application.Abstract.Dtos;
 using SAE.CommonLibrary.Abstract.Model;
 using System.Collections.Generic;
 
@@ -15,7 +16,7 @@ namespace SAE.CommonComponent.Application.Commands
             public string Id { get; set; }
             public string Secret { get; set; }
             public string Name { get; set; }
-            public IEnumerable<string> Urls { get; set; }
+            public EndpointDto Endpoint { get; set; }
         }
         public class Change : Create
         {

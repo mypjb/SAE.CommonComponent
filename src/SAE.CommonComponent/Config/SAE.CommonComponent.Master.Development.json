@@ -41,7 +41,9 @@
     "appId": "localhost.dev",
     "appSecret": "localhost.dev",
     "appName": "master.dev",
-    "master": "http://localhost:8000",
-    "authority": "http://api.sae.com"
+    "authority": "http://api.sae.com",
+    "redirectUris": [ "http://localhost:8000/oauth/signin-oidc" ],
+    "postLogoutRedirectUris": [ "http://localhost:8000/oauth/signout-oidc" ],
+    "signIn": "http://localhost:8000/identity/login"
   }
 }

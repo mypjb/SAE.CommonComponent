@@ -3,8 +3,10 @@
     "appId": "localhost.test",
     "appSecret": "localhost.test",
     "appName": "master.test",
-    "master": "http://client.sae.com",
-    "authority": "http://api.sae.com"
+    "authority": "http://api.sae.com",
+    "redirectUris": [ "http://client.sae.com/oauth/signin-oidc" ],
+    "postLogoutRedirectUris": [ "http://client.sae.com/oauth/signout-oidc" ],
+    "signIn": "http://client.sae.com/identity/login"
   },
   "database": [
     {

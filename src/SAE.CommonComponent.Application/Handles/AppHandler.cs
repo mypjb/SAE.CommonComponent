@@ -86,11 +86,6 @@ namespace SAE.CommonComponent.Application.Abstract.Handles
                 query = query.Where(s => s.Name.Contains(command.Name));
             }
 
-            if (!command.Url.IsNullOrWhiteSpace())
-            {
-                query = query.Where(s => s.Urls.Contains(command.Url));
-            }
-
             return Task.FromResult(PagedList.Build(query, command));
         }
 

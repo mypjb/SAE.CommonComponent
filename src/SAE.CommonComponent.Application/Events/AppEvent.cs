@@ -1,3 +1,4 @@
+using SAE.CommonComponent.Application.Abstract.Domains;
 using SAE.CommonLibrary.EventStore;
 using System;
 using System.Collections.Generic;
@@ -11,8 +12,8 @@ namespace SAE.CommonComponent.Application.Abstract.Events
             public string Id { get; set; }
             public string Secret { get; set; }
             public string Name { get; set; }
-            public IEnumerable<string> Urls { get; set; }
             public DateTime CreateTime { get; set; }
+            public Endpoint Endpoint { get; set; }
         }
 
         public class Change : IEvent

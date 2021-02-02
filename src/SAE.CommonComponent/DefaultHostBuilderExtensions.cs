@@ -14,7 +14,9 @@ namespace Microsoft.AspNetCore.Hosting
 #if DEBUG
             Directory.SetCurrentDirectory(AppContext.BaseDirectory);
 #endif
-            return builder.ConfigureRemoteSource()
+            return builder
+                          //.ConfigureJsonFileDirectorySource()
+                          .ConfigureRemoteSource()
                           .UseAutofacProviderFactory();
         }
     }

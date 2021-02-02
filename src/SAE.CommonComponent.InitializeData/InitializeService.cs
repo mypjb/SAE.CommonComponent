@@ -17,6 +17,8 @@ using SAE.CommonComponent.ConfigServer.Dtos;
 using SAE.CommonLibrary.EventStore.Document;
 using Microsoft.Extensions.Hosting;
 using SAE.CommonLibrary.Abstract.Model;
+using SAE.CommonComponent.Application.Abstract.Dtos;
+using SAE.CommonComponent.Application.Dtos;
 
 namespace SAE.CommonComponent.InitializeData
 {
@@ -70,10 +72,15 @@ namespace SAE.CommonComponent.InitializeData
 
                 var appCommand = new AppCommand.Create
                 {
-                    Id = pairs.First(s => s.Key.Equals(Constants.Config.AppId, StringComparison.OrdinalIgnoreCase)).Value,
-                    Secret = pairs.First(s => s.Key.Equals(Constants.Config.Secret, StringComparison.OrdinalIgnoreCase)).Value,
-                    Name = pairs.First(s => s.Key.Equals(Constants.Config.AppName, StringComparison.OrdinalIgnoreCase)).Value,
-                    Urls = new[] { pairs.First(s => s.Key.Equals(Constants.Config.Master, StringComparison.OrdinalIgnoreCase)).Value }
+                    Id = pairs[Constants.Config.AppId],
+                    Secret = pairs[Constants.Config.Secret],
+                    Name = pairs[Constants.Config.AppName],
+                    Endpoint = new EndpointDto
+                    {
+                        RedirectUris = pairs[nameof(EndpointDto.RedirectUris)].ToObject<IEnumerable<string>>(),
+                        PostLogoutRedirectUris = pairs[nameof(EndpointDto.PostLogoutRedirectUris)].ToObject<IEnumerable<string>>(),
+                        SignIn = pairs[nameof(EndpointDto.SignIn)]
+                    }
                 };
 
                 await this._mediator.Send<string>(appCommand);
@@ -93,6 +100,13 @@ namespace SAE.CommonComponent.InitializeData
                     Id = appCommand.Id,
                     Status = Status.Enable
                 });
+
+                var app = await this._mediator.Send<AppDto>(new Command.Find<AppDto>
+                {
+                    Id = appCommand.Id
+                });
+                app.Secret = appCommand.Secret;
+                this._logging.Info($"output default app:{app.ToJsonString()}");
             }
         }
 
@@ -107,8 +121,13 @@ namespace SAE.CommonComponent.InitializeData
                                             .Where(s => s.Key.Equals(SiteConfig.Option, StringComparison.OrdinalIgnoreCase));
             if (siteConfigDatas.Any())
             {
-                var pairs = siteConfigDatas.First().Value.ToJsonString().ToObject<Dictionary<string,string>>();
-                return pairs;
+                var dic = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                var pairs = siteConfigDatas.First().Value.ToJsonString().ToObject<Dictionary<string, object>>();
+                foreach (var kv in pairs)
+                {
+                    dic[kv.Key]= kv.Value.ToJsonString();
+                }
+                return dic;
             }
 
             return new Dictionary<string, string>();

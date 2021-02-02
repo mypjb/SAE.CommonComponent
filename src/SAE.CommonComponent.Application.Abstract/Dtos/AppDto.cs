@@ -1,3 +1,4 @@
+using SAE.CommonComponent.Application.Abstract.Dtos;
 using System;
 using System.Collections.Generic;
 
@@ -16,15 +17,15 @@ namespace SAE.CommonComponent.Application.Dtos
         /// <value></value>
         public string Name { get; set; }
         /// <summary>
+        /// endpoint
+        /// </summary>
+        public EndpointDto Endpoint { get; set; }
+
+        /// <summary>
         /// app secret
         /// </summary>
         /// <value></value>
         public string Secret { get; set; }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <value></value>
-        public IEnumerable<string> Urls { get; set; }
 
         /// <summary>
         /// auth scope

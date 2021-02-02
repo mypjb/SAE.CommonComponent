@@ -23,8 +23,6 @@ namespace SAE.CommonComponent.Identity.Services
         {
             var app = await this._mediator.Send<AppDto>(new Command.Find<AppDto> { Id = clientId });
 
-            var host = app.Urls.First();
-
             var scopes = app.Scopes.ToList();
             scopes.Add(IdentityServerConstants.StandardScopes.OpenId);
             scopes.Add(IdentityServerConstants.StandardScopes.Profile);
@@ -45,8 +43,8 @@ namespace SAE.CommonComponent.Identity.Services
                 AllowRememberConsent = false,
                 AlwaysIncludeUserClaimsInIdToken = true,
                 AllowAccessTokensViaBrowser=true,
-                RedirectUris = new[] { $"{host}/oauth/signin-oidc" },
-                PostLogoutRedirectUris = new[] { $"{host}/oauth/signout-callback-oidc" }
+                RedirectUris = app.Endpoint.RedirectUris.ToList(),
+                PostLogoutRedirectUris = app.Endpoint.PostLogoutRedirectUris.ToList()
             };
         }
     }

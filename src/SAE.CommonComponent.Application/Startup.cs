@@ -11,6 +11,9 @@ using SAE.CommonLibrary.Plugin.AspNetCore;
 using System.Reflection;
 using Microsoft.AspNetCore.Http;
 using SAE.CommonComponent.Application.Commands;
+using System.ComponentModel;
+using SAE.CommonComponent.Application.Converts;
+using SAE.CommonComponent.Application.Abstract.Domains;
 
 namespace SAE.CommonComponent.Application
 {
@@ -43,6 +46,7 @@ namespace SAE.CommonComponent.Application
         }
         public override void PluginConfigureServices(IServiceCollection services)
         {
+            TypeDescriptor.AddAttributes(typeof(App), new TypeConverterAttribute(typeof(AppConvert)));
 
             services.AddMvc()
                     .AddResponseResult();
