@@ -73,7 +73,7 @@ namespace SAE.CommonComponent.InitializeData
                     Id = pairs.First(s => s.Key.Equals(Constants.Config.AppId, StringComparison.OrdinalIgnoreCase)).Value,
                     Secret = pairs.First(s => s.Key.Equals(Constants.Config.Secret, StringComparison.OrdinalIgnoreCase)).Value,
                     Name = pairs.First(s => s.Key.Equals(Constants.Config.AppName, StringComparison.OrdinalIgnoreCase)).Value,
-                    Urls = new[] { pairs.First(s => s.Key.Equals(Constants.Config.Authority, StringComparison.OrdinalIgnoreCase)).Value }
+                    Urls = new[] { pairs.First(s => s.Key.Equals(Constants.Config.Master, StringComparison.OrdinalIgnoreCase)).Value }
                 };
 
                 await this._mediator.Send<string>(appCommand);
