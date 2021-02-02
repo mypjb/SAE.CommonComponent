@@ -11,7 +11,7 @@ namespace SAE.CommonComponent
         public class Config
         {
             public const string AppId = "appId";
-            public const string Secret = "secret";
+            public const string Secret = "appSecret";
             public const string AppName = "appName";
             public const string Master = "master";
             public const string Authority = "authority";
