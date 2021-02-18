@@ -34,7 +34,7 @@ pipeline {
           }
           agent {
             docker {
-              image 'andrewmackrodt/nodejs:12'
+              image 'renovate/yarn:latest'
               args '-v yarn:/usr/local/share/.cache/yarn -v release:/root/release --net=cluster '
             }
 
