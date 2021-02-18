@@ -8,6 +8,7 @@ using SAE.CommonLibrary.Caching;
 using SAE.CommonLibrary.Data;
 using SAE.CommonLibrary.EventStore.Document;
 using SAE.CommonLibrary.Extension;
+using SAE.CommonLibrary.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,11 +32,16 @@ namespace SAE.CommonComponent.Application.Abstract.Handles
     {
         private readonly IDistributedCache _distributedCache;
         private readonly IStorage _storage;
+        private readonly ILogging<AppHandler> _logging;
         public string ScopeKey = nameof(ScopeKey);
-        public AppHandler(IDocumentStore documentStore, IDistributedCache distributedCache, IStorage storage) : base(documentStore)
+        public AppHandler(IDocumentStore documentStore, 
+                          IDistributedCache distributedCache, 
+                          IStorage storage,
+                          ILogging<AppHandler> logging) : base(documentStore)
         {
             this._distributedCache = distributedCache;
             this._storage = storage;
+            this._logging = logging;
         }
 
 
@@ -72,6 +78,9 @@ namespace SAE.CommonComponent.Application.Abstract.Handles
 
         public Task<AppDto> Handle(Command.Find<AppDto> command)
         {
+            var apps= this._storage.AsQueryable<AppDto>().ToList();
+
+            this._logging.Info($"find app '{command.Id}' apps : {apps.ToJsonString()}");
 
             return Task.FromResult(Assert.Build(this._storage.AsQueryable<AppDto>().FirstOrDefault(s => s.Id == command.Id))
                                          .NotNull()
