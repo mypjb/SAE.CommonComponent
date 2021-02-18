@@ -78,8 +78,9 @@ namespace SAE.CommonComponent.Application.Abstract.Handles
 
         public Task<AppDto> Handle(Command.Find<AppDto> command)
         {
-            var apps= this._storage.AsQueryable<AppDto>().ToList();
-            var dto= this._storage.AsQueryable<AppDto>().FirstOrDefault(s => s.Id == command.Id);
+#warning 此处需要处理MongoDB下FirstOrDefault查找失败的问题
+            var apps = this._storage.AsQueryable<AppDto>().ToList();
+            var dto= apps.FirstOrDefault(s => s.Id == command.Id);
             this._logging.Info($"find app '{command.Id}',find '{dto?.ToJsonString()}' apps : {apps.ToJsonString()}");
             return Task.FromResult(dto);
         }
