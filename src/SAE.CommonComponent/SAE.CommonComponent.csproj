@@ -6,8 +6,8 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
-    <PackageReference Include="SAE.CommonLibrary.Configuration.Microsoft" Version="2.0.1.8" />
-    <PackageReference Include="SAE.CommonLibrary.DependencyInjection" Version="2.0.1.8" />
+    <PackageReference Include="SAE.CommonLibrary.Configuration.Microsoft" Version="2.0.2" />
+    <PackageReference Include="SAE.CommonLibrary.DependencyInjection" Version="2.0.2" />
   </ItemGroup>
 
   <ItemGroup>

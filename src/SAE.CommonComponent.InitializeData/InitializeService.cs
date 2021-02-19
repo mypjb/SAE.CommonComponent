@@ -19,6 +19,7 @@ using Microsoft.Extensions.Hosting;
 using SAE.CommonLibrary.Abstract.Model;
 using SAE.CommonComponent.Application.Abstract.Dtos;
 using SAE.CommonComponent.Application.Dtos;
+using System.Text.RegularExpressions;
 
 namespace SAE.CommonComponent.InitializeData
 {
@@ -66,47 +67,54 @@ namespace SAE.CommonComponent.InitializeData
 
             await this._mediator.Send(scopeCommand);
 
+            var environments = await this._mediator.Send<IEnumerable<EnvironmentVariableDto>>(new Command.List<EnvironmentVariableDto>());
+
             foreach (var project in projects)
             {
-                var pairs = await FindConfigAsync(project, Constants.Development);
-
-                var appCommand = new AppCommand.Create
+                foreach (var env in environments)
                 {
-                    Id = pairs[Constants.Config.AppId],
-                    Secret = pairs[Constants.Config.Secret],
-                    Name = pairs[Constants.Config.AppName],
-                    Endpoint = new EndpointDto
+                    var pairs = await FindConfigAsync(project, env.Name);
+
+                    if (!pairs.Any()) continue;
+
+                    var appCommand = new AppCommand.Create
                     {
-                        RedirectUris = pairs[nameof(EndpointDto.RedirectUris)].ToObject<IEnumerable<string>>(),
-                        PostLogoutRedirectUris = pairs[nameof(EndpointDto.PostLogoutRedirectUris)].ToObject<IEnumerable<string>>(),
-                        SignIn = pairs[nameof(EndpointDto.SignIn)]
-                    }
-                };
+                        Id = pairs[Constants.Config.AppId],
+                        Secret = pairs[Constants.Config.Secret],
+                        Name = pairs[Constants.Config.AppName],
+                        Endpoint = new EndpointDto
+                        {
+                            RedirectUris = pairs[nameof(EndpointDto.RedirectUris)].ToObject<IEnumerable<string>>(),
+                            PostLogoutRedirectUris = pairs[nameof(EndpointDto.PostLogoutRedirectUris)].ToObject<IEnumerable<string>>(),
+                            SignIn = pairs[nameof(EndpointDto.SignIn)]
+                        }
+                    };
 
-                await this._mediator.Send<string>(appCommand);
+                    await this._mediator.Send<string>(appCommand);
 
-                appCommand.Secret = "************";
+                    appCommand.Secret = "************";
 
-                this._logging.Info($"add default app:{appCommand.ToJsonString()}");
+                    this._logging.Info($"add default app:{appCommand.ToJsonString()}");
 
-                await this._mediator.Send(new AppCommand.ReferenceScope
-                {
-                    Id = appCommand.Id,
-                    Scopes = new[] { Constants.Scope }
-                });
+                    await this._mediator.Send(new AppCommand.ReferenceScope
+                    {
+                        Id = appCommand.Id,
+                        Scopes = new[] { Constants.Scope }
+                    });
 
-                await this._mediator.Send(new AppCommand.ChangeStatus
-                {
-                    Id = appCommand.Id,
-                    Status = Status.Enable
-                });
+                    await this._mediator.Send(new AppCommand.ChangeStatus
+                    {
+                        Id = appCommand.Id,
+                        Status = Status.Enable
+                    });
 
-                var app = await this._mediator.Send<AppDto>(new Command.Find<AppDto>
-                {
-                    Id = appCommand.Id
-                });
-                app.Secret = appCommand.Secret;
-                this._logging.Info($"output default app:{app.ToJsonString()}");
+                    var app = await this._mediator.Send<AppDto>(new Command.Find<AppDto>
+                    {
+                        Id = appCommand.Id
+                    });
+                    app.Secret = appCommand.Secret;
+                    this._logging.Info($"output default app:{app.ToJsonString()}");
+                }
             }
         }
 
@@ -125,7 +133,7 @@ namespace SAE.CommonComponent.InitializeData
                 var pairs = siteConfigDatas.First().Value.ToJsonString().ToObject<Dictionary<string, object>>();
                 foreach (var kv in pairs)
                 {
-                    dic[kv.Key]= kv.Value.ToJsonString();
+                    dic[kv.Key] = kv.Value.ToJsonString();
                 }
                 return dic;
             }
@@ -173,11 +181,12 @@ namespace SAE.CommonComponent.InitializeData
             {
                 this._logging.Info($"Load '{fileName}' config file");
                 string key = "Production";
-                if (fileName.Count(s => s.Equals(Constants.Config.Separator)) > 1)
+                var matchs = Regex.Matches(fileName, $"\\{Constants.Config.Separator}");
+                if (matchs.Count > 1)
                 {
-                    var start = fileName.IndexOf(Constants.Config.Separator) + 1;
-                    var length = fileName.LastIndexOf(Constants.Config.Separator) - start;
-                    key = fileName.Substring(start, length);
+                    var start = matchs[matchs.Count - 2].Index + 1;
+                    var end = matchs[matchs.Count - 1].Index - start;
+                    key = fileName.Substring(start, end);
                 }
                 Dictionary<string, string> pairs;
                 if (dictionary.ContainsKey(key))
