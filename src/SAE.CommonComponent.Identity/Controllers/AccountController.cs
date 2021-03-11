@@ -85,7 +85,7 @@ namespace SAE.CommonComponent.Identity.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public async Task<object> Login(AccountLoginCommand command)
+        public async Task<object> Login([FromForm]AccountLoginCommand command)
         {
             var principal = await this._mediator.Send<IPrincipal>(command);
 

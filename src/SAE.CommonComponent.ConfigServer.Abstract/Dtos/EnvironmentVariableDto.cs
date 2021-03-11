@@ -8,5 +8,6 @@ namespace SAE.CommonComponent.ConfigServer.Dtos
     {
         public string Id { get; set; }
         public string Name { get; set; }
+        public DateTime CreateTime { get; set; }
     }
 }

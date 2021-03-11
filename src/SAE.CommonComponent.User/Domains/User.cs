@@ -64,7 +64,7 @@ namespace SAE.CommonComponent.User.Domains
         /// <returns></returns>
         private string Encrypt(string input)
         {
-            return $"{input}{this.Slat}".ToLower().ToMd5();
+            return $"{input}{this.Slat}".ToLower().ToMd5().ToLower();
         }
     }
     public class User : Document

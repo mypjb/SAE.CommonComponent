@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json.Linq;
 using SAE.CommonLibrary.Plugin;
+using SAE.CommonLibrary.Plugin.AspNetCore;
 using System;
 using System.Collections.Generic;
 
@@ -46,7 +47,7 @@ namespace SAE.CommonComponent.Master
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IPluginManage pluginManage)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {

@@ -8,6 +8,10 @@ mkdir -p $release_dir
 
 project_array=(Application Authorize Identity OAuth Routing User InitializeData ConfigServer)
 
+if [ x"$2" != x ]; then 
+project_array=($2);
+fi
+
 index=0
 
 for project in ${project_array[@]};do
