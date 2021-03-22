@@ -76,13 +76,13 @@ namespace SAE.CommonComponent.Application.Abstract.Handles
             return this.Update<App>(command.Id, app => app.RefreshSecret());
         }
 
-        public Task<AppDto> Handle(Command.Find<AppDto> command)
+        public async Task<AppDto> Handle(Command.Find<AppDto> command)
         {
-#warning 此处需要处理MongoDB下FirstOrDefault查找失败的问题
-            var apps = this._storage.AsQueryable<AppDto>().ToList();
-            var dto= apps.FirstOrDefault(s => s.Id == command.Id);
-            this._logging.Info($"find app '{command.Id}',find '{dto?.ToJsonString()}' apps : {apps.ToJsonString()}");
-            return Task.FromResult(dto);
+            var dto = this._storage.AsQueryable<AppDto>()
+                          .FirstOrDefault(s => s.Id == command.Id);
+            
+            this._logging.Info($"find app '{command.Id}',find '{dto?.ToJsonString()}' ");
+            return dto;
         }
 
         public Task<IPagedList<AppDto>> Handle(AppCommand.Query command)
