@@ -62,7 +62,7 @@ namespace SAE.CommonComponent.User.Handles
         public Task<UserDto> Handle(UserCommand.GetByName command)
         {
             var user = this._storage.AsQueryable<UserDto>()
-                           .FirstOrDefault(s => s.AccountName.Equals(command.AccountName));
+                           .FirstOrDefault(s => s.Account.Equals(command.AccountName));
             return Task.FromResult(user);
         }
 
@@ -86,8 +86,8 @@ namespace SAE.CommonComponent.User.Handles
 
         public async Task<UserDto> Handle(UserCommand.Authentication command)
         {
-            var dtos = this._storage.AsQueryable<UserDto>().ToList();
-            var dto = dtos.FirstOrDefault(s => s.AccountName == command.AccountName);
+            var dto = this._storage.AsQueryable<UserDto>()
+                                   .FirstOrDefault(s => s.Account.Name == command.AccountName);
 
             if (dto != null)
             {

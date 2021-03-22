@@ -21,7 +21,10 @@ namespace SAE.CommonComponent.User.Converts
             var user = (User.Domains.User)value;
             var result = new UserDto
             {
-                AccountName = user.Account?.Name,
+                Account = new AccountDto
+                {
+                    Name= user.Account?.Name
+                },
                 CreateTime = user.CrateTime,
                 Id = user.Id,
                 Name = user.Name,
