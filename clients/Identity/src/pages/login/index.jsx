@@ -20,6 +20,7 @@ const tailLayout = {
 
 export default connect()(({ dispatch }) => {
 
+    const formId="loginForm";
     const query = useLocation().query;
 
     const [form] = Form.useForm();
@@ -28,20 +29,29 @@ export default connect()(({ dispatch }) => {
         const params = {
             ...query,
             ...payload
-        };
-        dispatch({ type: 'account/login', payload: params });
+        }
+        document.getElementById(formId).submit();
+        //dispatch({ type: 'account/login', payload: params });
+    }
+    const array=[];
+    for(let key in query){
+        array.push(<Input name={key} value={query[key]} />)
     }
 
     return (
         <Form
             {...layout}
             name="basic"
+            method="post"
+            action="http://192.168.1.71:8080/account/login"
+            id={formId}
             initialValues={{
                 remember: true,
             }}
             form={form}
             onFinish={handlerSubmit}
         >
+            {array}
             <Form.Item
                 label="Name"
                 name="name"
@@ -52,7 +62,7 @@ export default connect()(({ dispatch }) => {
                     },
                 ]}
             >
-                <Input />
+                <Input name="name" />
             </Form.Item>
 
             <Form.Item
@@ -65,11 +75,11 @@ export default connect()(({ dispatch }) => {
                     },
                 ]}
             >
-                <Input.Password />
+                <Input.Password name="password" />
             </Form.Item>
 
             <Form.Item {...tailLayout} name="remember" valuePropName="checked">
-                <Checkbox>Remember me</Checkbox>
+                <Checkbox name="remember" value="true">Remember me</Checkbox>
             </Form.Item>
 
             <Form.Item {...tailLayout}>

@@ -4,7 +4,8 @@ import { Fragment } from 'react';
 
 export default ({ location }) => {
     const oidcConfig = {
-        response_mode: "query"
+        response_mode: "query",
+        loadUserInfo: false
     };
 
     const signinCallbackUrl = window.location.origin + window.location.pathname + (location.search || ('?' + location.hash.substr(1)));
