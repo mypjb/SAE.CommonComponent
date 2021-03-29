@@ -1,6 +1,6 @@
 import { Row, Col, Input, Table, Button, Modal, Form, Checkbox } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import { connect, useLocation } from 'umi';
+import { connect, useLocation,useModel } from 'umi';
 
 const layout = {
     labelCol: {
@@ -19,23 +19,23 @@ const tailLayout = {
 
 
 export default connect()(({ dispatch }) => {
-
+    const { initialState } = useModel('@@initialState');
     const formId="loginForm";
     const query = useLocation().query;
 
     const [form] = Form.useForm();
 
     const handlerSubmit = (payload) => {
-        const params = {
-            ...query,
-            ...payload
-        }
+        // const params = {
+        //     ...query,
+        //     ...payload
+        // }
         document.getElementById(formId).submit();
         //dispatch({ type: 'account/login', payload: params });
     }
     const array=[];
     for(let key in query){
-        array.push(<Input name={key} value={query[key]} />)
+        array.push(<Input name={key} htmlType="hidden" value={query[key]} />)
     }
 
     return (
@@ -43,7 +43,7 @@ export default connect()(({ dispatch }) => {
             {...layout}
             name="basic"
             method="post"
-            action="http://192.168.1.71:8080/account/login"
+            action={initialState.signIn}
             id={formId}
             initialValues={{
                 remember: true,

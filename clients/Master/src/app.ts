@@ -1,26 +1,40 @@
-import { RequestConfig } from 'umi';
+import { RequestConfig, useModel } from 'umi';
 
 const ENV = process.env.NODE_ENV;
 
-let apps = [];
 
+let apps = [];
+const appProps={
+    "siteConfig": {
+        "appId": "localhost.dev",
+        "appName": "master.dev",
+        "authority": "http://api.sae.com",
+        "redirectUris": "http://localhost:8000/oauth/signin-oidc" ,
+        "postLogoutRedirectUris": "http://localhost:8000/oauth/signout-oidc",
+        "signIn": "http://localhost:8000/identity/login"
+      }    
+};
 if (ENV == "development") {
     apps = [
         {
             name: 'config-server', // 唯一 id
             entry: '//dev.sae.com:8001', // html entry
+            props:appProps
         },
         {
             name: 'identity', // 唯一 id
             entry: '//dev.sae.com:8002', // html entry
+            props:appProps
         },
         {
             name: 'oauth', // 唯一 id
             entry: '//dev.sae.com:8003', // html entry
+            props:appProps
         },
         {
             name: 'routing', // 唯一 id
             entry: '//dev.sae.com:8004', // html entry
+            props:appProps
         }
     ];
 } else {
@@ -72,7 +86,7 @@ const menuData = [
 export const qiankun = function () {
     return {
         // 注册子应用信息
-        apps,
+        apps:apps,
         lifeCycles: {
             afterMount: props => {
                 console.log(props);
@@ -88,6 +102,12 @@ export const layout = {
         return menuData;
     }
 };
+
+export async function getInitialState() { 
+    return {
+        apps
+    };
+}
 
 // export const dva = {
 //   config: {
