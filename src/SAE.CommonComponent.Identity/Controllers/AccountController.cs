@@ -85,7 +85,7 @@ namespace SAE.CommonComponent.Identity.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public async Task<object> Login([FromForm]AccountLoginCommand command)
+        public async Task<IActionResult> Login([FromForm]AccountLoginCommand command)
         {
             var principal = await this._mediator.Send<IPrincipal>(command);
 
@@ -95,16 +95,13 @@ namespace SAE.CommonComponent.Identity.Controllers
 
             properties.IsPersistent = command.Remember;
 
-
             await this.HttpContext.SignInAsync(
                 claimsPrincipal,
                 properties);
 
-            return new
-            {
-                returnUrl = command.ReturnUrl.IsNullOrWhiteSpace() ? "/" :
-                $"{this.Request.Scheme}://{this.Request.Host}{command.ReturnUrl}"
-            };
+            var returnUrl = command.ReturnUrl.IsNullOrWhiteSpace() ? "/" :
+                $"{this.Request.Scheme}://{this.Request.Host}{command.ReturnUrl}";
+            return this.Redirect(returnUrl);
         }
 
         [HttpGet, HttpPost]
