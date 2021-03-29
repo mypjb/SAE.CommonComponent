@@ -11,7 +11,8 @@ const appProps={
         "authority": "http://api.sae.com",
         "redirectUris": "http://localhost:8000/oauth/signin-oidc" ,
         "postLogoutRedirectUris": "http://localhost:8000/oauth/signout-oidc",
-        "signIn": "http://localhost:8000/identity/login"
+        "signIn": "http://localhost:8000/identity/login",
+        "login":"http://api.sae.com/account/login"
       }    
 };
 if (ENV == "development") {

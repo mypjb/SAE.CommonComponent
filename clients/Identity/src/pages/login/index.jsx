@@ -35,7 +35,7 @@ export default connect()(({ dispatch }) => {
     }
     const array=[];
     for(let key in query){
-        array.push(<Input name={key} htmlType="hidden" value={query[key]} />)
+        array.push(<Input name={key} type="hidden" value={query[key]} />)
     }
 
     return (
@@ -43,7 +43,7 @@ export default connect()(({ dispatch }) => {
             {...layout}
             name="basic"
             method="post"
-            action={initialState.signIn}
+            action={initialState.login}
             id={formId}
             initialValues={{
                 remember: true,
