@@ -1,6 +1,7 @@
-import { RequestConfig, useModel } from 'umi';
+import { useState } from 'react';
 
 const ENV = process.env.NODE_ENV;
+
 
 
 let apps = [];
@@ -20,22 +21,22 @@ if (ENV == "development") {
         {
             name: 'config-server', // 唯一 id
             entry: '//dev.sae.com:8001', // html entry
-            props:appProps
+         
         },
         {
             name: 'identity', // 唯一 id
             entry: '//dev.sae.com:8002', // html entry
-            props:appProps
+         
         },
         {
             name: 'oauth', // 唯一 id
             entry: '//dev.sae.com:8003', // html entry
-            props:appProps
+            
         },
         {
             name: 'routing', // 唯一 id
             entry: '//dev.sae.com:8004', // html entry
-            props:appProps
+          
         }
     ];
 } else {
@@ -59,30 +60,7 @@ if (ENV == "development") {
     ];
 }
 
-const menuData = [
-    {
-        path: '/oauth',
-        name: 'Login',
-        icon: 'icon-smile'
-    },
-    {
-        name: "config",
-        children: [
-            {
-                path: "/config-server/solution",
-                name: "solution"
-            },
-            {
-                path: "/config-server/template",
-                name: "template"
-            }
-        ]
-    },
-    {
-        path: "/routing/menu",
-        name: "menu"
-    }
-];
+
 
 export const qiankun = function () {
     return {
@@ -98,15 +76,17 @@ export const qiankun = function () {
 };
 
 export const layout = {
-    name: "SAE",
-    menuDataRender: () => {
-        return menuData;
-    }
+    name: "SAE"
 };
 
-export async function getInitialState() { 
+export function useQiankunStateForSlave() {
+    const [masterState,setMasterState]= useState(appProps);
+
     return {
-        apps
+        masterState,
+        setMasterState:(state)=>{
+            setMasterState(state);
+        }
     };
 }
 

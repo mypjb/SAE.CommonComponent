@@ -5,7 +5,7 @@ import { useModel } from 'umi';
 export default (props) => {
 
   const { initialState } = useModel('@@initialState');
-  const { authority, appId, redirectUris, postLogoutRedirectUris } = initialState;
+  const { authority, appId, redirectUris, postLogoutRedirectUris } = initialState?.siteConfig;
 
   const oidcConfig = {
     authority: authority,
@@ -17,7 +17,7 @@ export default (props) => {
   };
 
   const mgr = new UserManager(oidcConfig);
-
+  mgr.clearStaleState();
   mgr.createSigninRequest().then(request => {
     window.location.href = request.url;
   }).catch(val => {

@@ -25,13 +25,8 @@ export default connect()(({ dispatch }) => {
 
     const [form] = Form.useForm();
 
-    const handlerSubmit = (payload) => {
-        // const params = {
-        //     ...query,
-        //     ...payload
-        // }
+    const handlerSubmit = () => {
         document.getElementById(formId).submit();
-        //dispatch({ type: 'account/login', payload: params });
     }
     const array=[];
     for(let key in query){

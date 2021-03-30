@@ -9,7 +9,6 @@ export const qiankun = {
   // 应用 render 之前触发
   async mount(props) {
     masterProps = props;
-    console.log('app1 mount', props);
   },
   // 应用卸载之后触发
   async unmount(props) {
@@ -18,6 +17,10 @@ export const qiankun = {
 };
 
 export async function getInitialState() {
-  const { siteConfig } = masterProps;
-  return siteConfig;
+  const { masterState,setMasterState} = masterProps;
+  console.log({masterProps})
+  return {
+    siteConfig:masterState.siteConfig,
+    setMasterState
+  };
 }
