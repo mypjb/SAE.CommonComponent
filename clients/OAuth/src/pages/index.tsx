@@ -1,17 +1,23 @@
 import React, { Fragment } from 'react';
 import { UserManager } from 'oidc-client';
-import { useRequest } from 'umi';
-const oidcConfig = {
-  authority: "http://identity.sae.com:8080",
-  client_id: "localhost.test",
-  redirect_uri: "http://dev.sae.com:8000/oauth/signin-oidc",
-  response_type: "id_token token",
-  scope: "openid profile api",
-  post_logout_redirect_uri: "http://dev.sae.com:8000",
-};
-const mgr = new UserManager(oidcConfig);
+import { useModel } from 'umi';
 
-export default () => {
+export default (props) => {
+
+  const { initialState } = useModel('@@initialState');
+  const { authority, appId, redirectUris, postLogoutRedirectUris } = initialState;
+
+  const oidcConfig = {
+    authority: authority,
+    client_id: appId,
+    redirect_uri: redirectUris,
+    response_type: "id_token token",
+    scope: "openid profile",
+    post_logout_redirect_uri: postLogoutRedirectUris,
+  };
+
+  const mgr = new UserManager(oidcConfig);
+
   mgr.createSigninRequest().then(request => {
     window.location.href = request.url;
   }).catch(val => {

@@ -1,6 +1,6 @@
 import { Row, Col, Input, Table, Button, Modal, Form, Checkbox } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import { connect, useLocation } from 'umi';
+import { connect, useLocation,useModel } from 'umi';
 
 const layout = {
     labelCol: {
@@ -19,29 +19,39 @@ const tailLayout = {
 
 
 export default connect()(({ dispatch }) => {
-
+    const { initialState } = useModel('@@initialState');
+    const formId="loginForm";
     const query = useLocation().query;
 
     const [form] = Form.useForm();
 
     const handlerSubmit = (payload) => {
-        const params = {
-            ...query,
-            ...payload
-        };
-        dispatch({ type: 'account/login', payload: params });
+        // const params = {
+        //     ...query,
+        //     ...payload
+        // }
+        document.getElementById(formId).submit();
+        //dispatch({ type: 'account/login', payload: params });
+    }
+    const array=[];
+    for(let key in query){
+        array.push(<Input name={key} type="hidden" value={query[key]} />)
     }
 
     return (
         <Form
             {...layout}
             name="basic"
+            method="post"
+            action={initialState.login}
+            id={formId}
             initialValues={{
                 remember: true,
             }}
             form={form}
             onFinish={handlerSubmit}
         >
+            {array}
             <Form.Item
                 label="Name"
                 name="name"
@@ -52,7 +62,7 @@ export default connect()(({ dispatch }) => {
                     },
                 ]}
             >
-                <Input />
+                <Input name="name" />
             </Form.Item>
 
             <Form.Item
@@ -65,11 +75,11 @@ export default connect()(({ dispatch }) => {
                     },
                 ]}
             >
-                <Input.Password />
+                <Input.Password name="password" />
             </Form.Item>
 
             <Form.Item {...tailLayout} name="remember" valuePropName="checked">
-                <Checkbox>Remember me</Checkbox>
+                <Checkbox name="remember" value="true">Remember me</Checkbox>
             </Form.Item>
 
             <Form.Item {...tailLayout}>
