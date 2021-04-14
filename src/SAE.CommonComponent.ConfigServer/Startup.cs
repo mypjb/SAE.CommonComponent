@@ -31,8 +31,7 @@ namespace SAE.CommonComponent.ConfigServer
 
             this.PluginConfigure(app);
 
-            app.UseCors()
-               .UseEndpoints(endpoints =>
+            app.UseEndpoints(endpoints =>
                {
                    endpoints.MapControllers();
                });

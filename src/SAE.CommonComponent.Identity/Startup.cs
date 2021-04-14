@@ -30,8 +30,7 @@ namespace SAE.CommonComponent.Identity
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IMediator mediator)
         {
 
-            app.UseRouting()
-               .UseCors();
+            app.UseRouting();
 
             this.PluginConfigure(app);
 
