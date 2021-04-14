@@ -52,12 +52,12 @@ namespace SAE.CommonComponent.Identity.Controllers
             var messageJson = message.ToJsonString();
             if (messageJson.IsNullOrWhiteSpace())
             {
-                return new ErrorOutput(StatusCodes.Unknown);
+                throw new SAEException(StatusCodes.Unknown);
             }
             else
             {
                 this._logging.Error(messageJson);
-                return new ErrorOutput(StatusCodes.Custom, messageJson);
+                throw new SAEException(StatusCodes.Custom, messageJson.Replace("\\\"", string.Empty));
             }
         }
         [AllowAnonymous]
