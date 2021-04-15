@@ -25,5 +25,10 @@ namespace SAE.CommonComponent
             public const string Password = "admin";
         }
 
+        public class Claim
+        {
+            public const string CustomType = "0";
+        }
+
     }
 }

@@ -80,7 +80,7 @@ namespace SAE.CommonComponent.Identity.Controllers
                 }
             }
 
-            return this.StatusCode(403);
+            return this.StatusCode(404);
         }
 
         [AllowAnonymous]
