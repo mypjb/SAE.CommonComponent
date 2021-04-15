@@ -9,10 +9,10 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.3" />
-    <PackageReference Include="SAE.CommonLibrary.AspNetCore" Version="2.0.2.6" />
-    <PackageReference Include="SAE.CommonLibrary.DependencyInjection" Version="2.0.2.6" />
-    <PackageReference Include="SAE.CommonLibrary.EventStore.Document" Version="2.0.2.6" />
-    <PackageReference Include="SAE.CommonLibrary.Plugin.AspNetCore" Version="2.0.2.6" />
+    <PackageReference Include="SAE.CommonLibrary.AspNetCore" Version="2.0.2.7" />
+    <PackageReference Include="SAE.CommonLibrary.DependencyInjection" Version="2.0.2.7" />
+    <PackageReference Include="SAE.CommonLibrary.EventStore.Document" Version="2.0.2.7" />
+    <PackageReference Include="SAE.CommonLibrary.Plugin.AspNetCore" Version="2.0.2.7" />
   </ItemGroup>
 
   <ItemGroup>
