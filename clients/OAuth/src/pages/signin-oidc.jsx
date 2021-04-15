@@ -11,20 +11,18 @@ export default ({ location }) => {
     const signinCallbackUrl = window.location.origin + window.location.pathname + (location.search || ('?' + location.hash.substr(1)));
 
     console.log(signinCallbackUrl);
-    const { initialState } = useModel('@@initialState');
-    const { setMasterState } = initialState;
+    const { masterState,setMasterState,masterPush } = useModel('@@initialState').initialState?.masterProps;
 
     const mgr = new oidc.UserManager(oidcConfig);
     mgr.signinRedirectCallback(signinCallbackUrl).then((user) => {
         setMasterState({
-            ...initialState,
+            ...masterState,
             user
         });
-        debugger;
-        history.pushState(null,"","/config-server/template");
+        masterPush("/config/template");
     }).catch(e => {
         console.error(e);
     });
 
-    return (<Fragment>{initialState?.user}</Fragment>);
+    return (<Fragment>{masterState?.user}</Fragment>);
 }

@@ -1,42 +1,42 @@
 import { useState } from 'react';
+import { history } from 'umi';
 
 const ENV = process.env.NODE_ENV;
 
-
-
 let apps = [];
-const appProps={
+const appProps = {
     "siteConfig": {
         "appId": "localhost.dev",
         "appName": "master.dev",
-        "authority": "http://api.sae.com",
-        "redirectUris": "http://localhost:8000/oauth/signin-oidc" ,
+        "authority": "http://oauth.sae.com",
+        "redirectUris": "http://localhost:8000/oauth/signin-oidc",
         "postLogoutRedirectUris": "http://localhost:8000/oauth/signout-oidc",
         "signIn": "http://localhost:8000/identity/login",
-        "login":"http://api.sae.com/account/login"
-      }    
+        "login": "http://oauth.sae.com/account/login",
+        "apiHost":"http://api.sae.com"
+    }
 };
 if (ENV == "development") {
     apps = [
         {
             name: 'config-server', // 唯一 id
             entry: '//dev.sae.com:8001', // html entry
-         
+
         },
         {
             name: 'identity', // 唯一 id
             entry: '//dev.sae.com:8002', // html entry
-         
+
         },
         {
             name: 'oauth', // 唯一 id
             entry: '//dev.sae.com:8003', // html entry
-            
+
         },
         {
             name: 'routing', // 唯一 id
             entry: '//dev.sae.com:8004', // html entry
-          
+
         }
     ];
 } else {
@@ -65,7 +65,7 @@ if (ENV == "development") {
 export const qiankun = function () {
     return {
         // 注册子应用信息
-        apps:apps,
+        apps: apps,
         lifeCycles: {
             afterMount: props => {
                 console.log(props);
@@ -79,13 +79,49 @@ export const layout = {
     name: "SAE"
 };
 
-export function useQiankunStateForSlave() {
-    const [masterState,setMasterState]= useState(appProps);
 
+
+export function useQiankunStateForSlave() {
+
+    const [masterState, setMasterState] = useState(appProps);
+    const initial=(requestConfig)=>{
+        requestConfig.prefix= appProps.siteConfig.apiHost;
+        requestConfig.credentials="include";
+        requestConfig.requestInterceptors=[(url, options) => {
+            const token = masterState?.user?.access_token;
+            return {
+                url,
+                options: {
+                    ...options,
+                    headers: {
+                        Authorization: "Bearer " + token
+                    }
+                },
+            };
+        }];
+        requestConfig.errorConfig={
+            adaptor: function (resData, context) {
+                if (resData === context.res) {
+                    return {
+                        ...resData,
+                        success: true
+                    }
+                }
+                return {
+                    ...resData,
+                    success: false,
+                    errorMessage: resData.message || resData.title || resData.statusText,
+                };
+            }
+        };
+    };
+    
     return {
+        initial,
         masterState,
-        setMasterState:(state)=>{
-            setMasterState(state);
+        setMasterState,
+        masterPush:(url)=>{
+            history.push(url);
         }
     };
 }

@@ -34,6 +34,7 @@ export default {
   },
   effects: {
     *paging({ payload }, { call, put, select }) {
+
       const params = yield select(({ template }) => (template.params));
       const data = yield call(request.queryPaging, { ...payload, ...params });
       yield put({ type: "setList", payload: data });

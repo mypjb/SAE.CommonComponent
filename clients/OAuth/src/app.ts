@@ -17,10 +17,7 @@ export const qiankun = {
 };
 
 export async function getInitialState() {
-  const { masterState,setMasterState} = masterProps;
-  console.log({masterProps})
   return {
-    siteConfig:masterState.siteConfig,
-    setMasterState
+    masterProps
   };
 }
