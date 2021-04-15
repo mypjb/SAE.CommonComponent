@@ -20,7 +20,15 @@ namespace SAE.CommonComponent.Identity.Services
             ResourceValidationResult resourceResult,
             ValidatedRequest request)
         {
-            var claims=await base.GetAccessTokenClaimsAsync(subject, resourceResult, request);
+            var claims=(await base.GetAccessTokenClaimsAsync(subject, resourceResult, request)).ToList();
+            foreach (var claim in this.GetCustomClaim(subject))
+            {
+                if (!claims.Any(s => s.Type.Equals(claim.Type, StringComparison.OrdinalIgnoreCase)))
+                {
+                    claims.Add(claim);
+                }
+            }
+
             return claims;
         }
 
@@ -32,5 +40,19 @@ namespace SAE.CommonComponent.Identity.Services
             var claims= await base.GetIdentityTokenClaimsAsync(subject, resources, includeAllIdentityClaims, request);
             return claims;
         }
+
+        /// <summary>
+        /// 获得自定义Claim
+        /// </summary>
+        /// <returns></returns>
+        private IEnumerable<Claim> GetCustomClaim(ClaimsPrincipal claimsPrincipal)
+        {
+
+            var claims = claimsPrincipal == null ? new List<Claim>() :
+                         claimsPrincipal.FindAll(c => c.ValueType.Equals(Constants.Claim.CustomType))
+                                        .ToList();
+            return claims;
+        }
+
     }
 }

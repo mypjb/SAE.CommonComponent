@@ -33,7 +33,8 @@ namespace SAE.CommonComponent.Master
 
             services.AddRoutingScanning()
                     .AddServiceFacade()
-                    .AddNlogLogger();
+                    .AddNlogLogger()
+                    .AddSAECors();
 
             services.AddOptions<SiteConfig>(SiteConfig.Option)
                     .Bind();
@@ -56,7 +57,7 @@ namespace SAE.CommonComponent.Master
             //app.UseHttpsRedirection();
             app.UseServiceFacade();
             app.UseRouting()
-               .UseCors()
+               .UseSAECors()
                .UseAuthentication()
                .UseAuthorization()
                .UsePluginManage()
@@ -66,5 +67,6 @@ namespace SAE.CommonComponent.Master
                })
                .UseRoutingScanning();
         }
+
     }
 }

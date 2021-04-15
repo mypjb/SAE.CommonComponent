@@ -9,19 +9,20 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Properties\**" />
+    <EmbeddedResource Remove="Properties\**" />
+    <None Remove="Properties\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="5.0.3" />
-    <PackageReference Include="SAE.CommonLibrary.Plugin.AspNetCore" Version="2.0.2.2" />
+    <PackageReference Include="SAE.CommonLibrary.Plugin.AspNetCore" Version="2.0.2.8" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\SAE.CommonComponent\SAE.CommonComponent.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Properties\" />
   </ItemGroup>
 
 </Project>
