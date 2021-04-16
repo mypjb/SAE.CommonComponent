@@ -14,14 +14,13 @@ export default connect(({ template }) => (
   }))(({ dispatch, template }) => {
     const { formStaus, paging, items } = template;
 
-    const handleRemove = (e) => {
-      const id = e.target.value;
+    const handleRemove = (row) => {
       Modal.confirm({
         title: 'Are you sure delete this task?',
         onOk: () => {
           dispatch({
             type: 'template/remove',
-            payload: { id },
+            payload: { id:row.id },
           });
         }
       });
@@ -31,8 +30,8 @@ export default connect(({ template }) => (
       dispatch({ type: 'template/setFormStaus', payload: 1 });
     }
 
-    const handleEdit = (e) => {
-      dispatch({ type: 'template/query', payload: { id: e.target.value }, });
+    const handleEdit = (row) => {
+      dispatch({ type: 'template/query', payload: { id: row.id }, });
     }
 
     const handleSkipPage = (pageIndex, pageSize) => {
@@ -54,9 +53,12 @@ export default connect(({ template }) => (
 
     const columns = [
       {
-        title: 'id',
+        title: 'serial number',
         dataIndex: 'id',
         key: 'id',
+        render:(text,record,index)=>{
+          return index+1;
+        }
       },
       {
         title: 'name',
@@ -76,8 +78,8 @@ export default connect(({ template }) => (
         title: 'action',
         render: (text, row) => (
           <span>
-            <Button type='link' value={row.id} onClick={handleEdit} style={{ marginRight: 16 }}>Edit</Button>
-            <Button type='link' value={row.id} onClick={handleRemove}>Delete</Button>
+            <Button type='link' onClick={handleEdit.bind(null,row)} style={{ marginRight: 16 }}>Edit</Button>
+            <Button type='link' onClick={handleRemove.bind(null,row)}>Delete</Button>
           </span>
         )
       }

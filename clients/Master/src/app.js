@@ -11,9 +11,9 @@ const appProps = {
         "authority": "http://oauth.sae.com",
         "redirectUris": "http://localhost:8000/oauth/signin-oidc",
         "postLogoutRedirectUris": "http://localhost:8000/oauth/signout-oidc",
-        "signIn": "http://localhost:8000/identity/login",
+        "signIn": "/oauth",
         "login": "http://oauth.sae.com/account/login",
-        "apiHost":"http://api.sae.com"
+        "apiHost": "http://api.sae.com"
     }
 };
 if (ENV == "development") {
@@ -80,26 +80,59 @@ export const layout = {
 };
 
 
-
+const checkLogin = (user) => {
+    if (user) {
+        const time = new Date().getTime() / 1000;
+        if (user.expires_at && user.expires_at > time) {
+            return true;
+        }
+    }
+    return false;
+}
 export function useQiankunStateForSlave() {
 
     const [masterState, setMasterState] = useState(appProps);
-    const initial=(requestConfig)=>{
-        requestConfig.prefix= appProps.siteConfig.apiHost;
-        requestConfig.credentials="include";
-        requestConfig.requestInterceptors=[(url, options) => {
+    const initial = (requestConfig) => {
+        requestConfig.prefix = appProps.siteConfig.apiHost;
+        requestConfig.credentials = "include";
+        requestConfig.middlewares=[async (ctx,next)=>{
+            const req= ctx.req;
+            const options=req.options;
+            
+            if (!checkLogin(masterState?.user)) {
+                history.push(masterState.siteConfig.signIn);
+                //window.location.href = masterState.siteConfig.signIn;
+                return;
+            }
             const token = masterState?.user?.access_token;
-            return {
-                url,
-                options: {
-                    ...options,
-                    headers: {
-                        Authorization: "Bearer " + token
-                    }
-                },
-            };
+            
+            req.options={
+                ...options,
+                headers: {
+                    Authorization: "Bearer " + token
+                }
+            }
+            await next();
         }];
-        requestConfig.errorConfig={
+        // requestConfig.requestInterceptors = [(url, options) => {
+
+        //     if (!checkLogin(masterState?.user)) {
+        //         history.push(masterState.siteConfig.signIn);
+        //         //window.location.href = masterState.siteConfig.signIn;
+        //         return;
+        //     }
+        //     const token = masterState?.user?.access_token;
+        //     return {
+        //         url,
+        //         options: {
+        //             ...options,
+        //             headers: {
+        //                 Authorization: "Bearer " + token
+        //             }
+        //         },
+        //     };
+        // }];
+        requestConfig.errorConfig = {
             adaptor: function (resData, context) {
                 if (resData === context.res) {
                     return {
@@ -115,12 +148,12 @@ export function useQiankunStateForSlave() {
             }
         };
     };
-    
+
     return {
         initial,
         masterState,
         setMasterState,
-        masterPush:(url)=>{
+        masterPush: (url) => {
             history.push(url);
         }
     };
