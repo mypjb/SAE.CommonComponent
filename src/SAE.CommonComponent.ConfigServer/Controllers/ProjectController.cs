@@ -60,9 +60,9 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
         }
         
         [HttpGet("{action}/{id}")]
-        public async Task<object> Config(string id)
+        public async Task<object> Config([FromRoute]Command.Find<ProjectConfigDto> command)
         {
-            return await this._mediator.Send<ProjectConfigDto>(id);
+            return await this._mediator.Send<ProjectConfigDto>(command);
         }
 
         
