@@ -19,19 +19,15 @@ const tailLayout = {
 
 
 export default connect()(({ dispatch }) => {
-    const { initialState } = useModel('@@initialState');
+    const { login } = useModel('@@initialState').initialState?.masterProps.masterState.siteConfig;
+    
     const formId="loginForm";
     const query = useLocation().query;
 
     const [form] = Form.useForm();
 
-    const handlerSubmit = (payload) => {
-        // const params = {
-        //     ...query,
-        //     ...payload
-        // }
+    const handlerSubmit = () => {
         document.getElementById(formId).submit();
-        //dispatch({ type: 'account/login', payload: params });
     }
     const array=[];
     for(let key in query){
@@ -43,7 +39,7 @@ export default connect()(({ dispatch }) => {
             {...layout}
             name="basic"
             method="post"
-            action={initialState.login}
+            action={login}
             id={formId}
             initialValues={{
                 remember: true,
