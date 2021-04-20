@@ -23,8 +23,8 @@ class ProjectList extends React.Component {
     const { solutionId } = match.params;
     const { formStaus, paging, items } = project;
 
-    const handleRemove = (e) => {
-      const id = e.target.value;
+    const handleRemove = (row) => {
+      const id = row.id;
       Modal.confirm({
         title: 'Are you sure delete this task?',
         onOk: () => {
@@ -40,8 +40,8 @@ class ProjectList extends React.Component {
       dispatch({ type: 'project/setFormStaus', payload: 1 });
     }
 
-    const handleEdit = (e) => {
-      dispatch({ type: 'project/query', payload: { id: e.target.value }, });
+    const handleEdit = (row) => {
+      dispatch({ type: 'project/query', payload: { id: row.id }, });
     }
 
     const handleSkipPage = (pageIndex, pageSize) => {
@@ -63,9 +63,12 @@ class ProjectList extends React.Component {
 
     const columns = [
       {
-        title: 'id',
+        title: 'serial number',
         dataIndex: 'id',
         key: 'id',
+        render:(text,record,index)=>{
+          return index+1;
+        }
       },
       {
         title: 'name',
@@ -85,8 +88,8 @@ class ProjectList extends React.Component {
         title: 'action',
         render: (text, row) => (
           <span>
-            <Button type='link' value={row.id} onClick={handleEdit} style={{ marginRight: 16 }}>Edit</Button>
-            <Button type='link' value={row.id} onClick={handleRemove}>Delete</Button>
+            <Button type='link' onClick={handleEdit.bind(row,row)} style={{ marginRight: 16 }}>Edit</Button>
+            <Button type='link' onClick={handleRemove.bind(row,row)}>Delete</Button>
             <Link to={`/solution/project/config/${row.id}`} >
               <Button type='link'>Config Manage</Button>
             </Link>

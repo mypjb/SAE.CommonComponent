@@ -2,8 +2,10 @@ import { useState } from 'react';
 import { history } from 'umi';
 
 const ENV = process.env.NODE_ENV;
+const callBackUrlKey = "saeCallbackUrl";
 
 let apps = [];
+
 const appProps = {
     "siteConfig": {
         "appId": "localhost.dev",
@@ -13,7 +15,13 @@ const appProps = {
         "postLogoutRedirectUris": "http://localhost:8000/oauth/signout-oidc",
         "signIn": "/oauth",
         "login": "http://oauth.sae.com/account/login",
-        "apiHost": "http://api.sae.com"
+        "apiHost": "http://api.sae.com",
+        "callbackUrl": function () {
+            const url = window.sessionStorage.getItem(callBackUrlKey);
+            console.log(url);
+            window.sessionStorage.removeItem(callBackUrlKey);
+            return url || "/config/template";
+        }
     }
 };
 if (ENV == "development") {
@@ -60,8 +68,6 @@ if (ENV == "development") {
     ];
 }
 
-
-
 export const qiankun = function () {
     return {
         // 注册子应用信息
@@ -95,18 +101,18 @@ export function useQiankunStateForSlave() {
     const initial = (requestConfig) => {
         requestConfig.prefix = appProps.siteConfig.apiHost;
         requestConfig.credentials = "include";
-        requestConfig.middlewares=[async (ctx,next)=>{
-            const req= ctx.req;
-            const options=req.options;
-            
+        requestConfig.middlewares = [async (ctx, next) => {
+            const req = ctx.req;
+            const options = req.options;
+
             if (!checkLogin(masterState?.user)) {
+                window.sessionStorage.setItem(callBackUrlKey, window.location.pathname + window.location.search);   
                 history.push(masterState.siteConfig.signIn);
-                //window.location.href = masterState.siteConfig.signIn;
                 return;
             }
             const token = masterState?.user?.access_token;
-            
-            req.options={
+
+            req.options = {
                 ...options,
                 headers: {
                     Authorization: "Bearer " + token

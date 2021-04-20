@@ -15,8 +15,8 @@ export default connect(({ solution }) => (
 
     const { formStaus, paging, items } = solution;
 
-    const handleRemove = (e) => {
-      const id = e.target.value;
+    const handleRemove = (row) => {
+      const id = row.id;
       Modal.confirm({
         title: 'Are you sure delete this task?',
         onOk: () => {
@@ -32,8 +32,8 @@ export default connect(({ solution }) => (
       dispatch({ type: 'solution/setFormStaus', payload: 1 });
     }
 
-    const handleEdit = (e) => {
-      dispatch({ type: 'solution/query', payload: { id: e.target.value }, });
+    const handleEdit = (row) => {
+      dispatch({ type: 'solution/query', payload: { id: row.id }, });
     }
 
     const handleSkipPage = (pageIndex, pageSize) => {
@@ -55,9 +55,12 @@ export default connect(({ solution }) => (
 
     const columns = [
       {
-        title: 'id',
+        title: 'serial number',
         dataIndex: 'id',
         key: 'id',
+        render:(text,record,index)=>{
+          return index+1;
+        }
       },
       {
         title: 'name',
@@ -71,8 +74,8 @@ export default connect(({ solution }) => (
         title: 'action',
         render: (text, row) => (
           <span>
-            <Button type='link' value={row.id} onClick={handleEdit} style={{ marginRight: 16 }}>Edit</Button>
-            <Button type='link' value={row.id} onClick={handleRemove}>Delete</Button>
+            <Button type='link' onClick={handleEdit.bind(null,row)} style={{ marginRight: 16 }}>Edit</Button>
+            <Button type='link' onClick={handleRemove.bind(null,row)}>Delete</Button>
             <Link to={`/solution/project/${row.id}`} >
               <Button type='link'>Project Manage</Button>
             </Link>

@@ -42,11 +42,22 @@ class ProjectList extends React.Component {
         type: 'projectConfig/relevance',
         payload: match.params
       });
+
     };
 
 
-    const handleEdit = (e) => {
-      dispatch({ type: 'projectConfig/query', payload: e.target.value });
+    const handleEdit = (row) => {
+      dispatch({
+        type: 'projectConfig/find', payload: {
+          id: row.id, callback: (data) => {
+            Modal.confirm({
+              title:"Edit",
+              closable:false,
+              content:(<EditConfig dispatch={dispatch} model={data}></EditConfig>)
+            })
+          }
+        }
+      });
     }
 
     const handleSkipPage = (pageIndex, pageSize) => {
@@ -66,15 +77,14 @@ class ProjectList extends React.Component {
       });
     }
 
-    const handleSelect = (rowsKey, rowsData) => {
-      ids = rowsData.map(s => (s.id));
-    }
-
     const columns = [
       {
-        title: 'id',
+        title: 'serial number',
         dataIndex: 'id',
         key: 'id',
+        render: (text, record, index) => {
+          return index + 1;
+        }
       },
       {
         title: 'alias',
@@ -84,14 +94,18 @@ class ProjectList extends React.Component {
         title: 'action',
         render: (text, row) => (
           <span>
-            <Button type='link' value={row.id} onClick={handleEdit} style={{ marginRight: 16 }}>Edit</Button>
+            <Button type='link' onClick={handleEdit.bind(row, row)} style={{ marginRight: 16 }}>Edit</Button>
             <Button type='link'>Config Manage</Button>
           </span>
         )
       }
     ];
 
-
+    const rowSelectOption = {
+      onChange: (rowsKey, rowsData) => {
+        ids = rowsData.map(s => (s.id));
+      }
+    }
 
     const pagination = {
       current: paging.pageIndex,
@@ -113,9 +127,8 @@ class ProjectList extends React.Component {
               <Search placeholder="input search text" onSearch={handleSearch} enterButton />
             </Col>
           </Row>
-          <Table columns={columns} dataSource={items} rowSelection={{ onChange: handleSelect }} pagination={pagination} />
+          <Table rowKey={columns[0].key} columns={columns} dataSource={items} rowSelection={rowSelectOption} pagination={pagination} />
           <Relevance visible={formStaus == 1} match={match}></Relevance>
-          <EditConfig visible={formStaus == 2}></EditConfig>
         </div>
       </PageHeaderWrapper>
     );

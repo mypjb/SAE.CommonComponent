@@ -52,10 +52,11 @@ export default {
       yield put({ type: "setFormStaus", payload: 0 });
       yield put({ type: "paging", payload: {} });
     },
-    *query({ payload }, { call, put }) {
-      const model = yield call(request.query, payload.id);
-      yield put({ type: 'set', payload: model });
-      yield put({ type: "setFormStaus", payload: 2 });
+    *find({ payload }, { call, put }) {
+      const { callback, id } = payload;
+      //delete payload.callback;
+      const model = yield call(request.find,id);
+      callback(model);
     },
     *remove({ payload }, { call, put }) {
       yield call(request.remove, payload.id);
