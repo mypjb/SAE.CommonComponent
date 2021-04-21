@@ -4,6 +4,7 @@ import { Row, Col, Input, Table, Button, Modal } from 'antd';
 import { connect } from 'umi';
 import Relevance from './components/Relevance';
 import EditConfig from './components/EditConfig';
+import FormModal from '../../../../components/FormModal';
 
 const { Search } = Input;
 
@@ -25,12 +26,12 @@ class ProjectList extends React.Component {
 
     const { formStaus, paging, items } = projectConfig;
 
-    const handleRemove = () => {
+    const handleDelete = () => {
       Modal.confirm({
         title: 'Are you sure delete this task?',
         onOk: () => {
           dispatch({
-            type: 'projectConfig/remove',
+            type: 'projectConfig/Delete',
             payload: { ids },
           });
         }
@@ -48,13 +49,21 @@ class ProjectList extends React.Component {
 
     const handleEdit = (row) => {
       dispatch({
-        type: 'projectConfig/find', payload: {
-          id: row.id, callback: (data) => {
-            Modal.confirm({
-              title:"Edit",
-              closable:false,
-              content:(<EditConfig dispatch={dispatch} model={data}></EditConfig>)
-            })
+        type: 'projectConfig/find',
+        payload: {
+          data: row.id,
+          callback: (data) => {
+            FormModal.confirm({
+              title: "Edit",
+              destroyOnClose: true,
+              icon: (<></>),
+              closable: false,
+              contentElement: EditConfig,
+              contentProps: {
+                dispatch,
+                model: data
+              }
+            });
           }
         }
       });
@@ -121,7 +130,7 @@ class ProjectList extends React.Component {
           <Row>
             <Col span={18}>
               <Button type="primary" onClick={handleRelevance}>Relevance</Button>
-              <Button type="primary" onClick={handleRemove}>Remove</Button>
+              <Button type="primary" onClick={handleDelete}>Delete</Button>
             </Col>
             <Col span={6}>
               <Search placeholder="input search text" onSearch={handleSearch} enterButton />
