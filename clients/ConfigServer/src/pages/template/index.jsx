@@ -5,44 +5,39 @@ import { connect } from 'umi';
 import styles from './index.less';
 import AddForm from './components/AddForm';
 import EditForm from './components/EditForm';
+import { defaultOperation } from '../../utils/utils';
+import PagingTable from '../../components/PagingTable';
 
 const { Search } = Input;
 
 export default connect(({ template }) => (
   {
     template
-  }))(({ dispatch, template }) => {
-    const { formStaus, paging, items } = template;
+  }))((props) => {
+    
+    const { dispatch, template } = props;
 
-    const handleRemove = (row) => {
+    const handleDelete = (row) => {
       Modal.confirm({
         title: 'Are you sure delete this task?',
         onOk: () => {
           dispatch({
-            type: 'template/remove',
-            payload: { id:row.id },
+            type: 'template/delete',
+            payload: { id: row.id },
           });
         }
       });
     }
 
     const handleAdd = () => {
-      dispatch({ type: 'template/setFormStaus', payload: 1 });
+      defaultOperation.add({ dispatch, element: AddForm });
     }
 
     const handleEdit = (row) => {
-      dispatch({ type: 'template/query', payload: { id: row.id }, });
+      defaultOperation.edit({ dispatch, type: 'template/find', data: row.id, element: EditForm });
     }
 
-    const handleSkipPage = (pageIndex, pageSize) => {
-      dispatch({
-        type: "template/paging",
-        payload: {
-          pageIndex,
-          pageSize
-        }
-      })
-    }
+
 
     const handleSearch = (name) => {
       dispatch({
@@ -56,8 +51,8 @@ export default connect(({ template }) => (
         title: 'serial number',
         dataIndex: 'id',
         key: 'id',
-        render:(text,record,index)=>{
-          return index+1;
+        render: (text, record, index) => {
+          return index + 1;
         }
       },
       {
@@ -78,19 +73,14 @@ export default connect(({ template }) => (
         title: 'action',
         render: (text, row) => (
           <span>
-            <Button type='link' onClick={handleEdit.bind(null,row)} style={{ marginRight: 16 }}>Edit</Button>
-            <Button type='link' onClick={handleRemove.bind(null,row)}>Delete</Button>
+            <Button type='link' onClick={handleEdit.bind(null, row)} style={{ marginRight: 16 }}>Edit</Button>
+            <Button type='link' onClick={handleDelete.bind(null, row)}>Delete</Button>
           </span>
         )
       }
     ];
 
-    const pagination = {
-      current: paging.pageIndex,
-      total: paging.totalCount,
-      size: paging.pageSize,
-      onChange: handleSkipPage
-    };
+
 
     return (
       <PageHeaderWrapper className={styles.main}>
@@ -103,9 +93,7 @@ export default connect(({ template }) => (
               <Search placeholder="input search text" onSearch={handleSearch} className={styles.search} enterButton />
             </Col>
           </Row>
-          <Table columns={columns} dataSource={items} pagination={pagination} />
-          <AddForm visible={formStaus === 1} />
-          <EditForm visible={formStaus === 2} />
+          <PagingTable {...props} {...template} columns={columns} />
         </div>
       </PageHeaderWrapper>
     );

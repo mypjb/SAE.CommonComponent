@@ -6,7 +6,7 @@ const buildOptions = (props, model) => {
         onOk: (e) => { console.warn("Use default onOk"); },
         onCancel: (e) => { console.warn("Use default onCancel"); },
     };
-    const callback = function (fn) {
+    const okCallback = function (fn) {
         if (fn.onOk && fn.onCancel) {
             handler.onOk = fn;
             handler.onCancel = fn.onCancel;
@@ -40,8 +40,8 @@ const buildOptions = (props, model) => {
     if (props.contentElement) {
         const contentProps = {
             ...props.contentProps,
-            callback,
-            close: () => {
+            okCallback,
+            closeCallback: () => {
                 model.destroy();
             }
         };

@@ -27,8 +27,13 @@ export default function (action) {
         });
     }
 
-    service.delete = async function (id) {
-        return request(`/${action}/${id}`, { method: "delete" });
+    service.delete = async function (data) {
+        if (data.id) {
+            return request(`/${action}/${data.id}`, { method: "delete" });
+        } else {
+            return request(`/${action}`, { method: "delete", data });
+        }
+
     }
 
     return service;

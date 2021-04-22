@@ -1,6 +1,7 @@
 import { parse } from 'querystring';
 import pathRegexp from 'path-to-regexp';
 import { history } from "umi";
+import FormModal from "@/components/FormModal";
 
 export const validatorJson = (rule, value) => {
   if (value) {
@@ -12,7 +13,7 @@ export const validatorJson = (rule, value) => {
     }
   }
   return Promise.resolve();
-}
+};
 
 export const handleFormat = function ({ form, fieldName }, e) {
   const value = e.target.value;
@@ -56,12 +57,14 @@ export const defaultModel = {
     const stateName = name;
     return {
       *add({ payload }, { call, put }) {
-        yield call(request.add, payload);
-        yield put({ type: "setFormStaus", payload: 0 });
-        yield put({ type: "set", payload: {} });
-        if (props.addSuccessUrl) {
-          history.push(addSuccessUrl);
-        }
+        const { callback, data } = payload;
+        console.log({ type: "add", data });
+        yield call(request.add, data);
+
+        if (callback) {
+          callback();
+        };
+        yield put({ type: "paging", payload: {} });
       },
       *delete({ payload }, { call, put }) {
         yield call(request.delete, payload);
@@ -94,4 +97,60 @@ export const defaultModel = {
       },
     };
   }
+};
+
+export const defaultFormBuild = (props) => {
+
+  return [
+    defaultHandler.finish(props),
+    defaultHandler.submit(props)
+  ]
 }
+
+export const defaultHandler = {
+  submit: ({ form, result, okCallback }) => {
+    okCallback(() => {
+      form.submit();
+      return result || false;
+    });
+  },
+  finish: ({ dispatch, type, closeCallback }) => {
+    return (data) => {
+      dispatch({ type, payload: { data, callback: closeCallback } });
+    }
+  }
+};
+
+export const defaultOperation = {
+  add: ({ dispatch, title, element, icon }) => {
+    FormModal.confirm({
+      title: title || "Add",
+      destroyOnClose: true,
+      icon: icon || (<></>),
+      closable: false,
+      contentElement: element,
+      contentProps: { dispatch }
+    });
+  },
+  edit: ({ dispatch, type, title, data, element, icon }) => {
+    dispatch({
+      type: type,
+      payload: {
+        data: data,
+        callback: (model) => {
+          FormModal.confirm({
+            title: title || "Edit",
+            destroyOnClose: true,
+            icon: icon || (<></>),
+            closable: false,
+            contentElement: element,
+            contentProps: {
+              dispatch,
+              model: model
+            }
+          });
+        }
+      }
+    });
+  }
+};
