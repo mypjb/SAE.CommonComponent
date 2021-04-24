@@ -122,17 +122,19 @@ export const defaultHandler = {
 };
 
 export const defaultOperation = {
-  add: ({ dispatch, title, element, icon }) => {
+  add: (props) => {
+    const { dispatch, title, element, icon } = props;
     FormModal.confirm({
       title: title || "Add",
       destroyOnClose: true,
       icon: icon || (<></>),
       closable: false,
       contentElement: element,
-      contentProps: { dispatch }
+      contentProps: { ...props }
     });
   },
-  edit: ({ dispatch, type, title, data, element, icon }) => {
+  edit: (props) => {
+    const { dispatch, type, title, data, element, icon } = props;
     dispatch({
       type: type,
       payload: {
@@ -145,8 +147,8 @@ export const defaultOperation = {
             closable: false,
             contentElement: element,
             contentProps: {
-              dispatch,
-              model: model
+              ...props,
+              model
             }
           });
         }

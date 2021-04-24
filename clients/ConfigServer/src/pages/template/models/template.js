@@ -9,7 +9,7 @@ export default {
     ...defaultModel.reducers
   },
   effects: {
-    ...defaultModel.effects({ request, name: "template", addSuccessUrl: '/template' })
+    ...defaultModel.effects({ request, name: "template" })
   },
   subscriptions: {
     setup({ dispatch, history }) {

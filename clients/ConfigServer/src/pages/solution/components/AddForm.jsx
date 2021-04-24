@@ -1,28 +1,17 @@
 import React from 'react';
-import { Form, Input, Modal } from 'antd';
-import { connect } from 'umi';
+import { Form, Input } from 'antd';
+import { defaultFormBuild } from '@/utils/utils';
 
-export default connect()(({ dispatch, visible }) => {
+export default (props) => {
     const [form] = Form.useForm();
-    const handleSave = (payload) => {
-        dispatch({ type: 'solution/add', payload });
-    }
 
-    const handleOk = () => {
-        form.submit();
-    };
-
-    const handleCancel = () => {
-        dispatch({ type: 'solution/setFormStaus', payload: 0 });
-    };
+    const [handleSave] = defaultFormBuild({ ...props, form, type: "solution/add" });
 
     return (
-    <Modal forceRender title="add" visible={visible} onOk={handleOk} onCancel={handleCancel} closable={false}>
         <Form form={form} size='middl' onFinish={handleSave}>
             <Form.Item name="name" label="name" rules={[{ required: true }]}>
                 <Input />
             </Form.Item>
         </Form>
-    </Modal>
     );
-})
+}

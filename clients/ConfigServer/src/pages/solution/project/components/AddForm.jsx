@@ -1,37 +1,23 @@
 import React from 'react';
-import { Form, Input, Modal } from 'antd';
-import { connect } from 'umi';
+import { Form, Input } from 'antd';
+import { defaultFormBuild } from '@/utils/utils';
 
-export default connect(({ project }) => (
-    {
-        project
-    }))(({ dispatch, visible, project }) => {
+export default props => {
 
-        const { params } = project;
+    const { solutionId } = props;
 
-        const solutionId = params && params.solutionId ? params.solutionId : '';
+    const [form] = Form.useForm();
 
-        const [form] = Form.useForm();
+    const [handleSave] = defaultFormBuild({ ...props, form, type: "project/add" });
 
-        const handleSave = (payload) => {
-            dispatch({ type: 'project/add', payload: { ...payload, solutionId } });
-        }
-
-        const handleOk = () => {
-            form.submit();
-        };
-
-        const handleCancel = () => {
-            dispatch({ type: 'project/setFormStaus', payload: 0 });
-        };
-
-        return (
-            <Modal forceRender title="add" visible={visible} onOk={handleOk} onCancel={handleCancel} closable={false}>
-                <Form form={form} size='middl' onFinish={handleSave}>
-                    <Form.Item name="name" label="name" rules={[{ required: true }]}>
-                        <Input />
-                    </Form.Item>
-                </Form>
-            </Modal>
-        );
-    })
+    return (
+        <Form form={form} size='middl' onFinish={handleSave}>
+            <Form.Item name="name" label="name" rules={[{ required: true }]}>
+                <Input />
+            </Form.Item>
+            <Form.Item name="solutionId" label="solutionId" hidden initialValue={solutionId} rules={[{ required: true }]}>
+                <Input />
+            </Form.Item>
+        </Form>
+    );
+}

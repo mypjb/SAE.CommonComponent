@@ -1,9 +1,11 @@
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import React from 'react';
 import { Row, Col, Input, Table, Button, Modal } from 'antd';
-import { connect,Link} from 'umi';
+import { connect, Link } from 'umi';
 import AddForm from './components/AddForm';
 import EditForm from './components/EditForm';
+import { defaultOperation } from '@/utils/utils';
+import PagingTable from '@/components/PagingTable';
 
 const { Search } = Input;
 
@@ -18,18 +20,16 @@ class ProjectList extends React.Component {
 
 
   render() {
-    const { dispatch, project, match } = this.props;
+    const { dispatch, match, project } = this.props;
 
-    const { solutionId } = match.params;
-    const { formStaus, paging, items } = project;
 
-    const handleRemove = (row) => {
+    const handleDelete = (row) => {
       const id = row.id;
       Modal.confirm({
         title: 'Are you sure delete this task?',
         onOk: () => {
           dispatch({
-            type: 'project/remove',
+            type: 'project/delete',
             payload: { id },
           });
         }
@@ -37,21 +37,11 @@ class ProjectList extends React.Component {
     }
 
     const handleAdd = () => {
-      dispatch({ type: 'project/setFormStaus', payload: 1 });
+      defaultOperation.add({ dispatch, element: AddForm, solutionId: match.params.solutionId });
     }
 
     const handleEdit = (row) => {
-      dispatch({ type: 'project/query', payload: { id: row.id }, });
-    }
-
-    const handleSkipPage = (pageIndex, pageSize) => {
-      dispatch({
-        type: "project/paging",
-        payload: {
-          pageIndex,
-          pageSize
-        }
-      })
+      defaultOperation.edit({ dispatch, type: 'project/find', data: row.id, element: EditForm });
     }
 
     const handleSearch = (name) => {
@@ -66,8 +56,8 @@ class ProjectList extends React.Component {
         title: 'serial number',
         dataIndex: 'id',
         key: 'id',
-        render:(text,record,index)=>{
-          return index+1;
+        render: (text, record, index) => {
+          return index + 1;
         }
       },
       {
@@ -88,8 +78,8 @@ class ProjectList extends React.Component {
         title: 'action',
         render: (text, row) => (
           <span>
-            <Button type='link' onClick={handleEdit.bind(row,row)} style={{ marginRight: 16 }}>Edit</Button>
-            <Button type='link' onClick={handleRemove.bind(row,row)}>Delete</Button>
+            <Button type='link' onClick={handleEdit.bind(row, row)} style={{ marginRight: 16 }}>Edit</Button>
+            <Button type='link' onClick={handleDelete.bind(row, row)}>Delete</Button>
             <Link to={`/solution/project/config/${row.id}`} >
               <Button type='link'>Config Manage</Button>
             </Link>
@@ -97,13 +87,6 @@ class ProjectList extends React.Component {
         )
       }
     ];
-
-    const pagination = {
-      current: paging.pageIndex,
-      total: paging.totalCount,
-      size: paging.pageSize,
-      onChange: handleSkipPage
-    };
 
     return (
       <PageHeaderWrapper>
@@ -116,9 +99,7 @@ class ProjectList extends React.Component {
               <Search placeholder="input search text" onSearch={handleSearch} enterButton />
             </Col>
           </Row>
-          <Table columns={columns} dataSource={items} pagination={pagination} />
-          <AddForm visible={formStaus === 1} />
-          <EditForm visible={formStaus === 2} />
+          <PagingTable columns={columns} {...this.props} {...project} />
         </div>
       </PageHeaderWrapper>
     );

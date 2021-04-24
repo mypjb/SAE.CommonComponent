@@ -1,27 +1,29 @@
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import React from 'react';
 import { Row, Col, Input, Table, Button, Modal } from 'antd';
-import { connect,Link } from 'umi';
+import { connect, Link } from 'umi';
 import styles from './index.less';
 import AddForm from './components/AddForm';
 import EditForm from './components/EditForm';
+import { defaultOperation } from '@/utils/utils';
+import PagingTable from '@/components/PagingTable';
 
 const { Search } = Input;
 
 export default connect(({ solution }) => (
   {
     solution
-  }))(({ dispatch, solution }) => {
+  }))((props) => {
 
-    const { formStaus, paging, items } = solution;
+    const { dispatch, solution } = props;
 
-    const handleRemove = (row) => {
+    const handleDelete = (row) => {
       const id = row.id;
       Modal.confirm({
         title: 'Are you sure delete this task?',
         onOk: () => {
           dispatch({
-            type: 'solution/remove',
+            type: 'solution/delete',
             payload: { id },
           });
         }
@@ -29,21 +31,11 @@ export default connect(({ solution }) => (
     }
 
     const handleAdd = () => {
-      dispatch({ type: 'solution/setFormStaus', payload: 1 });
+      defaultOperation.add({ dispatch, element: AddForm });
     }
 
     const handleEdit = (row) => {
-      dispatch({ type: 'solution/query', payload: { id: row.id }, });
-    }
-
-    const handleSkipPage = (pageIndex, pageSize) => {
-      dispatch({
-        type: "solution/paging",
-        payload: {
-          pageIndex,
-          pageSize
-        }
-      })
+      defaultOperation.edit({ dispatch, type: 'solution/find', data: row.id, element: EditForm });
     }
 
     const handleSearch = (name) => {
@@ -58,8 +50,8 @@ export default connect(({ solution }) => (
         title: 'serial number',
         dataIndex: 'id',
         key: 'id',
-        render:(text,record,index)=>{
-          return index+1;
+        render: (text, record, index) => {
+          return index + 1;
         }
       },
       {
@@ -74,8 +66,8 @@ export default connect(({ solution }) => (
         title: 'action',
         render: (text, row) => (
           <span>
-            <Button type='link' onClick={handleEdit.bind(null,row)} style={{ marginRight: 16 }}>Edit</Button>
-            <Button type='link' onClick={handleRemove.bind(null,row)}>Delete</Button>
+            <Button type='link' onClick={handleEdit.bind(null, row)} style={{ marginRight: 16 }}>Edit</Button>
+            <Button type='link' onClick={handleDelete.bind(null, row)}>Delete</Button>
             <Link to={`/solution/project/${row.id}`} >
               <Button type='link'>Project Manage</Button>
             </Link>
@@ -86,13 +78,6 @@ export default connect(({ solution }) => (
         )
       }
     ];
-
-    const pagination = {
-      current: paging.pageIndex,
-      total: paging.totalCount,
-      size: paging.pageSize,
-      onChange: handleSkipPage
-    };
 
     return (
       <PageHeaderWrapper className={styles.main}>
@@ -105,9 +90,7 @@ export default connect(({ solution }) => (
               <Search placeholder="input search text" onSearch={handleSearch} className={styles.search} enterButton />
             </Col>
           </Row>
-          <Table columns={columns} dataSource={items} pagination={pagination} />
-          <AddForm visible={formStaus === 1} />
-          <EditForm visible={formStaus === 2} />
+          <PagingTable {...props} {...solution} columns={columns} />
         </div>
       </PageHeaderWrapper>
     );

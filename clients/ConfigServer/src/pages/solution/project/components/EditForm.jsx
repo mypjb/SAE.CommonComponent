@@ -1,27 +1,18 @@
 import React from 'react';
-import { Form, Input, Modal } from 'antd';
-import { connect } from 'umi';
+import { Form, Input } from 'antd';
+import { defaultFormBuild } from '@/utils/utils';
 
-export default connect(({ project }) => ({ project }))(({ dispatch, project, visible }) => {
+export default props => {
+
+    const { model } = props;
 
     const [form] = Form.useForm();
 
-    const handleSave = (payload) => {
-        dispatch({ type: 'project/edit', payload });
-    }
+    form.setFieldsValue(model);
 
-    const handleOk = () => {
-        form.submit();
-    };
+    const [handleSave] = defaultFormBuild({ ...props, form, type: "project/edit" });
 
-    const handleCancel = () => {
-        dispatch({ type: 'project/setFormStaus', payload: 0 });
-    };
-
-    form.setFieldsValue(project.model);
-
-
-    return (<Modal title="add" visible={visible}  onOk={handleOk} forceRender onCancel={handleCancel} closable={false}  >
+    return (
         <Form form={form} size='middl' onFinish={handleSave} >
             <Form.Item name="name" label="name" rules={[{ required: true }]}>
                 <Input />
@@ -32,7 +23,6 @@ export default connect(({ project }) => ({ project }))(({ dispatch, project, vis
             <Form.Item name="id" style={{ display: "none" }}>
                 <Input />
             </Form.Item>
-        </Form>
-    </Modal>);
+        </Form>);
 
-})
+}

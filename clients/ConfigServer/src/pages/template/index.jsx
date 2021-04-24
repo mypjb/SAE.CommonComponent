@@ -5,8 +5,8 @@ import { connect } from 'umi';
 import styles from './index.less';
 import AddForm from './components/AddForm';
 import EditForm from './components/EditForm';
-import { defaultOperation } from '../../utils/utils';
-import PagingTable from '../../components/PagingTable';
+import { defaultOperation } from '@/utils/utils';
+import PagingTable from '@/components/PagingTable';
 
 const { Search } = Input;
 
