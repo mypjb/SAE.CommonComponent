@@ -27,16 +27,37 @@ export const handleFormat = function ({ form, fieldName }, e) {
   }
 };
 
+export const defaultState = {
+  paging: {
+    pageIndex: 1,
+    pageSize: 10,
+    totalCount: 0
+  },
+  items: [],
+  params: {},
+};
+
+
+const parsingPayload = (payload) => {
+  let model = {};
+  if (payload && payload.callback) {
+    model.callback = payload.callback;
+  } else {
+    model.callback = () => { };
+  }
+  if (payload && payload.data) {
+    model.data = payload.data;
+  } else {
+    model.data = {};
+  }
+  console.log({ model });
+  return model;
+};
+
 //Default Model
 export const defaultModel = {
   state: {
-    paging: {
-      pageIndex: 1,
-      pageSize: 10,
-      totalCount: 0
-    },
-    items: [],
-    params: {}
+    ...defaultState
   },
   reducers: {
     setList(state, { payload: { items } }) {
@@ -57,8 +78,9 @@ export const defaultModel = {
     const stateName = name;
     return {
       *add({ payload }, { call, put }) {
-        const { callback, data } = payload;
-        console.log({ type: "add", data });
+
+        const { callback, data } = parsingPayload(payload);
+
         yield call(request.add, data);
 
         if (callback) {
@@ -71,7 +93,7 @@ export const defaultModel = {
         yield put({ type: 'paging' });
       },
       *edit({ payload }, { call, put }) {
-        const { callback, data } = payload;
+        const { callback, data } = parsingPayload(payload);
         yield call(request.edit, data);
         yield put({ type: "paging", payload: {} });
         if (callback) {
@@ -79,17 +101,28 @@ export const defaultModel = {
         };
       },
       *find({ payload }, { put, call }) {
-        const { callback, data } = payload;
+        const { callback, data } = parsingPayload(payload);
         const model = yield call(request.find, data);
         if (callback) {
           callback(model);
         };
       },
       *paging({ payload }, { call, put, select }) {
+
+        const { callback, data } = parsingPayload(payload);
+
         const params = yield select((globalStatus) => (globalStatus[stateName].params));
-        const data = yield call(request.queryPaging, { ...payload, ...params });
-        yield put({ type: "setList", payload: data });
-        yield put({ type: "setPaging", payload: data });
+
+        const paging = yield call(request.queryPaging, { ...data, ...params });
+
+        yield put({ type: "setList", payload: paging });
+
+        yield put({ type: "setPaging", payload: paging });
+
+        if (callback) {
+          const state = yield select((globalStatus) => (globalStatus[stateName]));
+          callback(state);
+        }
       },
       *search({ payload }, { put }) {
         yield put({ type: "setParams", payload });

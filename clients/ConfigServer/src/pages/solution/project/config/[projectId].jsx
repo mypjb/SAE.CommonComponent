@@ -1,10 +1,11 @@
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import React from 'react';
-import { Row, Col, Input, Table, Button, Modal } from 'antd';
+import { Row, Col, Input, Button, Modal } from 'antd';
 import { connect } from 'umi';
-import Relevance from './components/Relevance';
+import RelevanceTable from './components/RelevanceTable';
 import EditConfig from './components/EditConfig';
-import FormModal from '../../../../components/FormModal';
+import PagingTable from '@/components/PagingTable';
+import { defaultOperation } from '@/utils/utils';
 
 const { Search } = Input;
 
@@ -17,21 +18,19 @@ class ProjectList extends React.Component {
     });
   }
 
-
   render() {
 
     let ids = [];
 
     const { dispatch, projectConfig, match } = this.props;
 
-    const { formStaus, paging, items } = projectConfig;
 
     const handleDelete = () => {
       Modal.confirm({
         title: 'Are you sure delete this task?',
         onOk: () => {
           dispatch({
-            type: 'projectConfig/Delete',
+            type: 'projectConfig/delete',
             payload: { ids },
           });
         }
@@ -39,44 +38,12 @@ class ProjectList extends React.Component {
     }
 
     const handleRelevance = () => {
-      dispatch({
-        type: 'projectConfig/relevance',
-        payload: match.params
-      });
-
+      defaultOperation.add({ dispatch, element: RelevanceTable });
     };
 
 
     const handleEdit = (row) => {
-      dispatch({
-        type: 'projectConfig/find',
-        payload: {
-          data: row.id,
-          callback: (data) => {
-            FormModal.confirm({
-              title: "Edit",
-              destroyOnClose: true,
-              icon: (<></>),
-              closable: false,
-              contentElement: EditConfig,
-              contentProps: {
-                dispatch,
-                model: data
-              }
-            });
-          }
-        }
-      });
-    }
-
-    const handleSkipPage = (pageIndex, pageSize) => {
-      dispatch({
-        type: "projectConfig/paging",
-        payload: {
-          pageIndex,
-          pageSize
-        }
-      })
+      defaultOperation.edit({ dispatch, type: 'projectConfig/find', data: row.id, element: EditConfig });
     }
 
     const handleSearch = (name) => {
@@ -90,7 +57,6 @@ class ProjectList extends React.Component {
       {
         title: 'serial number',
         dataIndex: 'id',
-        key: 'id',
         render: (text, record, index) => {
           return index + 1;
         }
@@ -98,7 +64,6 @@ class ProjectList extends React.Component {
       {
         title: 'alias',
         dataIndex: 'alias',
-        key: 'alias',
       }, {
         title: 'action',
         render: (text, row) => (
@@ -116,13 +81,6 @@ class ProjectList extends React.Component {
       }
     }
 
-    const pagination = {
-      current: paging.pageIndex,
-      total: paging.totalCount,
-      size: paging.pageSize,
-      onChange: handleSkipPage
-    };
-
 
     return (
       <PageHeaderWrapper>
@@ -136,8 +94,7 @@ class ProjectList extends React.Component {
               <Search placeholder="input search text" onSearch={handleSearch} enterButton />
             </Col>
           </Row>
-          <Table rowKey={columns[0].key} columns={columns} dataSource={items} rowSelection={rowSelectOption} pagination={pagination} />
-          <Relevance visible={formStaus == 1} match={match}></Relevance>
+          <PagingTable {...this.props} {...projectConfig} rowKey={columns[0].key} columns={columns} rowSelection={rowSelectOption} />
         </div>
       </PageHeaderWrapper>
     );
@@ -145,8 +102,7 @@ class ProjectList extends React.Component {
 
 }
 
-export default connect(({ projectConfig, relevance }) => (
+export default connect(({ projectConfig }) => (
   {
-    projectConfig,
-    relevance
+    projectConfig
   }))(ProjectList);

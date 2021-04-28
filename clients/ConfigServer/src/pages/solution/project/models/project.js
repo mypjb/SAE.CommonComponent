@@ -1,5 +1,7 @@
 import request from "../service";
 import { defaultModel } from '@/utils/utils';
+import { useParams, useRouteMatch } from 'umi';
+
 export default {
   state: {
     ...defaultModel.state
@@ -13,11 +15,16 @@ export default {
   subscriptions: {
     setup({ dispatch, history }) {
       history.listen((props) => {
-        console.log({ history, props });
         const { pathname } = props;
-        if (pathname.toLocaleLowerCase().indexOf('/solution/project') === 0) {
+        const pathName = '/solution/project';
+        const index = pathname.toLocaleLowerCase().indexOf(pathName);
+        if (index === 0) {
+          const solutionId = pathname.substr(pathName.length + 1);
           dispatch({
-            type: 'paging',
+            type: 'search',
+            payload: {
+              solutionId
+            }
           });
         }
       });

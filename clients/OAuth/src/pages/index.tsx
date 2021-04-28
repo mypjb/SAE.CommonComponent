@@ -17,11 +17,22 @@ export default (props) => {
   };
 
   const mgr = new UserManager(oidcConfig);
-  mgr.clearStaleState();
-  mgr.createSigninRequest().then(request => {
-    window.location.href = request.url;
-  }).catch(val => {
-    console.error(val);
-  });
+  // const { masterState, setMasterState, masterPush } = useModel('@@initialState').initialState?.masterProps;
+  // // mgr.clearStaleState();
+  // mgr.getUser().then(user => {
+  //   debugger;
+  //   setMasterState({
+  //     ...masterState,
+  //     user
+  //   });
+  //   masterPush(siteConfig.callbackUrl());
+  // }).catch(reason => {
+    mgr.createSigninRequest().then(request => {
+      window.location.href = request.url;
+    }).catch(val => {
+      console.error(val);
+    });
+  // });
+
   return (<Fragment></Fragment>);
 }
