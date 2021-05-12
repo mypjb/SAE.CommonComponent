@@ -1,20 +1,14 @@
 import React from 'react';
 import { Form, Input, Modal } from 'antd';
+import {defaultFormBuild} from '@/utils/utils';
 
 export default (props) => {
-    const { dispatch, model, callback } = props;
+    const { model } = props;
+
     const [form] = Form.useForm();
-    const handleSave = (data) => {
-        dispatch({ type: 'projectConfig/edit', payload: { data, callback: props.close } });
-    }
 
-    const handleOk = () => {
-        form.submit();
-        return false;
-    };
-
-    callback(handleOk);
-
+    const [handleSave] = defaultFormBuild({ ...props, form, type: "projectConfig/edit" });
+    
     form.setFieldsValue(model);
 
     return (<Form form={form} size='middl' onFinish={handleSave} >

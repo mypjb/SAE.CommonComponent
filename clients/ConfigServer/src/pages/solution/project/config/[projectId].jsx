@@ -94,7 +94,7 @@ class ProjectList extends React.Component {
               <Search placeholder="input search text" onSearch={handleSearch} enterButton />
             </Col>
           </Row>
-          <PagingTable {...this.props} {...projectConfig} rowKey={columns[0].key} columns={columns} rowSelection={rowSelectOption} />
+          <PagingTable {...this.props} {...projectConfig} type='projectConfig/paging' rowKey={columns[0].key} columns={columns} rowSelection={rowSelectOption} />
         </div>
       </PageHeaderWrapper>
     );

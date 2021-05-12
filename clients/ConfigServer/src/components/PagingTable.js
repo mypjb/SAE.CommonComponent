@@ -1,15 +1,23 @@
 import { Table } from "antd";
+import { useState } from "react";
 
 
 export default (props) => {
 
-    const { items, paging, dispatch, type } = props;
+    const { dispatch, type } = props;
+    const [state, setState] = useState({ paging: props.paging, items: props.items });
+    const { paging, items } = state;
     const handleSkipPage = (pageIndex, pageSize) => {
         dispatch({
             type: type,
             payload: {
-                pageIndex,
-                pageSize
+                data: {
+                    pageIndex,
+                    pageSize
+                },
+                callback: (data) => {
+                    setState(data);
+                }
             }
         })
     }
