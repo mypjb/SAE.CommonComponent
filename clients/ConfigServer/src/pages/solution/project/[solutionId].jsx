@@ -4,7 +4,7 @@ import { Row, Col, Input, Table, Button, Modal } from 'antd';
 import { connect, Link } from 'umi';
 import AddForm from './components/AddForm';
 import EditForm from './components/EditForm';
-import { defaultOperation } from '@/utils/utils';
+import { defaultOperation, defaultDispatchType } from '@/utils/utils';
 import PagingTable from '@/components/PagingTable';
 
 const { Search } = Input;
@@ -12,8 +12,9 @@ const { Search } = Input;
 class ProjectList extends React.Component {
   constructor(props) {
     super(props);
+    this.dispatchType = defaultDispatchType("project");
     props.dispatch({
-      type: "project/search",
+      type: this.dispatchType.search,
       payload: props.match.params
     });
   }
@@ -22,14 +23,13 @@ class ProjectList extends React.Component {
   render() {
     const { dispatch, match, project } = this.props;
 
-
     const handleDelete = (row) => {
       const id = row.id;
       Modal.confirm({
         title: 'Are you sure delete this task?',
         onOk: () => {
           dispatch({
-            type: 'project/delete',
+            type: this.dispatchType.delete,
             payload: { id },
           });
         }
@@ -41,12 +41,12 @@ class ProjectList extends React.Component {
     }
 
     const handleEdit = (row) => {
-      defaultOperation.edit({ dispatch, type: 'project/find', data: row.id, element: EditForm });
+      defaultOperation.edit({ dispatch, type: this.dispatchType.find, data: row.id, element: EditForm });
     }
 
     const handleSearch = (name) => {
       dispatch({
-        type: 'project/search',
+        type: this.dispatchType.search,
         payload: { name, ...match.params },
       });
     }
@@ -99,7 +99,7 @@ class ProjectList extends React.Component {
               <Search placeholder="input search text" onSearch={handleSearch} enterButton />
             </Col>
           </Row>
-          <PagingTable columns={columns} {...this.props} {...project} />
+          <PagingTable columns={columns} {...this.props} {...project} dispatchType={this.dispatchType.paging} />
         </div>
       </PageHeaderWrapper>
     );

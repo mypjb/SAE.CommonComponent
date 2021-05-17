@@ -7,18 +7,27 @@ export default (props) => {
   const { dispatch, projectId } = props;
 
   const [state, setState] = useState(defaultState);
+  const { paging } = state;
 
   let configIds = [];
 
-  useEffect(() => {
+  const handleSkipPage = (pageIndex, pageSize) => {
     dispatch({
       type: "projectConfigRelevance/paging",
       payload: {
-        pageIndex: state.paging.pageIndex,
-        callback:setState
+        pageIndex,
+        pageSize,
+        callback: (data) => {
+          console.log({ state,data });
+          setState(data);
+        }
       }
     });
-  }, [state.paging.pageIndex]);
+  };
+
+  useEffect(() => {
+    handleSkipPage(paging.pageIndex, paging.pageSize);
+  }, [paging.pageIndex]);
 
 
 
@@ -31,17 +40,8 @@ export default (props) => {
       }
     },
     {
-      title: 'name',
-      dataIndex: 'name',
-    },
-    {
-      title: 'content',
-      dataIndex: 'content',
-      ellipsis: true
-    },
-    {
-      title: 'createTime',
-      dataIndex: 'createTime',
+      title: 'alias',
+      dataIndex: 'alias',
     }
   ];
 
@@ -52,6 +52,10 @@ export default (props) => {
   }
 
   return (
-    <PagingTable {...props} {...state} columns={columns} rowSelection={rowSelectionOption} />
+    <PagingTable {...props}
+      {...state}
+      handleSkipPage={handleSkipPage}
+      columns={columns}
+      rowSelection={rowSelectionOption} />
   );
 };

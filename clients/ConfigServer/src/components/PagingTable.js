@@ -6,21 +6,28 @@ export default (props) => {
 
     const { dispatch, dispatchType } = props;
     const { paging, items } = props;
-    const handleSkipPage = (pageIndex, pageSize) => {
-        debugger;
-        dispatch({
-            type: dispatchType,
-            payload: {
-                data: {
-                    pageIndex,
-                    pageSize
-                },
-                callback: (data) => {
-                    setState(data);
+
+    let handleSkipPage;
+
+    if (props.handleSkipPage) {
+        handleSkipPage = props.handleSkipPage;
+    } else {
+        handleSkipPage = (pageIndex, pageSize) => {
+            dispatch({
+                type: dispatchType,
+                payload: {
+                    data: {
+                        pageIndex,
+                        pageSize
+                    },
+                    callback: (data) => {
+                        setState(data);
+                    }
                 }
-            }
-        })
+            })
+        }
     }
+
 
     const pagination = {
         current: paging.pageIndex,

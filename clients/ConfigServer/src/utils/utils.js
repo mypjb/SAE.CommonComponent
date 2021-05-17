@@ -30,7 +30,7 @@ export const handleFormat = function ({ form, fieldName }, e) {
 export const defaultState = {
   paging: {
     pageIndex: 1,
-    pageSize: 10,
+    pageSize: 1,
     totalCount: 0
   },
   items: [],
@@ -56,14 +56,14 @@ const parsingPayload = (payload) => {
 
 
 //default dispatch type
-export const defaultDispatchType=(name)=>{
+export const defaultDispatchType = (name) => {
   return {
-    add:`${name}/add`,
-    delete:`${name}/delete`,
-    edit:`${name}/edit`,
-    find:`${name}/find`,
-    search:`${name}/search`,
-    paging:`${name}/paging`,
+    add: `${name}/add`,
+    delete: `${name}/delete`,
+    edit: `${name}/edit`,
+    find: `${name}/find`,
+    search: `${name}/search`,
+    paging: `${name}/paging`,
   }
 }
 
@@ -126,13 +126,14 @@ export const defaultModel = {
 
         const params = yield select((globalStatus) => (globalStatus[stateName].params));
 
-        const paging = yield call(request.queryPaging, { ...data, ...params });
+        const paging = yield call(request.queryPaging, { ...data, ...params, pageSize: 1 });
 
         yield put({ type: "setList", payload: paging });
 
         yield put({ type: "setPaging", payload: paging });
-
+        
         if (callback) {
+          debugger;
           const state = yield select((globalStatus) => (globalStatus[stateName]));
           callback(state);
         }

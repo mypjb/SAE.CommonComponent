@@ -5,7 +5,7 @@ import { connect, Link } from 'umi';
 import styles from './index.less';
 import AddForm from './components/AddForm';
 import EditForm from './components/EditForm';
-import { defaultOperation } from '@/utils/utils';
+import { defaultOperation, defaultDispatchType } from '@/utils/utils';
 import PagingTable from '@/components/PagingTable';
 
 const { Search } = Input;
@@ -16,14 +16,14 @@ export default connect(({ solution }) => (
   }))((props) => {
 
     const { dispatch, solution } = props;
-
+    const dispatchType = defaultDispatchType("solution");
     const handleDelete = (row) => {
       const id = row.id;
       Modal.confirm({
         title: 'Are you sure delete this task?',
         onOk: () => {
           dispatch({
-            type: 'solution/delete',
+            type: dispatchType.delete,
             payload: { id },
           });
         }
@@ -35,12 +35,12 @@ export default connect(({ solution }) => (
     }
 
     const handleEdit = (row) => {
-      defaultOperation.edit({ dispatch, type: 'solution/find', data: row.id, element: EditForm });
+      defaultOperation.edit({ dispatch, type: dispatchType.find, data: row.id, element: EditForm });
     }
 
     const handleSearch = (name) => {
       dispatch({
-        type: 'solution/search',
+        type: dispatchType.add,
         payload: { name },
       });
     }
@@ -90,7 +90,7 @@ export default connect(({ solution }) => (
               <Search placeholder="input search text" onSearch={handleSearch} className={styles.search} enterButton />
             </Col>
           </Row>
-          <PagingTable {...props} {...solution} columns={columns} />
+          <PagingTable {...props} {...solution} dispatchType={dispatchType.paging} columns={columns} />
         </div>
       </PageHeaderWrapper>
     );

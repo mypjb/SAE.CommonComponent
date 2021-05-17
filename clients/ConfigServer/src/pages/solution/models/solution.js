@@ -17,7 +17,7 @@ export default {
       history.listen(({ pathname }) => {
         if (pathname === '/solution') {
           dispatch({
-            type: 'paging',
+            type: 'paging'
           });
         }
       });

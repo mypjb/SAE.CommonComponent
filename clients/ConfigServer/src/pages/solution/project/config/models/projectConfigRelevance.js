@@ -8,6 +8,6 @@ export default {
     ...defaultModel.reducers
   },
   effects: {
-    ...defaultModel.effects({ request, name: "projectConfig" })
+    ...defaultModel.effects({ request, name: "projectConfigRelevance" })
   }
 };

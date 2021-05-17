@@ -5,15 +5,16 @@ import { connect } from 'umi';
 import RelevanceTable from './components/RelevanceTable';
 import EditConfig from './components/EditConfig';
 import PagingTable from '@/components/PagingTable';
-import { defaultOperation } from '@/utils/utils';
+import { defaultOperation, defaultDispatchType } from '@/utils/utils';
 
 const { Search } = Input;
 
 class ProjectList extends React.Component {
   constructor(props) {
     super(props);
+    this.dispatchType = defaultDispatchType("projectConfig");
     props.dispatch({
-      type: "projectConfig/search",
+      type: this.dispatchType.search,
       payload: props.match.params
     });
   }
@@ -30,7 +31,7 @@ class ProjectList extends React.Component {
         title: 'Are you sure delete this task?',
         onOk: () => {
           dispatch({
-            type: 'projectConfig/delete',
+            type: this.dispatchType.delete,
             payload: { ids },
           });
         }
@@ -43,12 +44,12 @@ class ProjectList extends React.Component {
 
 
     const handleEdit = (row) => {
-      defaultOperation.edit({ dispatch, type: 'projectConfig/find', data: row.id, element: EditConfig });
+      defaultOperation.edit({ dispatch, type: this.dispatchType.find, data: row.id, element: EditConfig });
     }
 
     const handleSearch = (name) => {
       dispatch({
-        type: 'projectConfig/search',
+        type: this.dispatchType.search,
         payload: { name, ...match.params },
       });
     }
@@ -94,7 +95,13 @@ class ProjectList extends React.Component {
               <Search placeholder="input search text" onSearch={handleSearch} enterButton />
             </Col>
           </Row>
-          <PagingTable {...this.props} {...projectConfig} type='projectConfig/paging' rowKey={columns[0].key} columns={columns} rowSelection={rowSelectOption} />
+          <PagingTable {...this.props}
+            {...projectConfig}
+            dispatchType={this.dispatchType.paging}
+            type='projectConfig/paging'
+            rowKey={columns[0].key}
+            columns={columns}
+            rowSelection={rowSelectOption} />
         </div>
       </PageHeaderWrapper>
     );
