@@ -2,7 +2,7 @@ import { parse } from 'querystring';
 import pathRegexp from 'path-to-regexp';
 import { history } from "umi";
 import FormModal from "@/components/FormModal";
-
+//validator json
 export const validatorJson = (rule, value) => {
   if (value) {
     try {
@@ -14,7 +14,7 @@ export const validatorJson = (rule, value) => {
   }
   return Promise.resolve();
 };
-
+//handle json format
 export const handleFormat = function ({ form, fieldName }, e) {
   const value = e.target.value;
   if (value) {
@@ -26,7 +26,7 @@ export const handleFormat = function ({ form, fieldName }, e) {
     } catch { }
   }
 };
-
+//default state
 export const defaultState = {
   paging: {
     pageIndex: 1,
@@ -37,7 +37,7 @@ export const defaultState = {
   params: {},
 };
 
-
+//parsing payload
 const parsingPayload = (payload) => {
   let model = {};
   if (payload && payload.callback) {
@@ -48,11 +48,24 @@ const parsingPayload = (payload) => {
   if (payload && payload.data) {
     model.data = payload.data;
   } else {
-    model.data = {};
+    model.data = payload;
   }
   console.log({ model });
   return model;
 };
+
+
+//default dispatch type
+export const defaultDispatchType=(name)=>{
+  return {
+    add:`${name}/add`,
+    delete:`${name}/delete`,
+    edit:`${name}/edit`,
+    find:`${name}/find`,
+    search:`${name}/search`,
+    paging:`${name}/paging`,
+  }
+}
 
 //Default Model
 export const defaultModel = {
@@ -132,6 +145,7 @@ export const defaultModel = {
   }
 };
 
+//default Form Build fn
 export const defaultFormBuild = (props) => {
 
   return [
@@ -140,6 +154,7 @@ export const defaultFormBuild = (props) => {
   ]
 }
 
+//default handler fn
 export const defaultHandler = {
   submit: ({ form, result, okCallback }) => {
     okCallback(() => {
@@ -154,6 +169,7 @@ export const defaultHandler = {
   }
 };
 
+//default operation
 export const defaultOperation = {
   add: (props) => {
     const { dispatch, title, element, icon } = props;

@@ -1,6 +1,6 @@
 import { history } from "umi";
 
 export default ()=>{
-    history.push("/solution");
+    history.push("/template");
     return(<></>);
 }

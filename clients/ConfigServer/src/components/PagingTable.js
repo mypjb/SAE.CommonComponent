@@ -4,12 +4,12 @@ import { useState } from "react";
 
 export default (props) => {
 
-    const { dispatch, type } = props;
-    const [state, setState] = useState({ paging: props.paging, items: props.items });
-    const { paging, items } = state;
+    const { dispatch, dispatchType } = props;
+    const { paging, items } = props;
     const handleSkipPage = (pageIndex, pageSize) => {
+        debugger;
         dispatch({
-            type: type,
+            type: dispatchType,
             payload: {
                 data: {
                     pageIndex,
@@ -25,7 +25,7 @@ export default (props) => {
     const pagination = {
         current: paging.pageIndex,
         total: paging.totalCount,
-        size: paging.pageSize,
+        pageSize: paging.pageSize,
         onChange: handleSkipPage
     };
     return (<Table {...props} dataSource={items} pagination={pagination} />);

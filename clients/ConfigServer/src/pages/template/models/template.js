@@ -18,6 +18,13 @@ export default {
         if (pathname === '/template') {
           dispatch({
             type: 'paging',
+            payload: {
+              data: {
+                pageIndex: 1,
+                pageSize: 1,
+                totalCount: 0
+              }
+            },
           });
         }
       });

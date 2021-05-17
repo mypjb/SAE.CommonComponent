@@ -5,7 +5,7 @@ import { connect } from 'umi';
 import styles from './index.less';
 import AddForm from './components/AddForm';
 import EditForm from './components/EditForm';
-import { defaultOperation } from '@/utils/utils';
+import { defaultOperation,defaultDispatchType } from '@/utils/utils';
 import PagingTable from '@/components/PagingTable';
 
 const { Search } = Input;
@@ -17,12 +17,14 @@ export default connect(({ template }) => (
     
     const { dispatch, template } = props;
 
+    const dispatchType=defaultDispatchType("template");
+
     const handleDelete = (row) => {
       Modal.confirm({
         title: 'Are you sure delete this task?',
         onOk: () => {
           dispatch({
-            type: 'template/delete',
+            type: dispatchType.delete,
             payload: { id: row.id },
           });
         }
@@ -34,14 +36,14 @@ export default connect(({ template }) => (
     }
 
     const handleEdit = (row) => {
-      defaultOperation.edit({ dispatch, type: 'template/find', data: row.id, element: EditForm });
+      defaultOperation.edit({ dispatch, type: dispatchType.find, data: row.id, element: EditForm });
     }
 
 
 
     const handleSearch = (name) => {
       dispatch({
-        type: 'template/search',
+        type: dispatchType.search,
         payload: { name },
       });
     }
@@ -93,7 +95,7 @@ export default connect(({ template }) => (
               <Search placeholder="input search text" onSearch={handleSearch} className={styles.search} enterButton />
             </Col>
           </Row>
-          <PagingTable {...props} {...template} columns={columns} />
+          <PagingTable {...props} {...template} dispatchType={dispatchType.paging} columns={columns} />
         </div>
       </PageHeaderWrapper>
     );
