@@ -15,9 +15,11 @@ namespace SAE.CommonComponent.ConfigServer.Handles
     public class EnvironmentVariableHandler : AbstractHandler<EnvironmentVariable>,
                                               ICommandHandler<EnvironmentVariableCommand.Create, string>,
                                               ICommandHandler<EnvironmentVariableCommand.Change>,
+                                              ICommandHandler<EnvironmentVariableCommand.Query, IPagedList<EnvironmentVariableDto>>,
                                               ICommandHandler<Command.Delete<EnvironmentVariable>>,
                                               ICommandHandler<Command.Find<EnvironmentVariableDto>, EnvironmentVariableDto>,
                                               ICommandHandler<Command.List<EnvironmentVariableDto>, IEnumerable<EnvironmentVariableDto>>
+                                              
     {
         private readonly IStorage _storage;
 
@@ -57,6 +59,13 @@ namespace SAE.CommonComponent.ConfigServer.Handles
                                        .AsEnumerable();
 
             return Task.FromResult(result);
+        }
+
+        public async Task<IPagedList<EnvironmentVariableDto>> Handle(EnvironmentVariableCommand.Query command)
+        {
+            var query = this._storage.AsQueryable<EnvironmentVariableDto>();
+            
+            return PagedList.Build(query, command);
         }
     }
 }

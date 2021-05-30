@@ -3,6 +3,7 @@ using SAE.CommonComponent.ConfigServer.Commands;
 using SAE.CommonComponent.ConfigServer.Domains;
 using SAE.CommonComponent.ConfigServer.Dtos;
 using SAE.CommonLibrary.Abstract.Mediator;
+using SAE.CommonLibrary.Abstract.Model;
 using SAE.CommonLibrary.EventStore.Document;
 using System;
 using System.Collections.Generic;
@@ -51,6 +52,11 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
         public async Task<object> List()
         {
             return await this._mediator.Send<IEnumerable<EnvironmentVariableDto>>(new Command.List<EnvironmentVariableDto>());
+        }
+        [HttpGet("{action}")]
+        public async Task<object> Paging([FromRoute] EnvironmentVariableCommand.Query command)
+        {
+            return await this._mediator.Send<IPagedList<EnvironmentVariableDto>>(command);
         }
     }
 }

@@ -24,5 +24,8 @@ namespace SAE.CommonComponent.ConfigServer.Commands
             public string Name { get; set; }
         }
 
+        public class Query:Paging
+        {
+        }
     }
 }
