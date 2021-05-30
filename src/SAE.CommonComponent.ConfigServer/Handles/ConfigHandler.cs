@@ -39,6 +39,10 @@ namespace SAE.CommonComponent.ConfigServer.Handles
 
         public async Task<string> Handle(ConfigCommand.Create command)
         {
+            var existEnv = this._storage.AsQueryable<EnvironmentVariableDto>()
+                                     .Any(s => s.Id == command.EnvironmentId);
+            Assert.Build(existEnv)
+                  .True("environment not exist!");
             var config = await this.Add(new Config(command));
             return config.Id;
         }
