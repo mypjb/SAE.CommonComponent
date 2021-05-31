@@ -1,5 +1,4 @@
 import { Table } from "antd";
-import { useState } from "react";
 
 
 export default (props) => {
@@ -21,7 +20,7 @@ export default (props) => {
                         pageSize
                     },
                     callback: (data) => {
-                        setState(data);
+                        console.info(data);
                     }
                 }
             })

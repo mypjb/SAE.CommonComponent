@@ -1,30 +1,31 @@
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import React from 'react';
 import { Row, Col, Input, Table, Button, Modal } from 'antd';
-import { connect, Link } from 'umi';
+import { connect } from 'umi';
 import styles from './index.less';
+import { defaultOperation,defaultDispatchType } from '@/utils/utils';
 import AddForm from './components/AddForm';
 import EditForm from './components/EditForm';
-import { defaultOperation, defaultDispatchType } from '@/utils/utils';
 import PagingTable from '@/components/PagingTable';
 
 const { Search } = Input;
 
-export default connect(({ solution }) => (
+export default connect(({ environment }) => (
   {
-    solution
+    environment
   }))((props) => {
+    
+    const { dispatch, environment } = props;
 
-    const { dispatch, solution } = props;
-    const dispatchType = defaultDispatchType("solution");
+    const dispatchType=defaultDispatchType("environment");
+
     const handleDelete = (row) => {
-      const id = row.id;
       Modal.confirm({
         title: 'Are you sure delete this task?',
         onOk: () => {
           dispatch({
             type: dispatchType.delete,
-            payload: { id },
+            payload: { id: row.id },
           });
         }
       });
@@ -38,9 +39,11 @@ export default connect(({ solution }) => (
       defaultOperation.edit({ dispatch, type: dispatchType.find, data: row.id, element: EditForm });
     }
 
+
+
     const handleSearch = (name) => {
       dispatch({
-        type: dispatchType.add,
+        type: dispatchType.search,
         payload: { name },
       });
     }
@@ -58,7 +61,7 @@ export default connect(({ solution }) => (
         title: 'name',
         dataIndex: 'name',
         key: 'name',
-      }, {
+      },{
         title: 'createTime',
         dataIndex: 'createTime',
         key: 'createTime'
@@ -68,16 +71,12 @@ export default connect(({ solution }) => (
           <span>
             <Button type='link' onClick={handleEdit.bind(null, row)} style={{ marginRight: 16 }}>Edit</Button>
             <Button type='link' onClick={handleDelete.bind(null, row)}>Delete</Button>
-            <Link to={`/solution/project/${row.id}`} >
-              <Button type='link'>Project Manage</Button>
-            </Link>
-            <Link to={`/solution/config/${row.id}`} >
-              <Button type='link'>Config Manage</Button>
-            </Link>
           </span>
         )
       }
     ];
+
+
 
     return (
       <PageHeaderWrapper className={styles.main}>
@@ -85,19 +84,14 @@ export default connect(({ solution }) => (
           <Row>
             <Col span={18}>
               <Button type="primary" onClick={handleAdd}>Add</Button>
-              <Link to="/template">
-                <Button type='primary'>Template</Button>
-              </Link>
-              <Link to="/environment">
-                <Button type='primary'>Environment</Button>
-              </Link>
             </Col>
             <Col span={6}>
               <Search placeholder="input search text" onSearch={handleSearch} className={styles.search} enterButton />
             </Col>
           </Row>
-          <PagingTable {...props} {...solution} dispatchType={dispatchType.paging} columns={columns} />
+          <PagingTable {...props} {...environment} dispatchType={dispatchType.paging} columns={columns} />
         </div>
       </PageHeaderWrapper>
     );
   });
+

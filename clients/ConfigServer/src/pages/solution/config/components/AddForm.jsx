@@ -1,59 +1,48 @@
 import React from 'react';
-import { Form, Input, Modal, Select } from 'antd';
-import { connect } from 'umi';
+import { Form, Input, Select } from 'antd';
 import { validatorJson, handleFormat } from '@/utils/utils';
-
+import { defaultFormBuild } from '@/utils/utils';
 
 const { Option } = Select;
 const { TextArea } = Input;
 
 
-export default connect(({ config }) => (
-    {
-        config
-    }))(({ dispatch, visible, config }) => {
+export default (props) => {
 
-        const { params, templates } = config;
+    const { config } = props;
 
-        const solutionId = params && params.solutionId ? params.solutionId : '';
+    const { params, templates } = config;
 
-        const [form] = Form.useForm();
+    const solutionId = params && params.solutionId ? params.solutionId : '';
 
-        const handleSave = (payload) => {
-            dispatch({ type: 'config/add', payload: { ...payload, solutionId } });
-        }
+    const [form] = Form.useForm();
 
-        const handleOk = () => {
-            form.submit();
-        };
+    const [handleSave] = defaultFormBuild({ ...props, form, type: "environment/add" });
 
-        const handleCancel = () => {
-            dispatch({ type: 'config/setFormStaus', payload: 0 });
-        };
+    const handleSelectTemplate = (value, { data }) => {
+        form.setFieldsValue({ content: data.format });
+    }
 
-        const handleSelectTemplate = (value, { data }) => {
-            form.setFieldsValue({ content: data.format });
-        }
+    const handleFormatContent = handleFormat.bind(this, { form, fieldName: 'content' });
 
-        const handleFormatContent = handleFormat.bind(this, { form, fieldName: 'content' });
+    const Options = templates.map(data => <Option value={data.id} data={data}>{data.name}</Option>)
 
-        const Options = templates.map(data => <Option value={data.id} data={data}>{data.name}</Option>)
-
-        return (
-            <Modal forceRender title="add" visible={visible} onOk={handleOk} onCancel={handleCancel} closable={false}>
-                <Form form={form} size='middl' onFinish={handleSave}>
-                    <Form.Item name="name" label="name" rules={[{ required: true }]}>
-                        <Input />
-                    </Form.Item>
-                    <Form.Item name="templateId" label="template" >
-                        <Select onChange={handleSelectTemplate} showSearch placeholder="Select a tempalte" optionFilterProp="children" style={{ width: 200 }}>
-                            {Options}
-                        </Select>
-                    </Form.Item>
-                    <Form.Item name="content" label="content" rules={[{ validator: validatorJson, required: true }]}>
-                        <TextArea autoSize={{ minRows: 16 }} onDoubleClick={handleFormatContent} />
-                    </Form.Item>
-                </Form>
-            </Modal>
-        );
-    })
+    return (
+        <Form form={form} size='middl' onFinish={handleSave}>
+            <Form.Item name="name" label="name" rules={[{ required: true }]}>
+                <Input />
+            </Form.Item>
+            <Form.Item name="templateId" label="template" >
+                <Select onChange={handleSelectTemplate} showSearch placeholder="Select a tempalte" optionFilterProp="children" style={{ width: 200 }}>
+                    {Options}
+                </Select>
+            </Form.Item>
+            <Form.Item name="content" label="content" rules={[{ validator: validatorJson, required: true }]}>
+                <TextArea autoSize={{ minRows: 16 }} onDoubleClick={handleFormatContent} />
+            </Form.Item>
+            <Form.Item name="solutionId" hidden>
+                <Input value={solutionId} />
+            </Form.Item>
+        </Form>
+    );
+}

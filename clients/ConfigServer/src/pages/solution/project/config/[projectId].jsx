@@ -25,7 +25,6 @@ class ProjectList extends React.Component {
 
     const { dispatch, projectConfig, match } = this.props;
 
-
     const handleDelete = () => {
       Modal.confirm({
         title: 'Are you sure delete this task?',
@@ -39,7 +38,7 @@ class ProjectList extends React.Component {
     }
 
     const handleRelevance = () => {
-      defaultOperation.add({ dispatch, element: RelevanceTable });
+      defaultOperation.add({ dispatch, element: RelevanceTable, ...match.params });
     };
 
 

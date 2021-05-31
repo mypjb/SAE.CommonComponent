@@ -4,16 +4,14 @@ import { Row, Col, Input, Table, Button, Modal } from 'antd';
 import { connect } from 'umi';
 import AddForm from './components/AddForm';
 import EditForm from './components/EditForm';
+import PagingTable from '@/components/PagingTable';
+import { defaultOperation, defaultDispatchType } from '@/utils/utils';
 
 const { Search } = Input;
 
 class configList extends React.Component {
   constructor(props) {
     super(props);
-    props.dispatch({
-      type: "config/search",
-      payload: props.match.params
-    });
 
     props.dispatch({
       type: "config/queryTemplateList"
@@ -23,43 +21,31 @@ class configList extends React.Component {
 
   render() {
     const { dispatch, config, match } = this.props;
+    const dispatchType = defaultDispatchType("config");
 
-    const { formStaus, paging, items } = config;
-
-    const handleRemove = (e) => {
-      const id = e.target.value;
+    const handleDelete = (row) => {
       Modal.confirm({
         title: 'Are you sure delete this task?',
         onOk: () => {
           dispatch({
-            type: 'config/remove',
-            payload: { id },
+            type: dispatchType.delete,
+            payload: { id: row.id },
           });
         }
       });
     }
 
     const handleAdd = () => {
-      dispatch({ type: 'config/setFormStaus', payload: 1 });
+      defaultOperation.add({ dispatch, element: AddForm, config });
     }
 
-    const handleEdit = (e) => {
-      dispatch({ type: 'config/query', payload: { id: e.target.value }, });
-    }
-
-    const handleSkipPage = (pageIndex, pageSize) => {
-      dispatch({
-        type: "config/paging",
-        payload: {
-          pageIndex,
-          pageSize
-        }
-      })
+    const handleEdit = (row) => {
+      defaultOperation.edit({ dispatch, type: dispatchType.find, data: row.id, element: EditForm });
     }
 
     const handleSearch = (name) => {
       dispatch({
-        type: 'config/search',
+        type: dispatchType.search,
         payload: { name, ...match.params },
       });
     }
@@ -90,18 +76,12 @@ class configList extends React.Component {
         render: (text, row) => (
           <span>
             <Button type='link' value={row.id} onClick={handleEdit} style={{ marginRight: 16 }}>Edit</Button>
-            <Button type='link' value={row.id} onClick={handleRemove}>Delete</Button>
+            <Button type='link' value={row.id} onClick={handleDelete}>Delete</Button>
           </span>
         )
       }
     ];
 
-    const pagination = {
-      current: paging.pageIndex,
-      total: paging.totalCount,
-      size: paging.pageSize,
-      onChange: handleSkipPage
-    };
 
     return (
       <PageHeaderWrapper>
@@ -114,9 +94,7 @@ class configList extends React.Component {
               <Search placeholder="input search text" onSearch={handleSearch} enterButton />
             </Col>
           </Row>
-          <Table columns={columns} dataSource={items} pagination={pagination} />
-          <AddForm visible={formStaus === 1} />
-          <EditForm visible={formStaus === 2} />
+          <PagingTable {...this.props} {...config} dispatchType={dispatchType.paging} columns={columns} />
         </div>
       </PageHeaderWrapper>
     );

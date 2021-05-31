@@ -17,8 +17,9 @@ export default (props) => {
       payload: {
         pageIndex,
         pageSize,
+        projectId,
         callback: (data) => {
-          console.log({ state,data });
+          console.log({ state, data });
           setState(data);
         }
       }
@@ -28,7 +29,7 @@ export default (props) => {
   useEffect(() => {
     handleSkipPage(paging.pageIndex, paging.pageSize);
   }, [paging.pageIndex]);
-
+ 
 
 
   const columns = [
@@ -40,8 +41,17 @@ export default (props) => {
       }
     },
     {
-      title: 'alias',
-      dataIndex: 'alias',
+      title: 'name',
+      dataIndex: 'name',
+    },
+    {
+      title: 'version',
+      dataIndex: 'version',
+    },
+    {
+      title: 'content',
+      dataIndex: 'content',
+      ellipsis:true
     }
   ];
 

@@ -1,4 +1,4 @@
-import request from "../service"
+import request from "../projectConfigRelevanceService"
 import { defaultModel } from "@/utils/utils";
 export default {
   state: {
