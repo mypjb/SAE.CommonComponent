@@ -10,7 +10,14 @@ export default {
     ...defaultModel.reducers
   },
   effects: {
-    ...defaultModel.effects({ request, name: "template" })
+    ...defaultModel.effects({ request, name: "template" }),
+    *list(payload, { call }) {
+      const { callback } = payload;
+      const data = yield call(request.list);
+      if (callback) {
+        callback(data);
+      }
+    }
   },
   subscriptions: {
     setup({ dispatch, history }) {

@@ -1,5 +1,4 @@
 import request from "../service";
-import templateRequest from "@/services/template";
 import { defaultModel } from "@/utils/utils"
 
 export default {
@@ -13,11 +12,7 @@ export default {
     ...defaultModel.reducers
   },
   effects: {
-    ...defaultModel.effects({ request, name: "config" }),
-    *queryTemplateList(params, { call, put }) {
-      const list = yield call(templateRequest.list);
-      yield put({ type: 'setTemplateList', payload: list });
-    }
+    ...defaultModel.effects({ request, name: "config" })
   },
   subscriptions: {
     setup({ dispatch, history }) {

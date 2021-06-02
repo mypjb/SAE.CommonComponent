@@ -12,12 +12,7 @@ const { Search } = Input;
 class configList extends React.Component {
   constructor(props) {
     super(props);
-
-    props.dispatch({
-      type: "config/queryTemplateList"
-    });
   }
-
 
   render() {
     const { dispatch, config, match } = this.props;
@@ -36,7 +31,7 @@ class configList extends React.Component {
     }
 
     const handleAdd = () => {
-      defaultOperation.add({ dispatch, element: AddForm, config });
+      defaultOperation.add({ dispatch, element: AddForm, config, ...match.params });
     }
 
     const handleEdit = (row) => {

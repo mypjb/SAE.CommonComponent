@@ -1,19 +1,22 @@
 import React from 'react';
 import { Form, Input, Select } from 'antd';
-import { validatorJson, handleFormat } from '@/utils/utils';
-import { defaultFormBuild } from '@/utils/utils';
+import { validatorJson, handleFormat, defaultFormBuild } from '@/utils/utils';
+import { useModel } from 'umi';
 
 const { Option } = Select;
 const { TextArea } = Input;
 
-
 export default (props) => {
 
+    
+    // const model = useModel("template", model => {
+    //     console.log(model);
+    //     return model;
+    // });
+    console.log({ props });
     const { config } = props;
 
-    const { params, templates } = config;
-
-    const solutionId = params && params.solutionId ? params.solutionId : '';
+    const { solutionId } = config;
 
     const [form] = Form.useForm();
 
@@ -22,10 +25,9 @@ export default (props) => {
     const handleSelectTemplate = (value, { data }) => {
         form.setFieldsValue({ content: data.format });
     }
-
     const handleFormatContent = handleFormat.bind(this, { form, fieldName: 'content' });
 
-    const Options = templates.map(data => <Option value={data.id} data={data}>{data.name}</Option>)
+    const Options = [].map(data => <Option value={data.id} data={data}>{data.name}</Option>)
 
     return (
         <Form form={form} size='middl' onFinish={handleSave}>

@@ -1,7 +1,7 @@
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import React from 'react';
 import { Row, Col, Input, Table, Button, Modal } from 'antd';
-import { connect, Link } from 'umi';
+import { connect, Link, useModel } from 'umi';
 import styles from './index.less';
 import AddForm from './components/AddForm';
 import EditForm from './components/EditForm';
@@ -12,17 +12,19 @@ const { Search } = Input;
 
 export default connect(({ solution }) => (
   {
-    solution
+    solution                                                                                                                                                                                                                                                                                                    
   }))((props) => {
-
-    const { dispatch, solution } = props;
+    const model = useModel('template');
+    model.load();
+      console.log(model);
+    const { dispatch, solution } = props;                                      
     const dispatchType = defaultDispatchType("solution");
-    const handleDelete = (row) => {
+    const handleDelete = (row) => {                                                
       const id = row.id;
       Modal.confirm({
         title: 'Are you sure delete this task?',
         onOk: () => {
-          dispatch({
+          dispatch({                                                                                  
             type: dispatchType.delete,
             payload: { id },
           });
