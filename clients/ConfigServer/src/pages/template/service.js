@@ -1,9 +1,11 @@
 import service from "@/utils/service";
 import { request as httpClient } from "umi";
 
-service.list = async function () {
-  return request('/template/list')
+const request = service('template');
+
+request.list = async function () {
+  return httpClient('/template/list')
 }
 
-export default service('template');
+export default request;
 

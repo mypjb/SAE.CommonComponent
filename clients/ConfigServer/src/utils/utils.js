@@ -121,17 +121,17 @@ export const defaultModel = {
         };
       },
       *paging({ payload }, { call, put, select }) {
-      
+
         const { callback, data } = parsingPayload(payload);
 
         const params = yield select((globalStatus) => (globalStatus[stateName].params));
 
-        const paging = yield call(request.queryPaging, { ...data, ...params});
+        const paging = yield call(request.queryPaging, { ...data, ...params });
 
         yield put({ type: "setList", payload: paging });
 
         yield put({ type: "setPaging", payload: paging });
-        
+
         if (callback) {
           const state = yield select((globalStatus) => (globalStatus[stateName]));
           callback(state);
@@ -171,7 +171,7 @@ export const defaultHandler = {
 
 //default operation
 export const defaultOperation = {
-  add: (props) => {
+  add: (props, proxyModal) => {
     const { dispatch, title, element, icon } = props;
     FormModal.confirm({
       title: title || "Add",
@@ -180,9 +180,9 @@ export const defaultOperation = {
       closable: false,
       contentElement: element,
       contentProps: { ...props }
-    });
+    }, proxyModal);
   },
-  edit: (props) => {
+  edit: (props, proxyModal) => {
     const { dispatch, type, title, data, element, icon } = props;
     dispatch({
       type: type,
@@ -199,7 +199,7 @@ export const defaultOperation = {
               ...props,
               model
             }
-          });
+          }, proxyModal);
         }
       }
     });

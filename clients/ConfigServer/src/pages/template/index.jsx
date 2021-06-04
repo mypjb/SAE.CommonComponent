@@ -5,7 +5,7 @@ import { connect } from 'umi';
 import styles from './index.less';
 import AddForm from './components/AddForm';
 import EditForm from './components/EditForm';
-import { defaultOperation,defaultDispatchType } from '@/utils/utils';
+import { defaultOperation, defaultDispatchType } from '@/utils/utils';
 import PagingTable from '@/components/PagingTable';
 
 const { Search } = Input;
@@ -14,10 +14,12 @@ export default connect(({ template }) => (
   {
     template
   }))((props) => {
-    
+
+    const [modal, contextHolder] = Modal.useModal();
+
     const { dispatch, template } = props;
 
-    const dispatchType=defaultDispatchType("template");
+    const dispatchType = defaultDispatchType("template");
 
     const handleDelete = (row) => {
       Modal.confirm({
@@ -32,7 +34,7 @@ export default connect(({ template }) => (
     }
 
     const handleAdd = () => {
-      defaultOperation.add({ dispatch, element: AddForm });
+      defaultOperation.add({ dispatch, element: AddForm }, modal);
     }
 
     const handleEdit = (row) => {
@@ -86,6 +88,7 @@ export default connect(({ template }) => (
 
     return (
       <PageHeaderWrapper className={styles.main}>
+        {contextHolder}
         <div>
           <Row>
             <Col span={18}>

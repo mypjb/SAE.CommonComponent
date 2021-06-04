@@ -1,6 +1,6 @@
 import React from 'react';
 import { Form, Input } from 'antd';
-import { validatorJson, handleFormat,defaultFormBuild } from '@/utils/utils';
+import { validatorJson, handleFormat, defaultFormBuild } from '@/utils/utils';
 
 const { TextArea } = Input;
 

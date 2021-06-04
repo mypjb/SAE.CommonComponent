@@ -1,8 +1,9 @@
-import { useCallback, useState } from "react"
-import request from "../pages/template/service";
+import { useCallback, useEffect, useState } from "react";
+import request from "@/pages/template/service";
 
 export default () => {
     const [state, setState] = useState([]);
+    console.log(request);
     const load = useCallback(() => {
         request.list()
             .then((data) => {
@@ -11,7 +12,10 @@ export default () => {
                 console.error(ex);
             });
     }, []);
-    console.log(22);
+    useEffect(() => {
+        load();
+    }, []);
+    
     return {
         state,
         load
