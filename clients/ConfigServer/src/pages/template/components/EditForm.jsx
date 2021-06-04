@@ -10,7 +10,7 @@ export default (props) => {
 
     const [form] = Form.useForm();
 
-    const [handleSave] = defaultFormBuild({ ...props, form, type: "template/edit" });
+    const [handleSave] = defaultFormBuild({ ...props, form, dispatchType: "template/edit" });
 
     form.setFieldsValue(model);
 

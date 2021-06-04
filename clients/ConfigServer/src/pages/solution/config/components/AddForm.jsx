@@ -20,7 +20,7 @@ export default (props) => {
 
     const [form] = Form.useForm();
 
-    const [handleSave] = defaultFormBuild({ ...props, form, type: "environment/add" });
+    const [handleSave] = defaultFormBuild({ ...props, form, dispatchType: "environment/add" });
 
     const handleSelectTemplate = (value, { data }) => {
         form.setFieldsValue({ content: data.format });

@@ -5,7 +5,7 @@ import { defaultFormBuild } from '@/utils/utils';
 export default (props) => {
     const [form] = Form.useForm();
 
-    const [handleSave] = defaultFormBuild({ ...props, form, type: "solution/add" });
+    const [handleSave] = defaultFormBuild({ ...props, form, dispatchType: "solution/add" });
 
     return (
         <Form form={form} size='middl' onFinish={handleSave}>

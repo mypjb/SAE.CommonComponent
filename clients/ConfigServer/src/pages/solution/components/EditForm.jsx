@@ -9,7 +9,7 @@ export default props => {
 
     form.setFieldsValue(model);
 
-    const [handleSave] = defaultFormBuild({ ...props, form, type: "solution/edit" });
+    const [handleSave] = defaultFormBuild({ ...props, form, dispatchType: "solution/edit" });
 
     return (<Form form={form} size='middl' onFinish={handleSave} >
         <Form.Item name="name" label="name" rules={[{ required: true }]}>

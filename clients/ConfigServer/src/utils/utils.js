@@ -1,7 +1,5 @@
-import { parse } from 'querystring';
-import pathRegexp from 'path-to-regexp';
-import { history } from "umi";
 import FormModal from "@/components/FormModal";
+import { Modal } from "antd";
 //validator json
 export const validatorJson = (rule, value) => {
   if (value) {
@@ -147,7 +145,6 @@ export const defaultModel = {
 
 //default Form Build fn
 export const defaultFormBuild = (props) => {
-
   return [
     defaultHandler.finish(props),
     defaultHandler.submit(props)
@@ -162,9 +159,30 @@ export const defaultHandler = {
       return result || false;
     });
   },
-  finish: ({ dispatch, type, closeCallback }) => {
+  finish: ({ dispatch, dispatchType, closeCallback }) => {
     return (data) => {
-      dispatch({ type, payload: { data, callback: closeCallback } });
+      dispatch({ type: dispatchType, payload: { data, callback: closeCallback } });
+    }
+  },
+  delete: ({ dispatch, dispatchType }) => {
+    return (row) => {
+      Modal.confirm({
+        title: 'Are you sure delete this task?',
+        onOk: () => {
+          dispatch({
+            type: dispatchType,
+            payload: { id: row.id },
+          });
+        }
+      });
+    }
+  },
+  search: ({ dispatch, dispatchType }) => {
+    return (payload) => {
+      dispatch({
+        type: dispatchType,
+        payload: payload
+      });
     }
   }
 };

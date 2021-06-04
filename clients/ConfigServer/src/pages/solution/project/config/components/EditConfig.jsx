@@ -7,7 +7,7 @@ export default (props) => {
 
     const [form] = Form.useForm();
 
-    const [handleSave] = defaultFormBuild({ ...props, form, type: "projectConfig/edit" });
+    const [handleSave] = defaultFormBuild({ ...props, form, dispatchType: "projectConfig/edit" });
     
     form.setFieldsValue(model);
 
