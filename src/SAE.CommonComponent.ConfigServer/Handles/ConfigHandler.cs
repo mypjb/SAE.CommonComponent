@@ -26,36 +26,37 @@ namespace SAE.CommonComponent.ConfigServer.Handles
 
         }
 
-        public Task<ConfigDto> Handle(Command.Find<ConfigDto> command)
+        public Task<ConfigDto> HandleAsync(Command.Find<ConfigDto> command)
         {
             return Task.FromResult(this._storage.AsQueryable<ConfigDto>()
                      .FirstOrDefault(s => s.Id == command.Id));
         }
 
-        public Task Handle(Command.Delete<Config> command)
+        public Task HandleAsync(Command.Delete<Config> command)
         {
-            return this.Remove(command.Id);
+            return this.DeleteAsync(command.Id);
         }
 
-        public async Task<string> Handle(ConfigCommand.Create command)
+        public async Task<string> HandleAsync(ConfigCommand.Create command)
         {
             var existEnv = this._storage.AsQueryable<EnvironmentVariableDto>()
                                      .Any(s => s.Id == command.EnvironmentId);
             Assert.Build(existEnv)
                   .True("environment not exist!");
-            var config = await this.Add(new Config(command));
+            var config = await this.AddAsync(new Config(command));
             return config.Id;
         }
 
-        public Task Handle(ConfigCommand.Change command)
+        public Task HandleAsync(ConfigCommand.Change command)
         {
-            return this.Update(command.Id, s => s.Change(command));
+            return this.UpdateAsync(command.Id, s => s.Change(command));
         }
 
-        public async Task<IPagedList<ConfigDto>> Handle(ConfigCommand.Query command)
+        public async Task<IPagedList<ConfigDto>> HandleAsync(ConfigCommand.Query command)
         {
             var query = this._storage.AsQueryable<ConfigDto>()
-                                     .Where(s => s.SolutionId == command.SolutionId);
+                                     .Where(s => s.SolutionId == command.SolutionId &&
+                                                 s.EnvironmentId == command.EnvironmentId);
             if (!command.Name.IsNullOrWhiteSpace())
             {
                 query = query.Where(s => s.Name.Contains(command.Name));

@@ -27,6 +27,10 @@ namespace SAE.CommonComponent.ConfigServer.Commands
 
         public class Query : Paging
         {
+            /// <summary>
+            /// Template Name
+            /// </summary>
+            public string Name { get; set; }
         }
     }
 }

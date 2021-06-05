@@ -24,7 +24,7 @@ namespace SAE.CommonComponent.Authorize.Builders
         }
         public async Task Build(IEnumerable<RoleDto> models)
         {
-            var permissionDtos=await this._mediator.Send<IEnumerable<PermissionDto>>(new Command.List<PermissionDto>());
+            var permissionDtos=await this._mediator.SendAsync<IEnumerable<PermissionDto>>(new Command.List<PermissionDto>());
 
             foreach(RoleDto dto in models)
             {

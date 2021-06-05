@@ -27,35 +27,35 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
         [HttpPost]
         public async Task<object> Add(TemplateCommand.Create command)
         {
-            return await this._mediator.Send<string>(command);
+            return await this._mediator.SendAsync<string>(command);
         }
         [HttpDelete("{id}")]
         public async Task<object> Delete([FromRoute]Command.Delete<Template> command)
         {
-            await this._mediator.Send(command);
+            await this._mediator.SendAsync(command);
             return this.Ok();
         }
         [HttpPut]
         public async Task<object> Put(TemplateCommand.Change command)
         {
-            await this._mediator.Send(command);
+            await this._mediator.SendAsync(command);
             return this.Ok();
         }
         [HttpGet("{id}")]
         public async Task<object> Get([FromRoute] Command.Find<TemplateDto> command)
         {
-            return await this._mediator.Send<TemplateDto>(command);
+            return await this._mediator.SendAsync<TemplateDto>(command);
         }
         [HttpGet("{action}")]
         public async Task<object> Paging([FromQuery]TemplateCommand.Query command)
         {
-            return await this._mediator.Send<IPagedList<TemplateDto>>(command);
+            return await this._mediator.SendAsync<IPagedList<TemplateDto>>(command);
         }
 
         [HttpGet("{action}")]
         public async Task<object> List()
         {
-            return await this._mediator.Send<IEnumerable<TemplateDto>>(new Command.List<TemplateDto>());
+            return await this._mediator.SendAsync<IEnumerable<TemplateDto>>(new Command.List<TemplateDto>());
         }
     }
 }

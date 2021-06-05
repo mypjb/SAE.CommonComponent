@@ -22,14 +22,14 @@ namespace SAE.CommonComponent.Identity.Handlers
         {
             this._mediator = mediator;
         }
-        public async Task<IPrincipal> Handle(AccountLoginCommand command)
+        public async Task<IPrincipal> HandleAsync(AccountLoginCommand command)
         {
             var authenticationCommand = new UserCommand.Authentication
             {
                 AccountName = command.Name,
                 Password = command.Password
             };
-            var dto = await this._mediator.Send<UserDto>(authenticationCommand);
+            var dto = await this._mediator.SendAsync<UserDto>(authenticationCommand);
 
             Assert.Build(dto)
                   .NotNull("Incorrect user name or password!");

@@ -23,29 +23,29 @@ namespace SAE.CommonComponent.ConfigServer.Handles
             this._storage = storage;
         }
 
-        public async Task<string> Handle(SolutionCommand.Create command)
+        public async Task<string> HandleAsync(SolutionCommand.Create command)
         {
-            var solution = await this.Add(new Solution(command));
+            var solution = await this.AddAsync(new Solution(command));
             return solution.Id;
         }
 
-        public Task Handle(SolutionCommand.Change command)
+        public Task HandleAsync(SolutionCommand.Change command)
         {
-            return this.Update(command.Id, s => s.Change(command));
+            return this.UpdateAsync(command.Id, s => s.Change(command));
         }
 
-        public Task Handle(Command.Delete<Solution> command)
+        public Task HandleAsync(Command.Delete<Solution> command)
         {
-            return this.Remove(command.Id);
+            return this.DeleteAsync(command.Id);
         }
 
-        public Task<SolutionDto> Handle(Command.Find<SolutionDto> command)
+        public Task<SolutionDto> HandleAsync(Command.Find<SolutionDto> command)
         {
             return Task.FromResult(this._storage.AsQueryable<SolutionDto>()
                 .FirstOrDefault(s => s.Id == command.Id));
         }
 
-        public async Task<IPagedList<SolutionDto>> Handle(SolutionCommand.Query command)
+        public async Task<IPagedList<SolutionDto>> HandleAsync(SolutionCommand.Query command)
         {
             var query = this._storage.AsQueryable<SolutionDto>();
             if (!string.IsNullOrWhiteSpace(command.Name))

@@ -13,8 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="SAE.CommonLibrary.EventStore.Document" Version="2.0.2.8" />
-    <PackageReference Include="SAE.CommonLibrary.Plugin.AspNetCore" Version="2.0.2.8" />
+    <PackageReference Include="SAE.CommonLibrary.EventStore.Document" Version="2.0.3.1" />
+    <PackageReference Include="SAE.CommonLibrary.Plugin.AspNetCore" Version="2.0.3.1" />
   </ItemGroup>
 
   <ItemGroup>

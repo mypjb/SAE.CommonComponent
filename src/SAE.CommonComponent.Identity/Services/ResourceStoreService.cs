@@ -30,7 +30,7 @@ namespace SAE.CommonComponent.Identity.Services
 
         public async Task<ApiResource> FindApiResourceAsync(string name)
         {
-            var scopes = await this._mediator.Send<IEnumerable<ScopeDto>>(new Command.List<ScopeDto>());
+            var scopes = await this._mediator.SendAsync<IEnumerable<ScopeDto>>(new Command.List<ScopeDto>());
             var scope = scopes.FirstOrDefault(s => s.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
             if (scope == null)
             {
@@ -49,7 +49,7 @@ namespace SAE.CommonComponent.Identity.Services
 
         public async Task<IEnumerable<ApiResource>> FindApiResourcesByScopeNameAsync(IEnumerable<string> scopeNames)
         {
-            var scopes = await this._mediator.Send<IEnumerable<ScopeDto>>(new Command.List<ScopeDto>());
+            var scopes = await this._mediator.SendAsync<IEnumerable<ScopeDto>>(new Command.List<ScopeDto>());
             return scopes.Where(s => scopeNames.Any(p => s.Name.Equals(p, StringComparison.OrdinalIgnoreCase)))
                          .Select(s =>
                          {
@@ -62,7 +62,7 @@ namespace SAE.CommonComponent.Identity.Services
 
         public async Task<IEnumerable<ApiScope>> FindApiScopesByNameAsync(IEnumerable<string> scopeNames)
         {
-            var scopes = await this._mediator.Send<IEnumerable<ScopeDto>>(new Command.List<ScopeDto>());
+            var scopes = await this._mediator.SendAsync<IEnumerable<ScopeDto>>(new Command.List<ScopeDto>());
             return scopes.Select(s =>
             {
                 var apiResource = new ApiScope(s.Name, s.Display);
@@ -79,7 +79,7 @@ namespace SAE.CommonComponent.Identity.Services
 
         public async Task<Resources> GetAllResourcesAsync()
         {
-            var scopes = await this._mediator.Send<IEnumerable<ScopeDto>>(new Command.List<ScopeDto>());
+            var scopes = await this._mediator.SendAsync<IEnumerable<ScopeDto>>(new Command.List<ScopeDto>());
             return new Resources(this._identities,
                                  scopes.Select(s =>
                                  {

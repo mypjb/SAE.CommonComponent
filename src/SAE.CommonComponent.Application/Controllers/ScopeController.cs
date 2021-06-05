@@ -22,24 +22,24 @@ namespace SAE.CommonComponent.Application.Controllers
         [HttpPost]
         public async Task<object> Add(ScopeCommand.Create command)
         {
-            await this._mediator.Send(command);
+            await this._mediator.SendAsync(command);
             return this.Ok();
         }
         [HttpDelete]
         public async Task<object> Remove(ScopeCommand.Delete command)
         {
-            await this._mediator.Send(command);
+            await this._mediator.SendAsync(command);
             return this.Ok();
         }
         [HttpGet("{action}")]
         public async Task<object> Paging([FromQuery]ScopeCommand.Query command)
         {
-            return await this._mediator.Send<IEnumerable<ScopeDto>>(command);
+            return await this._mediator.SendAsync<IEnumerable<ScopeDto>>(command);
         }
         [HttpGet("{action}")]
         public async Task<object> ALL()
         {
-            return await this._mediator.Send<IEnumerable<ScopeDto>>(new Command.List<ScopeDto>());
+            return await this._mediator.SendAsync<IEnumerable<ScopeDto>>(new Command.List<ScopeDto>());
         }
 
     }

@@ -25,7 +25,7 @@ namespace SAE.CommonComponent.InitializeData
 
             //this._logging.Info($"add default scope:{scopeCommand.ToJsonString()}");
 
-            //await this._mediator.Send(scopeCommand);
+            //await this._mediator.SendAsync(scopeCommand);
 
             //var appCommand = new AppCommand.Create
             //{
@@ -36,15 +36,15 @@ namespace SAE.CommonComponent.InitializeData
             //};
 
             //this._logging.Info($"add default app:{appCommand.ToJsonString()}");
-            //await this._mediator.Send<string>(appCommand);
+            //await this._mediator.SendAsync<string>(appCommand);
 
-            //await this._mediator.Send(new AppCommand.ReferenceScope
+            //await this._mediator.SendAsync(new AppCommand.ReferenceScope
             //{
             //    Id = appCommand.Id,
             //    Scopes = new[] { Constants.Scope }
             //});
 
-            //await this._mediator.Send(new AppCommand.ChangeStatus
+            //await this._mediator.SendAsync(new AppCommand.ChangeStatus
             //{
             //    Id = appCommand.Id,
             //    Status = Status.Enable

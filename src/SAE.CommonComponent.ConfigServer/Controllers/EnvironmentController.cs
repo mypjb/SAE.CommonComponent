@@ -26,37 +26,37 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
         [HttpPost]
         public async Task<string> Add(EnvironmentVariableCommand.Create command)
         {
-            return await this._mediator.Send<string>(command);
+            return await this._mediator.SendAsync<string>(command);
         }
         [HttpPut]
         public async Task<IActionResult> Put(EnvironmentVariableCommand.Change command)
         {
-            await this._mediator.Send(command);
+            await this._mediator.SendAsync(command);
             return this.Ok();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] Command.Delete<EnvironmentVariable> command)
         {
-            await this._mediator.Send(command);
+            await this._mediator.SendAsync(command);
             return this.Ok();
         }
 
         [HttpGet("{id}")]
         public async Task<object> Find([FromRoute] Command.Find<EnvironmentVariableDto> command)
         {
-            return await this._mediator.Send<EnvironmentVariableDto>(command);
+            return await this._mediator.SendAsync<EnvironmentVariableDto>(command);
         }
 
         [HttpGet("{action}")]
         public async Task<object> List()
         {
-            return await this._mediator.Send<IEnumerable<EnvironmentVariableDto>>(new Command.List<EnvironmentVariableDto>());
+            return await this._mediator.SendAsync<IEnumerable<EnvironmentVariableDto>>(new Command.List<EnvironmentVariableDto>());
         }
         [HttpGet("{action}")]
         public async Task<object> Paging([FromRoute] EnvironmentVariableCommand.Query command)
         {
-            return await this._mediator.Send<IPagedList<EnvironmentVariableDto>>(command);
+            return await this._mediator.SendAsync<IPagedList<EnvironmentVariableDto>>(command);
         }
     }
 }

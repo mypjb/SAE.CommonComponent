@@ -26,7 +26,7 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
         [HttpGet("{action}")]
         public async Task<IActionResult> Config([FromQuery] AppCommand.Config command)
         {
-            var appConfig = await this._mediator.Send<AppConfigDto>(command);
+            var appConfig = await this._mediator.SendAsync<AppConfigDto>(command);
 
             if (command.Version == appConfig.Version)
             {

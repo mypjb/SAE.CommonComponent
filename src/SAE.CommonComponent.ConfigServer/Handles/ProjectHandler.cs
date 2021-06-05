@@ -27,29 +27,29 @@ namespace SAE.CommonComponent.ConfigServer.Handles
             this._storage = storage;
         }
 
-        public async Task<string> Handle(ProjectCommand.Create command)
+        public async Task<string> HandleAsync(ProjectCommand.Create command)
         {
-            var project = await this.Add(new Project(command));
+            var project = await this.AddAsync(new Project(command));
             return project.Id;
         }
 
-        public Task Handle(ProjectCommand.Change command)
+        public Task HandleAsync(ProjectCommand.Change command)
         {
-            return this.Update(command.Id, s => s.Change(command));
+            return this.UpdateAsync(command.Id, s => s.Change(command));
         }
 
-        public Task Handle(Command.Delete<Project> command)
+        public Task HandleAsync(Command.Delete<Project> command)
         {
-            return this.Remove(command.Id);
+            return this.DeleteAsync(command.Id);
         }
 
-        public Task<ProjectDto> Handle(Command.Find<ProjectDto> command)
+        public Task<ProjectDto> HandleAsync(Command.Find<ProjectDto> command)
         {
             return Task.FromResult(this._storage.AsQueryable<ProjectDto>()
                        .FirstOrDefault(s => s.Id == command.Id));
         }
 
-        public async Task<IPagedList<ProjectDto>> Handle(ProjectCommand.Query command)
+        public async Task<IPagedList<ProjectDto>> HandleAsync(ProjectCommand.Query command)
         {
             var query = this._storage.AsQueryable<ProjectDto>().Where(s => s.SolutionId == command.SolutionId);
             if (!command.Name.IsNullOrWhiteSpace())
@@ -59,7 +59,7 @@ namespace SAE.CommonComponent.ConfigServer.Handles
             return PagedList.Build(query, command);
         }
 
-        public async Task Handle(ProjectCommand.VersionCumulation command)
+        public async Task HandleAsync(ProjectCommand.VersionCumulation command)
         {
            var project= await this._documentStore.FindAsync<Project>(command.ProjectId);
            project.Cumulation();

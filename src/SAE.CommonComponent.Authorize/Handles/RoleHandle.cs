@@ -37,32 +37,32 @@ namespace SAE.CommonComponent.Authorize.Handles
             this._director = director;
         }
 
-        public async Task<string> Handle(RoleCommand.Create command)
+        public async Task<string> HandleAsync(RoleCommand.Create command)
         {
             var role = new Role(command);
             await role.NameExist(this.FindRole);
-            await this.Add(role);
+            await this.AddAsync(role);
             return role.Id;
         }
 
-        public async Task Handle(RoleCommand.Change command)
+        public async Task HandleAsync(RoleCommand.Change command)
         {
-            await this.Update(command.Id,async role =>
+            await this.UpdateAsync(command.Id,async role =>
             {
                 role.Change(command);
                 await role.NameExist(this.FindRole);
             });
         }
 
-        public async Task Handle(RoleCommand.ChangeStatus command)
+        public async Task HandleAsync(RoleCommand.ChangeStatus command)
         {
-            await this.Update(command.Id, role =>
+            await this.UpdateAsync(command.Id, role =>
             {
                 role.ChangeStatus(command);
             });
         }
 
-        public async Task Handle(Command.BatchDelete<Role> command)
+        public async Task HandleAsync(Command.BatchDelete<Role> command)
         {
             await command.Ids.ForEachAsync(async id =>
             {
@@ -72,7 +72,7 @@ namespace SAE.CommonComponent.Authorize.Handles
             });
         }
 
-        public async Task<IPagedList<RoleDto>> Handle(RoleCommand.Query command)
+        public async Task<IPagedList<RoleDto>> HandleAsync(RoleCommand.Query command)
         {
             var query = this._storage.AsQueryable<RoleDto>()
                                      .Where(s => s.Status > Status.Delete);
@@ -86,16 +86,16 @@ namespace SAE.CommonComponent.Authorize.Handles
             return dtos;
         }
 
-        public async Task<RoleDto> Handle(Command.Find<RoleDto> command)
+        public async Task<RoleDto> HandleAsync(Command.Find<RoleDto> command)
         {
             var dto= this._storage.AsQueryable<RoleDto>()
                                   .FirstOrDefault(s => s.Id == command.Id&& s.Status!= Status.Delete);
             return dto;
         }
 
-        public async Task Handle(RoleCommand.RelationPermission command)
+        public async Task HandleAsync(RoleCommand.RelationPermission command)
         {
-            var role =await this.GetById(command.Id);
+            var role =await this.FindAsync(command.Id);
 
             Assert.Build(role)
                   .IsNotNull();
@@ -105,9 +105,9 @@ namespace SAE.CommonComponent.Authorize.Handles
             await this._documentStore.SaveAsync(role);
         }
 
-        public async Task Handle(RoleCommand.DeletePermission command)
+        public async Task HandleAsync(RoleCommand.DeletePermission command)
         {
-            var role = await this.GetById(command.Id);
+            var role = await this.FindAsync(command.Id);
 
             Assert.Build(role)
                   .IsNotNull();

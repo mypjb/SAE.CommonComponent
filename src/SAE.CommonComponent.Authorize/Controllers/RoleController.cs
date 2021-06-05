@@ -26,42 +26,42 @@ namespace SAE.CommonComponent.Authorize.Controllers
         [HttpPost]
         public async Task<object> Add(RoleCommand.Create command)
         {
-            return await this._mediator.Send<string>(command);
+            return await this._mediator.SendAsync<string>(command);
         }
         [HttpDelete]
         public async Task<IActionResult> Delete([FromBody]Command.BatchDelete<Role> command)
         {
-            await this._mediator.Send(command);
+            await this._mediator.SendAsync(command);
             return this.Ok();
         }
         [HttpPut]
         public async Task<IActionResult> Put(RoleCommand.Change command)
         {
-            await this._mediator.Send(command);
+            await this._mediator.SendAsync(command);
             return this.Ok();
         }
         [HttpGet("{id}")]
         public async Task<object> Get([FromRoute]Command.Find<RoleDto> command)
         {
-            return await this._mediator.Send<RoleDto>(command);
+            return await this._mediator.SendAsync<RoleDto>(command);
         }
         [HttpGet("{action}")]
         public async Task<object> Paging([FromQuery]RoleCommand.Query command)
         {
-            return await this._mediator.Send<RoleCommand.Query,IPagedList<RoleDto>>(command);
+            return await this._mediator.SendAsync<RoleCommand.Query,IPagedList<RoleDto>>(command);
         }
 
         [HttpPost("{action}")]
         public async Task<IActionResult> RelationPermission(RoleCommand.RelationPermission command)
         {
-            await this._mediator.Send(command);
+            await this._mediator.SendAsync(command);
             return this.Ok();
         }
 
         [HttpDelete(nameof(RelationPermission))]
         public async Task<IActionResult> DeletePermission(RoleCommand.DeletePermission command)
         {
-            await this._mediator.Send(command);
+            await this._mediator.SendAsync(command);
             return this.Ok();
         }
 

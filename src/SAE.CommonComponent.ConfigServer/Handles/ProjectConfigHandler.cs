@@ -30,7 +30,7 @@ namespace SAE.CommonComponent.ConfigServer.Handles
             this._storage = storage;
         }
 
-        public async Task Handle(ProjectCommand.RelevanceConfig command)
+        public async Task HandleAsync(ProjectCommand.RelevanceConfig command)
         {
             if (!command.ConfigIds?.Any() ?? false)
             {
@@ -46,13 +46,13 @@ namespace SAE.CommonComponent.ConfigServer.Handles
 
             await this._documentStore.SaveAsync(projectConfigs);
 
-            await this._mediator.Send(new ProjectCommand.VersionCumulation
+            await this._mediator.SendAsync(new ProjectCommand.VersionCumulation
             {
                 ProjectId = project.Id
             });
         }
 
-        public async Task Handle(Command.BatchDelete<ProjectConfig> command)
+        public async Task HandleAsync(Command.BatchDelete<ProjectConfig> command)
         {
             if (!command.Ids?.Any() ?? false)
             {
@@ -60,19 +60,21 @@ namespace SAE.CommonComponent.ConfigServer.Handles
             }
             await this._documentStore.DeleteAsync<ProjectConfig>(command.Ids);
             var projectId = command.Ids.First().Split('_').First();
-            await this._mediator.Send(new ProjectCommand.VersionCumulation
+            await this._mediator.SendAsync(new ProjectCommand.VersionCumulation
             {
                 ProjectId = projectId
             });
         }
 
-        public async Task<IPagedList<ProjectConfigDto>> Handle(ProjectCommand.ConfigQuery command)
+        public async Task<IPagedList<ProjectConfigDto>> HandleAsync(ProjectCommand.ConfigQuery command)
         {
-            var query = this._storage.AsQueryable<ProjectConfigDto>().Where(s => s.ProjectId == command.ProjectId);
+            var query = this._storage.AsQueryable<ProjectConfigDto>()
+                                     .Where(s => s.ProjectId == command.ProjectId &&
+                                            s.EnvironmentId == command.EnvironmentId);
             return PagedList.Build(query, command);
         }
 
-        public async Task Handle(ProjectCommand.ConfigChangeAlias command)
+        public async Task HandleAsync(ProjectCommand.ConfigChangeAlias command)
         {
             var projectConfig = await this._documentStore.FindAsync<ProjectConfig>(command.Id);
 
@@ -80,6 +82,7 @@ namespace SAE.CommonComponent.ConfigServer.Handles
 
             Assert.Build(this._storage.AsQueryable<ProjectConfigDto>()
                              .Where(s => s.ProjectId == projectConfig.ProjectId &&
+                                    s.EnvironmentId == projectConfig.EnvironmentId &&
                                     s.Id != command.Id &&
                                     s.Alias == command.Alias)
                              .Count() == 0)
@@ -87,32 +90,33 @@ namespace SAE.CommonComponent.ConfigServer.Handles
 
             await this._documentStore.SaveAsync(projectConfig);
 
-            await this._mediator.Send(new ProjectCommand.VersionCumulation
+            await this._mediator.SendAsync(new ProjectCommand.VersionCumulation
             {
                 ProjectId = projectConfig.ProjectId
             });
         }
 
-        public async Task<ProjectConfigDto> Handle(Command.Find<ProjectConfigDto> command)
+        public async Task<ProjectConfigDto> HandleAsync(Command.Find<ProjectConfigDto> command)
         {
             return this._storage.AsQueryable<ProjectConfigDto>().First(s => s.Id == command.Id);
         }
 
-        async Task<IPagedList<ConfigDto>> ICommandHandler<ProjectCommand.ConfigQuery, IPagedList<ConfigDto>>.Handle(ProjectCommand.ConfigQuery command)
+        async Task<IPagedList<ConfigDto>> ICommandHandler<ProjectCommand.ConfigQuery, IPagedList<ConfigDto>>.HandleAsync(ProjectCommand.ConfigQuery command)
         {
-            var project=await this._documentStore.FindAsync<Project>(command.ProjectId);
+            var project = await this._documentStore.FindAsync<Project>(command.ProjectId);
 
             Assert.Build(project).IsNotNull();
 
             var query = this._storage.AsQueryable<ConfigDto>().Where(s => s.SolutionId == project.SolutionId);
 
             var configIds = this._storage.AsQueryable<ProjectConfig>()
-                               .Where(s => s.ProjectId == command.ProjectId)
+                               .Where(s => s.ProjectId == command.ProjectId &&
+                                      s.EnvironmentId == command.EnvironmentId)
                                .Select(s => s.ConfigId)
                                .ToArray();
 
             query = query.Where(s => configIds.Contains(s.Id));
-            
+
             return PagedList.Build(query, command);
         }
     }

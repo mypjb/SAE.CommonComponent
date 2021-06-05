@@ -36,7 +36,7 @@ namespace SAE.CommonComponent.User.Handles
             this._mediator = mediator;
         }
 
-        public async Task<string> Handle(UserCommand.Register command)
+        public async Task<string> HandleAsync(UserCommand.Register command)
         {
             var user = new Domains.User(command);
             await user.AccountExist(this.AccountExist);
@@ -44,29 +44,29 @@ namespace SAE.CommonComponent.User.Handles
             return user.Id;
         }
 
-        public async Task Handle(UserCommand.ChangePassword command)
+        public async Task HandleAsync(UserCommand.ChangePassword command)
         {
-            var user = await this.GetById(command.Id);
+            var user = await this.FindAsync(command.Id);
             user.ChangePassword(command);
             await this._documentStore.SaveAsync(user);
         }
 
-        public Task Handle(UserCommand.ChangeStatus command)
+        public Task HandleAsync(UserCommand.ChangeStatus command)
         {
-            return this.Update(command.Id, user =>
+            return this.UpdateAsync(command.Id, user =>
             {
                 user.ChangeStatus(command);
             });
         }
 
-        public Task<UserDto> Handle(UserCommand.GetByName command)
+        public Task<UserDto> HandleAsync(UserCommand.GetByName command)
         {
             var user = this._storage.AsQueryable<UserDto>()
                            .FirstOrDefault(s => s.Account.Equals(command.AccountName));
             return Task.FromResult(user);
         }
 
-        public Task<IPagedList<UserDto>> Handle(UserCommand.Query command)
+        public Task<IPagedList<UserDto>> HandleAsync(UserCommand.Query command)
         {
             var query = this._storage.AsQueryable<UserDto>();
             if (!string.IsNullOrWhiteSpace(command.Name))
@@ -77,14 +77,14 @@ namespace SAE.CommonComponent.User.Handles
             return Task.FromResult(PagedList.Build(query, command));
         }
 
-        public async Task<UserDto> Handle(Command.Find<UserDto> command)
+        public async Task<UserDto> HandleAsync(Command.Find<UserDto> command)
         {
             return this._storage.AsQueryable<UserDto>()
                                  .FirstOrDefault(s => s.Id == command.Id);
 
         }
 
-        public async Task<UserDto> Handle(UserCommand.Authentication command)
+        public async Task<UserDto> HandleAsync(UserCommand.Authentication command)
         {
             var dto = this._storage.AsQueryable<UserDto>()
                                    .FirstOrDefault(s => s.Account.Name == command.AccountName);
@@ -98,7 +98,7 @@ namespace SAE.CommonComponent.User.Handles
                 }
                 else
                 {
-                    var code = await this._mediator.Send<string>(new UserRoleCommand.QueryUserAuthorizeCode
+                    var code = await this._mediator.SendAsync<string>(new UserRoleCommand.QueryUserAuthorizeCode
                     {
                         UserId = dto.Id
                     });
@@ -118,7 +118,7 @@ namespace SAE.CommonComponent.User.Handles
         /// <returns></returns>
         private async Task<bool> AccountExist(string name)
         {
-            return (await this.Handle(new UserCommand.GetByName
+            return (await this.HandleAsync(new UserCommand.GetByName
             {
                 AccountName = name
             })) != null;

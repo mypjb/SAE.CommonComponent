@@ -21,7 +21,7 @@ namespace SAE.CommonComponent.ConfigServer.Handles
             this._storage = storage;
             this._documentStore = documentStore;
         }
-        public async Task<AppConfigDto> Handle(AppCommand.Config command)
+        public async Task<AppConfigDto> HandleAsync(AppCommand.Config command)
         {
             var app = new AppConfigDto();
 
@@ -31,21 +31,20 @@ namespace SAE.CommonComponent.ConfigServer.Handles
 
             if (projectDto.Version != command.Version)
             {
-
-                var projectConfigs = this._storage.AsQueryable<ProjectConfigDto>()
-                                                  .Where(s => s.ProjectId == command.Id)
-                                                  .ToArray();
-
                 var environment = this._storage.AsQueryable<EnvironmentVariable>()
                                      .FirstOrDefault(e => e.Name == command.Env);
 
                 if (environment != null)
                 {
+                    var projectConfigs = this._storage.AsQueryable<ProjectConfigDto>()
+                                                  .Where(s => s.ProjectId == command.Id &&
+                                                         s.EnvironmentId == environment.Id)
+                                                  .ToArray();
+
                     var configIds = projectConfigs.Select(p => p.ConfigId).ToArray();
 
                     var configs = this._storage.AsQueryable<ConfigDto>()
-                                               .Where(s => configIds.Contains(s.Id) &&
-                                                           s.EnvironmentId == environment.Id)
+                                               .Where(s => configIds.Contains(s.Id))
                                                .ToArray();
 
                     foreach (var projectConfig in projectConfigs.Where(s => configs.Any(c => c.Id == s.ConfigId))

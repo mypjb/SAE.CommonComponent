@@ -66,13 +66,14 @@ namespace SAE.CommonComponent.ConfigServer.Test
 
             var httpResponseMessage = await this.HttpClient.SendAsync(message);
 
-            var responseMessage = await this.HttpClient.GetAsync($"{url}?{nameof(command.ProjectId)}={command.ProjectId}");
+            var responseMessage = await this.HttpClient.GetAsync($"{url}/paging?{nameof(command.ProjectId)}={command.ProjectId}&&{nameof(config.EnvironmentId)}={config.EnvironmentId}");
 
             var configs = await responseMessage.AsAsync<PagedList<ConfigDto>>();
             var configDto = configs.First();
 
             Assert.Equal(configDto.Id, config.Id);
             Assert.Equal(configDto.SolutionId, config.SolutionId);
+            Assert.Equal(configDto.EnvironmentId, config.EnvironmentId);
             Assert.Equal(configDto.Content, config.Content);
             Assert.Equal(configDto.Version, config.Version);
         }

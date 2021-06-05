@@ -31,30 +31,30 @@ namespace SAE.CommonComponent.ConfigServer.Handles
             this._storage = storage;
         }
 
-        public async Task<string> Handle(MenuCommand.Create command)
+        public async Task<string> HandleAsync(MenuCommand.Create command)
         {
             var menu = new Menu(command);
             await menu.ParentExist(this._documentStore.FindAsync<Menu>);
             await menu.NotExist(this.MenuIsExist);
-            await this.Add(menu);
+            await this.AddAsync(menu);
             return menu.Id;
         }
 
-        public async Task Handle(MenuCommand.Change command)
+        public async Task HandleAsync(MenuCommand.Change command)
         {
             var menu = await this._documentStore.FindAsync<Menu>(command.Id);
             await menu.Change(command, this._documentStore.FindAsync<Menu>, this.MenuIsExist);
             await this._documentStore.SaveAsync(menu);
         }
 
-        public async Task<MenuDto> Handle(Command.Find<MenuDto> command)
+        public async Task<MenuDto> HandleAsync(Command.Find<MenuDto> command)
         {
             var first = this._storage.AsQueryable<MenuDto>()
                             .FirstOrDefault(s => s.Id == command.Id);
             return first;
         }
 
-        // public async Task<IPagedList<MenuDto>> Handle(MenuQueryCommand command)
+        // public async Task<IPagedList<MenuDto>> HandleAsync(MenuQueryCommand command)
         // {
         //     var query = this._storage.AsQueryable<MenuDto>();
         //     if (command.Name.IsNotNullOrWhiteSpace())
@@ -64,7 +64,7 @@ namespace SAE.CommonComponent.ConfigServer.Handles
         //     return PagedList.Build(query, command);
         // }
 
-        public async Task<IEnumerable<MenuItemDto>> Handle(Command.List<MenuItemDto> command)
+        public async Task<IEnumerable<MenuItemDto>> HandleAsync(Command.List<MenuItemDto> command)
         {
             var menus = this._storage.AsQueryable<MenuDto>()
                                      .Select(s => new MenuItemDto
@@ -98,7 +98,7 @@ namespace SAE.CommonComponent.ConfigServer.Handles
                                 s.Path == menu.Path)) > 0;
         }
 
-        public Task Handle(Command.BatchDelete<Menu> command)
+        public Task HandleAsync(Command.BatchDelete<Menu> command)
         {
             return this._documentStore.DeleteAsync<Menu>(command.Ids);
         }

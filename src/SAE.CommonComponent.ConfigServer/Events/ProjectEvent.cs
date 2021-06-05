@@ -19,11 +19,26 @@ namespace SAE.CommonComponent.ConfigServer.Events
 
         public class RelevanceConfig : IEvent
         {
+            /// <summary>
+            /// 
+            /// </summary>
             public string Id { get; set; }
+            /// <summary>
+            /// project id
+            /// </summary>
             public string ProjectId { get; set; }
+            /// <summary>
+            /// config id
+            /// </summary>
             public string ConfigId { get; set; }
+            /// <summary>
+            /// alias 
+            /// </summary>
             public string Alias { get; set; }
-            public string Env { get; set; }
+            /// <summary>
+            /// env id
+            /// </summary>
+            public string EnvironmentId { get; set; }
         }
 
         public class ConfigChangeAlias : IEvent

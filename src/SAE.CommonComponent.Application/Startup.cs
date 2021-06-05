@@ -72,7 +72,7 @@ namespace SAE.CommonComponent.Application
                     build.Run(async context =>
                     {
                         var mediator = context.RequestServices.GetService<IMediator>();
-                        var paging = await mediator.Send<CommonLibrary.Abstract.Model.IPagedList<AppDto>>(new AppCommand.Query());
+                        var paging = await mediator.SendAsync<CommonLibrary.Abstract.Model.IPagedList<AppDto>>(new AppCommand.Query());
                         await context.Response.WriteAsync(Newtonsoft.Json.JsonConvert.SerializeObject(paging));
                     });
                 });

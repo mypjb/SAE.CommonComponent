@@ -29,42 +29,42 @@ namespace SAE.CommonComponent.Authorize.Controllers
         [HttpPost]
         public async Task<object> Add(PermissionCommand.Create command)
         {
-            return await this._mediator.Send<string>(command);
+            return await this._mediator.SendAsync<string>(command);
         }
         [HttpDelete]
         public async Task<object> Delete([FromBody] Command.BatchDelete<Permission> command)
         {
-            await this._mediator.Send(command);
+            await this._mediator.SendAsync(command);
             return this.Ok();
         }
         [HttpPut]
         public async Task<object> Put(PermissionCommand.Change command)
         {
-            await this._mediator.Send(command);
+            await this._mediator.SendAsync(command);
             return this.Ok();
         }
         [HttpGet("{id}")]
         public async Task<object> Get([FromRoute] Command.Find<PermissionDto> command)
         {
-            return await this._mediator.Send<PermissionDto>(command);
+            return await this._mediator.SendAsync<PermissionDto>(command);
         }
         [HttpGet("{action}")]
         public async Task<object> Paging([FromQuery] PermissionCommand.Query command)
         {
-            return await this._mediator.Send<IPagedList<PermissionDto>>(command);
+            return await this._mediator.SendAsync<IPagedList<PermissionDto>>(command);
         }
 
         [HttpGet("{action}")]
         public async Task<object> ALL()
         {
-            return await this._mediator.Send<IEnumerable<PermissionDto>>(new Command.List<PermissionDto>());
+            return await this._mediator.SendAsync<IEnumerable<PermissionDto>>(new Command.List<PermissionDto>());
         }
 
         [HttpGet, HttpPost]
         [Route("{action}")]
         public async Task<object> Location(IEnumerable<PermissionCommand.Create> commands)
         {
-            return await this._mediator.Send<IEnumerable<PermissionCommand.Create>, IEnumerable<BitmapEndpoint>>(commands);
+            return await this._mediator.SendAsync<IEnumerable<PermissionCommand.Create>, IEnumerable<BitmapEndpoint>>(commands);
         }
     }
 }

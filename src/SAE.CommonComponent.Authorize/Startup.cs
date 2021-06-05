@@ -69,7 +69,7 @@ namespace SAE.CommonComponent.Authorize
                     {
                         var mediator = provider.GetService<IMediator>();
 
-                        return mediator.Send<Command.List<BitmapEndpoint>, IEnumerable<BitmapEndpoint>>(new Command.List<BitmapEndpoint>())
+                        return mediator.SendAsync<Command.List<BitmapEndpoint>, IEnumerable<BitmapEndpoint>>(new Command.List<BitmapEndpoint>())
                                        .GetAwaiter()
                                        .GetResult();
                     });

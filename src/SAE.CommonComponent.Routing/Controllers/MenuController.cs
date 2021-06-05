@@ -22,34 +22,34 @@ namespace SAE.CommonComponent.Routing.Controllers
         [HttpPost]
         public async Task<object> Add(MenuCommand.Create command)
         {
-            return await this._mediator.Send<string>(command);
+            return await this._mediator.SendAsync<string>(command);
         }
         [HttpDelete]
         public async Task<object> Remove([FromBody] Command.BatchDelete<Menu> command)
         {
-            await this._mediator.Send(command);
+            await this._mediator.SendAsync(command);
             return this.Ok();
         }
         [HttpPut]
         public async Task<object> Put(MenuCommand.Change command)
         {
-            await this._mediator.Send(command);
+            await this._mediator.SendAsync(command);
             return this.Ok();
         }
         [HttpGet("{id}")]
         public async Task<object> Get([FromRoute] Command.Find<MenuDto> command)
         {
-            return await this._mediator.Send<MenuDto>(command);
+            return await this._mediator.SendAsync<MenuDto>(command);
         }
         //[HttpGet("{action}")]
         //public async Task<object> Paging([FromQuery]MenuCommand. command)
         //{
-        //    return await this._mediator.Send<IPagedList<MenuDto>>(command);
+        //    return await this._mediator.SendAsync<IPagedList<MenuDto>>(command);
         //}
         [HttpGet("{action}")]
         public async Task<object> ALL()
         {
-            return await this._mediator.Send<IEnumerable<MenuItemDto>>(new Command.List<MenuItemDto>());
+            return await this._mediator.SendAsync<IEnumerable<MenuItemDto>>(new Command.List<MenuItemDto>());
         }
 
     }

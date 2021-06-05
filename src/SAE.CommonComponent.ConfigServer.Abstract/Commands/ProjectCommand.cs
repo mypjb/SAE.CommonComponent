@@ -43,7 +43,14 @@ namespace SAE.CommonComponent.ConfigServer.Commands
 
         public class ConfigQuery : Paging
         {
+            /// <summary>
+            /// 项目Id
+            /// </summary>
             public string ProjectId { get; set; }
+            /// <summary>
+            /// 环境变量Id
+            /// </summary>
+            public string EnvironmentId { get; set; }
         }
 
         public class VersionCumulation

@@ -21,7 +21,7 @@ namespace SAE.CommonComponent.Identity.Services
         }
         public async Task<Client> FindClientByIdAsync(string clientId)
         {
-            var app = await this._mediator.Send<AppDto>(new Command.Find<AppDto> { Id = clientId });
+            var app = await this._mediator.SendAsync<AppDto>(new Command.Find<AppDto> { Id = clientId });
 
             var scopes = app.Scopes.ToList();
             scopes.Add(IdentityServerConstants.StandardScopes.OpenId);

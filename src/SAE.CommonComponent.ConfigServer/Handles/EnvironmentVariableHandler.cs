@@ -29,30 +29,30 @@ namespace SAE.CommonComponent.ConfigServer.Handles
 
         }
 
-        public Task<EnvironmentVariableDto> Handle(Command.Find<EnvironmentVariableDto> command)
+        public Task<EnvironmentVariableDto> HandleAsync(Command.Find<EnvironmentVariableDto> command)
         {
             return Task.FromResult(this._storage.AsQueryable<EnvironmentVariableDto>()
                      .FirstOrDefault(s => s.Id == command.Id));
         }
 
-        public Task Handle(Command.Delete<EnvironmentVariable> command)
+        public Task HandleAsync(Command.Delete<EnvironmentVariable> command)
         {
-            return this.Remove(command.Id);
+            return this.DeleteAsync(command.Id);
         }
 
-        public async Task<string> Handle(EnvironmentVariableCommand.Create command)
+        public async Task<string> HandleAsync(EnvironmentVariableCommand.Create command)
         {
-            var config = await this.Add(new EnvironmentVariable(command));
+            var config = await this.AddAsync(new EnvironmentVariable(command));
             return config.Id;
         }
 
-        public Task Handle(EnvironmentVariableCommand.Change command)
+        public Task HandleAsync(EnvironmentVariableCommand.Change command)
         {
-            return this.Update(command.Id, s => s.Change(command));
+            return this.UpdateAsync(command.Id, s => s.Change(command));
         }
 
 
-        public  Task<IEnumerable<EnvironmentVariableDto>> Handle(Command.List<EnvironmentVariableDto> command)
+        public  Task<IEnumerable<EnvironmentVariableDto>> HandleAsync(Command.List<EnvironmentVariableDto> command)
         {
             var result = this._storage.AsQueryable<EnvironmentVariableDto>()
                                        .ToList()
@@ -61,7 +61,7 @@ namespace SAE.CommonComponent.ConfigServer.Handles
             return Task.FromResult(result);
         }
 
-        public async Task<IPagedList<EnvironmentVariableDto>> Handle(EnvironmentVariableCommand.Query command)
+        public async Task<IPagedList<EnvironmentVariableDto>> HandleAsync(EnvironmentVariableCommand.Query command)
         {
             var query = this._storage.AsQueryable<EnvironmentVariableDto>();
             

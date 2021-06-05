@@ -25,26 +25,26 @@ namespace SAE.CommonComponent.User.Controllers
         [HttpGet("{id}")]
         public async Task<object> Get([FromRoute]Command.Find<UserDto> command)
         {
-            var dto= await this._mediator.Send<UserDto>(command);
+            var dto= await this._mediator.SendAsync<UserDto>(command);
             return dto;
         }
 
         [HttpPost("{action}")]
         public async Task<object> Register(UserCommand.Register command)
         {
-            var id = await this._mediator.Send<string>(command);
+            var id = await this._mediator.SendAsync<string>(command);
             return id;
         }
 
         [HttpPut("{action}")]
         public Task Password(UserCommand.ChangePassword command)
         {
-            return  this._mediator.Send(command);
+            return  this._mediator.SendAsync(command);
         }
         [HttpPut("{action}")]
         public Task Status(UserCommand.ChangeStatus command)
         {
-            return this._mediator.Send(command);
+            return this._mediator.SendAsync(command);
         }
 
         [HttpGet]
@@ -52,7 +52,7 @@ namespace SAE.CommonComponent.User.Controllers
         [Route("{action}")]
         public Task<IPagedList<UserDto>> Paging(UserCommand.Query command)
         {
-            return this._mediator.Send<IPagedList<UserDto>>(command);
+            return this._mediator.SendAsync<IPagedList<UserDto>>(command);
         }
     }
 }

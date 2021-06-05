@@ -30,31 +30,31 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
         [HttpPost]
         public async Task<object> Add(ProjectCommand.Create command)
         {
-            return await this._mediator.Send<string>(command);
+            return await this._mediator.SendAsync<string>(command);
         }
 
         [HttpDelete("{id}")]
         public async Task<object> Delete([FromRoute]Command.Delete<Project> command)
         {
-            await this._mediator.Send(command);
+            await this._mediator.SendAsync(command);
             return this.Ok();
         }
         [HttpPut]
         public async Task<object> Put(ProjectCommand.Change command)
         {
-            await this._mediator.Send(command);
+            await this._mediator.SendAsync(command);
             return this.Ok();
         }
         [HttpGet("{id}")]
         public async Task<object> Get([FromRoute] Command.Find<ProjectDto> command)
         {
-            return await this._mediator.Send<ProjectDto>(command);
+            return await this._mediator.SendAsync<ProjectDto>(command);
         }
 
         [HttpPost("config/{action}")]
         public async Task<object> Relevance(ProjectCommand.RelevanceConfig command)
         {
-            await this._mediator.Send(command);
+            await this._mediator.SendAsync(command);
 
             return this.Ok();
         }
@@ -62,7 +62,7 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
         [HttpGet("{action}/{id}")]
         public async Task<object> Config([FromRoute]Command.Find<ProjectConfigDto> command)
         {
-            return await this._mediator.Send<ProjectConfigDto>(command);
+            return await this._mediator.SendAsync<ProjectConfigDto>(command);
         }
 
         
@@ -70,32 +70,32 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
         [HttpPut("config")]
         public async Task<object> ProjectConfig(ProjectCommand.ConfigChangeAlias command)
         {
-            await this._mediator.Send(command);
+            await this._mediator.SendAsync(command);
             return this.Ok();
         }
 
         [HttpDelete("config")]
         public async Task<object> ProjectConfig(Command.BatchDelete<ProjectConfig> command)
         {
-            await this._mediator.Send(command);
+            await this._mediator.SendAsync(command);
             return this.Ok();
         }
 
         [HttpGet("{action}")]
         public async Task<object> Paging([FromQuery]ProjectCommand.Query command)
         {
-            return await this._mediator.Send<IPagedList<ProjectDto>>(command);
+            return await this._mediator.SendAsync<IPagedList<ProjectDto>>(command);
         }
         [HttpGet("config/paging")]
         public async Task<object> ProjectConfigPaging([FromQuery]ProjectCommand.ConfigQuery command)
         {
-            return await this._mediator.Send<IPagedList<ProjectConfigDto>>(command);
+            return await this._mediator.SendAsync<IPagedList<ProjectConfigDto>>(command);
         }
 
-        [HttpGet("config/{action}")]
-        public async Task<object> Relevance([FromQuery]ProjectCommand.ConfigQuery command)
+        [HttpGet("config/relevance/{action}")]
+        public async Task<object> Paging([FromQuery]ProjectCommand.ConfigQuery command)
         {
-            return await this._mediator.Send<IPagedList<ConfigDto>>(command);
+            return await this._mediator.SendAsync<IPagedList<ConfigDto>>(command);
         }
     }
 }

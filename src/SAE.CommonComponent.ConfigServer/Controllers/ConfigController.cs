@@ -27,30 +27,30 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
         [HttpPost]
         public async Task<object> Add(ConfigCommand.Create command)
         {
-            return await this._mediator.Send<string>(command);
+            return await this._mediator.SendAsync<string>(command);
         }
         [HttpDelete("{id}")]
         public async Task<object> Delete([FromRoute]Command.Delete<Config> command)
         {
-            await this._mediator.Send(command);
+            await this._mediator.SendAsync(command);
             return this.Ok();
         }
         [HttpPut]
         public async Task<object> Put(ConfigCommand.Change command)
         {
-            await this._mediator.Send(command);
+            await this._mediator.SendAsync(command);
             return this.Ok();
         }
         [HttpGet("{id}")]
         public async Task<object> Get([FromRoute] Command.Find<ConfigDto> command)
         {
-            return await this._mediator.Send<ConfigDto>(command);
+            return await this._mediator.SendAsync<ConfigDto>(command);
         }
 
         [HttpGet("{action}")]
         public async Task<object> Paging([FromQuery]ConfigCommand.Query command)
         {
-            return await this._mediator.Send<IPagedList<ConfigDto>>(command);
+            return await this._mediator.SendAsync<IPagedList<ConfigDto>>(command);
         }
     }
 }

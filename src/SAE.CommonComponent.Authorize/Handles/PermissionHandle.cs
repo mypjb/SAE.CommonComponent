@@ -35,32 +35,32 @@ namespace SAE.CommonComponent.Authorize.Handles
             this._mediator = mediator;
         }
 
-        public async Task<string> Handle(PermissionCommand.Create command)
+        public async Task<string> HandleAsync(PermissionCommand.Create command)
         {
             var Permission = new Permission(command);
             await Permission.NameExist(this.FindPermission);
-            await this.Add(Permission);
+            await this.AddAsync(Permission);
             return Permission.Id;
         }
 
-        public async Task Handle(PermissionCommand.Change command)
+        public async Task HandleAsync(PermissionCommand.Change command)
         {
-            await this.Update(command.Id, async Permission =>
+            await this.UpdateAsync(command.Id, async Permission =>
              {
                  Permission.Change(command);
                  await Permission.NameExist(this.FindPermission);
              });
         }
 
-        public async Task Handle(PermissionCommand.ChangeStatus command)
+        public async Task HandleAsync(PermissionCommand.ChangeStatus command)
         {
-            await this.Update(command.Id, Permission =>
+            await this.UpdateAsync(command.Id, Permission =>
             {
                 Permission.ChangeStatus(command);
             });
         }
 
-        public async Task Handle(Command.BatchDelete<Permission> command)
+        public async Task HandleAsync(Command.BatchDelete<Permission> command)
         {
             await command.Ids.ForEachAsync(async id =>
             {
@@ -70,7 +70,7 @@ namespace SAE.CommonComponent.Authorize.Handles
             });
         }
 
-        public Task<IPagedList<PermissionDto>> Handle(PermissionCommand.Query command)
+        public Task<IPagedList<PermissionDto>> HandleAsync(PermissionCommand.Query command)
         {
             var query = this.GetStorage();
 
@@ -80,23 +80,23 @@ namespace SAE.CommonComponent.Authorize.Handles
             return Task.FromResult(PagedList.Build(query, command));
         }
 
-        public async Task<IEnumerable<PermissionDto>> Handle(Command.List<PermissionDto> command)
+        public async Task<IEnumerable<PermissionDto>> HandleAsync(Command.List<PermissionDto> command)
         {
             return this.GetStorage().ToArray();
         }
 
-        public async Task<PermissionDto> Handle(Command.Find<PermissionDto> command)
+        public async Task<PermissionDto> HandleAsync(Command.Find<PermissionDto> command)
         {
             var dto = this.GetStorage()
                           .FirstOrDefault(s => s.Id == command.Id);
             return dto;
         }
 
-        public async Task<IEnumerable<BitmapEndpoint>> Handle(IEnumerable<PermissionCommand.Create> commands)
+        public async Task<IEnumerable<BitmapEndpoint>> HandleAsync(IEnumerable<PermissionCommand.Create> commands)
         {
             var endpoints = new List<BitmapEndpoint>();
 
-            var dtos = (await this._mediator.Send<IEnumerable<PermissionDto>>(new Command.List<PermissionDto>()))
+            var dtos = (await this._mediator.SendAsync<IEnumerable<PermissionDto>>(new Command.List<PermissionDto>()))
                                 .ToList();
 
             var permissionCreateCommands = commands.Where(c => !dtos.Any(s => s.Flag.Equals(c.Flag, StringComparison.OrdinalIgnoreCase)))
@@ -116,7 +116,7 @@ namespace SAE.CommonComponent.Authorize.Handles
 
                 await this._documentStore.SaveAsync(permissions);
 
-                dtos = (await this._mediator.Send<IEnumerable<PermissionDto>>(new Command.List<PermissionDto>()))
+                dtos = (await this._mediator.SendAsync<IEnumerable<PermissionDto>>(new Command.List<PermissionDto>()))
                                     .ToList();
             }
 

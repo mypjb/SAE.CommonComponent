@@ -23,7 +23,7 @@ namespace SAE.CommonComponent.ConfigServer.Commands
             /// </summary>
             public string Content { get; set; }
             /// <summary>
-            /// 
+            /// 环境变量Id
             /// </summary>
             public string EnvironmentId { get; set; }
         }
@@ -46,7 +46,13 @@ namespace SAE.CommonComponent.ConfigServer.Commands
             /// 解决方案Id
             /// </summary>
             public string SolutionId { get; set; }
+            /// <summary>
+            /// 环境变量Id
+            /// </summary>
             public string EnvironmentId { get; set; }
+            /// <summary>
+            /// 配置名称
+            /// </summary>
             public string Name { get; set; }
         }
 

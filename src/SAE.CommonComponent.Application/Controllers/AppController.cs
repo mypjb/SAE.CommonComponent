@@ -22,53 +22,53 @@ namespace SAE.CommonComponent.Application.Controllers
         [HttpGet("{id}")]
         public async Task<object> Get([FromRoute]Command.Find<AppDto> command)
         {
-            return await this._mediator.Send<AppDto>(command);
+            return await this._mediator.SendAsync<AppDto>(command);
         }
 
         [HttpPost]
         public async Task<object> Add(AppCommand.Create command)
         {
-            return await this._mediator.Send<string>(command);
+            return await this._mediator.SendAsync<string>(command);
         }
 
         [HttpPut]
         public async Task<object> Edit(AppCommand.Change command)
         {
-            await this._mediator.Send(command);
+            await this._mediator.SendAsync(command);
             return this.Ok();
         }
         [HttpPut("{action}/{id}")]
         public async Task<object> Refresh([FromRoute]AppCommand.RefreshSecret command)
         {
-            await this._mediator.Send(command);
+            await this._mediator.SendAsync(command);
             return this.Ok();
         }
 
         [HttpPut("{action}")]
         public async Task<object> Status(AppCommand.ChangeStatus command)
         {
-            await this._mediator.Send(command);
+            await this._mediator.SendAsync(command);
             return this.Ok();
         }
 
         [HttpPost("{action}")]
         public async Task<object> ReferenceScope(AppCommand.ReferenceScope command)
         {
-            await this._mediator.Send(command);
+            await this._mediator.SendAsync(command);
             return this.Ok();
         }
 
         [HttpPost("{action}")]
         public async Task<object> CancelReferenceScope(AppCommand.CancelReferenceScope command)
         {
-            await this._mediator.Send(command);
+            await this._mediator.SendAsync(command);
             return this.Ok();
         }
 
         [HttpGet("{action}")]
         public async Task<object> Paging([FromQuery]AppCommand.Query command)
         {
-            return await this._mediator.Send<IPagedList<AppDto>>(command);
+            return await this._mediator.SendAsync<IPagedList<AppDto>>(command);
         }
 
     }

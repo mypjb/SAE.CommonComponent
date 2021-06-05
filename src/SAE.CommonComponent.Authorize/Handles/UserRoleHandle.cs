@@ -40,20 +40,20 @@ namespace SAE.CommonComponent.Authorize.Handles
         }
 
 
-        public async Task Handle(UserRoleCommand.Reference command)
+        public async Task HandleAsync(UserRoleCommand.Reference command)
         {
             var userRoles = command.Ids.Select(s => new UserRole(command.UserId, s));
             await this._documentStore.SaveAsync(userRoles);
         }
 
-        public Task Handle(UserRoleCommand.DeleteReference command)
+        public Task HandleAsync(UserRoleCommand.DeleteReference command)
         {
             return this._documentStore.DeleteAsync<UserRole>(command.Ids);
         }
 
-        //public async Task<IEnumerable<PermissionDto>> Handle(UserRoleCommand.QueryRolePermission command)
+        //public async Task<IEnumerable<PermissionDto>> HandleAsync(UserRoleCommand.QueryRolePermission command)
         //{
-        //    var role =await this._mediator.Send<Command.Find<RoleDto>, RoleDto>(new Command.Find<RoleDto>
+        //    var role =await this._mediator.SendAsync<Command.Find<RoleDto>, RoleDto>(new Command.Find<RoleDto>
         //    {
         //         Id=command.RoleId
         //    });
@@ -61,7 +61,7 @@ namespace SAE.CommonComponent.Authorize.Handles
         //    return role.Permissions;
         //}
 
-        public async Task<IEnumerable<RoleDto>> Handle(Command.Find<UserRoleDto> command)
+        public async Task<IEnumerable<RoleDto>> HandleAsync(Command.Find<UserRoleDto> command)
         {
             var roleIds = this._storage.AsQueryable<UserRoleDto>()
                                        .Where(s => s.UserId == command.Id)
@@ -78,7 +78,7 @@ namespace SAE.CommonComponent.Authorize.Handles
             return roles;
         }
 
-        public async Task<IEnumerable<BitmapEndpoint>> Handle(Command.List<BitmapEndpoint> command)
+        public async Task<IEnumerable<BitmapEndpoint>> HandleAsync(Command.List<BitmapEndpoint> command)
         {
 
             var dtos = this._storage.AsQueryable<PermissionDto>()
@@ -100,14 +100,14 @@ namespace SAE.CommonComponent.Authorize.Handles
             return endpoints;
         }
 
-        public async Task<string> Handle(UserRoleCommand.QueryUserAuthorizeCode command)
+        public async Task<string> HandleAsync(UserRoleCommand.QueryUserAuthorizeCode command)
         {
-            var roles = await this._mediator.Send<IEnumerable<RoleDto>>(new Command.Find<UserRoleDto>
+            var roles = await this._mediator.SendAsync<IEnumerable<RoleDto>>(new Command.Find<UserRoleDto>
             {
                 Id = command.UserId
             });
 
-            var endpoints = (await this._mediator.Send<IEnumerable<BitmapEndpoint>>(new Command.List<BitmapEndpoint>()))
+            var endpoints = (await this._mediator.SendAsync<IEnumerable<BitmapEndpoint>>(new Command.List<BitmapEndpoint>()))
                                        .ToList();
 
             var permissionBits = new List<int>();
@@ -126,7 +126,7 @@ namespace SAE.CommonComponent.Authorize.Handles
             return code;
         }
 
-        async Task<IEnumerable<UserRoleDto>> ICommandHandler<Command.Find<UserRoleDto>, IEnumerable<UserRoleDto>>.Handle(Command.Find<UserRoleDto> command)
+        async Task<IEnumerable<UserRoleDto>> ICommandHandler<Command.Find<UserRoleDto>, IEnumerable<UserRoleDto>>.HandleAsync(Command.Find<UserRoleDto> command)
         {
             var userRoles = this._storage.AsQueryable<UserRoleDto>()
                                          .Where(s => s.UserId == command.Id)
