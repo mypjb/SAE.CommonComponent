@@ -1,6 +1,6 @@
 import React from 'react';
 import { Form, Input } from 'antd';
-import { validatorJson, handleFormat,defaultFormBuild } from '@/utils/utils';
+import { validatorJson, handleFormat, defaultFormBuild } from '@/utils/utils';
 
 const { TextArea } = Input;
 
@@ -8,7 +8,7 @@ export default (props) => {
 
     const [form] = Form.useForm();
 
-    const [handleSave] = defaultFormBuild({ ...props, form, type: "template/add" });
+    const [handleSave] = defaultFormBuild({ ...props, form, dispatchType: "template/add" });
 
     const handleFormatFormat = handleFormat.bind(this, { form, fieldName: 'format' });
 

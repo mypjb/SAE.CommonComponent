@@ -8,7 +8,7 @@ export default props => {
 
     const [form] = Form.useForm();
 
-    const [handleSave] = defaultFormBuild({ ...props, form, type: "project/add" });
+    const [handleSave] = defaultFormBuild({ ...props, form, dispatchType: "project/add" });
 
     return (
         <Form form={form} size='middl' onFinish={handleSave}>

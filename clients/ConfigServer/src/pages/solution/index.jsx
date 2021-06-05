@@ -12,19 +12,16 @@ const { Search } = Input;
 
 export default connect(({ solution }) => (
   {
-    solution                                                                                                                                                                                                                                                                                                    
+    solution
   }))((props) => {
-    const model = useModel('template');
-    model.load();
-      console.log(model);
-    const { dispatch, solution } = props;                                      
+    const { dispatch, solution } = props;
     const dispatchType = defaultDispatchType("solution");
-    const handleDelete = (row) => {                                                
+    const handleDelete = (row) => {
       const id = row.id;
       Modal.confirm({
         title: 'Are you sure delete this task?',
         onOk: () => {
-          dispatch({                                                                                  
+          dispatch({
             type: dispatchType.delete,
             payload: { id },
           });

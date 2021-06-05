@@ -1,4 +1,5 @@
 import { Modal } from "antd"
+import { useModel } from "umi";
 
 //build options
 const buildOptions = (props, model) => {
@@ -58,10 +59,15 @@ const FormModal = function (props) {
     return contextHolder;
 }
 
-FormModal.confirm = function (props) {
-    const model = Modal.confirm();
-    const options = buildOptions(props, model);
-    model.update(options);
+FormModal.confirm = function (props, proxyModal) {
+    if (proxyModal) {
+        const options = buildOptions(props, proxyModal);
+        proxyModal.confirm(options);
+    } else {
+        const model = Modal.confirm();
+        const options = buildOptions(props, model);
+        model.update(options);
+    }
 };
 
 export default FormModal;
