@@ -71,7 +71,8 @@ namespace SAE.CommonComponent.ConfigServer.Test
         {
             var message = new HttpRequestMessage(HttpMethod.Get, $"{API}/{id}");
             var responseMessage = await this.HttpClient.SendAsync(message);
-            return await responseMessage.AsAsync<SolutionDto>();
+            var solution= await responseMessage.AsAsync<SolutionDto>();
+            return solution;
         }
 
         
