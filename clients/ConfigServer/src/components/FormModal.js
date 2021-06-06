@@ -40,11 +40,11 @@ const buildOptions = (props, model) => {
 
     if (props.contentElement) {
         const contentProps = {
-            ...props.contentProps,
             okCallback,
             closeCallback: () => {
                 model.destroy();
-            }
+            },
+            ...props.contentProps,
         };
         options.content = (<props.contentElement {...contentProps}></props.contentElement>);
     }
@@ -61,8 +61,19 @@ const FormModal = function (props) {
 
 FormModal.confirm = function (props, proxyModal) {
     if (proxyModal) {
+        let model;
+        if (props.contentElement) {
+            props.contentProps = props.contentProps || {};
+            if (!props.contentProps.closeCallback) {
+                {
+                    props.contentProps.closeCallback = () => {
+                        model.destroy();
+                    }
+                }
+            }
+        }
         const options = buildOptions(props, proxyModal);
-        proxyModal.confirm(options);
+        model = proxyModal.confirm(options);
     } else {
         const model = Modal.confirm();
         const options = buildOptions(props, model);

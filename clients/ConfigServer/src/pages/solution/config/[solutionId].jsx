@@ -1,7 +1,7 @@
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import React from 'react';
 import { Row, Col, Input, Table, Button, Modal } from 'antd';
-import { connect } from 'umi';
+import { connect, useModel } from 'umi';
 import AddForm from './components/AddForm';
 import EditForm from './components/EditForm';
 import PagingTable from '@/components/PagingTable';
@@ -9,14 +9,17 @@ import { defaultOperation, defaultDispatchType } from '@/utils/utils';
 
 const { Search } = Input;
 
-class configList extends React.Component {
-  constructor(props) {
-    super(props);
-  }
+export default connect(({ config }) => (
+  {
+    config
+  }))((props) => {
+    const { dispatch, config, match } = props;
 
-  render() {
-    const { dispatch, config, match } = this.props;
+    const { environmentData } = useModel("environment", model => ({ environmentData: model.state }));
+
     const dispatchType = defaultDispatchType("config");
+
+    const [modal, contextHolder] = Modal.useModal();
 
     const handleDelete = (row) => {
       Modal.confirm({
@@ -31,7 +34,7 @@ class configList extends React.Component {
     }
 
     const handleAdd = () => {
-      defaultOperation.add({ dispatch, element: AddForm, config, ...match.params });
+      defaultOperation.add({ dispatch, element: AddForm, config, ...match.params }, modal);
     }
 
     const handleEdit = (row) => {
@@ -47,26 +50,38 @@ class configList extends React.Component {
 
     const columns = [
       {
-        title: 'id',
+        title: 'serial number',
         dataIndex: 'id',
         key: 'id',
+        render: (text, record, index) => {
+          return index + 1;
+        }
       },
       {
         title: 'name',
-        dataIndex: 'name',
-        key: 'name',
+        dataIndex: 'name'
+      },
+      {
+        title: 'environmentId',
+        dataIndex: 'environmentId',
+        key: 'environment',
+        render: (environmentId, row) => {
+          const index = environmentData.findIndex((value, index) => {
+            return value == environmentId;
+          }); 
+          return index > -1 ? environmentData[index].name : "--";
+        }
       },
       {
         title: 'content',
         dataIndex: 'content',
-        key: 'content',
         ellipsis: true
       },
       {
         title: 'createTime',
-        dataIndex: 'createTime',
-        key: 'createTime'
-      }, {
+        dataIndex: 'createTime'
+      },
+      {
         title: 'action',
         render: (text, row) => (
           <span>
@@ -80,6 +95,7 @@ class configList extends React.Component {
 
     return (
       <PageHeaderWrapper>
+        {contextHolder}
         <div>
           <Row>
             <Col span={18}>
@@ -89,15 +105,8 @@ class configList extends React.Component {
               <Search placeholder="input search text" onSearch={handleSearch} enterButton />
             </Col>
           </Row>
-          <PagingTable {...this.props} {...config} dispatchType={dispatchType.paging} columns={columns} />
+          <PagingTable {...props} {...config} dispatchType={dispatchType.paging} columns={columns} />
         </div>
       </PageHeaderWrapper>
     );
-  }
-
-}
-
-export default connect(({ config }) => (
-  {
-    config
-  }))(configList);
+  })
