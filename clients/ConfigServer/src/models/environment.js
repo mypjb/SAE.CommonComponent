@@ -3,7 +3,6 @@ import request from "@/pages/environment/service";
 
 export default () => {
     const [state, setState] = useState([]);
-    console.log(request);
     const load = useCallback(() => {
         request.list()
             .then((data) => {

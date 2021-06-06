@@ -1,26 +1,22 @@
 import React from 'react';
-import { Form, Input, Modal, Select } from 'antd';
-import { connect } from 'umi';
-import { validatorJson, handleFormat } from '@/utils/utils';
+import { Form, Input, Select } from 'antd';
+import { useModel } from 'umi';
+import { validatorJson, handleFormat, defaultFormBuild } from '@/utils/utils';
 
 const { Option } = Select;
 const { TextArea } = Input;
 
-export default connect(({ config }) => ({ config }))(({ dispatch, config, visible }) => {
+export default (props) => {
+
+    const { model } = props;
+
+    const { templateData } = useModel("template", model => ({ templateData: model.state }));
+
+    const { environmentData } = useModel("environment", model => ({ environmentData: model.state }));
 
     const [form] = Form.useForm();
 
-    const handleSave = (payload) => {        
-        dispatch({ type: 'config/edit', payload });
-    }
-
-    const handleOk = () => {
-        form.submit();
-    };
-
-    const handleCancel = () => {
-        dispatch({ type: 'config/setFormStaus', payload: 0 });
-    };
+    const [handleSave] = defaultFormBuild({ ...props, form, dispatchType: "config/edit" });
 
     const handleSelectTemplate = (value, { data }) => {
         form.setFieldsValue({ content: data.format });
@@ -28,30 +24,35 @@ export default connect(({ config }) => ({ config }))(({ dispatch, config, visibl
 
     const handleFormatContent = handleFormat.bind(this, { form, fieldName: 'content' });
 
-    const Options = config.templates.map(data => <Option value={data.id} data={data}>{data.name}</Option>)
+    const templateOptions = templateData.map(data => <Option value={data.id} data={data}>{data.name}</Option>);
 
-    form.setFieldsValue(config.model);
+    const environmentOptions = environmentData.map(data => <Option value={data.id} data={data}>{data.name}</Option>);
 
-    return (<Modal title="add" visible={visible} onOk={handleOk} forceRender onCancel={handleCancel} closable={false}  >
-        <Form form={form} size='middl' onFinish={handleSave} >
-            <Form.Item name="id" style={{ display: "none" }}>
-                <Input />
-            </Form.Item>
-            <Form.Item name="solutionId" style={{ display: "none" }}>
-                <Input />
-            </Form.Item>
-            <Form.Item name="name" label="name" rules={[{ required: true }]}>
-                <Input />
-            </Form.Item>
-            <Form.Item name="templateId" label="template" >
-                <Select onChange={handleSelectTemplate} showSearch placeholder="Select a tempalte" optionFilterProp="children" style={{ width: 200 }}>
-                    {Options}
-                </Select>
-            </Form.Item>
-            <Form.Item name="content" label="content" rules={[{ validator: validatorJson, required: true }]}>
-                <TextArea autoSize={{ minRows: 16 }} onDoubleClick={handleFormatContent} />
-            </Form.Item>
-        </Form>
-    </Modal>);
+    form.setFieldsValue(model);
 
-})
+    return (<Form form={form} size='middl' onFinish={handleSave} >
+        <Form.Item name="id" hidden>
+            <Input />
+        </Form.Item>
+        <Form.Item name="solutionId" hidden>
+            <Input />
+        </Form.Item>
+        <Form.Item name="name" label="name" rules={[{ required: true }]}>
+            <Input />
+        </Form.Item>
+        <Form.Item name="environmentId" label="environment" >
+            <Select style={{ width: 200 }} disabled>
+                {environmentOptions}
+            </Select>
+        </Form.Item>
+        <Form.Item name="templateId" label="template" >
+            <Select onChange={handleSelectTemplate} showSearch placeholder="Select a tempalte" optionFilterProp="children" style={{ width: 200 }}>
+                {templateOptions}
+            </Select>
+        </Form.Item>
+        <Form.Item name="content" label="content" rules={[{ validator: validatorJson, required: true }]}>
+            <TextArea autoSize={{ minRows: 16 }} onDoubleClick={handleFormatContent} />
+        </Form.Item>
+    </Form>);
+
+}
