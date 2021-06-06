@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import request from "@/pages/template/service";
+import request from "@/pages/environment/service";
 
 export default () => {
     const [state, setState] = useState([]);

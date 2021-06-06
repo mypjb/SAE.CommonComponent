@@ -48,7 +48,6 @@ const parsingPayload = (payload) => {
   } else {
     model.data = payload;
   }
-  console.log({ model });
   return model;
 };
 
@@ -78,7 +77,7 @@ export const defaultModel = {
       return { ...state, paging: { pageIndex, pageSize, totalCount } };
     },
     setParams(state, { payload }) {
-      return { ...state, params: { ...payload } };
+      return { ...state, params: { ...state.params, ...payload } };
     },
     set(state, { payload }) {
       return { ...state, model: payload };
@@ -121,7 +120,6 @@ export const defaultModel = {
       *paging({ payload }, { call, put, select }) {
 
         const { callback, data } = parsingPayload(payload);
-
         const params = yield select((globalStatus) => (globalStatus[stateName].params));
 
         const paging = yield call(request.queryPaging, { ...data, ...params });
@@ -181,7 +179,9 @@ export const defaultHandler = {
     return (payload) => {
       dispatch({
         type: dispatchType,
-        payload: payload
+        payload: {
+          ...payload
+        }
       });
     }
   }
