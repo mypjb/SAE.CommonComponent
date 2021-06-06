@@ -34,7 +34,7 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<object> Delete([FromRoute]Command.Delete<Project> command)
+        public async Task<object> Delete([FromRoute] Command.Delete<Project> command)
         {
             await this._mediator.SendAsync(command);
             return this.Ok();
@@ -58,14 +58,14 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
 
             return this.Ok();
         }
-        
+
         [HttpGet("{action}/{id}")]
-        public async Task<object> Config([FromRoute]Command.Find<ProjectConfigDto> command)
+        public async Task<object> Config([FromRoute] Command.Find<ProjectConfigDto> command)
         {
             return await this._mediator.SendAsync<ProjectConfigDto>(command);
         }
 
-        
+
 
         [HttpPut("config")]
         public async Task<object> ProjectConfig(ProjectCommand.ConfigChangeAlias command)
@@ -81,19 +81,32 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
             return this.Ok();
         }
 
+        [HttpPost("{action}")]
+        public async Task<object> Publish(ProjectCommand.Publish command)
+        {
+            await this._mediator.SendAsync(command);
+            return this.Ok();
+        }
         [HttpGet("{action}")]
-        public async Task<object> Paging([FromQuery]ProjectCommand.Query command)
+        public async Task<object> Preview(ProjectCommand.Preview command)
+        {
+            var data = await this._mediator.SendAsync<object>(command);
+            return data;
+        }
+
+        [HttpGet("{action}")]
+        public async Task<object> Paging([FromQuery] ProjectCommand.Query command)
         {
             return await this._mediator.SendAsync<IPagedList<ProjectDto>>(command);
         }
         [HttpGet("config/paging")]
-        public async Task<object> ProjectConfigPaging([FromQuery]ProjectCommand.ConfigQuery command)
+        public async Task<object> ProjectConfigPaging([FromQuery] ProjectCommand.ConfigQuery command)
         {
             return await this._mediator.SendAsync<IPagedList<ProjectConfigDto>>(command);
         }
 
         [HttpGet("config/relevance/{action}")]
-        public async Task<object> Paging([FromQuery]ProjectCommand.ConfigQuery command)
+        public async Task<object> Paging([FromQuery] ProjectCommand.ConfigQuery command)
         {
             return await this._mediator.SendAsync<IPagedList<ConfigDto>>(command);
         }

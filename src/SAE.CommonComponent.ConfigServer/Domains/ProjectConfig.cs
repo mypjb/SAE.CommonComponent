@@ -24,7 +24,7 @@ namespace SAE.CommonComponent.ConfigServer.Domains
 
             this.Apply(new ProjectEvent.RelevanceConfig
             {
-                Id = $"{project.Id}_{config.Id}",
+                Id = $"{project.Id}{Constants.DefaultSeparator}{config.Id}{Constants.DefaultSeparator}{config.EnvironmentId}",
                 ProjectId = project.Id,
                 ConfigId = config.Id,
                 Alias = config.Name,

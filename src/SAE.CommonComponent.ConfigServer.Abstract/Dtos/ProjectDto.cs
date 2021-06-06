@@ -10,7 +10,6 @@ namespace SAE.CommonComponent.ConfigServer.Dtos
         public string Id { get; set; }
         public string Name { get; set; }
         public string SolutionId { get; set; }
-        public int Version { get; set; }
         public DateTime CreateTime { get; set; }
 
     }

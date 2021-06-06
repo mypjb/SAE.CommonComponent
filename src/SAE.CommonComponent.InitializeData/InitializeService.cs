@@ -250,6 +250,13 @@ namespace SAE.CommonComponent.InitializeData
                     ConfigIds = configIds
                 });
 
+                this._logging.Info($"Publish {projectName}-{kvs.Key} config");
+                await this._mediator.SendAsync(new ProjectCommand.Publish
+                {
+                    Id = projectId,
+                    EnvironmentId = environmentId
+                });
+
                 var appConfigDto = await this._mediator.SendAsync<AppConfigDto>(new ConfigServer.Commands.AppCommand.Config
                 {
                     Id = projectId,

@@ -1,4 +1,5 @@
 ﻿using SAE.CommonComponent.ConfigServer.Commands;
+using SAE.CommonComponent.ConfigServer.Dtos;
 using SAE.CommonComponent.ConfigServer.Events;
 using SAE.CommonLibrary;
 using SAE.CommonLibrary.EventStore.Document;
@@ -26,10 +27,21 @@ namespace SAE.CommonComponent.ConfigServer.Domains
             });
         }
 
+        /// <summary>
+        /// 项目Id
+        /// </summary>
         public string Id { get; set; }
+        /// <summary>
+        /// 项目名称
+        /// </summary>
         public string Name { get; set; }
+        /// <summary>
+        /// 解决方案id
+        /// </summary>
         public string SolutionId { get; set; }
-        public int Version { get; set; }
+        /// <summary>
+        /// 创建时间
+        /// </summary>
         public DateTime CreateTime { get; set; }
 
         protected override string GetIdentity()
@@ -37,18 +49,12 @@ namespace SAE.CommonComponent.ConfigServer.Domains
             return this.Id;
         }
 
-
         public void Change(ProjectCommand.Change command) => this.Apply<ProjectEvent.Change>(command);
-        public void Cumulation()
-        {
-            this.Apply(new ProjectEvent.VersionCumulation
-            {
-                Version = this.Version + 1
-            });
-        }
+   
         public IEnumerable<ProjectConfig> Relevance(IEnumerable<Config> configs)
         {
             return configs.Select(config => new ProjectConfig(this, config)).ToArray();
         }
     }
+
 }

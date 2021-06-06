@@ -45,11 +45,6 @@ namespace SAE.CommonComponent.ConfigServer.Handles
 
 
             await this._documentStore.SaveAsync(projectConfigs);
-
-            await this._mediator.SendAsync(new ProjectCommand.VersionCumulation
-            {
-                ProjectId = project.Id
-            });
         }
 
         public async Task HandleAsync(Command.BatchDelete<ProjectConfig> command)
@@ -59,11 +54,6 @@ namespace SAE.CommonComponent.ConfigServer.Handles
                 return;
             }
             await this._documentStore.DeleteAsync<ProjectConfig>(command.Ids);
-            var projectId = command.Ids.First().Split('_').First();
-            await this._mediator.SendAsync(new ProjectCommand.VersionCumulation
-            {
-                ProjectId = projectId
-            });
         }
 
         public async Task<IPagedList<ProjectConfigDto>> HandleAsync(ProjectCommand.ConfigQuery command)
@@ -90,10 +80,10 @@ namespace SAE.CommonComponent.ConfigServer.Handles
 
             await this._documentStore.SaveAsync(projectConfig);
 
-            await this._mediator.SendAsync(new ProjectCommand.VersionCumulation
-            {
-                ProjectId = projectConfig.ProjectId
-            });
+            //await this._mediator.SendAsync(new ProjectCommand.VersionCumulation
+            //{
+            //    ProjectId = projectConfig.ProjectId
+            //});
         }
 
         public async Task<ProjectConfigDto> HandleAsync(Command.Find<ProjectConfigDto> command)

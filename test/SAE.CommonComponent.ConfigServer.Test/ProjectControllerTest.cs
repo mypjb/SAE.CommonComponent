@@ -45,7 +45,6 @@ namespace SAE.CommonComponent.ConfigServer.Test
             var id = await responseMessage.AsAsync<string>();
             var project = await this.Get(id);
             Assert.Equal(command.Name, project.Name);
-            Assert.Equal(command.Version, project.Version);
             return project;
         }
         [Fact]
@@ -122,6 +121,17 @@ namespace SAE.CommonComponent.ConfigServer.Test
                               .AddJsonContent(command);
 
             var httpResponseMessage = await this.HttpClient.SendAsync(message);
+
+            var publishCommand = new ProjectCommand.Publish
+            {
+                Id = project.Id,
+                EnvironmentId = config.EnvironmentId
+            };
+
+            var publishReq = new HttpRequestMessage(HttpMethod.Post, $"{API}/{nameof(ProjectCommand.Publish)}")
+                              .AddJsonContent(publishCommand);
+
+            (await this.HttpClient.SendAsync(publishReq)).EnsureSuccessStatusCode();
 
             var appConfigCommand = new AppCommand.Config
             {

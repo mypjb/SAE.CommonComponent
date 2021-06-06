@@ -9,6 +9,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using SAE.CommonLibrary.Abstract.Model;
 using SAE.CommonLibrary.Extension;
+using System.Collections.Generic;
+using SAE.CommonComponent.ConfigServer.Events;
 
 namespace SAE.CommonComponent.ConfigServer.Handles
 {
@@ -18,7 +20,8 @@ namespace SAE.CommonComponent.ConfigServer.Handles
                                   ICommandHandler<Command.Delete<Project>>,
                                   ICommandHandler<Command.Find<ProjectDto>, ProjectDto>,
                                   ICommandHandler<ProjectCommand.Query, IPagedList<ProjectDto>>,
-                                  ICommandHandler<ProjectCommand.VersionCumulation>
+                                  ICommandHandler<ProjectCommand.Publish>,
+                                  ICommandHandler<ProjectCommand.Preview, object>
     {
         private readonly IStorage _storage;
 
@@ -59,11 +62,75 @@ namespace SAE.CommonComponent.ConfigServer.Handles
             return PagedList.Build(query, command);
         }
 
-        public async Task HandleAsync(ProjectCommand.VersionCumulation command)
+        public async Task HandleAsync(ProjectCommand.Publish command)
         {
-           var project= await this._documentStore.FindAsync<Project>(command.ProjectId);
-           project.Cumulation();
-           await this._documentStore.SaveAsync(project);
+            var data = await this.CombinationConfigAsync(command);
+
+            var projectData = this._storage.AsQueryable<ProjectData>()
+                                           .FirstOrDefault(s => s.ProjectId == command.Id &&
+                                                           s.EnvironmentId == command.EnvironmentId);
+
+            if (projectData == null)
+            {
+                projectData = new ProjectData(new ProjectDataEvent.Create
+                {
+                    ProjectId = command.Id,
+                    EnvironmentId = command.EnvironmentId,
+                    Data = data.ToJsonString()
+                });
+            }
+            else
+            {
+                projectData.Change(data.ToJsonString());
+            }
+
+            await this._documentStore.SaveAsync(projectData);
+        }
+
+        public async Task<object> HandleAsync(ProjectCommand.Preview command)
+        {
+            var data = await this.CombinationConfigAsync(command);
+            return data;
+        }
+
+
+        private async Task<IDictionary<string, object>> CombinationConfigAsync(ProjectCommand.Publish command)
+        {
+            var project = await this.FindAsync(command.Id);
+
+            var projectConfigs = this._storage.AsQueryable<ProjectConfigDto>()
+                                          .Where(s => s.ProjectId == command.Id &&
+                                                 s.EnvironmentId == command.EnvironmentId)
+                                          .ToArray();
+
+            var configIds = projectConfigs.Select(p => p.ConfigId).ToArray();
+
+            var configs = this._storage.AsQueryable<ConfigDto>()
+                                       .Where(s => configIds.Contains(s.Id))
+                                       .ToArray();
+
+            var data = new Dictionary<string, object>();
+
+            foreach (var projectConfig in projectConfigs.Where(s => configs.Any(c => c.Id == s.ConfigId))
+                                                                .ToArray())
+            {
+                var config = configs.FirstOrDefault(s => s.Id == projectConfig.ConfigId);
+
+                var key = projectConfig.Alias;
+
+                if (data.ContainsKey(key))
+                {
+
+                    key += "_";
+                    data[key] = config?.Content.ToObject<object>();
+                }
+                else
+                {
+                    data[key] = config?.Content.ToObject<object>();
+                }
+            }
+            return data;
         }
     }
+
 }

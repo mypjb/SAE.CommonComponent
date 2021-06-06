@@ -8,6 +8,21 @@ namespace SAE.CommonComponent.ConfigServer.Commands
 {
     public class ProjectCommand
     {
+        public class Publish
+        {
+            /// <summary>
+            /// 项目Id
+            /// </summary>
+            public string Id { get; set; }
+            /// <summary>
+            /// 环境变量Id
+            /// </summary>
+            public string EnvironmentId { get; set; }
+        }
+
+        public class Preview : Publish
+        {
+        }
         public class Create
         {
             public string Name { get; set; }
@@ -53,9 +68,6 @@ namespace SAE.CommonComponent.ConfigServer.Commands
             public string EnvironmentId { get; set; }
         }
 
-        public class VersionCumulation
-        {
-            public string ProjectId { get; set; }
-        }
+       
     }
 }

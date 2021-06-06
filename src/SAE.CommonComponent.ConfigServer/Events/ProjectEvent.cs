@@ -1,4 +1,5 @@
-﻿using SAE.CommonLibrary.EventStore;
+﻿using SAE.CommonComponent.ConfigServer.Domains;
+using SAE.CommonLibrary.EventStore;
 using System;
 using System.Collections.Generic;
 
@@ -46,9 +47,5 @@ namespace SAE.CommonComponent.ConfigServer.Events
             public string Alias { get; set; }
         }
 
-        public class VersionCumulation : IEvent
-        {
-            public int Version { get; set; }
-        }
     }
 }

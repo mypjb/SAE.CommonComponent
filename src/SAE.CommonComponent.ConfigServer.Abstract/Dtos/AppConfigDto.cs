@@ -26,8 +26,7 @@ namespace SAE.CommonComponent.ConfigServer.Dtos
             {
 
                 key += "_";
-                projectConfig.Alias = key;
-                this.Add(projectConfig, config);
+                this.Data[key] = config?.Content.ToObject<object>();
             }
             else
             {

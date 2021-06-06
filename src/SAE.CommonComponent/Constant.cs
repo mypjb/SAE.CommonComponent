@@ -8,6 +8,7 @@ namespace SAE.CommonComponent
         public const string SolutionName = "Default";
         public const string Development = nameof(Development);
         public const string Production = nameof(Production);
+        public const string DefaultSeparator = "_";
         public class Config
         {
             public const string AppId = "appId";
