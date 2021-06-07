@@ -28,7 +28,15 @@ export default connect(({ template }) => (
     }
 
     const handleEdit = (row) => {
-      defaultOperation.edit({ dispatch, type: dispatchType.find, data: row.id, element: EditForm });
+      defaultOperation.edit({
+        dispatch,
+        type: dispatchType.find,
+        data: row.id,
+        element: EditForm,
+        onOk: (e) => {
+          console.log(999);
+        }
+      });
     }
 
     const columns = [

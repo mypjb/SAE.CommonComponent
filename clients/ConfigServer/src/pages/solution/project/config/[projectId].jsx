@@ -1,5 +1,5 @@
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Row, Col, Input, Button, Modal } from 'antd';
 import { connect } from 'umi';
 import RelevanceTable from './components/RelevanceTable';
@@ -9,28 +9,32 @@ import { defaultOperation, defaultDispatchType } from '@/utils/utils';
 
 const { Search } = Input;
 
-class ProjectList extends React.Component {
-  constructor(props) {
-    super(props);
-    this.dispatchType = defaultDispatchType("projectConfig");
-    props.dispatch({
-      type: this.dispatchType.search,
-      payload: props.match.params
-    });
-  }
 
-  render() {
+export default connect(({ projectConfig }) => (
+  {
+    projectConfig
+  }))((props) => {
+
+    const { dispatch, projectConfig, match } = props;
+
+    dispatchType = defaultDispatchType("projectConfig");
+
+    useEffect(() => {
+      dispatch({
+        type: dispatchType.search,
+        payload: match.params
+      });
+    }, []);
+
 
     let ids = [];
-
-    const { dispatch, projectConfig, match } = this.props;
 
     const handleDelete = () => {
       Modal.confirm({
         title: 'Are you sure delete this task?',
         onOk: () => {
           dispatch({
-            type: this.dispatchType.delete,
+            type: dispatchType.delete,
             payload: { ids },
           });
         }
@@ -43,7 +47,7 @@ class ProjectList extends React.Component {
 
 
     const handleEdit = (row) => {
-      defaultOperation.edit({ dispatch, type: this.dispatchType.find, data: row.id, element: EditConfig });
+      defaultOperation.edit({ dispatch, type: dispatchType.find, data: row.id, element: EditConfig });
     }
 
     const handleSearch = (name) => {
@@ -104,11 +108,4 @@ class ProjectList extends React.Component {
         </div>
       </PageHeaderWrapper>
     );
-  }
-
-}
-
-export default connect(({ projectConfig }) => (
-  {
-    projectConfig
-  }))(ProjectList);
+  });

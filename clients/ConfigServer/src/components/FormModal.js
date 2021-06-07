@@ -43,6 +43,9 @@ const buildOptions = (props, model) => {
             okCallback,
             closeCallback: () => {
                 model.destroy();
+                if (props.onOk) {
+                    props.onOk();
+                }
             },
             ...props.contentProps,
         };
@@ -68,6 +71,9 @@ FormModal.confirm = function (props, proxyModal) {
                 {
                     props.contentProps.closeCallback = () => {
                         model.destroy();
+                        if (props.onOk) {
+                            props.onOk();
+                        }
                     }
                 }
             }

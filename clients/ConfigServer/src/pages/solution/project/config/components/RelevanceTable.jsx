@@ -1,12 +1,22 @@
 import { useEffect, useState } from 'react';
 import PagingTable from "@/components/PagingTable";
 import { defaultModel, defaultState } from "@/utils/utils";
+import { useModel } from 'umi';
+import { Select, Row, Col } from 'antd';
+
+const { Option } = Select;
 
 export default (props) => {
 
+  const { environmentData } = useModel("environment", model => ({ environmentData: model.state }));
+
+  const environmentOptions = environmentData.map(data => <Option value={data.id} data={data}>{data.name}</Option>);
+
+  const defaultEnvId = environmentData.length ? environmentData[0].id : "";
+
   const { dispatch, projectId } = props;
 
-  const [state, setState] = useState(defaultState);
+  const [state, setState] = useState({ ...defaultState, params: { projectId, defaultEnvId } });
   const { paging } = state;
 
   let configIds = [];
@@ -17,19 +27,23 @@ export default (props) => {
       payload: {
         pageIndex,
         pageSize,
-        projectId,
+        ...state.params,
         callback: (data) => {
           console.log({ state, data });
-          setState(data);
+          setState({ ...data, params: state.params });
         }
       }
     });
   };
 
+  const handleChange = (environmentId) => {
+    setState({ ...defaultState, params: { ...state.params, environmentId } });
+  }
+
   useEffect(() => {
     handleSkipPage(paging.pageIndex, paging.pageSize);
-  }, [paging.pageIndex]);
- 
+  }, [state.params.environmentId]);
+
 
 
   const columns = [
@@ -51,7 +65,7 @@ export default (props) => {
     {
       title: 'content',
       dataIndex: 'content',
-      ellipsis:true
+      ellipsis: true
     }
   ];
 
@@ -62,10 +76,21 @@ export default (props) => {
   }
 
   return (
-    <PagingTable {...props}
-      {...state}
-      handleSkipPage={handleSkipPage}
-      columns={columns}
-      rowSelection={rowSelectionOption} />
-  );
+    <div>
+      <Row>
+        <Col span={18}>
+
+        </Col>
+        <Col span={6}>
+          <Select style={{ width: '100%' }} defaultValue={defaultEnvId} onChange={handleChange}>
+            {environmentOptions}
+          </Select>
+        </Col>
+      </Row>
+      <PagingTable {...props}
+        {...state}
+        handleSkipPage={handleSkipPage}
+        columns={columns}
+        rowSelection={rowSelectionOption} />
+    </div>);
 };
