@@ -36,7 +36,7 @@ export const defaultState = {
 };
 
 //parsing payload
-const parsingPayload = (payload) => {
+export const parsingPayload = (payload) => {
   let model = {};
   if (payload && payload.callback) {
     model.callback = payload.callback;
@@ -141,6 +141,8 @@ export const defaultModel = {
   }
 };
 
+
+
 //default Form Build fn
 export const defaultFormBuild = (props) => {
   return [
@@ -190,18 +192,19 @@ export const defaultHandler = {
 //default operation
 export const defaultOperation = {
   add: (props, proxyModal) => {
-    const { dispatch, title, element, icon } = props;
+    const { dispatch, title, element, icon, modalProps } = props;
     FormModal.confirm({
       title: title || "Add",
       destroyOnClose: true,
       icon: icon || (<></>),
       closable: false,
+      ...(modalProps || {}),
       contentElement: element,
       contentProps: { ...props }
     }, proxyModal);
   },
   edit: (props, proxyModal) => {
-    const { dispatch, type, title, data, element, icon } = props;
+    const { dispatch, type, title, data, element, icon, modalProps } = props;
     dispatch({
       type: type,
       payload: {
@@ -212,11 +215,9 @@ export const defaultOperation = {
             destroyOnClose: true,
             icon: icon || (<></>),
             closable: false,
+            ...(modalProps || {}),
             contentElement: element,
-            contentProps: {
-              ...props,
-              model
-            }
+            contentProps: { ...props }
           }, proxyModal);
         }
       }

@@ -1,11 +1,9 @@
 import { RequestConfig } from 'umi';
 let masterProps;
 export const request: RequestConfig = {};
-const {UMI_ENV} = process.env;
 export const qiankun = {
   // 应用加载之前
   async bootstrap(props) {
-    console.log({ UMI_ENV });
     masterProps = props;
     masterProps.initial(request);
   },

@@ -1,5 +1,5 @@
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Row, Col, Input, Table, Button, Modal } from 'antd';
 import { connect, Link } from 'umi';
 import AddForm from './components/AddForm';
@@ -9,19 +9,20 @@ import PagingTable from '@/components/PagingTable';
 
 const { Search } = Input;
 
-class ProjectList extends React.Component {
-  constructor(props) {
-    super(props);
-    this.dispatchType = defaultDispatchType("project");
-    props.dispatch({
-      type: this.dispatchType.search,
-      payload: props.match.params
-    });
-  }
+export default connect(({ project }) => (
+  {
+    project
+  }))((props) => {
+    const { dispatch, match, project } = props;
 
+    const dispatchType = defaultDispatchType("project");
 
-  render() {
-    const { dispatch, match, project } = this.props;
+    useEffect(() => {
+      props.dispatch({
+        type: dispatchType.search,
+        payload: props.match.params
+      });
+    }, []);
 
     const handleDelete = (row) => {
       const id = row.id;
@@ -29,7 +30,7 @@ class ProjectList extends React.Component {
         title: 'Are you sure delete this task?',
         onOk: () => {
           dispatch({
-            type: this.dispatchType.delete,
+            type: dispatchType.delete,
             payload: { id },
           });
         }
@@ -41,7 +42,7 @@ class ProjectList extends React.Component {
     }
 
     const handleEdit = (row) => {
-      defaultOperation.edit({ dispatch, type: this.dispatchType.find, data: row.id, element: EditForm });
+      defaultOperation.edit({ dispatch, type: dispatchType.find, data: row.id, element: EditForm });
     }
 
     const handleSearch = (name) => {
@@ -62,18 +63,11 @@ class ProjectList extends React.Component {
       },
       {
         title: 'name',
-        dataIndex: 'name',
-        key: 'name',
-      },
-      {
-        title: 'version',
-        dataIndex: 'version',
-        key: 'version',
+        dataIndex: 'name'
       },
       {
         title: 'createTime',
-        dataIndex: 'createTime',
-        key: 'createTime'
+        dataIndex: 'createTime'
       }, {
         title: 'action',
         render: (text, row) => (
@@ -99,15 +93,8 @@ class ProjectList extends React.Component {
               <Search placeholder="input search text" onSearch={handleSearch} enterButton />
             </Col>
           </Row>
-          <PagingTable columns={columns} {...this.props} {...project} dispatchType={this.dispatchType.paging} />
+          <PagingTable columns={columns} {...props} {...project} dispatchType={dispatchType.paging} />
         </div>
       </PageHeaderWrapper>
     );
-  }
-
-}
-
-export default connect(({ project }) => (
-  {
-    project
-  }))(ProjectList);
+  });

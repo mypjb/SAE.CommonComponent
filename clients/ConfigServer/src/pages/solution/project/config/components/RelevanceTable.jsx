@@ -16,7 +16,7 @@ export default (props) => {
 
   const { dispatch, projectId } = props;
 
-  const [state, setState] = useState({ ...defaultState, params: { projectId, defaultEnvId } });
+  const [state, setState] = useState({ ...defaultState, params: { projectId, environmentId: defaultEnvId } });
   const { paging } = state;
 
   let configIds = [];
@@ -44,7 +44,16 @@ export default (props) => {
     handleSkipPage(paging.pageIndex, paging.pageSize);
   }, [state.params.environmentId]);
 
-
+  props.okCallback((close) => {
+    dispatch({
+      type: "projectConfigRelevance/relevance",
+      payload: {
+        data: { configIds, projectId },
+        callback: close
+      }
+    });
+    return false;
+  });
 
   const columns = [
     {
