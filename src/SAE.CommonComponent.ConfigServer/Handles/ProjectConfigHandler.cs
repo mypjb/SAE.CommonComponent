@@ -97,7 +97,8 @@ namespace SAE.CommonComponent.ConfigServer.Handles
 
             Assert.Build(project).IsNotNull();
 
-            var query = this._storage.AsQueryable<ConfigDto>().Where(s => s.SolutionId == project.SolutionId);
+            var query = this._storage.AsQueryable<ConfigDto>().Where(s => s.SolutionId == project.SolutionId &&
+                                                                     s.EnvironmentId == command.EnvironmentId);
 
             var configIds = this._storage.AsQueryable<ProjectConfig>()
                                .Where(s => s.ProjectId == command.ProjectId &&
@@ -105,7 +106,7 @@ namespace SAE.CommonComponent.ConfigServer.Handles
                                .Select(s => s.ConfigId)
                                .ToArray();
 
-            query = query.Where(s => configIds.Contains(s.Id));
+            query = query.Where(s => !configIds.Contains(s.Id));
 
             return PagedList.Build(query, command);
         }
