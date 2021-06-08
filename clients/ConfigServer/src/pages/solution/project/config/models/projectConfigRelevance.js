@@ -9,13 +9,12 @@ export default {
   },
   effects: {
     ...defaultModel.effects({ request, name: "projectConfigRelevance" }),
-    *relevance({ payload }, { call }) {
+    *relevance({ payload }, { call, put }) {
       console.log(payload);
       const { callback, data } = parsingPayload(payload);
       yield call(request.relevance, data);
-      // yield put({ type: "paging" });
+      yield put({ type: "projectConfig/paging" });
       if (callback) {
-
         callback();
       }
     }

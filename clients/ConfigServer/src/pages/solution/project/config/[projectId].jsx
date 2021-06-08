@@ -50,7 +50,7 @@ export default connect(({ projectConfig }) => (
     }
 
     const handleRelevance = () => {
-      defaultOperation.add({ dispatch, element: RelevanceTable, ...match.params,modalProps:{width:"80%"} }, modal);
+      defaultOperation.add({ dispatch, element: RelevanceTable, ...match.params, modalProps: { width: "80%" } }, modal);
     };
 
 
@@ -81,13 +81,13 @@ export default connect(({ projectConfig }) => (
         render: (text, row) => (
           <span>
             <Button type='link' onClick={handleEdit.bind(row, row)} style={{ marginRight: 16 }}>Edit</Button>
-            <Button type='link'>Config Manage</Button>
           </span>
         )
       }
     ];
 
     const rowSelectOption = {
+      preserveSelectedRowKeys: false,
       onChange: (rowsKey, rowsData) => {
         ids = rowsData.map(s => (s.id));
       }
