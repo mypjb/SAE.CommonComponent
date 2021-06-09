@@ -88,7 +88,7 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
             return this.Ok();
         }
         [HttpGet("{action}")]
-        public async Task<object> Preview(ProjectCommand.Preview command)
+        public async Task<object> Preview([FromQuery]ProjectCommand.Preview command)
         {
             var data = await this._mediator.SendAsync<object>(command);
             return data;

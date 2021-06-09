@@ -93,9 +93,8 @@ export const defaultModel = {
 
         yield call(request.add, data);
 
-        if (callback) {
-          callback();
-        };
+        callback();
+
         yield put({ type: "paging", payload: {} });
       },
       *delete({ payload }, { call, put }) {
@@ -106,16 +105,12 @@ export const defaultModel = {
         const { callback, data } = parsingPayload(payload);
         yield call(request.edit, data);
         yield put({ type: "paging", payload: {} });
-        if (callback) {
-          callback();
-        };
+        callback();
       },
       *find({ payload }, { put, call }) {
         const { callback, data } = parsingPayload(payload);
         const model = yield call(request.find, data);
-        if (callback) {
-          callback(model);
-        };
+        callback(model);
       },
       *paging({ payload }, { call, put, select }) {
 
@@ -128,10 +123,9 @@ export const defaultModel = {
 
         yield put({ type: "setPaging", payload: paging });
 
-        if (callback) {
-          const state = yield select((globalStatus) => (globalStatus[stateName]));
-          callback(state);
-        }
+        const state = yield select((globalStatus) => (globalStatus[stateName]));
+        
+        callback(state);
       },
       *search({ payload }, { put }) {
         yield put({ type: "setParams", payload });

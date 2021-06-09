@@ -1,6 +1,5 @@
 import request from "../service";
-import { defaultModel } from '@/utils/utils';
-import { useParams, useRouteMatch } from 'umi';
+import { defaultModel, parsingPayload } from '@/utils/utils';
 
 export default {
   state: {
@@ -10,6 +9,22 @@ export default {
     ...defaultModel.reducers
   },
   effects: {
-    ...defaultModel.effects({ request, name: "project" })
+    ...defaultModel.effects({ request, name: "project" }),
+    *publish({ payload }, { call, put, select }) {
+
+      const { callback, data } = parsingPayload(payload);
+
+      yield call(request.publish, data);
+
+      callback();
+
+    },
+    *preview({ payload }, { call, put, select }) {
+      const { callback, data } = parsingPayload(payload);
+
+      const model = yield call(request.preview, data);
+
+      callback(model);
+    }
   }
 };

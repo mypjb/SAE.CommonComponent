@@ -6,6 +6,7 @@ import AddForm from './components/AddForm';
 import EditForm from './components/EditForm';
 import { defaultOperation, defaultDispatchType } from '@/utils/utils';
 import PagingTable from '@/components/PagingTable';
+import Preview from '../components/Preview';
 
 const { Search } = Input;
 
@@ -18,6 +19,8 @@ export default connect(({ project }) => (
     const dispatchType = defaultDispatchType("project");
 
     const environments = useModel("environment", model => (model.state));
+
+    const [modal, contextHolder] = Modal.useModal();
 
     useEffect(() => {
       props.dispatch({
@@ -48,25 +51,38 @@ export default connect(({ project }) => (
     }
 
     const handlePublish = (row) => {
+      let currentEnvId = environments.length ? environments[0].id : null;
       Modal.confirm({
         title: "Please select an environment ",
         destroyOnClose: true,
         width: 350,
         closable: false,
-        content: (<Select style={{ width: "100%" }} defaultValue={environments.length ? environments[0].id : null}>
+        content: (<Select style={{ width: "100%" }} defaultValue={currentEnvId} onSelect={(id) => { currentEnvId = id }}>
           {environments.map(data => <Option value={data.id} data={data}>{data.name}</Option>)}
         </Select>),
         onOk: (close) => {
           props.dispatch({
             type: "project/publish",
             payload: {
-              id:row.id,
-              //environmentId:??
+              data: {
+                id: row.id,
+                environmentId: currentEnvId
+              },
+              callback: close
             }
           });
         }
       });
     }
+
+    const handlePreview = (row) => {
+      modal.confirm({
+        title: "Cat project config data",
+        closable: false,
+        content: (<Preview id={row.id} dispatch={dispatch}></Preview>)
+      });
+    }
+
 
     const handleSearch = (name) => {
       dispatch({
@@ -95,6 +111,7 @@ export default connect(({ project }) => (
         title: 'action',
         render: (text, row) => (
           <span>
+            <Button type='link' onClick={handlePreview.bind(row, row)}>Preview</Button>
             <Button type='link' onClick={handlePublish.bind(row, row)}>Publish</Button>
             <Button type='link' onClick={handleEdit.bind(row, row)} style={{ marginRight: 16 }}>Edit</Button>
             <Button type='link' onClick={handleDelete.bind(row, row)}>Delete</Button>
@@ -108,6 +125,7 @@ export default connect(({ project }) => (
 
     return (
       <PageHeaderWrapper>
+        {contextHolder}
         <div>
           <Row>
             <Col span={18}>
