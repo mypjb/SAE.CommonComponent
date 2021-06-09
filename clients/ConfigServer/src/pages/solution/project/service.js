@@ -11,10 +11,11 @@ httpClient.publish = async function (data) {
     });
 }
 
-httpClient.preview = async function (data) {
+httpClient.preview = async function (params) {
+
     return request(`/project/preview`, {
         method: "get",
-        data
+        params
     });
 }
 

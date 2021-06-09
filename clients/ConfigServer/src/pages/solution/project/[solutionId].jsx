@@ -78,6 +78,8 @@ export default connect(({ project }) => (
     const handlePreview = (row) => {
       modal.confirm({
         title: "Cat project config data",
+        icon: (<></>),
+        width:"80%",
         closable: false,
         content: (<Preview id={row.id} dispatch={dispatch}></Preview>)
       });

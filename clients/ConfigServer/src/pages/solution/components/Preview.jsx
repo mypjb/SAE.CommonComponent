@@ -10,7 +10,6 @@ export default (props) => {
     const { dispatch, id } = props;
 
     const environments = useModel("environment", model => (model.state));
-    const environmentId = environments.length ? environments[0].id : null;
     const [state, setState] = useState();
 
     const options = environments.map(data => <Option value={data.id} data={data}>{data.name}</Option>);
@@ -32,10 +31,10 @@ export default (props) => {
 
     return (
         <div>
-            <Select defaultValue={environmentId} onSelect={handlerSelect}>
+            <Select style={{ width: 200 }} onSelect={handlerSelect}>
                 {options}
             </Select>
-            <ReactJson src={state}></ReactJson>
+            <ReactJson src={state} name={false} displayDataTypes={false}></ReactJson>
         </div>
     );
 }
