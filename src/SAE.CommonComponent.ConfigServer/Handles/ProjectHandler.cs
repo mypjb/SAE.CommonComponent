@@ -81,6 +81,7 @@ namespace SAE.CommonComponent.ConfigServer.Handles
             }
             else
             {
+                projectData = await this._documentStore.FindAsync<ProjectData>(projectData.Id);
                 projectData.Change(data.ToJsonString());
             }
 

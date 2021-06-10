@@ -65,10 +65,10 @@ namespace SAE.CommonComponent.ConfigServer.Test
 
             var httpResponseMessage = await this.HttpClient.SendAsync(message);
 
-            var responseMessage = await this.HttpClient.GetAsync($"{url}/paging?{nameof(command.ProjectId)}={command.ProjectId}&&{nameof(config.EnvironmentId)}={config.EnvironmentId}");
+            var responseMessage = await this.HttpClient.GetAsync($"{API}/config/paging?{nameof(command.ProjectId)}={command.ProjectId}&&{nameof(config.EnvironmentId)}={config.EnvironmentId}");
 
-            var configs = await responseMessage.AsAsync<PagedList<ConfigDto>>();
-            var configDto = configs.First();
+            var projectConfigDtos = await responseMessage.AsAsync<PagedList<ProjectConfigDto>>();
+            var configDto = projectConfigDtos.First().Config;
 
             Assert.Equal(configDto.Id, config.Id);
             Assert.Equal(configDto.SolutionId, config.SolutionId);
@@ -132,6 +132,11 @@ namespace SAE.CommonComponent.ConfigServer.Test
                               .AddJsonContent(publishCommand);
 
             (await this.HttpClient.SendAsync(publishReq)).EnsureSuccessStatusCode();
+
+            var publishReq2 = new HttpRequestMessage(HttpMethod.Post, $"{API}/{nameof(ProjectCommand.Publish)}")
+                             .AddJsonContent(publishCommand);
+
+            (await this.HttpClient.SendAsync(publishReq2)).EnsureSuccessStatusCode();
 
             var appConfigCommand = new AppCommand.Config
             {

@@ -26,7 +26,7 @@ namespace SAE.CommonComponent.ConfigServer.Handles
         {
             var app = new AppConfigDto();
 
-            var environment = this._storage.AsQueryable<EnvironmentVariable>()
+            var environment = this._storage.AsQueryable<EnvironmentVariableDto>()
                                     .FirstOrDefault(e => e.Name == command.Env);
 
             if (environment != null)

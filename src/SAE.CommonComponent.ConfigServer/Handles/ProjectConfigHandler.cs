@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using SAE.CommonLibrary.Abstract.Builder;
 
 namespace SAE.CommonComponent.ConfigServer.Handles
 {
@@ -23,10 +24,16 @@ namespace SAE.CommonComponent.ConfigServer.Handles
                                         ICommandHandler<Command.Find<ProjectConfigDto>, ProjectConfigDto>
     {
         private readonly IMediator _mediator;
+        private readonly IDirector _director;
         private readonly IStorage _storage;
-        public ProjectConfigHandler(IDocumentStore documentStore, IStorage storage, IMediator mediator) : base(documentStore)
+        public ProjectConfigHandler(
+            IDocumentStore documentStore,
+            IStorage storage,
+            IMediator mediator,
+            IDirector director) : base(documentStore)
         {
             this._mediator = mediator;
+            this._director = director;
             this._storage = storage;
         }
 
@@ -61,7 +68,11 @@ namespace SAE.CommonComponent.ConfigServer.Handles
             var query = this._storage.AsQueryable<ProjectConfigDto>()
                                      .Where(s => s.ProjectId == command.ProjectId &&
                                             s.EnvironmentId == command.EnvironmentId);
-            return PagedList.Build(query, command);
+            var paging = PagedList.Build(query, command);
+
+            await this._director.Build(paging.AsEnumerable());
+
+            return paging;
         }
 
         public async Task HandleAsync(ProjectCommand.ConfigChangeAlias command)
@@ -80,10 +91,6 @@ namespace SAE.CommonComponent.ConfigServer.Handles
 
             await this._documentStore.SaveAsync(projectConfig);
 
-            //await this._mediator.SendAsync(new ProjectCommand.VersionCumulation
-            //{
-            //    ProjectId = projectConfig.ProjectId
-            //});
         }
 
         public async Task<ProjectConfigDto> HandleAsync(Command.Find<ProjectConfigDto> command)
@@ -100,7 +107,7 @@ namespace SAE.CommonComponent.ConfigServer.Handles
             var query = this._storage.AsQueryable<ConfigDto>().Where(s => s.SolutionId == project.SolutionId &&
                                                                      s.EnvironmentId == command.EnvironmentId);
 
-            var configIds = this._storage.AsQueryable<ProjectConfig>()
+            var configIds = this._storage.AsQueryable<ProjectConfigDto>()
                                .Where(s => s.ProjectId == command.ProjectId &&
                                       s.EnvironmentId == command.EnvironmentId)
                                .Select(s => s.ConfigId)
