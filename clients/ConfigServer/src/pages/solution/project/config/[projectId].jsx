@@ -1,7 +1,7 @@
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import React, { useEffect } from 'react';
-import { Row, Col, Input, Button, Modal } from 'antd';
-import { connect } from 'umi';
+import { Row, Col, Input, Button, Modal, Select } from 'antd';
+import { connect, useModel } from 'umi';
 import RelevanceTable from './components/RelevanceTable';
 import EditConfig from './components/EditConfig';
 import PagingTable from '@/components/PagingTable';
@@ -17,12 +17,20 @@ export default connect(({ projectConfig }) => (
 
     const { dispatch, projectConfig, match } = props;
 
-    dispatchType = defaultDispatchType("projectConfig");
+    const [modal, contextHolder] = Modal.useModal();
+
+    const { environmentData } = useModel("environment", model => ({ environmentData: model.state }));
+
+    const environmentOptions = environmentData.map(data => <Option value={data.id} data={data}>{data.name}</Option>);
+
+    const defaultEnvId = environmentData.length ? environmentData[0].id : "";
+
+    const dispatchType = defaultDispatchType("projectConfig");
 
     useEffect(() => {
       dispatch({
         type: dispatchType.search,
-        payload: match.params
+        payload: { ...match.params, environmentId: defaultEnvId }
       });
     }, []);
 
@@ -42,7 +50,7 @@ export default connect(({ projectConfig }) => (
     }
 
     const handleRelevance = () => {
-      defaultOperation.add({ dispatch, element: RelevanceTable, ...match.params });
+      defaultOperation.add({ dispatch, element: RelevanceTable, ...match.params, modalProps: { width: "80%" } }, modal);
     };
 
 
@@ -50,10 +58,10 @@ export default connect(({ projectConfig }) => (
       defaultOperation.edit({ dispatch, type: dispatchType.find, data: row.id, element: EditConfig });
     }
 
-    const handleSearch = (name) => {
+    const handleSearch = (keys) => {
       dispatch({
-        type: this.dispatchType.search,
-        payload: { name, ...match.params },
+        type: dispatchType.search,
+        payload: { ...keys, ...match.params },
       });
     }
 
@@ -73,13 +81,13 @@ export default connect(({ projectConfig }) => (
         render: (text, row) => (
           <span>
             <Button type='link' onClick={handleEdit.bind(row, row)} style={{ marginRight: 16 }}>Edit</Button>
-            <Button type='link'>Config Manage</Button>
           </span>
         )
       }
     ];
 
     const rowSelectOption = {
+      preserveSelectedRowKeys: false,
       onChange: (rowsKey, rowsData) => {
         ids = rowsData.map(s => (s.id));
       }
@@ -88,19 +96,25 @@ export default connect(({ projectConfig }) => (
 
     return (
       <PageHeaderWrapper>
+        {contextHolder}
         <div>
           <Row>
             <Col span={18}>
               <Button type="primary" onClick={handleRelevance}>Relevance</Button>
               <Button type="primary" onClick={handleDelete}>Delete</Button>
             </Col>
-            <Col span={6}>
-              <Search placeholder="input search text" onSearch={handleSearch} enterButton />
+            <Col span={2}>
+              <Select style={{ width: '100%' }} defaultValue={defaultEnvId} onChange={(environmentId) => handleSearch({ environmentId })}>
+                {environmentOptions}
+              </Select>
+            </Col>
+            <Col span={4}>
+              <Search placeholder="input search text" onSearch={(name) => handleSearch({ name })} enterButton />
             </Col>
           </Row>
-          <PagingTable {...this.props}
+          <PagingTable {...props}
             {...projectConfig}
-            dispatchType={this.dispatchType.paging}
+            dispatchType={dispatchType.paging}
             type='projectConfig/paging'
             rowKey={columns[0].key}
             columns={columns}

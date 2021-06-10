@@ -1,5 +1,5 @@
 import request from "../projectConfigRelevanceService"
-import { defaultModel } from "@/utils/utils";
+import { defaultModel, parsingPayload } from "@/utils/utils";
 export default {
   state: {
     ...defaultModel.state
@@ -8,6 +8,15 @@ export default {
     ...defaultModel.reducers
   },
   effects: {
-    ...defaultModel.effects({ request, name: "projectConfigRelevance" })
+    ...defaultModel.effects({ request, name: "projectConfigRelevance" }),
+    *relevance({ payload }, { call, put }) {
+      console.log(payload);
+      const { callback, data } = parsingPayload(payload);
+      yield call(request.relevance, data);
+      yield put({ type: "projectConfig/paging" });
+      if (callback) {
+        callback();
+      }
+    }
   }
 };

@@ -1,6 +1,5 @@
 import request from "../service";
-import { defaultModel } from '@/utils/utils';
-import { useParams, useRouteMatch } from 'umi';
+import { defaultModel, parsingPayload } from '@/utils/utils';
 
 export default {
   state: {
@@ -10,24 +9,22 @@ export default {
     ...defaultModel.reducers
   },
   effects: {
-    ...defaultModel.effects({ request, name: "project" })
-  },
-  subscriptions: {
-    setup({ dispatch, history }) {
-      history.listen((props) => {
-        const { pathname } = props;
-        const pathName = '/solution/project';
-        const index = pathname.toLocaleLowerCase().indexOf(pathName);
-        if (index === 0) {
-          const solutionId = pathname.substr(pathName.length + 1);
-          dispatch({
-            type: 'search',
-            payload: {
-              solutionId
-            }
-          });
-        }
-      });
+    ...defaultModel.effects({ request, name: "project" }),
+    *publish({ payload }, { call, put, select }) {
+
+      const { callback, data } = parsingPayload(payload);
+
+      yield call(request.publish, data);
+
+      callback();
+
     },
+    *preview({ payload }, { call, put, select }) {
+      const { callback, data } = parsingPayload(payload);
+
+      const model = yield call(request.preview, data);
+
+      callback(model);
+    }
   }
 };
