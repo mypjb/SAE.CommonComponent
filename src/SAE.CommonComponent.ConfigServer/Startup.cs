@@ -48,7 +48,8 @@ namespace SAE.CommonComponent.ConfigServer
                     .AddMediator();
             services.AddMemoryDocument()
                     .AddMemoryMessageQueue()
-                    .AddDataPersistenceService(assemblys);
+                    .AddDataPersistenceService(assemblys)
+                    .AddBuilder(assemblys);
         }
 
         public override void PluginConfigure(IApplicationBuilder app)
