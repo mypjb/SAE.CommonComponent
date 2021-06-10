@@ -32,6 +32,12 @@ export default (props) => {
         });
     };
 
+    const jsonOption={
+        collapseStringsAfterLength:64,
+        name:false,
+        displayDataTypes:false
+    };
+
     return (
         <div>
             <Select labelInValue style={{ width: 200 }} onSelect={handlerSelect}>
@@ -44,11 +50,11 @@ export default (props) => {
             <Divider style={{ width: "100%" }}></Divider>
             <Row>
                 <Col span={12}>
-                    <ReactJson src={state.preview} collapseStringsAfterLength={64} name={false} displayDataTypes={false}></ReactJson>
+                    <ReactJson src={state.preview} {...jsonOption}></ReactJson>
 
                 </Col>
                 <Col span={12}>
-                    <ReactJson src={state.current} name={false} displayDataTypes={false}></ReactJson>
+                    <ReactJson src={state.current} {...jsonOption}></ReactJson>
                 </Col>
             </Row>
 
