@@ -12,8 +12,14 @@ httpClient.publish = async function (data) {
 }
 
 httpClient.preview = async function (params) {
-
     return request(`/project/preview`, {
+        method: "get",
+        params
+    });
+}
+
+httpClient.appConfig = async function (params) {
+    return request(`/app/config`, {
         method: "get",
         params
     });

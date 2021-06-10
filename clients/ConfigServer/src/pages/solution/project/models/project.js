@@ -22,9 +22,11 @@ export default {
     *preview({ payload }, { call, put, select }) {
       const { callback, data } = parsingPayload(payload);
 
-      const model = yield call(request.preview, data);
+      const previewData = yield call(request.preview, data);
 
-      callback(model);
+      const appData = yield call(request.appConfig, data);
+
+      callback({ preview: previewData, current: appData });
     }
   }
 };
