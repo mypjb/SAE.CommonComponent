@@ -36,7 +36,7 @@ namespace SAE.CommonComponent.Routing.Commands
         public class PermissionQuery:Paging
         {
             public string Id { get; set; }
-            public bool HasRelevance { get; set; }
+            public bool IgnoreRelevance { get; set; }
         }
 
         public class Query : Paging

@@ -131,7 +131,7 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
         {
             var menu = await this._documentStore.FindAsync<Menu>(command.Id);
 
-            if (command.HasRelevance)
+            if (command.IgnoreRelevance)
             {
                 var pIds= PagedList.Build(menu.PermissionIds.AsQueryable(), command);
                 var permissionDtos=await this.mediator.SendAsync<IEnumerable<PermissionDto>>(new PermissionCommand.Finds

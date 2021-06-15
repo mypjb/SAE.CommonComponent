@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace SAE.CommonComponent.Routing.Domains
 {
-    public class RoleMenu:Document
+    public class RoleMenu : Document
     {
         public RoleMenu()
         {
 
         }
 
-        public RoleMenu(string menuId,string roleId)
+        public RoleMenu(string roleId, string menuId)
         {
             this.Id = $"{roleId}_{menuId}";
             this.MenuId = menuId;

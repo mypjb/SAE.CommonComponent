@@ -11,8 +11,8 @@ namespace SAE.CommonComponent.Routing.Abstract.Commands
     {
         public class ReferenceMenu
         {
-            public string UserId { get; set; }
-            public IEnumerable<string> Ids { get; set; }
+            public string RoleId { get; set; }
+            public IEnumerable<string> MenuIds { get; set; }
         }
         public class DeleteMenu : ReferenceMenu
         {
@@ -21,7 +21,7 @@ namespace SAE.CommonComponent.Routing.Abstract.Commands
         public class Query : Paging
         {
             public string RoleId { get; set; }
-            public bool HasRelevance { get; set; }
+            public bool IgnoreRelevance { get; set; }
         }
 
     }
