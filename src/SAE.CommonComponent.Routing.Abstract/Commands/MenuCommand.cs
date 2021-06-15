@@ -19,14 +19,18 @@ namespace SAE.CommonComponent.Routing.Commands
 
         public class RelevancePermission
         {
+            /// <summary>
+            /// menu Id
+            /// </summary>
             public string Id { get; set; }
+            /// <summary>
+            /// permission id list 
+            /// </summary>
             public IEnumerable<string> PermissionIds { get; set; }
         }
 
-        public class DeletePermission
+        public class DeletePermission: RelevancePermission
         {
-            public string Id { get; set; }
-            public IEnumerable<string> PermissionIds { get; set; }
         }
 
         public class PermissionQuery:Paging

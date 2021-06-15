@@ -14,11 +14,11 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace SAE.CommonComponent.Identity.Handlers
 {
-    public class AccountHandle : ICommandHandler<AccountLoginCommand, IPrincipal>
+    public class AccountHandler : ICommandHandler<AccountLoginCommand, IPrincipal>
     {
         private readonly IMediator _mediator;
 
-        public AccountHandle(IMediator mediator)
+        public AccountHandler(IMediator mediator)
         {
             this._mediator = mediator;
         }

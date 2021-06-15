@@ -36,7 +36,7 @@ namespace SAE.CommonComponent.Authorize.Test
         [InlineData(null)]
         public async Task<string> Reference(string userId = null)
         {
-            var command = new UserRoleCommand.Reference()
+            var command = new UserRoleCommand.ReferenceRole()
             {
                 UserId = userId.IsNullOrWhiteSpace() ? Guid.NewGuid().ToString("N") : userId
             };
@@ -69,7 +69,7 @@ namespace SAE.CommonComponent.Authorize.Test
         {
             var userId = await this.Reference();
             var userRoles = await this.Get(userId);
-            var command = new UserRoleCommand.DeleteReference
+            var command = new UserRoleCommand.DeleteRole
             {
                 UserId = userId,
                 Ids = new[] { userRoles.First().Id }

@@ -9,7 +9,7 @@ using SAE.CommonLibrary.Extension;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SAE.CommonComponent.ConfigServer.Handles
+namespace SAE.CommonComponent.ConfigServer.Handlers
 {
     public class ConfigHandler : AbstractHandler<Config>,
                                  ICommandHandler<ConfigCommand.Create, string>,

@@ -13,9 +13,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SAE.CommonComponent.Authorize.Handles
+namespace SAE.CommonComponent.Authorize.Handlers
 {
-    public class RoleHandle : AbstractHandler<Role>,
+    public class RoleHandler : AbstractHandler<Role>,
                               ICommandHandler<RoleCommand.Create, string>,
                               ICommandHandler<RoleCommand.Change>,
                               ICommandHandler<RoleCommand.ChangeStatus>,
@@ -29,7 +29,7 @@ namespace SAE.CommonComponent.Authorize.Handles
         private readonly IStorage _storage;
         private readonly IDirector _director;
 
-        public RoleHandle(IDocumentStore documentStore, 
+        public RoleHandler(IDocumentStore documentStore, 
                           IStorage storage,
                           IDirector director) : base(documentStore)
         {

@@ -7,12 +7,12 @@ namespace SAE.CommonComponent.Authorize.Commands
 {
     public class UserRoleCommand
     {
-        public class Reference
+        public class ReferenceRole
         {
             public string UserId { get; set; }
             public IEnumerable<string> Ids { get; set; }
         }
-        public class DeleteReference : Reference
+        public class DeleteRole : ReferenceRole
         {
         }
         

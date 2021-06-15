@@ -22,14 +22,14 @@ namespace SAE.CommonComponent.Authorize.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Reference(UserRoleCommand.Reference command)
+        public async Task<IActionResult> Reference(UserRoleCommand.ReferenceRole command)
         {
             await this._mediator.SendAsync(command);
             return this.Ok();
         }
 
         [HttpDelete]
-        public async Task<IActionResult> DeleteReference(UserRoleCommand.DeleteReference command)
+        public async Task<IActionResult> DeleteReference(UserRoleCommand.DeleteRole command)
         {
             await this._mediator.SendAsync(command);
             return this.Ok();

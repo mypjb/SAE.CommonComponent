@@ -13,9 +13,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SAE.CommonComponent.Authorize.Handles
+namespace SAE.CommonComponent.Authorize.Handlers
 {
-    public class PermissionHandle : AbstractHandler<Permission>,
+    public class PermissionHandler : AbstractHandler<Permission>,
                                     ICommandHandler<PermissionCommand.Create, string>,
                                     ICommandHandler<PermissionCommand.Change>,
                                     ICommandHandler<PermissionCommand.ChangeStatus>,
@@ -29,7 +29,7 @@ namespace SAE.CommonComponent.Authorize.Handles
         private readonly IStorage _storage;
         private readonly IMediator _mediator;
 
-        public PermissionHandle(IDocumentStore documentStore, IStorage storage, IMediator mediator) : base(documentStore)
+        public PermissionHandler(IDocumentStore documentStore, IStorage storage, IMediator mediator) : base(documentStore)
         {
             this._storage = storage;
             this._mediator = mediator;

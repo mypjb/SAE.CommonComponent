@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SAE.CommonComponent.ConfigServer.Handles
+namespace SAE.CommonComponent.ConfigServer.Handlers
 {
     public class EnvironmentVariableHandler : AbstractHandler<EnvironmentVariable>,
                                               ICommandHandler<EnvironmentVariableCommand.Create, string>,

@@ -13,7 +13,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using SAE.CommonLibrary.Abstract.Builder;
 
-namespace SAE.CommonComponent.ConfigServer.Handles
+namespace SAE.CommonComponent.ConfigServer.Handlers
 {
     public class ProjectConfigHandler : AbstractHandler<ProjectConfig>,
                                         ICommandHandler<ProjectCommand.RelevanceConfig>,

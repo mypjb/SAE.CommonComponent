@@ -12,7 +12,7 @@ using SAE.CommonLibrary.Extension;
 using System.Collections.Generic;
 using SAE.CommonComponent.ConfigServer.Events;
 
-namespace SAE.CommonComponent.ConfigServer.Handles
+namespace SAE.CommonComponent.ConfigServer.Handlers
 {
     public class ProjectHandler : AbstractHandler<Project>,
                                   ICommandHandler<ProjectCommand.Create, string>,

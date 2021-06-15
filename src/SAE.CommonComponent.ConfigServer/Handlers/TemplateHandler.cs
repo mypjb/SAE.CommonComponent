@@ -11,7 +11,7 @@ using SAE.CommonLibrary.Data;
 using SAE.CommonLibrary.EventStore.Document;
 using SAE.CommonLibrary.Extension;
 
-namespace SAE.CommonComponent.ConfigServer.Handles
+namespace SAE.CommonComponent.ConfigServer.Handlers
 {
     public class TemplateHandler : AbstractHandler<Template>,
         ICommandHandler<TemplateCommand.Create, string>,

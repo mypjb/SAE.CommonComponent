@@ -13,9 +13,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SAE.CommonComponent.User.Handles
+namespace SAE.CommonComponent.User.Handlers
 {
-    public class UserHandle : AbstractHandler<Domains.User>,
+    public class UserHandler : AbstractHandler<Domains.User>,
                               ICommandHandler<UserCommand.Register, string>,
                               ICommandHandler<UserCommand.ChangePassword>,
                               ICommandHandler<UserCommand.ChangeStatus>,
@@ -27,7 +27,7 @@ namespace SAE.CommonComponent.User.Handles
         private readonly IStorage _storage;
         private readonly IMediator _mediator;
 
-        public UserHandle(IDocumentStore documentStore,
+        public UserHandler(IDocumentStore documentStore,
                           IStorage storage,
                           IMediator mediator,
                           SAE.CommonLibrary.ObjectMapper.IObjectMapper objectMapper) : base(documentStore)

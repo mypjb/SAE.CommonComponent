@@ -16,7 +16,7 @@ using SAE.CommonLibrary;
 using SAE.CommonComponent.Authorize.Dtos;
 using SAE.CommonComponent.Authorize.Commands;
 
-namespace SAE.CommonComponent.ConfigServer.Handles
+namespace SAE.CommonComponent.ConfigServer.Handlers
 {
     public class ConfigHandler : AbstractHandler<Menu>,
                                  ICommandHandler<MenuCommand.Create, string>,

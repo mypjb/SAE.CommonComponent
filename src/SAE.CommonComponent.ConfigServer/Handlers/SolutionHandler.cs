@@ -8,7 +8,7 @@ using SAE.CommonLibrary.Abstract.Model;
 using SAE.CommonLibrary.Data;
 using SAE.CommonLibrary.EventStore.Document;
 
-namespace SAE.CommonComponent.ConfigServer.Handles
+namespace SAE.CommonComponent.ConfigServer.Handlers
 {
     public class SolutionHandler : AbstractHandler<Solution>,
         ICommandHandler<SolutionCommand.Create, string>,

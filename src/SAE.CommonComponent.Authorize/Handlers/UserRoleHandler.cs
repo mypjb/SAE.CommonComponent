@@ -12,11 +12,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace SAE.CommonComponent.Authorize.Handles
+namespace SAE.CommonComponent.Authorize.Handlers
 {
-    public class UserRoleHandle : AbstractHandler<UserRole>,
-                                  ICommandHandler<UserRoleCommand.Reference>,
-                                  ICommandHandler<UserRoleCommand.DeleteReference>,
+    public class UserRoleHandler : AbstractHandler<UserRole>,
+                                  ICommandHandler<UserRoleCommand.ReferenceRole>,
+                                  ICommandHandler<UserRoleCommand.DeleteRole>,
                                   ICommandHandler<Command.Find<UserRoleDto>, IEnumerable<UserRoleDto>>,
                                   ICommandHandler<Command.Find<UserRoleDto>, IEnumerable<RoleDto>>,
                                   ICommandHandler<Command.List<BitmapEndpoint>, IEnumerable<BitmapEndpoint>>,
@@ -27,7 +27,7 @@ namespace SAE.CommonComponent.Authorize.Handles
         private readonly IDirector _director;
         private readonly IBitmapAuthorization _bitmapAuthorization;
 
-        public UserRoleHandle(IDocumentStore documentStore,
+        public UserRoleHandler(IDocumentStore documentStore,
                               IStorage storage,
                               IMediator mediator,
                               IDirector director,
@@ -40,13 +40,13 @@ namespace SAE.CommonComponent.Authorize.Handles
         }
 
 
-        public async Task HandleAsync(UserRoleCommand.Reference command)
+        public async Task HandleAsync(UserRoleCommand.ReferenceRole command)
         {
             var userRoles = command.Ids.Select(s => new UserRole(command.UserId, s));
             await this._documentStore.SaveAsync(userRoles);
         }
 
-        public Task HandleAsync(UserRoleCommand.DeleteReference command)
+        public Task HandleAsync(UserRoleCommand.DeleteRole command)
         {
             return this._documentStore.DeleteAsync<UserRole>(command.Ids);
         }
