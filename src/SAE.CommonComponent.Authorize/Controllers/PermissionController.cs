@@ -55,7 +55,7 @@ namespace SAE.CommonComponent.Authorize.Controllers
         }
 
         [HttpGet("{action}")]
-        public async Task<object> ALL()
+        public async Task<object> List()
         {
             return await this._mediator.SendAsync<IEnumerable<PermissionDto>>(new Command.List<PermissionDto>());
         }

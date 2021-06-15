@@ -8,6 +8,7 @@ using SAE.CommonLibrary;
 using SAE.CommonLibrary.EventStore;
 using SAE.CommonLibrary.EventStore.Document;
 using SAE.CommonLibrary.Extension;
+using System.Linq;
 
 namespace SAE.CommonComponent.Routing.Domains
 {
@@ -44,7 +45,15 @@ namespace SAE.CommonComponent.Routing.Domains
         /// </summary>
         /// <value></value>
         public string ParentId { get; set; }
+        /// <summary>
+        /// create time
+        /// </summary>
         public DateTime CreateTime { get; set; }
+
+        /// <summary>
+        /// menu permission ids
+        /// </summary>
+        public IEnumerable<string> PermissionIds { get; set; }
 
         public async Task Change(MenuCommand.Change command, Func<string, Task<Menu>> parentProvider, Func<Menu, Task<bool>> menuProvider)
         {
@@ -71,9 +80,48 @@ namespace SAE.CommonComponent.Routing.Domains
                   .False("menu is exist!");
         }
 
+        /// <summary>
+        /// is root none
+        /// </summary>
+        /// <returns></returns>
         public bool IsRoot()
         {
             return this.ParentId == DefaultId;
+        }
+
+        /// <summary>
+        /// relation permission
+        /// </summary>
+        /// <param name="command"></param>
+        public void RelevancePermission(MenuCommand.RelevancePermission command)
+        {
+            var permissionIds = this.PermissionIds.Concat(command.PermissionIds)
+                                                 .Distinct()
+                                                 .ToArray();
+
+            this.Apply(new MenuEvent.RelevancePermission
+            {
+                PermissionIds = permissionIds
+            });
+        }
+
+        /// <summary>
+        /// delete permission
+        /// </summary>
+        /// <param name="command"></param>
+        public void DeletePermission(MenuCommand.DeletePermission command)
+        {
+
+            if (!command?.PermissionIds.Any() ?? false) return;
+
+            var permissionIds = this.PermissionIds.ToList();
+
+            permissionIds.RemoveAll(s => command.PermissionIds.Contains(s));
+
+            this.Apply(new MenuEvent.RelevancePermission
+            {
+                PermissionIds = permissionIds
+            });
         }
     }
 }

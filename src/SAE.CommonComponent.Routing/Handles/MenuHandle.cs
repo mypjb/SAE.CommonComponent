@@ -13,6 +13,8 @@ using SAE.CommonComponent.Routing.Domains;
 using SAE.CommonComponent.Routing.Commands;
 using SAE.CommonComponent.Routing.Dtos;
 using SAE.CommonLibrary;
+using SAE.CommonComponent.Authorize.Dtos;
+using SAE.CommonComponent.Authorize.Commands;
 
 namespace SAE.CommonComponent.ConfigServer.Handles
 {
@@ -21,14 +23,22 @@ namespace SAE.CommonComponent.ConfigServer.Handles
                                  ICommandHandler<MenuCommand.Change>,
                                  ICommandHandler<Command.BatchDelete<Menu>>,
                                  ICommandHandler<Command.Find<MenuDto>, MenuDto>,
-                                 //  ICommandHandler<MenuQueryCommand, IPagedList<MenuDto>>,
-                                 ICommandHandler<Command.List<MenuItemDto>, IEnumerable<MenuItemDto>>
+                                 ICommandHandler<MenuCommand.Query, IPagedList<MenuDto>>,
+                                 ICommandHandler<Command.List<MenuItemDto>, IEnumerable<MenuItemDto>>,
+                                 ICommandHandler<MenuCommand.RelevancePermission>,
+                                 ICommandHandler<MenuCommand.DeletePermission>,
+                                 ICommandHandler<MenuCommand.PermissionQuery, IPagedList<PermissionDto>>
+                                 
     {
         private readonly IStorage _storage;
+        private readonly IMediator mediator;
 
-        public ConfigHandler(IDocumentStore documentStore, IStorage storage) : base(documentStore)
+        public ConfigHandler(IDocumentStore documentStore,
+            IStorage storage,
+            IMediator mediator) : base(documentStore)
         {
             this._storage = storage;
+            this.mediator = mediator;
         }
 
         public async Task<string> HandleAsync(MenuCommand.Create command)
@@ -54,15 +64,15 @@ namespace SAE.CommonComponent.ConfigServer.Handles
             return first;
         }
 
-        // public async Task<IPagedList<MenuDto>> HandleAsync(MenuQueryCommand command)
-        // {
-        //     var query = this._storage.AsQueryable<MenuDto>();
-        //     if (command.Name.IsNotNullOrWhiteSpace())
-        //     {
-        //         query = query.Where(s => s.Name.Contains(command.Name));
-        //     }
-        //     return PagedList.Build(query, command);
-        // }
+        public async Task<IPagedList<MenuDto>> HandleAsync(MenuCommand.Query command)
+        {
+            var query = this._storage.AsQueryable<MenuDto>();
+            if (!command.Name.IsNullOrWhiteSpace())
+            {
+                query = query.Where(s => s.Name.Contains(command.Name));
+            }
+            return PagedList.Build(query, command);
+        }
 
         public async Task<IEnumerable<MenuItemDto>> HandleAsync(Command.List<MenuItemDto> command)
         {
@@ -101,6 +111,43 @@ namespace SAE.CommonComponent.ConfigServer.Handles
         public Task HandleAsync(Command.BatchDelete<Menu> command)
         {
             return this._documentStore.DeleteAsync<Menu>(command.Ids);
+        }
+
+        public async Task HandleAsync(MenuCommand.RelevancePermission command)
+        {
+            var menu = await this._documentStore.FindAsync<Menu>(command.Id);
+            menu.RelevancePermission(command);
+            await this._storage.SaveAsync(menu);
+        }
+
+        public async Task HandleAsync(MenuCommand.DeletePermission command)
+        {
+            var menu = await this._documentStore.FindAsync<Menu>(command.Id);
+            menu.DeletePermission(command);
+            await this._storage.SaveAsync(menu);
+        }
+
+        public async Task<IPagedList<PermissionDto>> HandleAsync(MenuCommand.PermissionQuery command)
+        {
+            var menu = await this._documentStore.FindAsync<Menu>(command.Id);
+
+            if (command.HasRelevance)
+            {
+                var pIds= PagedList.Build(menu.PermissionIds.AsQueryable(), command);
+                var permissionDtos=await this.mediator.SendAsync<IEnumerable<PermissionDto>>(new PermissionCommand.Finds
+                {
+                    Ids = pIds
+                });
+
+                return PagedList.Build(permissionDtos, pIds);
+            }
+            else
+            {
+                return await this.mediator.SendAsync<IPagedList<PermissionDto>>(new PermissionCommand.Query
+                {
+                    IgnoreIds = menu.PermissionIds
+                });
+            }
         }
     }
 }

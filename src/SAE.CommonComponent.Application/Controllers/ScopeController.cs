@@ -37,7 +37,7 @@ namespace SAE.CommonComponent.Application.Controllers
             return await this._mediator.SendAsync<IEnumerable<ScopeDto>>(command);
         }
         [HttpGet("{action}")]
-        public async Task<object> ALL()
+        public async Task<object> List()
         {
             return await this._mediator.SendAsync<IEnumerable<ScopeDto>>(new Command.List<ScopeDto>());
         }

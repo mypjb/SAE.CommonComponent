@@ -22,7 +22,7 @@ namespace SAE.CommonComponent.Authorize.Commands
             public string Id { get; set; }
             public Status Status { get; set; }
         }
-        public class RelationPermission
+        public class RelevancePermission
         {
             public string Id { get; set; }
             public IEnumerable<string> PermissionIds { get; set; }

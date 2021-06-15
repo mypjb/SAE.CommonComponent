@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using SAE.CommonLibrary.EventStore;
 
 namespace SAE.CommonComponent.Routing.Events
@@ -16,6 +17,11 @@ namespace SAE.CommonComponent.Routing.Events
             public string ParentId { get; set; }
             public string Name { get; set; }
             public string Path { get; set; }
+        }
+
+        internal class RelevancePermission : IEvent
+        {
+            public IEnumerable<string> PermissionIds { get; set; }
         }
     }
 }

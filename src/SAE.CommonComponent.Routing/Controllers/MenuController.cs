@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
+using SAE.CommonComponent.Authorize.Dtos;
 using SAE.CommonComponent.Routing.Commands;
 using SAE.CommonComponent.Routing.Domains;
 using SAE.CommonComponent.Routing.Dtos;
 using SAE.CommonLibrary.Abstract.Mediator;
+using SAE.CommonLibrary.Abstract.Model;
 using SAE.CommonLibrary.EventStore.Document;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -25,7 +27,7 @@ namespace SAE.CommonComponent.Routing.Controllers
             return await this._mediator.SendAsync<string>(command);
         }
         [HttpDelete]
-        public async Task<object> Remove([FromBody] Command.BatchDelete<Menu> command)
+        public async Task<object> Delete([FromBody] Command.BatchDelete<Menu> command)
         {
             await this._mediator.SendAsync(command);
             return this.Ok();
@@ -41,16 +43,35 @@ namespace SAE.CommonComponent.Routing.Controllers
         {
             return await this._mediator.SendAsync<MenuDto>(command);
         }
-        //[HttpGet("{action}")]
-        //public async Task<object> Paging([FromQuery]MenuCommand. command)
-        //{
-        //    return await this._mediator.SendAsync<IPagedList<MenuDto>>(command);
-        //}
         [HttpGet("{action}")]
-        public async Task<object> ALL()
+        public async Task<object> Paging([FromQuery] MenuCommand.Query command)
+        {
+            return await this._mediator.SendAsync<IPagedList<MenuDto>>(command);
+        }
+        [HttpGet("{action}")]
+        public async Task<object> List()
         {
             return await this._mediator.SendAsync<IEnumerable<MenuItemDto>>(new Command.List<MenuItemDto>());
         }
 
+        [HttpPost("permission/{action}")]
+        public async Task<IEnumerable<PermissionDto>> Paging(MenuCommand.PermissionQuery command)
+        {
+            return await this._mediator.SendAsync<IPagedList<PermissionDto>>(command);
+        }
+
+        [HttpPost("permission")]
+        public async Task<IActionResult> Relevance(MenuCommand.RelevancePermission command)
+        {
+            await this._mediator.SendAsync(command);
+            return this.Ok();
+        }
+
+        [HttpDelete("permission")]
+        public async Task<IActionResult> DeletePermission(MenuCommand.DeletePermission command)
+        {
+            await this._mediator.SendAsync(command);
+            return this.Ok();
+        }
     }
 }

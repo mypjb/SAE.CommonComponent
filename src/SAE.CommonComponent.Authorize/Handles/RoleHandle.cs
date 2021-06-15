@@ -19,7 +19,7 @@ namespace SAE.CommonComponent.Authorize.Handles
                               ICommandHandler<RoleCommand.Create, string>,
                               ICommandHandler<RoleCommand.Change>,
                               ICommandHandler<RoleCommand.ChangeStatus>,
-                              ICommandHandler<RoleCommand.RelationPermission>,
+                              ICommandHandler<RoleCommand.RelevancePermission>,
                               ICommandHandler<RoleCommand.DeletePermission>,
                               ICommandHandler<Command.BatchDelete<Role>>,
                               ICommandHandler<Command.Find<RoleDto>,RoleDto>,
@@ -67,7 +67,7 @@ namespace SAE.CommonComponent.Authorize.Handles
             await command.Ids.ForEachAsync(async id =>
             {
                 var role= await this._documentStore.FindAsync<Role>(id);
-                role.Remove();
+                role.Delete();
                 await this._documentStore.SaveAsync(role);
             });
         }
@@ -93,7 +93,7 @@ namespace SAE.CommonComponent.Authorize.Handles
             return dto;
         }
 
-        public async Task HandleAsync(RoleCommand.RelationPermission command)
+        public async Task HandleAsync(RoleCommand.RelevancePermission command)
         {
             var role =await this.FindAsync(command.Id);
 
@@ -112,7 +112,7 @@ namespace SAE.CommonComponent.Authorize.Handles
             Assert.Build(role)
                   .IsNotNull();
 
-            role.RemovePermission(command);
+            role.DeletePermission(command);
 
             await this._documentStore.SaveAsync(role);
         }

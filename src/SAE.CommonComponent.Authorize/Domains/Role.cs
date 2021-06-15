@@ -76,9 +76,9 @@ namespace SAE.CommonComponent.Authorize.Domains
         /// <summary>
         /// delete role
         /// </summary>
-        public void Remove() => this.ChangeStatus(new RoleCommand.ChangeStatus { Status = Status.Delete });
+        public void Delete() => this.ChangeStatus(new RoleCommand.ChangeStatus { Status = Status.Delete });
 
-        public void RelationPermission(RoleCommand.RelationPermission command)
+        public void RelationPermission(RoleCommand.RelevancePermission command)
         {
             var permissionIds= this.PermissionIds.Concat(command.PermissionIds)
                                                  .Distinct()
@@ -90,7 +90,7 @@ namespace SAE.CommonComponent.Authorize.Domains
             });
         }
 
-        public void RemovePermission(RoleCommand.DeletePermission command)
+        public void DeletePermission(RoleCommand.DeletePermission command)
         {
 
             if (!command?.PermissionIds.Any() ?? false) return;

@@ -23,8 +23,8 @@ namespace SAE.CommonComponent.Authorize.Handles
                                     ICommandHandler<Command.Find<PermissionDto>, PermissionDto>,
                                     ICommandHandler<PermissionCommand.Query, IPagedList<PermissionDto>>,
                                     ICommandHandler<Command.List<PermissionDto>, IEnumerable<PermissionDto>>,
-                                    ICommandHandler<IEnumerable<PermissionCommand.Create>, IEnumerable<BitmapEndpoint>>
-
+                                    ICommandHandler<IEnumerable<PermissionCommand.Create>, IEnumerable<BitmapEndpoint>>,
+                                    ICommandHandler<PermissionCommand.Finds, IEnumerable<PermissionDto>>
     {
         private readonly IStorage _storage;
         private readonly IMediator _mediator;
@@ -76,6 +76,11 @@ namespace SAE.CommonComponent.Authorize.Handles
 
             if (!command.Name.IsNullOrWhiteSpace())
                 query = query.Where(s => s.Name.Contains(command.Name));
+
+            if (command.IgnoreIds?.Any() ?? false)
+            {
+                query = query.Where(s => !command.IgnoreIds.Contains(s.Id));
+            }
 
             return Task.FromResult(PagedList.Build(query, command));
         }
@@ -142,6 +147,13 @@ namespace SAE.CommonComponent.Authorize.Handles
             var dto = this._storage.AsQueryable<PermissionDto>()
                                    .FirstOrDefault(s => s.Name.Contains(name));
             return Task.FromResult(dto?.Name ?? string.Empty);
+        }
+
+        public async Task<IEnumerable<PermissionDto>> HandleAsync(PermissionCommand.Finds command)
+        {
+            return this._storage.AsQueryable<PermissionDto>()
+                       .Where(s => command.Ids.Contains(s.Id))
+                       .ToList();
         }
     }
 }

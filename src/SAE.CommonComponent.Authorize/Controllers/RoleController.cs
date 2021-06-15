@@ -51,14 +51,15 @@ namespace SAE.CommonComponent.Authorize.Controllers
             return await this._mediator.SendAsync<RoleCommand.Query,IPagedList<RoleDto>>(command);
         }
 
-        [HttpPost("{action}")]
-        public async Task<IActionResult> RelationPermission(RoleCommand.RelationPermission command)
+
+        [HttpPost("permission")]
+        public async Task<IActionResult> Relevance(RoleCommand.RelevancePermission command)
         {
             await this._mediator.SendAsync(command);
             return this.Ok();
         }
 
-        [HttpDelete(nameof(RelationPermission))]
+        [HttpDelete("permission")]
         public async Task<IActionResult> DeletePermission(RoleCommand.DeletePermission command)
         {
             await this._mediator.SendAsync(command);

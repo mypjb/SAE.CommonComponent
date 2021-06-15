@@ -107,7 +107,7 @@ namespace SAE.CommonComponent.Authorize.Test
                            permissionDtos.Add(await this._permissionController.Add());
                        });
 
-            var command = new RoleCommand.RelationPermission
+            var command = new RoleCommand.RelevancePermission
             {
                 Id = roleDto.Id,
                 PermissionIds = permissionDtos.Select(s => s.Id).ToArray()
@@ -132,7 +132,7 @@ namespace SAE.CommonComponent.Authorize.Test
         {
             var roleDto = await this.RelationPermission();
 
-            var command = new RoleCommand.RelationPermission
+            var command = new RoleCommand.RelevancePermission
             {
                 Id = roleDto.Id,
                 PermissionIds = new[] { roleDto.PermissionIds.First() }

@@ -1,3 +1,6 @@
+using SAE.CommonLibrary.Abstract.Model;
+using System.Collections.Generic;
+
 namespace SAE.CommonComponent.Routing.Commands
 {
     public class MenuCommand
@@ -14,10 +17,28 @@ namespace SAE.CommonComponent.Routing.Commands
             public string Id { get; set; }
         }
 
-        // public class MenuQueryCommand : Paging
-        // {
-        //     public string Name { get; set; }
-        // }
+        public class RelevancePermission
+        {
+            public string Id { get; set; }
+            public IEnumerable<string> PermissionIds { get; set; }
+        }
+
+        public class DeletePermission
+        {
+            public string Id { get; set; }
+            public IEnumerable<string> PermissionIds { get; set; }
+        }
+
+        public class PermissionQuery:Paging
+        {
+            public string Id { get; set; }
+            public bool HasRelevance { get; set; }
+        }
+
+        public class Query : Paging
+        {
+            public string Name { get; set; }
+        }
 
     }
 }

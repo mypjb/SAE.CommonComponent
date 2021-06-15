@@ -1,4 +1,5 @@
 ﻿using SAE.CommonLibrary.Abstract.Model;
+using System.Collections.Generic;
 
 namespace SAE.CommonComponent.Authorize.Commands
 {
@@ -27,6 +28,12 @@ namespace SAE.CommonComponent.Authorize.Commands
         public class Query : Paging
         {
             public string Name { get; set; }
+            public IEnumerable<string> IgnoreIds { get; set; }
+        }
+
+        public class Finds
+        {
+            public IEnumerable<string> Ids { get; set; }
         }
 
     }

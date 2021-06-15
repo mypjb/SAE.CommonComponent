@@ -85,11 +85,11 @@ namespace SAE.CommonComponent.Routing.Test
         }
 
         [Fact]
-        public async Task ALL()
+        public async Task List()
         {
             var parent= await this.Add();
             var child = await this.Add(parent.Id);
-            var responseMessage = await this.HttpClient.GetAsync($"{API}/{nameof(ALL)}");
+            var responseMessage = await this.HttpClient.GetAsync($"{API}/{nameof(List)}");
             var menus = await responseMessage.AsAsync<IEnumerable<MenuItemDto>>();
 
             var parentMenu = menus.First(s => s.Id == parent.Id);
