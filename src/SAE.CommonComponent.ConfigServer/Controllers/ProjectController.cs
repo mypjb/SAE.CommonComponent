@@ -51,7 +51,7 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
             return await this._mediator.SendAsync<ProjectDto>(command);
         }
 
-        [HttpPost("config/{action}")]
+        [HttpPost("config")]
         public async Task<object> Relevance(ProjectCommand.RelevanceConfig command)
         {
             await this._mediator.SendAsync(command);

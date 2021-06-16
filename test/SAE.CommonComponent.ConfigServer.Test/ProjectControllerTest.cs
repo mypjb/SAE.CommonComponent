@@ -58,7 +58,7 @@ namespace SAE.CommonComponent.ConfigServer.Test
                 ConfigIds = new[] { config.Id }
             };
 
-            var url = $"{API}/config/{nameof(Relevance)}";
+            var url = $"{API}/config";
 
             var message = new HttpRequestMessage(HttpMethod.Post, url)
                               .AddJsonContent(command);
@@ -117,7 +117,7 @@ namespace SAE.CommonComponent.ConfigServer.Test
             };
 
 
-            var message = new HttpRequestMessage(HttpMethod.Post, $"{API}/config/{nameof(Relevance)}")
+            var message = new HttpRequestMessage(HttpMethod.Post, $"{API}/config")
                               .AddJsonContent(command);
 
             var httpResponseMessage = await this.HttpClient.SendAsync(message);
