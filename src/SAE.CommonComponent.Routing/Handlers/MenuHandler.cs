@@ -24,7 +24,7 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
                                  ICommandHandler<Command.BatchDelete<Menu>>,
                                  ICommandHandler<Command.Find<MenuDto>, MenuDto>,
                                  ICommandHandler<MenuCommand.Query, IPagedList<MenuDto>>,
-                                 ICommandHandler<Command.List<MenuItemDto>, IEnumerable<MenuItemDto>>,
+                                 ICommandHandler<MenuCommand.Tree, IEnumerable<MenuItemDto>>,
                                  ICommandHandler<MenuCommand.RelevancePermission>,
                                  ICommandHandler<MenuCommand.DeletePermission>,
                                  ICommandHandler<MenuCommand.PermissionQuery, IPagedList<PermissionDto>>
@@ -74,7 +74,7 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
             return PagedList.Build(query, command);
         }
 
-        public async Task<IEnumerable<MenuItemDto>> HandleAsync(Command.List<MenuItemDto> command)
+        public async Task<IEnumerable<MenuItemDto>> HandleAsync(MenuCommand.Tree command)
         {
             var menus = this._storage.AsQueryable<MenuDto>()
                                      .Select(s => new MenuItemDto

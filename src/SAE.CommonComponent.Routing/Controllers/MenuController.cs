@@ -49,9 +49,9 @@ namespace SAE.CommonComponent.Routing.Controllers
             return await this._mediator.SendAsync<IPagedList<MenuDto>>(command);
         }
         [HttpGet("{action}")]
-        public async Task<object> List()
+        public async Task<object> Tree()
         {
-            return await this._mediator.SendAsync<IEnumerable<MenuItemDto>>(new Command.List<MenuItemDto>());
+            return await this._mediator.SendAsync<IEnumerable<MenuItemDto>>(new MenuCommand.Tree());
         }
 
         [HttpGet("permission/{action}")]
