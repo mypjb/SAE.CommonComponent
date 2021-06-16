@@ -3,7 +3,7 @@ import { request } from "umi";
 
 const httpClient = service('project/config');
 
-httpClient.remove = async function (data) {
+httpClient.delete = async function (data) {
     console.log(data);
     return request("/project/config", {
         method: "delete",
@@ -12,13 +12,13 @@ httpClient.remove = async function (data) {
 }
 
 httpClient.queryRelevance = async function (params) {
-    return request(`/project/config/relevance`, {
+    return request(`/project/config/paging`, {
         params
     });
 }
 
 httpClient.relevance = async function (data) {
-    return request(`/project/config/relevance`, {
+    return request(`/project/config`, {
         method:"post",
         data
     });
