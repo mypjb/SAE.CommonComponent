@@ -18,6 +18,7 @@ namespace SAE.CommonComponent.Routing.Domains
         public Menu()
         {
             this.ParentId = DefaultId;
+            this.PermissionIds = Enumerable.Empty<string>();
         }
 
         public Menu(MenuCommand.Create command)
@@ -95,9 +96,9 @@ namespace SAE.CommonComponent.Routing.Domains
         /// <param name="command"></param>
         public void RelevancePermission(MenuCommand.RelevancePermission command)
         {
-            var permissionIds = this.PermissionIds.Concat(command.PermissionIds)
-                                                 .Distinct()
-                                                 .ToArray();
+            var permissionIds = (this.PermissionIds ?? new string[0] { }).Concat(command.PermissionIds)
+                                                   .Distinct()
+                                                   .ToArray();
 
             this.Apply(new MenuEvent.RelevancePermission
             {

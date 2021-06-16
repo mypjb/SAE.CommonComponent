@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\SAE.CommonComponent.Routing\SAE.CommonComponent.Routing.csproj" />
+    <ProjectReference Include="..\SAE.CommonComponent.Authorize.Test\SAE.CommonComponent.Authorize.Test.csproj" />
     <ProjectReference Include="..\SAE.CommonComponent.Test\SAE.CommonComponent.Test.csproj" />
   </ItemGroup>
 

@@ -117,21 +117,21 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
         {
             var menu = await this._documentStore.FindAsync<Menu>(command.Id);
             menu.RelevancePermission(command);
-            await this._storage.SaveAsync(menu);
+            await this._documentStore.SaveAsync(menu);
         }
 
         public async Task HandleAsync(MenuCommand.DeletePermission command)
         {
             var menu = await this._documentStore.FindAsync<Menu>(command.Id);
             menu.DeletePermission(command);
-            await this._storage.SaveAsync(menu);
+            await this._documentStore.SaveAsync(menu);
         }
 
         public async Task<IPagedList<PermissionDto>> HandleAsync(MenuCommand.PermissionQuery command)
         {
             var menu = await this._documentStore.FindAsync<Menu>(command.Id);
 
-            if (command.IgnoreRelevance)
+            if (command.Referenced)
             {
                 var pIds= PagedList.Build(menu.PermissionIds.AsQueryable(), command);
                 var permissionDtos=await this.mediator.SendAsync<IEnumerable<PermissionDto>>(new PermissionCommand.Finds

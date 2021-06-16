@@ -97,7 +97,7 @@ namespace SAE.CommonComponent.Authorize.Test
         }
 
         [Fact]
-        public async Task<RoleDto> RelationPermission()
+        public async Task<RoleDto> RelevancePermission()
         {
             var roleDto = await this.Add();
             var permissionDtos = new List<PermissionDto>();
@@ -113,8 +113,10 @@ namespace SAE.CommonComponent.Authorize.Test
                 PermissionIds = permissionDtos.Select(s => s.Id).ToArray()
             };
 
-            var request = new HttpRequestMessage(HttpMethod.Post, $"{API}/{nameof(RelationPermission)}");
+            var request = new HttpRequestMessage(HttpMethod.Post, $"{API}/Permission");
+
             request.AddJsonContent(command);
+
             var httpResponse = await this.HttpClient.SendAsync(request);
 
             httpResponse.EnsureSuccessStatusCode();
@@ -130,7 +132,7 @@ namespace SAE.CommonComponent.Authorize.Test
         [Fact]
         public async Task DeletePermission()
         {
-            var roleDto = await this.RelationPermission();
+            var roleDto = await this.RelevancePermission();
 
             var command = new RoleCommand.RelevancePermission
             {
@@ -138,7 +140,7 @@ namespace SAE.CommonComponent.Authorize.Test
                 PermissionIds = new[] { roleDto.PermissionIds.First() }
             };
 
-            var request = new HttpRequestMessage(HttpMethod.Delete, $"{API}/{nameof(RelationPermission)}");
+            var request = new HttpRequestMessage(HttpMethod.Delete, $"{API}/{nameof(RelevancePermission)}");
             request.AddJsonContent(command);
             var httpResponse = await this.HttpClient.SendAsync(request);
 

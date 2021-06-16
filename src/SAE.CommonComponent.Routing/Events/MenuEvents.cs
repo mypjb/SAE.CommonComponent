@@ -19,7 +19,7 @@ namespace SAE.CommonComponent.Routing.Events
             public string Path { get; set; }
         }
 
-        internal class RelevancePermission : IEvent
+        public class RelevancePermission : IEvent
         {
             public IEnumerable<string> PermissionIds { get; set; }
         }

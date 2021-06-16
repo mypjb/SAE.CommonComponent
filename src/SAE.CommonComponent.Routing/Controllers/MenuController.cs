@@ -54,8 +54,8 @@ namespace SAE.CommonComponent.Routing.Controllers
             return await this._mediator.SendAsync<IEnumerable<MenuItemDto>>(new Command.List<MenuItemDto>());
         }
 
-        [HttpPost("permission/{action}")]
-        public async Task<IEnumerable<PermissionDto>> Paging(MenuCommand.PermissionQuery command)
+        [HttpGet("permission/{action}")]
+        public async Task<IEnumerable<PermissionDto>> Paging([FromQuery]MenuCommand.PermissionQuery command)
         {
             return await this._mediator.SendAsync<IPagedList<PermissionDto>>(command);
         }
