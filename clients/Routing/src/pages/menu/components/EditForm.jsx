@@ -1,47 +1,38 @@
 import React from 'react';
-import { Form, Input, Modal } from 'antd';
-import { connect } from 'umi';
+import { Form, Input, Select } from 'antd';
+import { defaultFormBuild } from '@/utils/utils';
 
-const { TextArea } = Input;
+export default (props) => {
 
-export default connect(({ menu }) => ({ menu }))(({ dispatch, menu, visible }) => {
+    const { model } = props;
 
     const [form] = Form.useForm();
 
-    const handleSave = (payload) => {
-        dispatch({ type: 'menu/edit', payload });
+    const [handleSave] = defaultFormBuild({ ...props, form, dispatchType: "menu/edit" });
+
+    if (!model.parentName) {
+        model.parentName = "root";
     }
 
+    form.setFieldsValue(model);
 
-    if (!menu.model.parentName) {
-        menu.model.parentName = "root";
-    }
-
-    form.setFieldsValue(menu.model);
-
-    const handleOk = () => {
-        form.submit();
-    };
-
-    const handleCancel = () => {
-        dispatch({ type: 'menu/setFormStaus', payload: 0 });
-    };
-
-    return (<Modal title="add" visible={visible} onOk={handleOk} onCancel={handleCancel} closable={false}  >
+    return (
         <Form form={form} onFinish={handleSave} size='middl'>
-            <Form.Item name="name" label="name" rules={[{ required: true }]}>
+            <Form.Item name="parentId" label="parentId" rules={[{ required: true }]} hidden>
                 <Input />
             </Form.Item>
-            <Form.Item name="parentName" label="parentName" rules={[{ required: true }]}>
-                <Input disabled={true} />
+            <Form.Item name="id" label="id" rules={[{ required: true }]} hidden>
+                <Input />
             </Form.Item>
-            <Form.Item name="parentId" label="parentId" rules={[{ required: true }]} style={{ display: "none" }}>
+            <Form.Item name="parentName" label="parent" rules={[{ required: true }]}>
+                <Select disabled={true}></Select>
+            </Form.Item>
+            <Form.Item name="name" label="name" rules={[{ required: true }]}>
                 <Input />
             </Form.Item>
             <Form.Item name="path" label="path" rules={[{ required: true }]}>
                 <Input />
             </Form.Item>
         </Form>
-    </Modal>
     );
-})
+};

@@ -1,23 +1,19 @@
 import { RequestConfig } from 'umi';
-
-export const request: RequestConfig = {
-    prefix: "http://api.sae.com",
-    credentials: "include",
-    errorConfig: {
-        adaptor: function (resData, context) {
-            if (resData === context.res) {
-                return {
-                    ...resData,
-                    success: true
-                }
-            }
-            return {
-                ...resData,
-                success: false,
-                errorMessage: resData.message || resData.title || resData.statusText,
-            };
-        }
-    }
+let masterProps;
+export const request: RequestConfig = {};
+export const qiankun = {
+    // 应用加载之前
+    async bootstrap(props) {
+        masterProps = props;
+        masterProps.initial(request);
+    },
+    // 应用 render 之前触发
+    async mount(props) {
+        masterProps = props;
+    },
+    // 应用卸载之后触发
+    async unmount(props) {
+    },
 };
 
 export const dva = {

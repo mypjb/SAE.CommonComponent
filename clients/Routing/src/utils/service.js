@@ -3,7 +3,7 @@ import { request } from "umi";
 export default function (action) {
     const service = {};
 
-    service.query = async function (id) {
+    service.find = async function (id) {
         return request(`/${action}/${id}`);
     }
 
@@ -27,8 +27,13 @@ export default function (action) {
         });
     }
 
-    service.remove = async function (id) {
-        return request(`/${action}/${id}`, { method: "delete" });
+    service.delete = async function (data) {
+        if (data.id) {
+            return request(`/${action}/${data.id}`, { method: "delete" });
+        } else {
+            return request(`/${action}`, { method: "delete", data });
+        }
+
     }
 
     return service;

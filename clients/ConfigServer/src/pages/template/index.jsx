@@ -34,7 +34,7 @@ export default connect(({ template }) => (
         data: row.id,
         element: EditForm,
         onOk: (e) => {
-          console.log(999);
+          
         }
       });
     }
@@ -43,25 +43,21 @@ export default connect(({ template }) => (
       {
         title: 'serial number',
         dataIndex: 'id',
-        key: 'id',
         render: (text, record, index) => {
           return index + 1;
         }
       },
       {
         title: 'name',
-        dataIndex: 'name',
-        key: 'name',
+        dataIndex: 'name'
       },
       {
         title: 'format',
         dataIndex: 'format',
-        key: 'format',
         ellipsis: true
       }, {
         title: 'createTime',
-        dataIndex: 'createTime',
-        key: 'createTime'
+        dataIndex: 'createTime'
       }, {
         title: 'action',
         render: (text, row) => (

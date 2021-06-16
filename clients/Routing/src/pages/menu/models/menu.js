@@ -1,5 +1,6 @@
 import request from "../service";
 import { history } from "umi";
+import { defaultModel, parsingPayload } from '@/utils/utils'
 
 const findIds = function (row) {
   let array = [row.id];
@@ -14,51 +15,23 @@ const findIds = function (row) {
 
 export default {
   state: {
-    items: [],
-    model: {},
-    formStaus: 0
+    ...defaultModel.state,
+    tree: []
   },
   reducers: {
-    setList(state, { payload: { items } }) {
-      return { ...state, items };
-    },
-    set(state, { payload }) {
-      return { ...state, model: payload };
-    },
-    setFormStaus(state, { payload }) {
-      const model = { ...state, formStaus: payload };
-      return model;
+    ...defaultModel.reducers,
+    setTree(state, { payload }) {
+      return { ...state, tree: payload };
     }
   },
   effects: {
-    *queryList({ payload }, { call, put }) {
-      const items = yield call(request.list);
-      yield put({ type: "setList", payload: { items } });
-    },
-    *requestAdd({ payload }, { call, put }) {
-      yield put({ type: "set", payload: payload || {} });
-      yield put({ type: "setFormStaus", payload: 1 });
-    },
-    *add({ payload }, { call, put }) {
-      yield call(request.add, payload);
-      yield put({ type: "setFormStaus", payload: 0 });
-      yield put({ type: "set", payload: payload });
-      yield put({ type: "queryList", payload: {} });
-    },
-    *edit({ payload }, { call, put }) {
-      yield call(request.edit, payload);
-      yield put({ type: "setFormStaus", payload: 0 });
-      yield put({ type: "queryList", payload: {} });
-    },
-    *query({ payload }, { call, put }) {
-      const model = yield call(request.query, payload.id);
-      yield put({ type: 'set', payload: model });
-      yield put({ type: "setFormStaus", payload: 2 });
-    },
-    *remove({ payload }, { call, put }) {
-      const ids = findIds(payload);
-      yield call(request.remove, { ids });
-      yield put({ type: "queryList", payload: {} });
+    ...defaultModel.effects({ request, name: "menu" }),
+    *tree(payload, { call, put }) {
+      const { callback } = parsingPayload(payload);
+      const data = yield call(request.tree);
+      yield put({ type: "setTree", payload: data });
+      callback(data);
+
     }
   },
   subscriptions: {
@@ -66,7 +39,7 @@ export default {
       history.listen(({ pathname }) => {
         if (pathname === '/menu') {
           dispatch({
-            type: 'queryList',
+            type: 'tree',
           });
         }
       });
