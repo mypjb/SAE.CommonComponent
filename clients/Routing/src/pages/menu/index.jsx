@@ -1,6 +1,6 @@
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import React from 'react';
-import { Row, Col, Button, Modal,Table } from 'antd';
+import { Row, Col, Button, Modal, Table } from 'antd';
 import { connect } from 'umi';
 import styles from './index.less';
 import AddForm from './components/AddForm';
@@ -18,10 +18,17 @@ export default connect(({ menu }) => (
 
     const handleDelete = defaultHandler.delete({ dispatch, dispatchType: dispatchType.delete });
 
-    //const handleSearch = defaultHandler.search({ dispatch, dispatchType: dispatchType.search });
-
-    const handleAdd = () => {
-      defaultOperation.add({ dispatch, element: AddForm });
+    const handleAdd = (model) => {
+      defaultOperation.add({
+        dispatch,
+        element: AddForm,
+        model: model,
+        modalProps: {
+          okCallback: () => {
+            dispatch({ type: 'menu/tree' })
+          }
+        }
+      });
     }
 
     const handleEdit = (row) => {
@@ -29,12 +36,13 @@ export default connect(({ menu }) => (
         dispatch,
         type: dispatchType.find,
         data: row.id,
-        element: EditForm
+        element: EditForm,
+        modalProps: {
+          okCallback: () => {
+            dispatch({ type: 'menu/tree' })
+          }
+        }
       });
-    }
-
-    const handleChildAdd = ({ id, name }) => {
-      dispatch({ type: 'menu/requestAdd', payload: { parentId: id, parentName: name } });
     }
 
 
@@ -48,17 +56,15 @@ export default connect(({ menu }) => (
       },
       {
         title: 'name',
-        dataIndex: 'name',
-        key: 'name',
+        dataIndex: 'name'
       }, {
         title: 'path',
-        dataIndex: 'path',
-        key: 'path',
+        dataIndex: 'path'
       }, {
         title: 'action',
         render: (text, row) => (
           <span>
-            <Button type='link' onClick={handleChildAdd.bind(row, row)}>Add Child</Button>
+            <Button type='link' onClick={handleAdd.bind(row, row)}>Add Child</Button>
             <Button type='link' value={row.id} onClick={handleEdit.bind(row, row)} style={{ marginRight: 16 }}>Edit</Button>
             <Button type='link' onClick={handleDelete.bind(row, row)}>Delete</Button>
           </span>
@@ -74,7 +80,7 @@ export default connect(({ menu }) => (
               <Button type="primary" onClick={handleAdd}>Add</Button>
             </Col>
           </Row>
-          <Table dataSource={menu.tree} childrenColumnName='items' columns={columns} />
+          <Table rowKey='id' dataSource={menu.tree} expandRowByClick childrenColumnName='items' pagination={{ hideOnSinglePage:true }} columns={columns} />
         </div>
       </PageHeaderWrapper>
     );

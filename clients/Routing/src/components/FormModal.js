@@ -41,10 +41,10 @@ const buildOptions = (props, model) => {
     if (props.contentElement) {
         const contentProps = {
             okCallback,
-            closeCallback: () => {
+            closeCallback: (data) => {
                 model.destroy();
-                if (props.onOk) {
-                    props.onOk();
+                if (props.okCallback) {
+                    props.okCallback(data);
                 }
             },
             ...props.contentProps,

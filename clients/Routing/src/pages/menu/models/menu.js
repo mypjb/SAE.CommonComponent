@@ -31,7 +31,6 @@ export default {
       const data = yield call(request.tree);
       yield put({ type: "setTree", payload: data });
       callback(data);
-
     }
   },
   subscriptions: {
