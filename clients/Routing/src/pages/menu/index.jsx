@@ -5,6 +5,8 @@ import { connect } from 'umi';
 import styles from './index.less';
 import AddForm from './components/AddForm';
 import EditForm from './components/EditForm';
+import PermissionManage from './components/PermissionManage';
+
 import { defaultDispatchType, defaultHandler, defaultOperation } from '@/utils/utils';
 
 export default connect(({ menu }) => (
@@ -17,6 +19,20 @@ export default connect(({ menu }) => (
     const dispatchType = defaultDispatchType("menu");
 
     const handleDelete = defaultHandler.delete({ dispatch, dispatchType: dispatchType.delete });
+
+    const handlePermissionManage = (row) => {
+      defaultOperation.add({
+        dispatch,
+        element: PermissionManage,
+        menu: row,
+        modalProps: {
+          width:'80%',
+          okCallback: () => {
+            dispatch({ type: 'menu/tree' })
+          }
+        }
+      });
+    }
 
     const handleAdd = (model) => {
       defaultOperation.add({
@@ -65,13 +81,14 @@ export default connect(({ menu }) => (
         render: (text, row) => (
           <span>
             <Button type='link' onClick={handleAdd.bind(row, row)}>Add Child</Button>
+            <Button type='link' onClick={handlePermissionManage.bind(row, row)}>PermissionManage</Button>
             <Button type='link' value={row.id} onClick={handleEdit.bind(row, row)} style={{ marginRight: 16 }}>Edit</Button>
             <Button type='link' onClick={handleDelete.bind(row, row)}>Delete</Button>
           </span>
         )
       }
     ];
-    console.log(props);
+
     return (
       <PageHeaderWrapper className={styles.main}>
         <div>
@@ -80,7 +97,7 @@ export default connect(({ menu }) => (
               <Button type="primary" onClick={handleAdd}>Add</Button>
             </Col>
           </Row>
-          <Table rowKey='id' dataSource={menu.tree} expandRowByClick childrenColumnName='items' pagination={{ hideOnSinglePage:true }} columns={columns} />
+          <Table rowKey='id' dataSource={menu.tree}  childrenColumnName='items' pagination={{ hideOnSinglePage: true }} columns={columns} />
         </div>
       </PageHeaderWrapper>
     );
