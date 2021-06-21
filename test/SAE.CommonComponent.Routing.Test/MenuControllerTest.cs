@@ -53,7 +53,9 @@ namespace SAE.CommonComponent.Routing.Test
             {
                 Name = this.GetRandom(),
                 ParentId = parentId,
-                Path = $"/test/{this.GetRandom()}"
+                Path = $"/test/{this.GetRandom()}",
+                MicroApp = this.GetRandom(),
+                Hidden = this.GetRandom().GetHashCode() % 2 == 0
             };
             var message = new HttpRequestMessage(HttpMethod.Post, API);
             message.AddJsonContent(command);
@@ -62,6 +64,8 @@ namespace SAE.CommonComponent.Routing.Test
             var menu = await this.Get(id);
             Assert.Equal(command.Name, menu.Name);
             Assert.Equal(command.Path, menu.Path);
+            Assert.Equal(command.MicroApp, menu.MicroApp);
+            Assert.Equal(command.Hidden, menu.Hidden);
 
             return menu;
         }
@@ -75,7 +79,9 @@ namespace SAE.CommonComponent.Routing.Test
             {
                 Id = menu.Id,
                 Path = $"/test/{this.GetRandom()}",
-                Name = this.GetRandom()
+                Name = this.GetRandom(),
+                MicroApp = this.GetRandom(),
+                Hidden = !menu.Hidden
             };
             message.AddJsonContent(command);
             var responseMessage = await this.HttpClient.SendAsync(message);
@@ -83,6 +89,8 @@ namespace SAE.CommonComponent.Routing.Test
             var newMenu = await this.Get(menu.Id);
             Assert.NotEqual(newMenu.Name, menu.Name);
             Assert.NotEqual(newMenu.Path, menu.Path);
+            Assert.NotEqual(newMenu.MicroApp, menu.MicroApp);
+            Assert.NotEqual(newMenu.Hidden, menu.Hidden);
         }
 
         [Fact]
@@ -113,10 +121,13 @@ namespace SAE.CommonComponent.Routing.Test
             Assert.Equal(parent.Name, parentMenu.Name);
             Assert.Equal(parent.ParentId, parentMenu.ParentId);
             Assert.Equal(parent.Path, parentMenu.Path);
-
+            Assert.Equal(parent.MicroApp, parentMenu.MicroApp);
+            Assert.Equal(parent.Hidden, parentMenu.Hidden);
             Assert.Equal(child.Name, childMenu.Name);
             Assert.Equal(child.ParentId, childMenu.ParentId);
             Assert.Equal(child.Path, childMenu.Path);
+            Assert.Equal(child.MicroApp, childMenu.MicroApp);
+            Assert.Equal(child.Hidden, childMenu.Hidden);
             this.WriteLine(menus);
         }
 

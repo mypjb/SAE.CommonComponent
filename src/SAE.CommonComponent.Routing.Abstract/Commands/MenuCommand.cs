@@ -10,6 +10,9 @@ namespace SAE.CommonComponent.Routing.Commands
             public string ParentId { get; set; }
             public string Name { get; set; }
             public string Path { get; set; }
+            public string MicroApp { get; set; }
+
+            public bool Hidden { get; set; }
         }
 
         public class Change : Create

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SAE.CommonComponent.Authorize.Dtos;
 using SAE.CommonComponent.Routing.Commands;
@@ -49,6 +50,7 @@ namespace SAE.CommonComponent.Routing.Controllers
             return await this._mediator.SendAsync<IPagedList<MenuDto>>(command);
         }
         [HttpGet("{action}")]
+        [AllowAnonymous]
         public async Task<object> Tree()
         {
             return await this._mediator.SendAsync<IEnumerable<MenuItemDto>>(new MenuCommand.Tree());
