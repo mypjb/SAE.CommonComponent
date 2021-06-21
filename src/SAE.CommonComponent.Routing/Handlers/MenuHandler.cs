@@ -82,7 +82,9 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
                                          Id = s.Id,
                                          Name = s.Name,
                                          Path = s.Path,
-                                         ParentId = s.ParentId
+                                         ParentId = s.ParentId,
+                                         MicroApp= s.MicroApp,
+                                         Hidden=s.Hidden
                                      }).ToArray();
             var rootMenus = menus.Where(s => s.ParentId == Menu.DefaultId).ToArray();
 

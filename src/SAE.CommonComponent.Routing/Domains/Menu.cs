@@ -46,6 +46,16 @@ namespace SAE.CommonComponent.Routing.Domains
         /// </summary>
         /// <value></value>
         public string ParentId { get; set; }
+
+        /// <summary>
+        /// micro App
+        /// </summary>
+        public string MicroApp { get; set; }
+
+        /// <summary>
+        ///  is hidden
+        /// </summary>
+        public bool Hidden { get; set; }
         /// <summary>
         /// create time
         /// </summary>
