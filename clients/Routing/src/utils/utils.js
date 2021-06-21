@@ -159,13 +159,13 @@ export const defaultHandler = {
     }
   },
   delete: ({ dispatch, dispatchType }) => {
-    return (row) => {
+    return (data) => {
       Modal.confirm({
         title: 'Are you sure delete this task?',
         onOk: () => {
           dispatch({
             type: dispatchType,
-            payload: { id: row.id },
+            payload: data,
           });
         }
       });

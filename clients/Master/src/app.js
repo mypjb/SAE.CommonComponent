@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { history } from 'umi';
+import routes from '../config/route';
 
 const ENV = process.env.NODE_ENV;
 const callBackUrlKey = "saeCallbackUrl";
@@ -22,6 +23,9 @@ const appProps = {
             window.sessionStorage.removeItem(callBackUrlKey);
             return url || "/config/template";
         }
+    },
+    "api": {
+        "menu": "http://api.sae.com/menu/tree"
     }
 };
 if (ENV == "development") {
@@ -68,10 +72,35 @@ if (ENV == "development") {
     ];
 }
 
-export const qiankun = function () {
+const hideLayoutUrls = ['/identity', '/oauth'];
+
+const processingData = function (menus) {
+    const list = [];
+    for (let index = 0; index < menus.length; index++) {
+        const element = menus[index];
+        let data = {
+            ...element,
+            hideInMenu: element.hidden
+        };
+        if (hideLayoutUrls.findIndex(s => (s.indexOf(element.path) != -1)) != -1) {
+            data.headerRender = false;
+            data.menuRender = false;
+            data.menuHeaderRender = false;
+        }
+        data.routes = processingData(element.items);
+        list.push(data);
+    }
+    return list;
+}
+
+export const qiankun = fetch(appProps.api.menu).then(async (response) => {
+
+    const menus = processingData(await response.json());
+    console.log({ menus, routes });
     return {
         // 注册子应用信息
         apps: apps,
+        routes: menus,
         lifeCycles: {
             afterMount: props => {
                 console.log(props);
@@ -79,7 +108,7 @@ export const qiankun = function () {
         },
         addGlobalUncaughtErrorHandler: e => console.log(e)
     }
-};
+});
 
 export const layout = {
     name: "SAE"
@@ -106,7 +135,7 @@ export function useQiankunStateForSlave() {
             const options = req.options;
 
             if (!checkLogin(masterState?.user)) {
-                window.sessionStorage.setItem(callBackUrlKey, window.location.pathname + window.location.search);   
+                window.sessionStorage.setItem(callBackUrlKey, window.location.pathname + window.location.search);
                 history.push(masterState.siteConfig.signIn);
                 return;
             }

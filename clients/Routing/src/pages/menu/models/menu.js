@@ -26,6 +26,10 @@ export default {
   },
   effects: {
     ...defaultModel.effects({ request, name: "menu" }),
+    *delete({ payload }, { call, put }) {
+      yield call(request.delete, payload);
+      yield put({ type: 'tree' });
+    },
     *tree(payload, { call, put }) {
       const { callback } = parsingPayload(payload);
       const data = yield call(request.tree);

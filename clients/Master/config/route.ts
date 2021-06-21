@@ -3,16 +3,26 @@ export default [
     path: '/',
     component: "index",
     name: "home",
+    hideInMenu: true,
   },
   {
     path: '/identity',
     name: 'identity',
-    microApp: 'identity'
+    microApp: 'identity',
+    hideInMenu: true,
+    headerRender: false,//dependencie @ant-design/pro-layout package
+    menuRender: false,
+    menuHeaderRender: false
+
   },
   {
     path: '/oauth',
     name: 'Login',
-    microApp: 'oauth'
+    microApp: 'oauth',
+    hideInMenu: true,
+    headerRender: false,
+    menuRender: false,
+    menuHeaderRender: false
   },
   {
     path: '/config',

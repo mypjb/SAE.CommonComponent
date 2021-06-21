@@ -26,7 +26,7 @@ export default connect(({ menu }) => (
         element: PermissionManage,
         menu: row,
         modalProps: {
-          width:'80%',
+          width: '80%',
           okCallback: () => {
             dispatch({ type: 'menu/tree' })
           }
@@ -83,7 +83,7 @@ export default connect(({ menu }) => (
             <Button type='link' onClick={handleAdd.bind(row, row)}>Add Child</Button>
             <Button type='link' onClick={handlePermissionManage.bind(row, row)}>PermissionManage</Button>
             <Button type='link' value={row.id} onClick={handleEdit.bind(row, row)} style={{ marginRight: 16 }}>Edit</Button>
-            <Button type='link' onClick={handleDelete.bind(row, row)}>Delete</Button>
+            <Button type='link' onClick={handleDelete.bind(row, { ids: [row.id] })}>Delete</Button>
           </span>
         )
       }
@@ -97,7 +97,7 @@ export default connect(({ menu }) => (
               <Button type="primary" onClick={handleAdd}>Add</Button>
             </Col>
           </Row>
-          <Table rowKey='id' dataSource={menu.tree}  childrenColumnName='items' pagination={{ hideOnSinglePage: true }} columns={columns} />
+          <Table rowKey='id' dataSource={menu.tree} childrenColumnName='items' pagination={{ hideOnSinglePage: true }} columns={columns} />
         </div>
       </PageHeaderWrapper>
     );
