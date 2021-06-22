@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { history } from 'umi';
-import routes from '../config/route';
 
 const ENV = process.env.NODE_ENV;
 const callBackUrlKey = "saeCallbackUrl";
@@ -33,7 +32,6 @@ if (ENV == "development") {
         {
             name: 'config-server', // 唯一 id
             entry: '//dev.sae.com:8001', // html entry
-
         },
         {
             name: 'identity', // 唯一 id
@@ -93,14 +91,13 @@ const processingData = function (menus) {
     return list;
 }
 
-export const qiankun = fetch(appProps.api.menu).then(async (response) => {
 
-    const menus = processingData(await response.json());
-    console.log({ menus, routes });
+export const qiankun = fetch(appProps.api.menu).then(async (response) => {
+    const routes = processingData(await response.json());
     return {
         // 注册子应用信息
-        apps: apps,
-        routes: menus,
+        apps,
+        routes,
         lifeCycles: {
             afterMount: props => {
                 console.log(props);
@@ -109,10 +106,6 @@ export const qiankun = fetch(appProps.api.menu).then(async (response) => {
         addGlobalUncaughtErrorHandler: e => console.log(e)
     }
 });
-
-export const layout = {
-    name: "SAE"
-};
 
 
 const checkLogin = (user) => {
@@ -194,11 +187,4 @@ export function useQiankunStateForSlave() {
     };
 }
 
-// export const dva = {
-//   config: {
-//     onError(e) {
-//       e.preventDefault();
-//       console.error(e.message);
-//     },
-//   }
-// };
+

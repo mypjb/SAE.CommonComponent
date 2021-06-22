@@ -1,9 +1,8 @@
 import { defineConfig } from 'umi';
 import routes from './route';
-
 export default defineConfig({
     layout: {
-        name: 'Ant Design',
+        name: 'SAE',
         locale: true,
         layout: 'side',
     },

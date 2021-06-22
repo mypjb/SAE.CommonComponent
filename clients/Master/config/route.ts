@@ -13,7 +13,6 @@ export default [
     headerRender: false,//dependencie @ant-design/pro-layout package
     menuRender: false,
     menuHeaderRender: false
-
   },
   {
     path: '/oauth',
