@@ -94,6 +94,7 @@ const processingData = function (menus) {
 
 export const qiankun = fetch(appProps.api.menu).then(async (response) => {
     const routes = processingData(await response.json());
+    console.log(routes);
     return {
         // 注册子应用信息
         apps,
