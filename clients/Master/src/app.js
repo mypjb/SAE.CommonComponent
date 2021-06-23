@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { history } from 'umi';
 import apps from '../config/app'
+import indexPage from './pages/index';
 
 const callBackUrlKey = "saeCallbackUrl";
 
@@ -28,7 +29,7 @@ const appProps = {
 
 
 const hideLayoutUrls = ['/identity', '/oauth'];
-const defaultComponent = require('@/pages/index').default;
+// const defaultComponent = require('@/pages/index').default;
 
 const processingData = function (menus) {
     const list = [];
@@ -37,7 +38,7 @@ const processingData = function (menus) {
         let data = {
             ...element,
             hideInMenu: element.hidden,
-            component: defaultComponent,
+            component: indexPage,
         };
         delete data.microApp;
         if (hideLayoutUrls.findIndex(s => (s.indexOf(element.path) != -1)) != -1) {
