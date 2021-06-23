@@ -26,7 +26,7 @@ namespace SAE.CommonComponent.Application.Controllers
             return this.Ok();
         }
         [HttpDelete]
-        public async Task<object> Remove(ScopeCommand.Delete command)
+        public async Task<object> Delete(ScopeCommand.Delete command)
         {
             await this._mediator.SendAsync(command);
             return this.Ok();

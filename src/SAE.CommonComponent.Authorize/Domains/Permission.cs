@@ -76,7 +76,7 @@ namespace SAE.CommonComponent.Authorize.Domains
         /// <summary>
         /// delete permission
         /// </summary>
-        public void Remove() =>
+        public void Delete() =>
             this.ChangeStatus(new PermissionCommand.ChangeStatus
             {
                 Status = Status.Delete

@@ -65,7 +65,7 @@ namespace SAE.CommonComponent.Authorize.Handlers
             await command.Ids.ForEachAsync(async id =>
             {
                 var Permission = await this._documentStore.FindAsync<Permission>(id);
-                Permission.Remove();
+                Permission.Delete();
                 await this._documentStore.SaveAsync(Permission);
             });
         }

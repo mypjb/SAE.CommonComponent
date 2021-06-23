@@ -122,7 +122,7 @@ namespace SAE.CommonComponent.Application.Abstract.Domains
             this.Apply<AppEvent.ChangeStatus>(command);
         }
 
-        public void Remove()
+        public void Delete()
         {
             this.ChangeStatus(new AppCommand.ChangeStatus
             {

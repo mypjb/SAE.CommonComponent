@@ -7,11 +7,6 @@ namespace SAE.CommonComponent.Routing.Dtos
         public string Name { get; set; }
         public string Path { get; set; }
         public string ParentId { get; set; }
-
-        /// <summary>
-        /// micro app
-        /// </summary>
-        public string MicroApp { get; set; }
         /// <summary>
         /// is hidden
         /// </summary>

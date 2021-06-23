@@ -140,7 +140,7 @@ namespace SAE.CommonComponent.Authorize.Test
                 PermissionIds = new[] { roleDto.PermissionIds.First() }
             };
 
-            var request = new HttpRequestMessage(HttpMethod.Delete, $"{API}/{nameof(RelevancePermission)}");
+            var request = new HttpRequestMessage(HttpMethod.Delete, $"{API}/permission");
             request.AddJsonContent(command);
             var httpResponse = await this.HttpClient.SendAsync(request);
 

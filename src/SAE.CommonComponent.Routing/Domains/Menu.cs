@@ -48,11 +48,6 @@ namespace SAE.CommonComponent.Routing.Domains
         public string ParentId { get; set; }
 
         /// <summary>
-        /// micro App
-        /// </summary>
-        public string MicroApp { get; set; }
-
-        /// <summary>
         ///  is hidden
         /// </summary>
         public bool Hidden { get; set; }

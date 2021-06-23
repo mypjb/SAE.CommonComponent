@@ -20,11 +20,6 @@ namespace SAE.CommonComponent.Routing.Dtos
         /// </summary>
         /// <value></value>
         public string ParentId { get; set; }
-
-        /// <summary>
-        /// micro app
-        /// </summary>
-        public string MicroApp { get; set; }
         /// <summary>
         /// is hidden
         /// </summary>
