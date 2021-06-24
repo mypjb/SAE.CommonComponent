@@ -35,7 +35,7 @@ pipeline {
           agent {
             docker {
               image 'renovate/yarn:latest'
-              args '-v yarn:/usr/local/share/.cache/yarn -v release:/root/release --net=cluster '
+              args '-v yarn:/usr/local/share/.cache/yarn -v release:/root/release --net=cluster -u root '
             }
 
           }
