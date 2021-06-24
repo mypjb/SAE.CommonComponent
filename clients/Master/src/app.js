@@ -19,7 +19,7 @@ const appProps = {
         "callbackUrl": function () {
             const url = window.sessionStorage.getItem(callBackUrlKey);
             window.sessionStorage.removeItem(callBackUrlKey);
-            return url || "/config/template";
+            return url || "/routing";
         }
     },
     "api": {
@@ -29,7 +29,6 @@ const appProps = {
 
 
 const hideLayoutUrls = ['/identity', '/oauth'];
-// const defaultComponent = require('@/pages/index').default;
 
 const processingData = function (menus) {
     const list = [];
@@ -40,7 +39,6 @@ const processingData = function (menus) {
             hideInMenu: element.hidden,
             component: indexPage,
         };
-        delete data.microApp;
         if (hideLayoutUrls.findIndex(s => (s.indexOf(element.path) != -1)) != -1) {
             data.headerRender = false;
             data.menuRender = false;
@@ -49,6 +47,7 @@ const processingData = function (menus) {
         data.routes = processingData(element.items);
         list.push(data);
     }
+    console.log({list});
     return list;
 }
 

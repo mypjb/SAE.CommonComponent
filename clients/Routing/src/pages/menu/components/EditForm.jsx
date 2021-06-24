@@ -33,9 +33,6 @@ export default (props) => {
             <Form.Item name="path" label="path" rules={[{ required: true }]}>
                 <Input />
             </Form.Item>
-            <Form.Item name="microApp" label="microApp" >
-                <Input />
-            </Form.Item>
             <Form.Item name="hidden" label="hidden" rules={[{ required: true }]}>
                 <Select>
                     <Option value={true}>hidden</Option>

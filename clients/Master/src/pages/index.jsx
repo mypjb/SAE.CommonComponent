@@ -14,5 +14,4 @@ export default ({ match }) => {
   } else {
     return (<div>not find app</div>)
   }
-
 }
