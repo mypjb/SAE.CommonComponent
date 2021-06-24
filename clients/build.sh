@@ -7,7 +7,9 @@ app_dir=$release_dir/app
 
 mkdir -p $app_dir
 
-echo -e "build workspace ${base_dir}"
+echo -e "build workspace ${base_dir},start pull workspace package"
+
+yarn
 
 project_array=(ConfigServer Identity Master OAuth Routing)
 
@@ -22,7 +24,6 @@ project_dir=$base_dir/$project
 echo -e "	project_dir:${project_dir}"
 
 cd $project_dir
-yarn
 
 yarn build 
 
