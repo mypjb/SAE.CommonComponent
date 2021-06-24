@@ -1,5 +1,8 @@
 #!/bin/bash
-base_dir=$(cd $(dirname $0) && pwd)
+
+cd $(dirname $0)
+
+base_dir=$(pwd)
 
 release_dir=$(echo $1 | sed 's/%2F/\//g')
 
@@ -8,8 +11,6 @@ app_dir=$release_dir/app
 mkdir -p $app_dir
 
 echo -e "build workspace ${base_dir},start pull workspace package"
-
-cd $base_dir
 
 pwd
 
