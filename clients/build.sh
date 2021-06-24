@@ -9,6 +9,10 @@ mkdir -p $app_dir
 
 echo -e "build workspace ${base_dir},start pull workspace package"
 
+cd $base_dir
+
+pwd
+
 yarn
 
 project_array=(ConfigServer Identity Master OAuth Routing)
