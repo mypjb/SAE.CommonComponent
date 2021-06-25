@@ -1,31 +1,8 @@
 import { useState } from 'react';
 import { history } from 'umi';
-import apps from '../config/app'
+import appConfig from '../config/appConfig'
 import indexPage from './pages/index';
 
-const callBackUrlKey = "saeCallbackUrl";
-
-
-const appProps = {
-    "siteConfig": {
-        "appId": "localhost.dev",
-        "appName": "master.dev",
-        "authority": "http://oauth.sae.com",
-        "redirectUris": "http://localhost:8000/oauth/signin-oidc",
-        "postLogoutRedirectUris": "http://localhost:8000/oauth/signout-oidc",
-        "signIn": "/oauth",
-        "login": "http://oauth.sae.com/account/login",
-        "apiHost": "http://api.sae.com",
-        "callbackUrl": function () {
-            const url = window.sessionStorage.getItem(callBackUrlKey);
-            window.sessionStorage.removeItem(callBackUrlKey);
-            return url || "/routing";
-        }
-    },
-    "api": {
-        "menu": "http://api.sae.com/menu/tree"
-    }
-};
 
 
 const hideLayoutUrls = ['/identity', '/oauth'];
@@ -47,16 +24,16 @@ const processingData = function (menus) {
         data.routes = processingData(element.items);
         list.push(data);
     }
-    console.log({list});
+    console.log({ list });
     return list;
 }
 
 
-export const qiankun = fetch(appProps.api.menu).then(async (response) => {
+export const qiankun = fetch(appConfig.api.menu).then(async (response) => {
     const routes = processingData(await response.json());
     return {
         // 注册子应用信息
-        apps,
+        apps: appConfig.apps,
         routes,
         layout: {
             name: 'SAE',
@@ -84,16 +61,16 @@ const checkLogin = (user) => {
 }
 export function useQiankunStateForSlave() {
 
-    const [masterState, setMasterState] = useState(appProps);
+    const [masterState, setMasterState] = useState(appConfig);
     const initial = (requestConfig) => {
-        requestConfig.prefix = appProps.siteConfig.apiHost;
+        requestConfig.prefix = appConfig.siteConfig.apiHost;
         requestConfig.credentials = "include";
         requestConfig.middlewares = [async (ctx, next) => {
             const req = ctx.req;
             const options = req.options;
 
             if (!checkLogin(masterState?.user)) {
-                window.sessionStorage.setItem(callBackUrlKey, window.location.pathname + window.location.search);
+                window.sessionStorage.setItem(appConfig.callBackUrlKey, window.location.pathname + window.location.search);
                 history.push(masterState.siteConfig.signIn);
                 return;
             }
@@ -107,24 +84,7 @@ export function useQiankunStateForSlave() {
             }
             await next();
         }];
-        // requestConfig.requestInterceptors = [(url, options) => {
 
-        //     if (!checkLogin(masterState?.user)) {
-        //         history.push(masterState.siteConfig.signIn);
-        //         //window.location.href = masterState.siteConfig.signIn;
-        //         return;
-        //     }
-        //     const token = masterState?.user?.access_token;
-        //     return {
-        //         url,
-        //         options: {
-        //             ...options,
-        //             headers: {
-        //                 Authorization: "Bearer " + token
-        //             }
-        //         },
-        //     };
-        // }];
         requestConfig.errorConfig = {
             adaptor: function (resData, context) {
                 if (resData === context.res) {

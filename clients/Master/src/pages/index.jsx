@@ -1,10 +1,11 @@
 import { MicroApp } from 'umi';
-import apps from '../../config/app';
+import appConfig from '../../config/appConfig';
 
 export default ({ match }) => {
 
   const { path } = match;
 
+  const { apps } = appConfig;
   const app = apps.find(s => (s.path == path || path.startsWith((s.path + '/'))));
 
   console.log({ path, app });
