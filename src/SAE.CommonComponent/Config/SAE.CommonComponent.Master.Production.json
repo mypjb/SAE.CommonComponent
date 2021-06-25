@@ -4,9 +4,9 @@
     "appSecret": "localhost.test",
     "appName": "master.test",
     "authority": "http://oauth.sae.com",
-    "redirectUris": [ "http://client.sae.com/oauth/signin-oidc" ],
-    "postLogoutRedirectUris": [ "http://client.sae.com/oauth/signout-oidc" ],
-    "signIn": "http://client.sae.com/identity/login"
+    "redirectUris": [ "http://master.client.sae.com/oauth/signin-oidc" ],
+    "postLogoutRedirectUris": [ "http://master.client.sae.com/oauth/signout-oidc" ],
+    "signIn": "http://master.client.sae.com/identity/login"
   },
   "database": [
     {

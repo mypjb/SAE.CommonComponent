@@ -297,6 +297,7 @@ namespace SAE.CommonComponent.InitializeData
 
         public virtual async Task Routing()
         {
+            
         }
 
         public virtual async Task User()
