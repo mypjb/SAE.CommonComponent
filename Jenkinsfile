@@ -34,7 +34,7 @@ pipeline {
           }
           agent {
             docker {
-              image 'andrewmackrodt/nodejs:latest'
+              image 'davidkassa/yarn-angular-cli-firebase-tools:latest'
               args '-v yarn:/usr/local/share/.cache/yarn -v release:/root/release --net=cluster '
             }
 
