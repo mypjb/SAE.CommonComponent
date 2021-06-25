@@ -71,7 +71,11 @@ export function useQiankunStateForSlave() {
 
             if (!checkLogin(masterState?.user)) {
                 window.sessionStorage.setItem(appConfig.callBackUrlKey, window.location.pathname + window.location.search);
-                history.push(masterState.siteConfig.signIn);
+                if (masterState.siteConfig.signIn.startsWith('http')) {
+                    window.location.href = masterState.siteConfig.signIn;
+                } else {
+                    history.push(masterState.siteConfig.signIn);
+                }
                 return;
             }
             const token = masterState?.user?.access_token;

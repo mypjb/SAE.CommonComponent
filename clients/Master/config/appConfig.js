@@ -63,13 +63,12 @@ if (ENV == "prod") {
     apps[2].entry = '//oauth.client.sae.com'
     apps[3].entry = '//routing.client.sae.com'
     appConfig.siteConfig = {
+        ...appConfig.siteConfig,
         "appId": "localhost.test",
         "appSecret": "localhost.test",
         "appName": "master.test",
-        "authority": "http://oauth.sae.com",
         "redirectUris": "http://master.client.sae.com/oauth/signin-oidc",
-        "postLogoutRedirectUris": "http://master.client.sae.com/oauth/signout-oidc",
-        "signIn": "http://master.client.sae.com/identity/login"
+        "postLogoutRedirectUris": "http://master.client.sae.com/oauth/signout-oidc"
     }
 }
 console.log({ ENV, appConfig });
