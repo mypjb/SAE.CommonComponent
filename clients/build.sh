@@ -12,7 +12,7 @@ mkdir -p $app_dir
 
 echo -e "build workspace ${base_dir},start pull workspace package"
 
-pwd
+yarn config set registry https://registry.npm.taobao.org
 
 yarn
 
