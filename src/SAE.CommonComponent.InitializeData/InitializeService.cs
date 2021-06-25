@@ -20,6 +20,7 @@ using SAE.CommonLibrary.Abstract.Model;
 using SAE.CommonComponent.Application.Abstract.Dtos;
 using SAE.CommonComponent.Application.Dtos;
 using System.Text.RegularExpressions;
+using SAE.CommonComponent.Routing.Commands;
 
 namespace SAE.CommonComponent.InitializeData
 {
@@ -297,7 +298,26 @@ namespace SAE.CommonComponent.InitializeData
 
         public virtual async Task Routing()
         {
-            
+            var menus = new[]
+            {
+                new Tuple<string, string, bool>("config","/config",false),
+                new Tuple<string, string, bool>("routing","/routing",false),
+                new Tuple<string, string, bool>("identity","/identity",true),
+                new Tuple<string, string, bool>("oauth","/oauth",true),
+            }.Select(s => new MenuCommand.Create
+            {
+                Name = s.Item1,
+                Path = s.Item2,
+                Hidden = s.Item3
+            });
+
+            this._logging.Info($"menus : {menus.ToJsonString()}");
+
+            foreach (var item in menus)
+            {
+                await this._mediator.SendAsync<string>(item);
+            }
+
         }
 
         public virtual async Task User()
