@@ -27,6 +27,13 @@ export default function (action) {
         });
     }
 
+    service.status = async function (data) {
+        return request(`/${action}/status`, {
+            method: "put",
+            data
+        });
+    }
+
     service.delete = async function (data) {
         if (data.id) {
             return request(`/${action}/${data.id}`, { method: "delete" });
@@ -35,6 +42,8 @@ export default function (action) {
         }
 
     }
+
+
 
     return service;
 }

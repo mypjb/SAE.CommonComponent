@@ -1,29 +1,13 @@
 import FormModal from "@/components/FormModal";
-import { Modal } from "antd";
-//validator json
-export const validatorJson = (rule, value) => {
-  if (value) {
-    try {
-      eval(`(${value})`);
-    } catch (e) {
-      console.error(e);
-      return Promise.reject('this is json invalid');
-    }
+import { Modal, Switch } from "antd";
+
+
+export const Format = {
+  status: (data, props) => {
+    return (<Switch checkedChildren="Enable" unCheckedChildren="Disable" checked={data == 1} {...props} />);
   }
-  return Promise.resolve();
-};
-//handle json format
-export const handleFormat = function ({ form, fieldName }, e) {
-  const value = e.target.value;
-  if (value) {
-    try {
-      const json = eval('(' + value + ')');
-      const data = {};
-      data[fieldName] = JSON.stringify(json, null, 4);
-      form.setFieldsValue(data);
-    } catch { }
-  }
-};
+}
+
 //default state
 export const defaultState = {
   paging: {
@@ -104,6 +88,12 @@ export const defaultModel = {
       *edit({ payload }, { call, put }) {
         const { callback, data } = parsingPayload(payload);
         yield call(request.edit, data);
+        yield put({ type: "paging", payload: {} });
+        callback();
+      },
+      *status({ payload }, { call, put }) {
+        const { callback, data } = parsingPayload(payload);
+        yield call(request.status, data);
         yield put({ type: "paging", payload: {} });
         callback();
       },
