@@ -3,29 +3,29 @@ const ENV = process.env.UMI_ENV;
 let apps = [
     {
         name: 'config-server', // 唯一 id
-        entry: '//dev.sae.com:8001', // html entry
+        entry: '//localhost:8001', // html entry
         path: "/config",
     },
     {
         name: 'identity', // 唯一 id
-        entry: '//dev.sae.com:8002', // html entry
+        entry: '//localhost:8002', // html entry
         path: "/identity",
 
     },
     {
         name: 'oauth', // 唯一 id
-        entry: '//dev.sae.com:8003', // html entry
+        entry: '//localhost:8003', // html entry
         path: "/oauth",
 
     },
     {
         name: 'routing', // 唯一 id
-        entry: '//dev.sae.com:8004', // html entry
+        entry: '//localhost:8004', // html entry
         path: "/routing",
     },
     {
         name: 'authorize', // 唯一 id
-        entry: '//dev.sae.com:8005', // html entry
+        entry: '//localhost:8005', // html entry
         path: "/auth",
     }
 ];

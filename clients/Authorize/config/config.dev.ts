@@ -8,6 +8,14 @@ export default defineConfig({
         edge: false,
         ios: false,
     },
+    devServer: {
+        headers: {
+            "Access-Control-Allow-Credentials": true,
+            "Access-Control-Allow-Headers": "*",
+            "Access-Control-Allow-Methods": "*",
+            "Access-Control-Allow-Origin": "*"
+        }
+    },
     define: {
         'process.env.UMI_ENV': 'dev'
     }
