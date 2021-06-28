@@ -29,7 +29,7 @@ namespace SAE.CommonComponent.Authorize.Controllers
             return await this._mediator.SendAsync<string>(command);
         }
         [HttpDelete]
-        public async Task<IActionResult> Delete([FromBody]Command.BatchDelete<Role> command)
+        public async Task<IActionResult> Delete([FromBody] Command.BatchDelete<Role> command)
         {
             await this._mediator.SendAsync(command);
             return this.Ok();
@@ -40,15 +40,23 @@ namespace SAE.CommonComponent.Authorize.Controllers
             await this._mediator.SendAsync(command);
             return this.Ok();
         }
+
+        [HttpPut("{action}")]
+        public async Task<IActionResult> Status(RoleCommand.ChangeStatus command)
+        {
+            await this._mediator.SendAsync(command);
+            return this.Ok();
+        }
+
         [HttpGet("{id}")]
-        public async Task<object> Get([FromRoute]Command.Find<RoleDto> command)
+        public async Task<object> Get([FromRoute] Command.Find<RoleDto> command)
         {
             return await this._mediator.SendAsync<RoleDto>(command);
         }
         [HttpGet("{action}")]
-        public async Task<object> Paging([FromQuery]RoleCommand.Query command)
+        public async Task<object> Paging([FromQuery] RoleCommand.Query command)
         {
-            return await this._mediator.SendAsync<RoleCommand.Query,IPagedList<RoleDto>>(command);
+            return await this._mediator.SendAsync<RoleCommand.Query, IPagedList<RoleDto>>(command);
         }
 
 
@@ -64,6 +72,13 @@ namespace SAE.CommonComponent.Authorize.Controllers
         {
             await this._mediator.SendAsync(command);
             return this.Ok();
+        }
+
+        [HttpDelete("permission/{action}")]
+        public async Task<IPagedList<PermissionDto>> Paging(RoleCommand.PermissionQuery command)
+        {
+            var paging = await this._mediator.SendAsync<IPagedList<PermissionDto>>(command);
+            return paging;
         }
 
     }

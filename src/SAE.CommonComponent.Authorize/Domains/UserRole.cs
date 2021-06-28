@@ -1,4 +1,7 @@
-﻿using SAE.CommonLibrary.EventStore.Document;
+﻿using SAE.CommonLibrary;
+using SAE.CommonLibrary.EventStore;
+using SAE.CommonLibrary.EventStore.Document;
+using SAE.CommonLibrary.Extension;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SAE.CommonComponent.Authorize.Domains
 {
-    public class UserRole:Document
+    public class UserRole:Document,IEvent
     {
         public UserRole()
         {
@@ -16,7 +19,8 @@ namespace SAE.CommonComponent.Authorize.Domains
         {
             this.UserId = userId;
             this.RoleId = roleId;
-            this.Id = $"{this.UserId}_{this.RoleId}";
+            this.Id = $"{this.UserId}_{this.RoleId}".ToMd5();
+            this.Apply(this);
         }
         public string Id { get; set; }
         public string UserId { get; set; }

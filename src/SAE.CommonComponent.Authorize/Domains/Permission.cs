@@ -73,13 +73,6 @@ namespace SAE.CommonComponent.Authorize.Domains
         /// <param name="command"></param>
         public void ChangeStatus(PermissionCommand.ChangeStatus command) =>
             this.Apply<PermissionEvent.ChangeStatus>(command);
-        /// <summary>
-        /// delete permission
-        /// </summary>
-        public void Delete() =>
-            this.ChangeStatus(new PermissionCommand.ChangeStatus
-            {
-                Status = Status.Delete
-            });
+        
     }
 }

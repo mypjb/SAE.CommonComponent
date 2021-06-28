@@ -3,6 +3,7 @@ using SAE.CommonComponent.Authorize.Domains;
 using SAE.CommonComponent.Authorize.Dtos;
 using SAE.CommonLibrary.Abstract.Builder;
 using SAE.CommonLibrary.Abstract.Mediator;
+using SAE.CommonLibrary.Abstract.Model;
 using SAE.CommonLibrary.AspNetCore.Authorization;
 using SAE.CommonLibrary.Data;
 using SAE.CommonLibrary.EventStore.Document;
@@ -17,10 +18,11 @@ namespace SAE.CommonComponent.Authorize.Handlers
     public class UserRoleHandler : AbstractHandler<UserRole>,
                                   ICommandHandler<UserRoleCommand.ReferenceRole>,
                                   ICommandHandler<UserRoleCommand.DeleteRole>,
-                                  ICommandHandler<Command.Find<UserRoleDto>, IEnumerable<UserRoleDto>>,
+                                  ICommandHandler<UserRoleCommand.QueryUserAuthorizeCode, string>,
+                                  ICommandHandler<UserRoleCommand.Query, IPagedList<RoleDto>>,
                                   ICommandHandler<Command.Find<UserRoleDto>, IEnumerable<RoleDto>>,
                                   ICommandHandler<Command.List<BitmapEndpoint>, IEnumerable<BitmapEndpoint>>,
-                                  ICommandHandler<UserRoleCommand.QueryUserAuthorizeCode, string>
+                                  ICommandHandler<Command.BatchDelete<UserRole>>
     {
         private readonly IStorage _storage;
         private readonly IMediator _mediator;
@@ -48,18 +50,10 @@ namespace SAE.CommonComponent.Authorize.Handlers
 
         public Task HandleAsync(UserRoleCommand.DeleteRole command)
         {
-            return this._documentStore.DeleteAsync<UserRole>(command.Ids);
+            var userRoles = command.Ids.Select(s => new UserRole(command.UserId, s));
+            return this._documentStore.DeleteAsync(userRoles);
         }
 
-        //public async Task<IEnumerable<PermissionDto>> HandleAsync(UserRoleCommand.QueryRolePermission command)
-        //{
-        //    var role =await this._mediator.SendAsync<Command.Find<RoleDto>, RoleDto>(new Command.Find<RoleDto>
-        //    {
-        //         Id=command.RoleId
-        //    });
-
-        //    return role.Permissions;
-        //}
 
         public async Task<IEnumerable<RoleDto>> HandleAsync(Command.Find<UserRoleDto> command)
         {
@@ -126,15 +120,30 @@ namespace SAE.CommonComponent.Authorize.Handlers
             return code;
         }
 
-        async Task<IEnumerable<UserRoleDto>> ICommandHandler<Command.Find<UserRoleDto>, IEnumerable<UserRoleDto>>.HandleAsync(Command.Find<UserRoleDto> command)
+        public async Task<IPagedList<RoleDto>> HandleAsync(UserRoleCommand.Query command)
         {
-            var userRoles = this._storage.AsQueryable<UserRoleDto>()
-                                         .Where(s => s.UserId == command.Id)
-                                         .AsEnumerable();
+            if (command.Referenced)
+            {
+                var ids = PagedList.Build(this._storage.AsQueryable<UserRole>()
+                                   .Where(s => s.UserId == command.UserId), command);
+                return PagedList.Build(this._storage.AsQueryable<RoleDto>()
+                                                    .Where(s=>ids.Select(ur=>ur.RoleId).Contains(s.Id))
+                                                    .ToList(), ids);
 
-            await this._director.Build(userRoles);
+            }
+            else
+            {
+                var ids = this._storage.AsQueryable<UserRole>()
+                                       .Where(s => s.UserId == command.UserId)
+                                       .Select(s=>s.RoleId);
+                return PagedList.Build(this._storage.AsQueryable<RoleDto>()
+                                           .Where(s => !ids.Contains(s.Id)), command);
+            }
+        }
 
-            return userRoles;
+        public Task HandleAsync(Command.BatchDelete<UserRole> command)
+        {
+            return this._documentStore.DeleteAsync<UserRole>(command.Ids);
         }
     }
 }

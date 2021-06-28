@@ -2,6 +2,7 @@
 using SAE.CommonComponent.Authorize.Commands;
 using SAE.CommonComponent.Authorize.Dtos;
 using SAE.CommonComponent.Test;
+using SAE.CommonLibrary.Abstract.Model;
 using SAE.CommonLibrary.Extension;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,7 @@ namespace SAE.CommonComponent.Authorize.Test
 {
     public class UserRoleControllerTest : BaseTest
     {
-        public const string API = "UserRole";
+        public const string API = "/User/Role";
         private readonly PermissionControllerTest _permissionController;
         private readonly RoleControllerTest _roleController;
 
@@ -56,9 +57,9 @@ namespace SAE.CommonComponent.Authorize.Test
 
             httpResponse.EnsureSuccessStatusCode();
 
-            var userRoleDtos = await this.Get(command.UserId);
+            var roles = await this.Get(command.UserId);
 
-            Assert.True(userRoleDtos.All(s => command.Ids.Contains(s.RoleId)));
+            Assert.True(roles.All(s => command.Ids.Contains(s.Id)));
 
             return command.UserId;
 
@@ -81,18 +82,18 @@ namespace SAE.CommonComponent.Authorize.Test
 
             httpResponse.EnsureSuccessStatusCode();
 
-            var userRoleDtos = await this.Get(command.UserId);
+            var roles = await this.Get(command.UserId);
 
-            Assert.True(!userRoleDtos.Any(s => command.Ids.Contains(s.Id)));
+            Assert.True(!roles.Any(s => command.Ids.Contains(s.Id)));
         }
 
 
 
-        private async Task<IEnumerable<UserRoleDto>> Get(string id)
+        private async Task<IEnumerable<RoleDto>> Get(string id, bool referenced = true)
         {
-            var message = new HttpRequestMessage(HttpMethod.Get, $"{API}/{id}");
+            var message = new HttpRequestMessage(HttpMethod.Get, $"{API}/paging?UserId={id}&referenced={referenced}&pagesize={int.MaxValue}");
             var responseMessage = await this.HttpClient.SendAsync(message);
-            return await responseMessage.AsAsync<IEnumerable<UserRoleDto>>();
+            return await responseMessage.AsAsync<PagedList<RoleDto>>();
         }
     }
 }

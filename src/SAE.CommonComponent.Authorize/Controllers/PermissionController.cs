@@ -43,6 +43,14 @@ namespace SAE.CommonComponent.Authorize.Controllers
             await this._mediator.SendAsync(command);
             return this.Ok();
         }
+
+        [HttpPut("{action}")]
+        public async Task<IActionResult> Status(PermissionCommand.ChangeStatus command)
+        {
+            await this._mediator.SendAsync(command);
+            return this.Ok();
+        }
+
         [HttpGet("{id}")]
         public async Task<object> Get([FromRoute] Command.Find<PermissionDto> command)
         {

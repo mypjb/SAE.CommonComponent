@@ -64,10 +64,16 @@ namespace SAE.CommonComponent.Authorize.Handlers
         {
             await command.Ids.ForEachAsync(async id =>
             {
-                var Permission = await this._documentStore.FindAsync<Permission>(id);
-                Permission.Delete();
-                await this._documentStore.SaveAsync(Permission);
+                var roles = this._storage.AsQueryable<RoleDto>()
+                         .Where(s => s.PermissionIds.Contains(id));
+                if (roles.Any())
+                {
+                    var dto = this._storage.AsQueryable<PermissionDto>().First(s => s.Id.Equals(id));
+                    throw new SAE.CommonLibrary.SAEException($"permission:'{dto.Name}'Being quoted by {roles.Select(r => r.Name).Aggregate((a, b) => $"{a},{b}")}");
+                }
+                await this._storage.DeleteAsync<Permission>(id);
             });
+
         }
 
         public Task<IPagedList<PermissionDto>> HandleAsync(PermissionCommand.Query command)
@@ -140,7 +146,7 @@ namespace SAE.CommonComponent.Authorize.Handlers
 
         private IQueryable<PermissionDto> GetStorage()
         {
-            return this._storage.AsQueryable<PermissionDto>().Where(s => s.Status != Status.Delete);
+            return this._storage.AsQueryable<PermissionDto>();
         }
         private Task<string> FindPermission(string name)
         {

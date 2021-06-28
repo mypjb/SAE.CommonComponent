@@ -73,10 +73,7 @@ namespace SAE.CommonComponent.Authorize.Domains
         /// <param name="command"></param>
         public void ChangeStatus(RoleCommand.ChangeStatus command) =>
             this.Apply<RoleEvent.ChangeStatus>(command);
-        /// <summary>
-        /// delete role
-        /// </summary>
-        public void Delete() => this.ChangeStatus(new RoleCommand.ChangeStatus { Status = Status.Delete });
+       
 
         public void RelationPermission(RoleCommand.RelevancePermission command)
         {

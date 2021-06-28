@@ -38,5 +38,17 @@ namespace SAE.CommonComponent.Authorize.Commands
             public string Name { get; set; }
         }
 
+        public class PermissionQuery:Paging
+        {
+            /// <summary>
+            /// role id
+            /// </summary>
+            public string Id { get; set; }
+            /// <summary>
+            /// 
+            /// </summary>
+            public bool Referenced { get; set; }
+        }
+
     }
 }
