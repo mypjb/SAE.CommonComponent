@@ -21,7 +21,7 @@ namespace SAE.CommonComponent.Routing.Abstract.Commands
         public class Query : Paging
         {
             public string RoleId { get; set; }
-            public bool IgnoreRelevance { get; set; }
+            public bool Referenced { get; set; }
         }
 
     }

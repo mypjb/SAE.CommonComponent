@@ -33,13 +33,13 @@ namespace SAE.CommonComponent.Routing.Handlers
             var query = this._storage.AsQueryable<RoleMenu>()
                                      .Where(s => s.RoleId == command.RoleId);
             var menuQuery = this._storage.AsQueryable<MenuDto>();
-            if (command.IgnoreRelevance)
+            if (command.Referenced)
             {
-                menuQuery = menuQuery.Where(s => !query.Any(q => q.MenuId == s.Id));
+                menuQuery = menuQuery.Where(s => query.Any(q => q.MenuId == s.Id));
             }
             else
             {
-                menuQuery = menuQuery.Where(s => query.Any(q => q.MenuId == s.Id));
+                menuQuery = menuQuery.Where(s => !query.Any(q => q.MenuId == s.Id));
             }
 
             var menuDtos = PagedList.Build(menuQuery, command);
