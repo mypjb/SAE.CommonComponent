@@ -3,8 +3,11 @@ import { Modal, Switch } from "antd";
 
 
 export const Format = {
-  status: (data, props) => {
-    return (<Switch checkedChildren="Enable" unCheckedChildren="Disable" checked={data == 1} {...props} />);
+  status: (status, props) => {
+    return (<Switch checkedChildren="Enable" unCheckedChildren="Disable" checked={status == 1} {...props} />);
+  },
+  date: (date, props) => {
+    return new Date(+new Date(new Date(date).toJSON()) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '');
   }
 }
 
@@ -178,7 +181,7 @@ export const defaultOperation = {
   add: (props, proxyModal) => {
     const { dispatch, title, element, icon, modalProps } = props;
     FormModal.confirm({
-      title: title || "Add",
+      title: "Add",
       destroyOnClose: true,
       icon: icon || (<></>),
       closable: false,

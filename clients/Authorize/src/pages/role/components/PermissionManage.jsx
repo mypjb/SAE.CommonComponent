@@ -1,16 +1,15 @@
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import React, { useState, useEffect } from 'react';
 import { Row, Col, Input, Button } from 'antd';
-import { defaultOperation, defaultDispatchType, defaultState } from '@/utils/utils';
+import { defaultOperation, defaultDispatchType, defaultState, Format } from '@/utils/utils';
 import PagingTable from '@/components/PagingTable';
 
-const { Search } = Input;
 
 export default (props) => {
 
   const { dispatch, role } = props;
 
-  const dispatchType = defaultDispatchType("permission");
+  const dispatchType = defaultDispatchType("rolePermission");
 
   const [state, setState] = useState({ ...defaultState, params: { id: role.id, referenced: false } });
 
@@ -45,10 +44,22 @@ export default (props) => {
     {
       title: 'name',
       dataIndex: 'name'
-    },
+    }
     , {
+      title: 'status',
+      dataIndex: 'status',
+      render: (status, row) => {
+        return Format.status(status);
+      }
+    },
+    {
+      title: 'descriptor',
+      dataIndex: 'descriptor'
+    },
+    {
       title: 'createTime',
-      dataIndex: 'createTime'
+      dataIndex: 'createTime',
+      render:Format.date
     }
   ];
 
