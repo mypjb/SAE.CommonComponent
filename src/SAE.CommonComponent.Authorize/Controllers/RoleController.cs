@@ -74,8 +74,8 @@ namespace SAE.CommonComponent.Authorize.Controllers
             return this.Ok();
         }
 
-        [HttpDelete("permission/{action}")]
-        public async Task<IPagedList<PermissionDto>> Paging(RoleCommand.PermissionQuery command)
+        [HttpGet("permission/{action}")]
+        public async Task<IPagedList<PermissionDto>> Paging([FromQuery]RoleCommand.PermissionQuery command)
         {
             var paging = await this._mediator.SendAsync<IPagedList<PermissionDto>>(command);
             return paging;
