@@ -5,20 +5,19 @@ import { connect } from 'umi';
 import styles from './index.less';
 import AddForm from './components/AddForm';
 import EditForm from './components/EditForm';
-import PermissionManage from './components/PermissionManage';
 import PagingTable from '@/components/PagingTable';
 import { defaultDispatchType, defaultHandler, defaultOperation, Format } from '@/utils/utils';
 
 const { Search } = Input;
 
-export default connect(({ role }) => (
+export default connect(({ permission }) => (
     {
-        role
+        permission
     }))((props) => {
 
-        const { dispatch, role } = props;
+        const { dispatch, permission } = props;
 
-        const dispatchType = defaultDispatchType("role");
+        const dispatchType = defaultDispatchType("permission");
 
 
         const handleDelete = defaultHandler.delete({ dispatch, dispatchType: dispatchType.delete });
@@ -40,7 +39,7 @@ export default connect(({ role }) => (
 
         const handleStatus = (row) => {
             dispatch({
-                type: "role/status",
+                type: "permission/status",
                 payload: {
                     id: row.id,
                     status: Math.abs(row.status - 1)
@@ -48,17 +47,6 @@ export default connect(({ role }) => (
             })
         };
 
-        const handlePermissionManage = (role) => {
-            defaultOperation.add({
-                dispatch,
-                modalProps: {
-                    title: "Permission Manage",
-                    width: "75%"
-                },
-                element: PermissionManage,
-                role
-            });
-        }
 
         const columns = [
             {
@@ -72,6 +60,10 @@ export default connect(({ role }) => (
                 title: 'name',
                 dataIndex: 'name'
             }, {
+                title: 'flag',
+                dataIndex: 'flag'
+            }
+            , {
                 title: 'status',
                 dataIndex: 'status',
                 render: (status, row) => {
@@ -89,7 +81,7 @@ export default connect(({ role }) => (
                 title: 'action',
                 render: (text, row) => (
                     <span>
-                        <Button type='link' onClick={handlePermissionManage.bind(row, row)}>Permission Manage</Button>
+                        {/* <Button type='link' onClick={handlePermissionManage.bind(row, row)}>PermissionManage</Button> */}
                         <Button type='link' value={row.id} onClick={handleEdit.bind(row, row)} style={{ marginRight: 16 }}>Edit</Button>
                         <Button type='link' onClick={handleDelete.bind(row, { ids: [row.id] })}>Delete</Button>
                     </span>
@@ -108,7 +100,7 @@ export default connect(({ role }) => (
                             <Search placeholder="input search text" onSearch={(name) => handleSearch({ name })} className={styles.search} enterButton />
                         </Col>
                     </Row>
-                    <PagingTable {...props} {...role} dispatchType={dispatchType.paging} columns={columns} />
+                    <PagingTable {...props} {...permission} dispatchType={dispatchType.paging} columns={columns} />
                 </div>
             </PageHeaderWrapper>
         );
