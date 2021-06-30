@@ -23,7 +23,7 @@ namespace SAE.CommonComponent.Routing.Events
 
         public class RelevancePermission : IEvent
         {
-            public IEnumerable<string> PermissionIds { get; set; }
+            public string[] PermissionIds { get; set; }
         }
     }
 }

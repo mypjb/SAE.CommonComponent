@@ -11,7 +11,7 @@ namespace SAE.CommonComponent.Authorize.Commands
         public class ReferenceRole
         {
             public string UserId { get; set; }
-            public IEnumerable<string> Ids { get; set; }
+            public string[] Ids { get; set; }
         }
         public class DeleteRole : ReferenceRole
         {

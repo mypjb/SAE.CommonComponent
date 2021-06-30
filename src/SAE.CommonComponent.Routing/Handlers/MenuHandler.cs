@@ -137,7 +137,7 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
                 var pIds= PagedList.Build(menu.PermissionIds.AsQueryable(), command);
                 var permissionDtos=await this.mediator.SendAsync<IEnumerable<PermissionDto>>(new PermissionCommand.Finds
                 {
-                    Ids = pIds
+                    Ids = pIds.ToArray()
                 });
 
                 return PagedList.Build(permissionDtos, pIds);

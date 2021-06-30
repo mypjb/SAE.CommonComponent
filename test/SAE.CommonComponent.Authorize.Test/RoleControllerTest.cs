@@ -149,7 +149,7 @@ namespace SAE.CommonComponent.Authorize.Test
             var command = new RoleCommand.RelevancePermission
             {
                 Id = roleDto.Id,
-                PermissionIds = new[] { roleDto.PermissionIds.First() }
+                PermissionIds = roleDto.PermissionIds.ToArray()
             };
 
             var request = new HttpRequestMessage(HttpMethod.Delete, $"{API}/permission");
@@ -158,9 +158,9 @@ namespace SAE.CommonComponent.Authorize.Test
 
             httpResponse.EnsureSuccessStatusCode();
 
-            var permissions = await GetPermission(roleDto, false);
+            var permissions = await GetPermission(roleDto, true);
 
-            Assert.True(permissions.All(s => command.PermissionIds.Contains(s.Id)));
+            Assert.True(!permissions.Any(s => command.PermissionIds.Contains(s.Id)));
         }
 
 

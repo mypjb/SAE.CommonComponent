@@ -85,8 +85,8 @@ namespace SAE.CommonComponent.InitializeData
                         Name = pairs[Constants.Config.AppName],
                         Endpoint = new EndpointDto
                         {
-                            RedirectUris = pairs[nameof(EndpointDto.RedirectUris)].ToObject<IEnumerable<string>>(),
-                            PostLogoutRedirectUris = pairs[nameof(EndpointDto.PostLogoutRedirectUris)].ToObject<IEnumerable<string>>(),
+                            RedirectUris = pairs[nameof(EndpointDto.RedirectUris)].ToObject<string[]>(),
+                            PostLogoutRedirectUris = pairs[nameof(EndpointDto.PostLogoutRedirectUris)].ToObject<string[]>(),
                             SignIn = pairs[nameof(EndpointDto.SignIn)]
                         }
                     };
@@ -248,7 +248,7 @@ namespace SAE.CommonComponent.InitializeData
                 await this._mediator.SendAsync(new ProjectCommand.RelevanceConfig
                 {
                     ProjectId = projectId,
-                    ConfigIds = configIds
+                    ConfigIds = configIds.ToArray()
                 });
 
                 this._logging.Info($"Publish {projectName}-{kvs.Key} config");
@@ -298,13 +298,14 @@ namespace SAE.CommonComponent.InitializeData
 
         public virtual async Task Routing()
         {
+          
             var menus = new[]
             {
                 new Tuple<string, string, bool>("config","/config",false),
                 new Tuple<string, string, bool>("routing","/routing",false),
                 new Tuple<string, string, bool>("identity","/identity",true),
                 new Tuple<string, string, bool>("oauth","/oauth",true),
-                new Tuple<string, string, bool>("auth","/auth",true),
+                new Tuple<string, string, bool>("auth","/auth",false),
             }.Select(s => new MenuCommand.Create
             {
                 Name = s.Item1,

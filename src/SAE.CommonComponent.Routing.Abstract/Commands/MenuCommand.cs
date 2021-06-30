@@ -28,7 +28,7 @@ namespace SAE.CommonComponent.Routing.Commands
             /// <summary>
             /// permission id list 
             /// </summary>
-            public IEnumerable<string> PermissionIds { get; set; }
+            public string[] PermissionIds { get; set; }
         }
 
         public class DeletePermission: RelevancePermission

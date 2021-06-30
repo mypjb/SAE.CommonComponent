@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace SAE.CommonComponent.Authorize.Events
@@ -21,6 +22,10 @@ namespace SAE.CommonComponent.Authorize.Events
             public string Descriptor { get; set; }
 
             public string Flag { get; set; }
+            /// <summary>
+            /// request method
+            /// </summary>
+            public AccessMethod Method { get; set; }
         }
 
         public class ChangeStatus : IEvent

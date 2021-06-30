@@ -40,6 +40,11 @@ namespace SAE.CommonComponent.Authorize.Domains
         /// </summary>
         public string Flag { get; set; }
         /// <summary>
+        /// request method
+        /// </summary>
+        public AccessMethod Method { get; set; }
+
+        /// <summary>
         /// permission createTime
         /// </summary>
         public DateTime CreateTime { get; set; }

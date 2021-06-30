@@ -30,13 +30,13 @@ namespace SAE.CommonComponent.Application.Commands
         public class ReferenceScope
         {
             public string Id { get; set; }
-            public IEnumerable<string> Scopes { get; set; }
+            public string[] Scopes { get; set; }
         }
 
         public class CancelReferenceScope
         {
             public string Id { get; set; }
-            public IEnumerable<string> Scopes { get; set; }
+            public string[] Scopes { get; set; }
         }
 
         public class ChangeStatus

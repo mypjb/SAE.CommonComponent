@@ -38,7 +38,7 @@ namespace SAE.CommonComponent.ConfigServer.Commands
         public class RelevanceConfig
         {
             public string ProjectId { get; set; }
-            public IEnumerable<string> ConfigIds { get; set; }
+            public string[] ConfigIds { get; set; }
         }
 
         public class ConfigChangeAlias

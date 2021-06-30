@@ -12,25 +12,25 @@ using System.Threading.Tasks;
 
 namespace SAE.CommonComponent.Authorize.Builders
 {
-    public class RoleBuilder : IBuilder<IEnumerable<RoleDto>>,IBuilder<RoleDto>
+    public class RoleBuilder : IBuilder<IEnumerable<RoleDto>>, IBuilder<RoleDto>
     {
         private readonly IMediator _mediator;
         private readonly IStorage _storage;
 
-        public RoleBuilder(IMediator mediator,IStorage storage)
+        public RoleBuilder(IMediator mediator, IStorage storage)
         {
             this._mediator = mediator;
             this._storage = storage;
         }
         public async Task Build(IEnumerable<RoleDto> models)
         {
-            var permissionDtos=await this._mediator.SendAsync<IEnumerable<PermissionDto>>(new Command.List<PermissionDto>());
+            var permissionDtos = await this._mediator.SendAsync<IEnumerable<PermissionDto>>(new Command.List<PermissionDto>());
 
-            foreach(RoleDto dto in models)
+            foreach (RoleDto dto in models)
             {
-                if (dto.PermissionIds != null)
+                if (dto.PermissionIds != null && dto.PermissionIds.Any())
                 {
-                    dto.Permissions = permissionDtos.Where(s => dto.PermissionIds.Contains(s.Id));
+                    dto.Permissions = permissionDtos.Where(s => dto.PermissionIds.Contains(s.Id)).ToArray();
                 }
             }
         }
