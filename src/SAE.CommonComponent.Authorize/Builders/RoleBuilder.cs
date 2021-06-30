@@ -28,7 +28,10 @@ namespace SAE.CommonComponent.Authorize.Builders
 
             foreach(RoleDto dto in models)
             {
-                dto.Permissions = permissionDtos.Where(s => dto.PermissionIds.Contains(s.Id));
+                if (dto.PermissionIds != null)
+                {
+                    dto.Permissions = permissionDtos.Where(s => dto.PermissionIds.Contains(s.Id));
+                }
             }
         }
 
