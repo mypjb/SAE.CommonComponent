@@ -304,6 +304,7 @@ namespace SAE.CommonComponent.InitializeData
                 new Tuple<string, string, bool>("routing","/routing",false),
                 new Tuple<string, string, bool>("identity","/identity",true),
                 new Tuple<string, string, bool>("oauth","/oauth",true),
+                new Tuple<string, string, bool>("auth","/auth",true),
             }.Select(s => new MenuCommand.Create
             {
                 Name = s.Item1,

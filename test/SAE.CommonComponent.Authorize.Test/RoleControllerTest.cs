@@ -4,6 +4,7 @@ using SAE.CommonComponent.Authorize.Domains;
 using SAE.CommonComponent.Authorize.Dtos;
 using SAE.CommonComponent.Test;
 using SAE.CommonLibrary;
+using SAE.CommonLibrary.Abstract.Model;
 using SAE.CommonLibrary.AspNetCore.Authorization;
 using SAE.CommonLibrary.EventStore.Document;
 using SAE.CommonLibrary.Extension;
@@ -123,10 +124,21 @@ namespace SAE.CommonComponent.Authorize.Test
 
             var role = await this.Get(roleDto.Id);
 
-            Assert.True(role.PermissionIds.All(s => command.PermissionIds.Contains(s)));
+            var permissions = await GetPermission(role, true);
 
+            Assert.True(permissions.All(s => command.PermissionIds.Contains(s.Id)));
             return role;
 
+        }
+
+        private async Task<IEnumerable<PermissionDto>> GetPermission(RoleDto role, bool referenced)
+        {
+            var rolePermissionRequest = new HttpRequestMessage(HttpMethod.Get, $"{API}/Permission/paging?Referenced={referenced}&id={role.Id}");
+
+            var rolePermissionResponse = await this.HttpClient.SendAsync(rolePermissionRequest);
+
+            var permissions = await rolePermissionResponse.AsAsync<PagedList<PermissionDto>>();
+            return permissions;
         }
 
         [Fact]
@@ -146,9 +158,9 @@ namespace SAE.CommonComponent.Authorize.Test
 
             httpResponse.EnsureSuccessStatusCode();
 
-            var role = await this.Get(roleDto.Id);
+            var permissions = await GetPermission(roleDto, false);
 
-            Assert.True(!role.PermissionIds.Any(s => command.PermissionIds.Contains(s)));
+            Assert.True(permissions.All(s => command.PermissionIds.Contains(s.Id)));
         }
 
 
@@ -159,5 +171,7 @@ namespace SAE.CommonComponent.Authorize.Test
             var responseMessage = await this.HttpClient.SendAsync(message);
             return await responseMessage.AsAsync<RoleDto>();
         }
+
+
     }
 }
