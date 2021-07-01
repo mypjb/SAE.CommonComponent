@@ -18,5 +18,6 @@ namespace SAE.CommonComponent.Authorize.Dtos
         public Status Status { get; set; }
         public string[] PermissionIds { get; set; }
         public PermissionDto[] Permissions { get; set; }
+        public string[] MenuIds { get; set; }
     }
 }

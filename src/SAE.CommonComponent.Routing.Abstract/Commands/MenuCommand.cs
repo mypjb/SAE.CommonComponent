@@ -1,3 +1,4 @@
+using SAE.CommonComponent.Routing.Dtos;
 using SAE.CommonLibrary.Abstract.Model;
 using System.Collections.Generic;
 
@@ -44,11 +45,17 @@ namespace SAE.CommonComponent.Routing.Commands
         public class Query : Paging
         {
             public string Name { get; set; }
+            public string[] IgnoreIds { get; set; }
         }
 
         public class Tree
         {
 
+        }
+
+        public class Finds
+        {
+            public string[] Ids { get; set; }
         }
     }
 }

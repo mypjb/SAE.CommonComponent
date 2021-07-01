@@ -71,7 +71,7 @@ namespace SAE.CommonComponent.Authorize.Test
             };
             var request = new HttpRequestMessage(HttpMethod.Put, $"{API}");
             request.AddJsonContent(command);
-            var httpResponse = await this.HttpClient.SendAsync(request);
+            await this.HttpClient.SendAsync(request);
             var Role = await this.Get(dto.Id);
 
             Assert.Equal(Role.Name, command.Name);
@@ -163,8 +163,6 @@ namespace SAE.CommonComponent.Authorize.Test
             Assert.True(!permissions.Any(s => command.PermissionIds.Contains(s.Id)));
         }
 
-
-
         private async Task<RoleDto> Get(string id)
         {
             var message = new HttpRequestMessage(HttpMethod.Get, $"{API}/{id}");
@@ -172,6 +170,50 @@ namespace SAE.CommonComponent.Authorize.Test
             return await responseMessage.AsAsync<RoleDto>();
         }
 
+        public async Task DeleteMenu(string[] menuIds)
+        {
+            var roleDto = await this.RelevanceMenu(menuIds);
 
+            var command = new RoleCommand.DeleteMenu
+            {
+                Id = roleDto.Id,
+                MenuIds = roleDto.MenuIds.Skip(new Random().Next(1, menuIds.Length)).ToArray()
+            };
+
+            var request = new HttpRequestMessage(HttpMethod.Delete, $"{API}/menu");
+            request.AddJsonContent(command);
+            var httpResponse = await this.HttpClient.SendAsync(request);
+
+            httpResponse.EnsureSuccessStatusCode();
+
+            var role = await this.Get(roleDto.Id);
+
+            Assert.True(!role.MenuIds.Any(s => command.MenuIds.Contains(s)));
+        }
+
+        public async Task<RoleDto> RelevanceMenu(string[] menuIds)
+        {
+            var roleDto = await this.Add();
+
+            var command = new RoleCommand.RelevanceMenu
+            {
+                Id = roleDto.Id,
+                MenuIds = menuIds,
+            };
+
+            var request = new HttpRequestMessage(HttpMethod.Post, $"{API}/menu");
+
+            request.AddJsonContent(command);
+
+            var httpResponse = await this.HttpClient.SendAsync(request);
+
+            httpResponse.EnsureSuccessStatusCode();
+
+            var role = await this.Get(roleDto.Id);
+
+            Assert.True(role.MenuIds.All(s => command.MenuIds.Contains(s)));
+
+            return role;
+        }
     }
 }
