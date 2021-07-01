@@ -1,4 +1,4 @@
-import request from "../rolePermissionService";
+import request from "../roleMenuService";
 import { defaultModel, parsingPayload } from '@/utils/utils'
 
 export default {
@@ -10,7 +10,7 @@ export default {
     ...defaultModel.reducers,
   },
   effects: {
-    ...defaultModel.effects({ request, name: "rolePermission" }),
+    ...defaultModel.effects({ request, name: "roleMenu" }),
     *add({ payload }, { call, put }) {
 
       const { callback, data } = parsingPayload(payload);

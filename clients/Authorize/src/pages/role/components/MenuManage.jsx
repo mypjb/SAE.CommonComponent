@@ -10,14 +10,14 @@ export default (props) => {
 
   const { dispatch, role } = props;
 
-  const dispatchType = defaultDispatchType("rolePermission");
+  const dispatchType = defaultDispatchType("roleMenu");
 
   const [state, setState] = useState({
     ...defaultState,
     params: {
       id: role.id, referenced: true
     },
-    permissionIds: []
+    menuIds: []
   });
 
   const { paging } = state;
@@ -31,7 +31,7 @@ export default (props) => {
         pageSize,
         ...state.params,
         callback: (data) => {
-          setState({ ...state, ...data, params: state.params, permissionIds: [] });
+          setState({ ...state, ...data, params: state.params, menuIds: [] });
         }
       }
     });
@@ -78,17 +78,17 @@ export default (props) => {
   const rowSelectionOption = {
     onChange: (selectedRowKeys, selectedRows) => {
       console.log(selectedRowKeys);
-      const permissionIds = selectedRows.map(s => (s.id));
-      setState({ ...state, permissionIds });
+      const menuIds = selectedRows.map(s => (s.id));
+      setState({ ...state, menuIds });
     },
-    selectedRowKeys: state.permissionIds
+    selectedRowKeys: state.menuIds
   }
 
   props.okCallback((close) => {
     dispatch({
       type: state.params.referenced ? dispatchType.delete : dispatchType.add,
       payload: {
-        permissionIds: state.permissionIds,
+        menuIds: state.menuIds,
         id: role.id,
         callback: function () {
           handleSkipPage();

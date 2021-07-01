@@ -35,7 +35,7 @@ export default function (action) {
     }
 
     service.delete = async function (data) {
-        if (data.id) {
+        if (data.id && Object.keys(data).length == 1) {
             return request(`/${action}/${data.id}`, { method: "delete" });
         } else {
             return request(`/${action}`, { method: "delete", data });
