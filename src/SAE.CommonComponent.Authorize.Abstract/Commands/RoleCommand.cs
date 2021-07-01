@@ -25,13 +25,11 @@ namespace SAE.CommonComponent.Authorize.Commands
         public class RelevancePermission
         {
             public string Id { get; set; }
-            public IEnumerable<string> PermissionIds { get; set; }
+            public string[] PermissionIds { get; set; }
         }
 
-        public class DeletePermission
+        public class DeletePermission: RelevancePermission
         {
-            public string Id { get; set; }
-            public IEnumerable<string> PermissionIds { get; set; }
         }
         public class Query : Paging
         {

@@ -18,7 +18,7 @@ namespace SAE.CommonComponent.Routing.Domains
         public Menu()
         {
             this.ParentId = DefaultId;
-            this.PermissionIds = Enumerable.Empty<string>();
+            this.PermissionIds = Enumerable.Empty<string>().ToArray();
         }
 
         public Menu(MenuCommand.Create command)
@@ -59,7 +59,7 @@ namespace SAE.CommonComponent.Routing.Domains
         /// <summary>
         /// menu permission ids
         /// </summary>
-        public IEnumerable<string> PermissionIds { get; set; }
+        public string[] PermissionIds { get; set; }
 
         public async Task Change(MenuCommand.Change command, Func<string, Task<Menu>> parentProvider, Func<Menu, Task<bool>> menuProvider)
         {
@@ -126,7 +126,7 @@ namespace SAE.CommonComponent.Routing.Domains
 
             this.Apply(new MenuEvent.RelevancePermission
             {
-                PermissionIds = permissionIds
+                PermissionIds = permissionIds.ToArray()
             });
         }
     }

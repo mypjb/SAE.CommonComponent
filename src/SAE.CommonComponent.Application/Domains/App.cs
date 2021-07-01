@@ -16,7 +16,7 @@ namespace SAE.CommonComponent.Application.Abstract.Domains
         //public const string DefaultSignIn = "/account/login";
         public App()
         {
-            this.Scopes = Enumerable.Empty<string>();
+            this.Scopes = Enumerable.Empty<string>().ToArray();
         }
         public App(AppCommand.Create command) : this()
         {
@@ -62,7 +62,7 @@ namespace SAE.CommonComponent.Application.Abstract.Domains
         /// auth scope
         /// </summary>
         /// <value></value>
-        public IEnumerable<string> Scopes { get; set; }
+        public string[] Scopes { get; set; }
 
         /// <summary>
         /// create time
@@ -93,7 +93,7 @@ namespace SAE.CommonComponent.Application.Abstract.Domains
 
             if (this.Scopes == null)
             {
-                this.Scopes = Enumerable.Empty<string>();
+                this.Scopes = Enumerable.Empty<string>().ToArray();
             }
 
             var scopes = this.Scopes.ToList();
@@ -102,7 +102,7 @@ namespace SAE.CommonComponent.Application.Abstract.Domains
 
             this.Apply(new AppEvent.ReferenceScope
             {
-                Scopes = scopes.Distinct().ToList()
+                Scopes = scopes.Distinct().ToArray()
             });
         }
         public void CancelReference(AppCommand.CancelReferenceScope command)

@@ -14,7 +14,7 @@ namespace SAE.CommonComponent.Authorize.Domains
     {
         public Role()
         {
-            this.PermissionIds = Enumerable.Empty<string>();
+            this.PermissionIds = Enumerable.Empty<string>().ToArray();
         }
         public Role(RoleCommand.Create command):this()
         {
@@ -26,10 +26,12 @@ namespace SAE.CommonComponent.Authorize.Domains
              });
         }
         public string Id { get; set; }
+
+
         /// <summary>
         /// role permission ids
         /// </summary>
-        public IEnumerable<string> PermissionIds { get; set; }
+        public string[] PermissionIds { get; set; }
 
         /// <summary>
         /// role name
@@ -98,7 +100,7 @@ namespace SAE.CommonComponent.Authorize.Domains
 
             this.Apply(new RoleEvent.RelationPermission
             {
-                PermissionIds = permissionIds
+                PermissionIds = permissionIds.ToArray()
             });
         }
     }

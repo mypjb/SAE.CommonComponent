@@ -12,7 +12,7 @@ namespace SAE.CommonComponent.Routing.Abstract.Commands
         public class ReferenceMenu
         {
             public string RoleId { get; set; }
-            public IEnumerable<string> MenuIds { get; set; }
+            public string[] MenuIds { get; set; }
         }
         public class DeleteMenu : ReferenceMenu
         {

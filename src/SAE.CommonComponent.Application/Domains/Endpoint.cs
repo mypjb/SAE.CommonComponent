@@ -7,8 +7,8 @@ namespace SAE.CommonComponent.Application.Abstract.Domains
 {
     public class Endpoint
     {
-        public IEnumerable<string> RedirectUris { get; set; }
-        public IEnumerable<string> PostLogoutRedirectUris { get; set; }
+        public string[] RedirectUris { get; set; }
+        public string[] PostLogoutRedirectUris { get; set; }
         public string SignIn { get; set; }
     }
 }

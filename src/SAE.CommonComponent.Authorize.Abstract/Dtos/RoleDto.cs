@@ -16,7 +16,7 @@ namespace SAE.CommonComponent.Authorize.Dtos
         public DateTime CreateTime { get; set; }
 
         public Status Status { get; set; }
-        public IEnumerable<string> PermissionIds { get; set; }
-        public IEnumerable<PermissionDto> Permissions { get; set; }
+        public string[] PermissionIds { get; set; }
+        public PermissionDto[] Permissions { get; set; }
     }
 }

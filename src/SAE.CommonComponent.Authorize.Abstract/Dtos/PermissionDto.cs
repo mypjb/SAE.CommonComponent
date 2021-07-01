@@ -11,6 +11,7 @@ namespace SAE.CommonComponent.Authorize.Dtos
         public string Name { get; set; }
         public string Descriptor { get; set; }
         public string Flag { get; set; }
+        public AccessMethod Method { get; set; }
         public DateTime CreateTime { get; set; }
         public Status Status { get; set; }
     }

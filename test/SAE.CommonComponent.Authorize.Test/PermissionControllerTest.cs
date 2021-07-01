@@ -42,7 +42,8 @@ namespace SAE.CommonComponent.Authorize.Test
             {
                 Name = $"test_{this.GetRandom()}",
                 Descriptor = "add permission",
-                Flag = "/"
+                Flag = "/",
+                Method = AccessMethod.Custom
             };
             var request = new HttpRequestMessage(HttpMethod.Post, $"{API}");
             request.AddJsonContent(command);
@@ -104,7 +105,8 @@ namespace SAE.CommonComponent.Authorize.Test
                       {
                           Name = $"localtion_{s}",
                           Descriptor = $"location {s}",
-                          Flag = $"/location/{s}"
+                          Flag = $"/location/{s}",
+                          Method = Enum.Parse<AccessMethod>((s % 10).ToString())
                       });
 
             var request = new HttpRequestMessage(HttpMethod.Post, $"{API}/{nameof(Location)}");

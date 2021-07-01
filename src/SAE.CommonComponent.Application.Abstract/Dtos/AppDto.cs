@@ -31,7 +31,7 @@ namespace SAE.CommonComponent.Application.Dtos
         /// auth scope
         /// </summary>
         /// <value></value>
-        public IEnumerable<string> Scopes { get; set; }
+        public string[] Scopes { get; set; }
 
         /// <summary>
         /// create time

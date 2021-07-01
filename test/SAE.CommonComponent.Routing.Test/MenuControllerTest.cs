@@ -137,7 +137,7 @@ namespace SAE.CommonComponent.Routing.Test
             var command = new MenuCommand.RelevancePermission
             {
                 Id = menu.Id,
-                PermissionIds = roleDto.PermissionIds.Take(10).ToList()
+                PermissionIds = roleDto.PermissionIds.Take(10).ToList().ToArray()
             };
 
             var req = new HttpRequestMessage(HttpMethod.Post, url);
@@ -172,7 +172,7 @@ namespace SAE.CommonComponent.Routing.Test
             var deleteCommand = new MenuCommand.DeletePermission
             {
                 Id = menu.Id,
-                PermissionIds = command.PermissionIds.Take(deleteCount)
+                PermissionIds = command.PermissionIds.Take(deleteCount).ToArray()
             };
 
             var deleteReq = new HttpRequestMessage(HttpMethod.Delete, url);

@@ -11,6 +11,7 @@ namespace SAE.CommonComponent.Authorize.Commands
             public string Descriptor { get; set; }
 
             public string Flag { get; set; }
+            public AccessMethod Method { get; set; }
         }
 
 
@@ -28,12 +29,12 @@ namespace SAE.CommonComponent.Authorize.Commands
         public class Query : Paging
         {
             public string Name { get; set; }
-            public IEnumerable<string> IgnoreIds { get; set; }
+            public string[] IgnoreIds { get; set; }
         }
 
         public class Finds
         {
-            public IEnumerable<string> Ids { get; set; }
+            public string[] Ids { get; set; }
         }
 
     }

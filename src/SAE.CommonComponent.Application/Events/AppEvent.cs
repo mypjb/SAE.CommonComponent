@@ -19,7 +19,7 @@ namespace SAE.CommonComponent.Application.Abstract.Events
         public class Change : IEvent
         {
             public string Name { get; set; }
-            public IEnumerable<string> Urls { get; set; }
+            public string[] Urls { get; set; }
         }
 
         public class RefreshSecret : IEvent
@@ -29,7 +29,7 @@ namespace SAE.CommonComponent.Application.Abstract.Events
 
         public class ReferenceScope : IEvent
         {
-            public IEnumerable<string> Scopes { get; set; }
+            public string[] Scopes { get; set; }
         }
         public class CancelReferenceScope : ReferenceScope
         {

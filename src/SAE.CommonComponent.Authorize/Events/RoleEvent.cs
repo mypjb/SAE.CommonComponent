@@ -28,7 +28,7 @@ namespace SAE.CommonComponent.Authorize.Events
 
         public class RelationPermission : IEvent
         {
-            public IEnumerable<string> PermissionIds { get; set; }
+            public string[] PermissionIds { get; set; }
         }
     }
 }
