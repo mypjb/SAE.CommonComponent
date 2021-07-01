@@ -28,7 +28,7 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
                                  ICommandHandler<MenuCommand.RelevancePermission>,
                                  ICommandHandler<MenuCommand.DeletePermission>,
                                  ICommandHandler<MenuCommand.PermissionQuery, IPagedList<PermissionDto>>
-                                 
+
     {
         private readonly IStorage _storage;
         private readonly IMediator mediator;
@@ -83,7 +83,7 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
                                          Name = s.Name,
                                          Path = s.Path,
                                          ParentId = s.ParentId,
-                                         Hidden=s.Hidden
+                                         Hidden = s.Hidden
                                      }).ToArray();
             var rootMenus = menus.Where(s => s.ParentId == Menu.DefaultId).ToArray();
 
@@ -134,8 +134,8 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
 
             if (command.Referenced)
             {
-                var pIds= PagedList.Build(menu.PermissionIds.AsQueryable(), command);
-                var permissionDtos=await this.mediator.SendAsync<IEnumerable<PermissionDto>>(new PermissionCommand.Finds
+                var pIds = PagedList.Build(menu.PermissionIds.AsQueryable(), command);
+                var permissionDtos = await this.mediator.SendAsync<IEnumerable<PermissionDto>>(new PermissionCommand.Finds
                 {
                     Ids = pIds.ToArray()
                 });
@@ -150,5 +150,6 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
                 });
             }
         }
+
     }
 }

@@ -96,7 +96,7 @@ namespace SAE.CommonComponent.Routing.Domains
         }
 
         /// <summary>
-        /// relation permission
+        /// Relevance permission
         /// </summary>
         /// <param name="command"></param>
         public void RelevancePermission(MenuCommand.RelevancePermission command)

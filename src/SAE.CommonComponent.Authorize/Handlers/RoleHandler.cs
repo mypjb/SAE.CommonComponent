@@ -1,6 +1,8 @@
 ﻿using SAE.CommonComponent.Authorize.Commands;
 using SAE.CommonComponent.Authorize.Domains;
 using SAE.CommonComponent.Authorize.Dtos;
+using SAE.CommonComponent.Routing.Commands;
+using SAE.CommonComponent.Routing.Dtos;
 using SAE.CommonLibrary;
 using SAE.CommonLibrary.Abstract.Builder;
 using SAE.CommonLibrary.Abstract.Mediator;
@@ -24,7 +26,9 @@ namespace SAE.CommonComponent.Authorize.Handlers
                               ICommandHandler<Command.BatchDelete<Role>>,
                               ICommandHandler<Command.Find<RoleDto>,RoleDto>,
                               ICommandHandler<RoleCommand.Query, IPagedList<RoleDto>>,
-                              ICommandHandler<RoleCommand.PermissionQuery, IPagedList<PermissionDto>>
+                              ICommandHandler<RoleCommand.PermissionQuery, IPagedList<PermissionDto>>,
+                              ICommandHandler<RoleCommand.RelevanceMenu>,
+                              ICommandHandler<RoleCommand.DeleteMenu>
 
     {
         private readonly IStorage _storage;
@@ -109,7 +113,7 @@ namespace SAE.CommonComponent.Authorize.Handlers
             Assert.Build(role)
                   .IsNotNull();
 
-            role.RelationPermission(command);
+            role.RelevancePermission(command);
 
             await this._documentStore.SaveAsync(role);
         }
@@ -148,6 +152,22 @@ namespace SAE.CommonComponent.Authorize.Handlers
                 });
             }
         }
+
+        public async Task HandleAsync(RoleCommand.RelevanceMenu command)
+        {                                          
+            var role = await this._documentStore.FindAsync<Role>(command.Id);
+            role.RelevanceMenu(command);
+            await this._documentStore.SaveAsync(role);
+        }
+
+        public async Task HandleAsync(RoleCommand.DeleteMenu command)
+        {
+            var role = await this._documentStore.FindAsync<Role>(command.Id);
+            role.DeleteMenu(command);
+            await this._documentStore.SaveAsync(role);
+        }
+
+        
 
         private Task<string> FindRole(string name)
         {

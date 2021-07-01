@@ -201,6 +201,26 @@ namespace SAE.CommonComponent.Routing.Test
 
         }
 
+        [Fact]
+        public async Task<RoleDto> RoleRelevanceMenu()
+        {
+            var menus = new List<MenuDto>();
+            await Enumerable.Range(0, 10)
+                       .ForEachAsync(async s =>
+                       {
+                           menus.Add(await this.Add());
+                       });
+
+            return await this.roleControllerTest.RelevanceMenu(menus.Select(s => s.Id).ToArray());
+        }
+
+        [Fact]
+        public async Task RoleDeleteMenu()
+        {
+            var roleDto=await this.RoleRelevanceMenu();
+            await this.roleControllerTest.DeleteMenu(roleDto.MenuIds);
+        }
+
 
         private async Task<MenuDto> Get(string id)
         {

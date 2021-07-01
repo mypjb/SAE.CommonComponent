@@ -26,9 +26,14 @@ namespace SAE.CommonComponent.Authorize.Events
             public Status Status { get; set; }
         }
 
-        public class RelationPermission : IEvent
+        public class RelevancePermission : IEvent
         {
             public string[] PermissionIds { get; set; }
+        }
+
+        public class RelevanceMenu : IEvent
+        {
+            public string[] MenuIds { get; set; }
         }
     }
 }

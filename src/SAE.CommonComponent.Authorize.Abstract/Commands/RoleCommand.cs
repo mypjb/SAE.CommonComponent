@@ -28,7 +28,17 @@ namespace SAE.CommonComponent.Authorize.Commands
             public string[] PermissionIds { get; set; }
         }
 
-        public class DeletePermission: RelevancePermission
+        public class DeletePermission : RelevancePermission
+        {
+        }
+
+        public class RelevanceMenu
+        {
+            public string Id { get; set; }
+            public string[] MenuIds { get; set; }
+        }
+
+        public class DeleteMenu : RelevanceMenu
         {
         }
         public class Query : Paging
@@ -36,7 +46,7 @@ namespace SAE.CommonComponent.Authorize.Commands
             public string Name { get; set; }
         }
 
-        public class PermissionQuery:Paging
+        public class PermissionQuery : Paging
         {
             /// <summary>
             /// role id
@@ -47,6 +57,5 @@ namespace SAE.CommonComponent.Authorize.Commands
             /// </summary>
             public bool Referenced { get; set; }
         }
-
     }
 }

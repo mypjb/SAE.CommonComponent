@@ -32,7 +32,10 @@ namespace SAE.CommonComponent.Authorize.Domains
         /// role permission ids
         /// </summary>
         public string[] PermissionIds { get; set; }
-
+        /// <summary>
+        /// role menu ids
+        /// </summary>
+        public string[] MenuIds { get; set; }
         /// <summary>
         /// role name
         /// </summary>
@@ -49,6 +52,7 @@ namespace SAE.CommonComponent.Authorize.Domains
         /// role status
         /// </summary>
         public Status Status { get; set; }
+
         /// <summary>
         /// role name is exist? exist trigger <seealso cref="SaeException"/><seealso cref="StatusCodes.ResourcesExist"/>
         /// </summary>
@@ -77,13 +81,13 @@ namespace SAE.CommonComponent.Authorize.Domains
             this.Apply<RoleEvent.ChangeStatus>(command);
        
 
-        public void RelationPermission(RoleCommand.RelevancePermission command)
+        public void RelevancePermission(RoleCommand.RelevancePermission command)
         {
             var permissionIds= this.PermissionIds.Concat(command.PermissionIds)
                                                  .Distinct()
                                                  .ToArray();
 
-            this.Apply(new RoleEvent.RelationPermission
+            this.Apply(new RoleEvent.RelevancePermission
             {
                 PermissionIds = permissionIds
             });
@@ -98,9 +102,35 @@ namespace SAE.CommonComponent.Authorize.Domains
 
             permissionIds.RemoveAll(s => command.PermissionIds.Contains(s));
 
-            this.Apply(new RoleEvent.RelationPermission
+            this.Apply(new RoleEvent.RelevancePermission
             {
                 PermissionIds = permissionIds.ToArray()
+            });
+        }
+
+        internal void RelevanceMenu(RoleCommand.RelevanceMenu command)
+        {
+            var menuIds = this.MenuIds.Concat(command.MenuIds)
+                                                 .Distinct()
+                                                 .ToArray();
+
+            this.Apply(new RoleEvent.RelevanceMenu
+            {
+                MenuIds = menuIds
+            });
+        }
+
+        internal void DeleteMenu(RoleCommand.DeleteMenu command)
+        {
+            if (!command?.MenuIds.Any() ?? false) return;
+
+            var menuIds = this.MenuIds.ToList();
+
+            menuIds.RemoveAll(s => command.MenuIds.Contains(s));
+
+            this.Apply(new RoleEvent.RelevanceMenu
+            {
+                MenuIds = menuIds.ToArray()
             });
         }
     }
