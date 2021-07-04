@@ -61,7 +61,7 @@ namespace SAE.CommonComponent.Authorize.Controllers
 
 
         [HttpPost("permission")]
-        public async Task<IActionResult> Relevance(RoleCommand.RelevancePermission command)
+        public async Task<IActionResult> RelevancePermission(RoleCommand.RelevancePermission command)
         {
             await this._mediator.SendAsync(command);
             return this.Ok();
@@ -75,10 +75,24 @@ namespace SAE.CommonComponent.Authorize.Controllers
         }
 
         [HttpGet("permission/{action}")]
-        public async Task<IPagedList<PermissionDto>> Paging([FromQuery]RoleCommand.PermissionQuery command)
+        public async Task<IPagedList<PermissionDto>> Paging([FromQuery] RoleCommand.PermissionQuery command)
         {
             var paging = await this._mediator.SendAsync<IPagedList<PermissionDto>>(command);
             return paging;
+        }
+
+        [HttpPost("menu")]
+        public async Task<IActionResult> RelevanceMenu(RoleCommand.RelevanceMenu command)
+        {
+            await this._mediator.SendAsync(command);
+            return this.Ok();
+        }
+
+        [HttpDelete("menu")]
+        public async Task<IActionResult> DeleteMenu(RoleCommand.DeleteMenu command)
+        {
+            await this._mediator.SendAsync(command);
+            return this.Ok();
         }
 
     }
