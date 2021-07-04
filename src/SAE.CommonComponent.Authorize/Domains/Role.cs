@@ -15,6 +15,7 @@ namespace SAE.CommonComponent.Authorize.Domains
         public Role()
         {
             this.PermissionIds = Enumerable.Empty<string>().ToArray();
+            this.MenuIds = Enumerable.Empty<string>().ToArray();
         }
         public Role(RoleCommand.Create command):this()
         {

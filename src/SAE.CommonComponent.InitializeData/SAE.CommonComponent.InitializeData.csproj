@@ -13,6 +13,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="siteMap.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="siteMap.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="SAE.CommonLibrary.EventStore.Document" Version="2.0.3.3" />
     <PackageReference Include="SAE.CommonLibrary.Plugin.AspNetCore" Version="2.0.3.3" />
   </ItemGroup>

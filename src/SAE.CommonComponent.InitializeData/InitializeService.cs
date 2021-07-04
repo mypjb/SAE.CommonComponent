@@ -21,12 +21,14 @@ using SAE.CommonComponent.Application.Abstract.Dtos;
 using SAE.CommonComponent.Application.Dtos;
 using System.Text.RegularExpressions;
 using SAE.CommonComponent.Routing.Commands;
+using SAE.CommonComponent.Routing.Dtos;
+using System.Reflection;
 
 namespace SAE.CommonComponent.InitializeData
 {
     public class InitializeService : IInitializeService
     {
-
+        protected const string SiteMapPath = "siteMap.json";
         protected readonly IMediator _mediator;
         protected readonly ILogging _logging;
         private readonly IServiceProvider _serviceProvider;
@@ -298,28 +300,62 @@ namespace SAE.CommonComponent.InitializeData
 
         public virtual async Task Routing()
         {
-          
-            var menus = new[]
-            {
-                new Tuple<string, string, bool>("config","/config",false),
-                new Tuple<string, string, bool>("routing","/routing",false),
-                new Tuple<string, string, bool>("identity","/identity",true),
-                new Tuple<string, string, bool>("oauth","/oauth",true),
-                new Tuple<string, string, bool>("auth","/auth",false),
-            }.Select(s => new MenuCommand.Create
-            {
-                Name = s.Item1,
-                Path = s.Item2,
-                Hidden = s.Item3
-            });
+            var assembly = Assembly.GetExecutingAssembly();
 
-            this._logging.Info($"menus : {menus.ToJsonString()}");
+            var resourceName = assembly.GetManifestResourceNames().FirstOrDefault(s => s.EndsWith(SiteMapPath));
 
+            if (!resourceName.IsNullOrWhiteSpace())
+            {
+                var stream = assembly.GetManifestResourceStream(resourceName);
+                if (stream != null)
+                {
+                    using (stream)
+                    using (var memory = new MemoryStream())
+                    {
+                        await stream.CopyToAsync(memory);
+                        memory.Position = 0;
+                        var json = SAE.CommonLibrary.Constant.Encoding.GetString(memory.ToArray());
+
+                        var menus = json.ToObject<IEnumerable<MenuItemDto>>();
+
+                        this._logging.Info($"local menus : {menus.ToJsonString()}");
+
+                        await this.AddMenusAsync(menus);
+
+                        var dtos = await this._mediator.SendAsync<IEnumerable<MenuItemDto>>(new MenuCommand.Tree());
+
+                        this._logging.Info($"remote menu : {dtos}");
+                    }
+                    return;
+                }
+            }
+            this._logging.Warn($"The assembly resource listing not find '{SiteMapPath}'");
+        }
+
+        protected async Task AddMenusAsync(IEnumerable<MenuItemDto> menus)
+        {
             foreach (var item in menus)
             {
-                await this._mediator.SendAsync<string>(item);
-            }
+                var command = new MenuCommand.Create
+                {
+                    Name = item.Name,
+                    Path = item.Path,
+                    Hidden = item.Hidden,
+                    ParentId = item.ParentId
+                };
+                var parentId = await this._mediator.SendAsync<string>(command);
 
+                item.Id = parentId;
+
+                if (item.Items?.Any() ?? false)
+                {
+                    item.Items.ForEach(s =>
+                {
+                    s.ParentId = item.Id;
+                });
+                    await this.AddMenusAsync(item.Items);
+                }
+            }
         }
 
         public virtual async Task User()
