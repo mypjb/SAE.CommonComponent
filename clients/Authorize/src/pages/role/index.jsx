@@ -61,16 +61,26 @@ export default connect(({ role }) => (
             });
         }
 
-        const handleMenuManage = (role) => {
-            defaultOperation.add({
-                dispatch,
-                modalProps: {
-                    title: "Menu Manage",
-                    width: "75%"
-                },
-                element: MenuManage,
-                role
-            });
+        const handleMenuManage = ({ id }) => {
+
+            dispatch({
+                type: dispatchType.find,
+                payload: {
+                    data: id,
+                    callback: (role) => {
+                        defaultOperation.add({
+                            dispatch,
+                            modalProps: {
+                                title: "Menu Manage",
+                                width: "75%"
+                            },
+                            element: MenuManage,
+                            role
+                        });
+                    }
+                }
+            })
+
         }
 
         const columns = [
