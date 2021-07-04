@@ -66,7 +66,7 @@ namespace SAE.CommonComponent.Authorize.Test
             var command = new RoleCommand.Change
             {
                 Id = dto.Id,
-                Name = $"edit_{this.GetRandom()}",
+                Name = dto.Name,
                 Descriptor = "edit Role",
             };
             var request = new HttpRequestMessage(HttpMethod.Put, $"{API}");

@@ -148,11 +148,11 @@ namespace SAE.CommonComponent.Authorize.Handlers
         {
             return this._storage.AsQueryable<PermissionDto>();
         }
-        private Task<string> FindPermission(string name)
+        private Task<Permission> FindPermission(string name)
         {
-            var dto = this._storage.AsQueryable<PermissionDto>()
+            var permission = this._storage.AsQueryable<Permission>()
                                    .FirstOrDefault(s => s.Name.Contains(name));
-            return Task.FromResult(dto?.Name ?? string.Empty);
+            return Task.FromResult(permission);
         }
 
         public async Task<IEnumerable<PermissionDto>> HandleAsync(PermissionCommand.Finds command)

@@ -53,10 +53,10 @@ namespace SAE.CommonComponent.Authorize.Domains
         /// </summary>
         /// <param name="provider">role provider</param>
         /// <returns></returns>
-        public async Task NameExist(Func<string, Task<string>> provider)
+        public async Task NameExist(Func<string, Task<Permission>> provider)
         {
-            var id = await provider.Invoke(this.Name);
-            if (id.IsNullOrWhiteSpace() || this.Id.Equals(id, StringComparison.OrdinalIgnoreCase))
+            var permission = await provider.Invoke(this.Name);
+            if (permission == null || this.Id.Equals(permission.Id, StringComparison.OrdinalIgnoreCase))
             {
                 return;
             }
@@ -78,6 +78,6 @@ namespace SAE.CommonComponent.Authorize.Domains
         /// <param name="command"></param>
         public void ChangeStatus(PermissionCommand.ChangeStatus command) =>
             this.Apply<PermissionEvent.ChangeStatus>(command);
-        
+
     }
 }

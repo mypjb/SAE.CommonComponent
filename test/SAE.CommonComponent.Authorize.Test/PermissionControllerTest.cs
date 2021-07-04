@@ -64,7 +64,7 @@ namespace SAE.CommonComponent.Authorize.Test
             var command = new PermissionCommand.Change
             {
                 Id = dto.Id,
-                Name = $"edit_{this.GetRandom()}",
+                Name = dto.Name,
                 Descriptor = "edit permission",
                 Flag = "/edit"
             };

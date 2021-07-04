@@ -169,11 +169,11 @@ namespace SAE.CommonComponent.Authorize.Handlers
 
         
 
-        private Task<string> FindRole(string name)
+        private Task<Role> FindRole(string name)
         {
-            var dto = this._storage.AsQueryable<RoleDto>()
+            var role = this._storage.AsQueryable<Role>()
                                    .FirstOrDefault(s => s.Name.Contains(name));
-            return Task.FromResult(dto?.Name ?? string.Empty);
+            return Task.FromResult(role);
         }
     }
 }

@@ -17,7 +17,7 @@ namespace SAE.CommonComponent.Authorize.Domains
             this.PermissionIds = Enumerable.Empty<string>().ToArray();
             this.MenuIds = Enumerable.Empty<string>().ToArray();
         }
-        public Role(RoleCommand.Create command):this()
+        public Role(RoleCommand.Create command) : this()
         {
             this.Apply<RoleEvent.Create>(command, @event =>
              {
@@ -59,10 +59,10 @@ namespace SAE.CommonComponent.Authorize.Domains
         /// </summary>
         /// <param name="provider"></param>
         /// <returns></returns>
-        public async Task NameExist(Func<string, Task<string>> provider)
+        public async Task NameExist(Func<string, Task<Role>> provider)
         {
-            var id = await provider.Invoke(this.Name);
-            if (id.IsNullOrWhiteSpace() || this.Id.Equals(id, StringComparison.OrdinalIgnoreCase))
+            var role = await provider.Invoke(this.Name);
+            if (role == null || this.Id.Equals(role.Id, StringComparison.OrdinalIgnoreCase))
             {
                 return;
             }
@@ -80,11 +80,11 @@ namespace SAE.CommonComponent.Authorize.Domains
         /// <param name="command"></param>
         public void ChangeStatus(RoleCommand.ChangeStatus command) =>
             this.Apply<RoleEvent.ChangeStatus>(command);
-       
+
 
         public void RelevancePermission(RoleCommand.RelevancePermission command)
         {
-            var permissionIds= this.PermissionIds.Concat(command.PermissionIds)
+            var permissionIds = this.PermissionIds.Concat(command.PermissionIds)
                                                  .Distinct()
                                                  .ToArray();
 
