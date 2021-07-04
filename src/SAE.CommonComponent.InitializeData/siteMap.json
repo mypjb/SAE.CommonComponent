@@ -1,0 +1,51 @@
+[
+  {
+    "name": "config",
+    "path": "/config",
+    "hidden": false,
+    "items": [
+      {
+        "name": "template",
+        "path": "/config/template",
+        "hidden": false
+      },
+      {
+        "name": "solution",
+        "path": "/config/solution",
+        "hidden": false
+      }
+    ]
+  },
+  {
+    "name": "auth",
+    "path": "/auth",
+    "hidden": false,
+    "items": [
+      {
+        "name": "role",
+        "path": "/auth/role",
+        "hidden": false
+      },
+      {
+        "name": "permission",
+        "path": "/auth/permission",
+        "hidden": false
+      }
+    ]
+  },
+  {
+    "name": "routing",
+    "path": "/routing",
+    "hidden": false
+  },
+  {
+    "name": "identity",
+    "path": "/identity",
+    "hidden": true
+  },
+  {
+    "name": "oauth",
+    "path": "/oauth",
+    "hidden": true
+  }
+]
