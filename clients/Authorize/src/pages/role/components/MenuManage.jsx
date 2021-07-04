@@ -1,98 +1,78 @@
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import { MenuOutlined } from '@ant-design/icons';
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Select } from 'antd';
-import { defaultOperation, defaultDispatchType, defaultState, Format } from '@/utils/utils';
-import PagingTable from '@/components/PagingTable';
+import { Tree } from 'antd';
+import { defaultDispatchType, } from '@/utils/utils';
 
-const { Option } = Select;
+const treeTransform = (treeData) => {
+  const array = [];
+  if (treeData && treeData.length) {
+    for (let index = 0; index < treeData.length; index++) {
+      const element = treeData[index];
+      const treeItem = {
+        title: element.name,
+        key: element.id,
+        children: treeTransform(element.items)
+      };
+      array.push(treeItem);
+    }
+  }
+
+  return array;
+}
 
 export default (props) => {
 
   const { dispatch, role } = props;
 
+  const menuIds = role.menuIds || [];
+
   const dispatchType = defaultDispatchType("roleMenu");
 
   const [state, setState] = useState({
-    ...defaultState,
-    params: {
-      id: role.id, referenced: true
-    },
-    menuIds: []
+    treeData: [],
+    checkedKeys: menuIds
   });
 
-  const { paging } = state;
-
-
-  const handleSkipPage = (pageIndex, pageSize) => {
+  const loadTree = () => {
     dispatch({
-      type: dispatchType.paging,
+      type: "roleMenu/tree",
       payload: {
-        pageIndex,
-        pageSize,
-        ...state.params,
         callback: (data) => {
-          setState({ ...state, ...data, params: state.params, menuIds: [] });
+          const treeData = treeTransform(data);
+          console.log({ data, treeData });
+          setState({ ...state, treeData });
         }
       }
-    });
-  };
+    })
+  }
 
-  const handleChange = (referenced) => {
-    setState({ ...state, params: { ...state.params, referenced } });
+  const handleCheck = (checkedKeys) => {
+    setState({ ...state, checkedKeys });
   }
 
   useEffect(() => {
-    handleSkipPage(paging.pageIndex, paging.pageSize);
-  }, [state.params.referenced]);
-
-  const columns = [
-    {
-      title: 'serial number',
-      dataIndex: 'id',
-      render: (text, record, index) => {
-        return index + 1;
-      }
-    },
-    {
-      title: 'name',
-      dataIndex: 'name'
-    }
-    , {
-      title: 'status',
-      dataIndex: 'status',
-      render: (status, row) => {
-        return Format.status(status);
-      }
-    },
-    {
-      title: 'descriptor',
-      dataIndex: 'descriptor'
-    },
-    {
-      title: 'createTime',
-      dataIndex: 'createTime',
-      render: Format.date
-    }
-  ];
-
-  const rowSelectionOption = {
-    onChange: (selectedRowKeys, selectedRows) => {
-      console.log(selectedRowKeys);
-      const menuIds = selectedRows.map(s => (s.id));
-      setState({ ...state, menuIds });
-    },
-    selectedRowKeys: state.menuIds
-  }
+    loadTree();
+  }, []);
 
   props.okCallback((close) => {
+    const checkedKeys = state.checkedKeys;
     dispatch({
-      type: state.params.referenced ? dispatchType.delete : dispatchType.add,
+      type: dispatchType.edit,
       payload: {
-        menuIds: state.menuIds,
-        id: role.id,
-        callback: function () {
-          handleSkipPage();
-        }
+        reference: {
+          id: role.id,
+          menuIds: checkedKeys.filter(id => {
+            return menuIds.indexOf(id) === -1;
+          })
+        },
+        unReference: {
+          id: role.id,
+          menuIds: menuIds.filter(id => {
+            return checkedKeys.indexOf(id) === -1;
+          })
+        },
+        callback: close
       }
     });
     return false;
@@ -101,24 +81,17 @@ export default (props) => {
   return (
     <PageHeaderWrapper >
       <div>
-        <Row>
-          <Col span={18}>
-          </Col>
-          <Col span={6}>
-            <Select onChange={handleChange} defaultValue={state.params.referenced}>
-              <Option value={true}>Reference</Option>
-              <Option value={false}>No Reference</Option>
-            </Select>
-          </Col>
-        </Row>
-        <PagingTable {...props}
-          {...state}
-          handleSkipPage={handleSkipPage}
-          columns={columns}
-          rowKey="id"
-          rowSelection={rowSelectionOption} />
+        <Tree
+          checkable
+          checkedKeys={state.checkedKeys}
+          defaultExpandAll={true}
+          icon={<MenuOutlined />}
+          showIcon={true}
+          onCheck={handleCheck}
+          treeData={state.treeData}>
+        </Tree>
       </div>
-    </PageHeaderWrapper>
+    </PageHeaderWrapper >
   );
 };
 
