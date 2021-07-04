@@ -6,6 +6,7 @@ import styles from './index.less';
 import AddForm from './components/AddForm';
 import EditForm from './components/EditForm';
 import PermissionManage from './components/PermissionManage';
+import MenuManage from './components/MenuManage';
 import PagingTable from '@/components/PagingTable';
 import { defaultDispatchType, defaultHandler, defaultOperation, Format } from '@/utils/utils';
 
@@ -60,6 +61,18 @@ export default connect(({ role }) => (
             });
         }
 
+        const handleMenuManage = (role) => {
+            defaultOperation.add({
+                dispatch,
+                modalProps: {
+                    title: "Menu Manage",
+                    width: "75%"
+                },
+                element: MenuManage,
+                role
+            });
+        }
+
         const columns = [
             {
                 title: 'serial number',
@@ -90,6 +103,7 @@ export default connect(({ role }) => (
                 render: (text, row) => (
                     <span>
                         <Button type='link' onClick={handlePermissionManage.bind(row, row)}>Permission Manage</Button>
+                        <Button type='link' onClick={handleMenuManage.bind(row, row)}>Menu Manage</Button>
                         <Button type='link' value={row.id} onClick={handleEdit.bind(row, row)} style={{ marginRight: 16 }}>Edit</Button>
                         <Button type='link' onClick={handleDelete.bind(row, { ids: [row.id] })}>Delete</Button>
                     </span>
