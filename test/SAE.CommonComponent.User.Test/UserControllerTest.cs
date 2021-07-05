@@ -31,13 +31,12 @@ namespace SAE.CommonComponent.User.Test
         [Fact]
         public async Task<UserDto> Register()
         {
-            var command = new UserCommand.Register
+            var command = new UserCommand.Create
             {
                 Name = $"test_{this.GetRandom().Replace("-", string.Empty)}",
-                ConfirmPassword = DefaultPassword,
                 Password = DefaultPassword
             };
-            var request = new HttpRequestMessage(HttpMethod.Post, $"{API}/{nameof(Register)}");
+            var request = new HttpRequestMessage(HttpMethod.Post, $"{API}");
             request.AddJsonContent(command);
             var httpResponse = await this.HttpClient.SendAsync(request);
             var id = await httpResponse.AsAsync<string>();

@@ -14,7 +14,8 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace SAE.CommonComponent.Identity.Handlers
 {
-    public class AccountHandler : ICommandHandler<AccountLoginCommand, IPrincipal>
+    public class AccountHandler : ICommandHandler<AccountCommand.Login, IPrincipal>,
+                                  ICommandHandler<AccountCommand.Register,string>
     {
         private readonly IMediator _mediator;
 
@@ -22,7 +23,7 @@ namespace SAE.CommonComponent.Identity.Handlers
         {
             this._mediator = mediator;
         }
-        public async Task<IPrincipal> HandleAsync(AccountLoginCommand command)
+        public async Task<IPrincipal> HandleAsync(AccountCommand.Login command)
         {
             var authenticationCommand = new UserCommand.Authentication
             {
@@ -44,6 +45,11 @@ namespace SAE.CommonComponent.Identity.Handlers
             var principal = new ClaimsPrincipal(identity);
 
             return principal;
+        }
+
+        public Task<string> HandleAsync(AccountCommand.Register command)
+        {
+            return this._mediator.SendAsync<string>(command.To<UserCommand.Create>());
         }
     }
 }

@@ -5,26 +5,49 @@ using System.Threading.Tasks;
 
 namespace SAE.CommonComponent.Identity.Commands
 {
-    /// <summary>
-    /// 账号
-    /// </summary>
-    public class AccountLoginCommand
+    public class AccountCommand
     {
         /// <summary>
-        /// account name
+        /// 
         /// </summary>
-        public string Name { get; set; }
+        public class Login
+        {
+            /// <summary>
+            /// account name
+            /// </summary>
+            public string Name { get; set; }
+            /// <summary>
+            /// account password
+            /// </summary>
+            public string Password { get; set; }
+            /// <summary>
+            /// is persistent
+            /// </summary>
+            public bool Remember { get; set; }
+            /// <summary>
+            /// return url
+            /// </summary>
+            public string ReturnUrl { get; set; }
+        }
+
         /// <summary>
-        /// account password
+        /// 
         /// </summary>
-        public string Password { get; set; }
-        /// <summary>
-        /// is persistent
-        /// </summary>
-        public bool Remember { get; set; }
-        /// <summary>
-        /// return url
-        /// </summary>
-        public string ReturnUrl { get; set; }
+        public class Register
+        {
+            /// <summary>
+            /// user account name
+            /// </summary>
+            public string Name { get; set; }
+            /// <summary>
+            /// account password
+            /// </summary>
+            public string Password { get; set; }
+
+            /// <summary>
+            /// confirm password
+            /// </summary>
+            public string ConfirmPassword { get; set; }
+        }
     }
 }

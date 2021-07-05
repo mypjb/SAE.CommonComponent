@@ -73,13 +73,13 @@ namespace SAE.CommonComponent.User.Domains
         {
 
         }
-        public User(UserCommand.Register register)
+        public User(UserCommand.Create command)
         {
             var @event = new UserEvent.Register
             {
                 Id = Utils.GenerateId(),
-                Account = new Account(register.Name, register.Password),
-                Name = register.Name,
+                Account = new Account(command.Name, command.Password),
+                Name = command.Name,
                 Status = Status.Enable,
                 CreateTime = Constant.DefaultTimeZone
             };

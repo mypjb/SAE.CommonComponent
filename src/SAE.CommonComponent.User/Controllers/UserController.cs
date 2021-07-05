@@ -30,9 +30,8 @@ namespace SAE.CommonComponent.User.Controllers
             return dto;
         }
 
-        [AllowAnonymous]
-        [HttpPost("{action}")]
-        public async Task<object> Register(UserCommand.Register command)
+        [HttpPost()]
+        public async Task<object> Create(UserCommand.Create command)
         {
             var id = await this._mediator.SendAsync<string>(command);
             return id;

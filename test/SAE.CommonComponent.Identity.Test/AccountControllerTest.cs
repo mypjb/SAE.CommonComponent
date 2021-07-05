@@ -16,6 +16,7 @@ using Xunit.Abstractions;
 using Assert = Xunit.Assert;
 using SAE.CommonLibrary.ObjectMapper;
 using SAE.CommonComponent.Authorize.Commands;
+using System.Net;
 
 namespace SAE.CommonComponent.Identity.Test
 {
@@ -36,25 +37,42 @@ namespace SAE.CommonComponent.Identity.Test
             return builder.ConfigureServices(services =>
             {
                 this._userController = new UserControllerTest(this._output);
-
                 var authenticationHandlers = ServiceFacade.ServiceProvider.GetServices<ICommandHandler<UserCommand.Authentication, UserDto>>();
                 services.AddSingleton(authenticationHandlers);
 
+                var createUserHandlers = ServiceFacade.ServiceProvider.GetServices<ICommandHandler<UserCommand.Create, string>>();
+                services.AddSingleton(authenticationHandlers);
+                services.AddSingleton(createUserHandlers);
             }).UseStartup<Startup>();
         }
 #warning Stop
-        //[Fact]
+        [Fact]
         public async Task Login()
         {
-            var user = await this._userController.Register();
+            var password = this.GetRandom();
+            var registerCommand = new AccountCommand.Register
+            {
+                Name = this.GetRandom(),
+                Password = password,
+                ConfirmPassword = password
+            };
 
-            var userId = await this._userRoleController.Reference(user.Id);
+            var registerRequest = new HttpRequestMessage(HttpMethod.Post, $"{API}/{nameof(AccountCommand.Register)}");
 
-            var command = new AccountLoginCommand
+            registerRequest.AddJsonContent(registerCommand);
+
+            var registerResponse = await this.HttpClient.SendAsync(registerRequest);
+
+            var userId = await registerResponse.AsAsync<string>();
+
+#warning Annotating user roles
+            //await this._userRoleController.Reference(userId);
+
+            var command = new AccountCommand.Login
             {
                 Remember = true,
-                Name = user.Name,
-                Password = UserControllerTest.DefaultPassword
+                Name = registerCommand.Name,
+                Password = registerCommand.Password
             };
 
             var request = new HttpRequestMessage(HttpMethod.Post, $"{API}/{nameof(Login)}");
@@ -69,10 +87,10 @@ namespace SAE.CommonComponent.Identity.Test
 
             var httpResponse = await this.HttpClient.SendAsync(request);
 
-            Assert.True(httpResponse.IsSuccessStatusCode);
+            Assert.True(httpResponse.StatusCode == HttpStatusCode.Found &&
+                httpResponse.Headers.Location.ToString().Equals("/"));
 
             this.WriteLine(httpResponse.Headers);
-
         }
     }
 }
