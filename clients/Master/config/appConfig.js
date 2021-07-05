@@ -1,6 +1,6 @@
 const ENV = process.env.UMI_ENV;
 
-let apps = [
+const apps = [
     {
         name: 'config-server', // 唯一 id
         entry: '//localhost:8001', // html entry
@@ -62,6 +62,12 @@ if (ENV == "prod") {
     apps[1].entry = '//identity.client.sae.com'
     apps[2].entry = '//oauth.client.sae.com'
     apps[3].entry = '//routing.client.sae.com'
+    apps[4].entry = '//authorize.client.sae.com'
+    apps.push({
+        name: 'test', // 唯一 id
+        entry: '//localhost:8000', // html entry
+        path: "/test",
+    });
     appConfig.siteConfig = {
         ...appConfig.siteConfig,
         "appId": "localhost.test",
