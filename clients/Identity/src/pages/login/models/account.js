@@ -1,5 +1,6 @@
 import request from "../service";
 import { history } from 'umi';
+import { parsingPayload } from "../../../utils/utils";
 
 export default {
     state: {
@@ -25,6 +26,11 @@ export default {
             const data = yield call(request.login, payload);
             //yield put({ type: "clear" });
             location.href = data.returnUrl;
+        },
+        *register({ payload }, { call, put }) {
+            const { callback, data } = parsingPayload(payload);
+            yield call(request.register, data);
+            callback();
         }
     },
     subscriptions: {

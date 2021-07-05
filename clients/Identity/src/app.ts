@@ -1,49 +1,24 @@
 import { RequestConfig } from 'umi';
-
-let masterProps = {};
+let masterProps;
+export const request: RequestConfig = {};
 export const qiankun = {
-  // 应用加载之前
-  async bootstrap(props) {
-    masterProps = props;
-    console.log('app1 bootstrap', props);
-  },
-  // 应用 render 之前触发
-  async mount(props) {
-    masterProps = props;
-  },
-  // 应用卸载之后触发
-  async unmount(props) {
-    console.log('app1 unmount', props);
-  },
-};
-
-const requestConfig = {
-    credentials: "include",
-    errorConfig: {
-        adaptor: function (resData, context) {
-            if (resData === context.res) {
-                return {
-                    ...resData,
-                    success: true
-                }
-            }
-            return {
-                ...resData,
-                success: false,
-                errorMessage: resData.message || resData.title || resData.statusText,
-            };
+    // 应用加载之前
+    async bootstrap(props) {
+        masterProps = props;
+        masterProps.initial(request);
+        if(request.middlewares){
+            delete request.middlewares;
         }
-    }
+        console.log(request);
+    },
+    // 应用 render 之前触发
+    async mount(props) {
+        masterProps = props;
+    },
+    // 应用卸载之后触发
+    async unmount(props) {
+    },
 };
-
-export async function getInitialState() {
-    return {
-        masterProps
-      };
-}
-
-
-export const request: RequestConfig = requestConfig;
 
 export const dva = {
     config: {
@@ -53,4 +28,3 @@ export const dva = {
         },
     },
 };
-
