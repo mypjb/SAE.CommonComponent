@@ -7,10 +7,7 @@ namespace SAE.CommonComponent.User.Commands
 {
     public class UserCommand
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        public class Register
+        public class Create
         {
             /// <summary>
             /// user account name
@@ -20,13 +17,8 @@ namespace SAE.CommonComponent.User.Commands
             /// account password
             /// </summary>
             public string Password { get; set; }
-
-            /// <summary>
-            /// confirm password
-            /// </summary>
-            public string ConfirmPassword { get; set; }
         }
-
+       
         /// <summary>
         /// 
         /// </summary>

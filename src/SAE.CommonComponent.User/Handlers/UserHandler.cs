@@ -16,13 +16,13 @@ using System.Threading.Tasks;
 namespace SAE.CommonComponent.User.Handlers
 {
     public class UserHandler : AbstractHandler<Domains.User>,
-                              ICommandHandler<UserCommand.Register, string>,
                               ICommandHandler<UserCommand.ChangePassword>,
                               ICommandHandler<UserCommand.ChangeStatus>,
                               ICommandHandler<UserCommand.GetByName, UserDto>,
                               ICommandHandler<UserCommand.Query, IPagedList<UserDto>>,
                               ICommandHandler<Command.Find<UserDto>, UserDto>,
-                              ICommandHandler<UserCommand.Authentication, UserDto>
+                              ICommandHandler<UserCommand.Authentication, UserDto>,
+                              ICommandHandler<UserCommand.Create, string>
     {
         private readonly IStorage _storage;
         private readonly IMediator _mediator;
@@ -36,7 +36,7 @@ namespace SAE.CommonComponent.User.Handlers
             this._mediator = mediator;
         }
 
-        public async Task<string> HandleAsync(UserCommand.Register command)
+        public async Task<string> HandleAsync(UserCommand.Create command)
         {
             var user = new Domains.User(command);
             await user.AccountExist(this.AccountExist);

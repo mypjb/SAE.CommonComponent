@@ -85,7 +85,7 @@ namespace SAE.CommonComponent.Identity.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> Login([FromForm]AccountLoginCommand command)
+        public async Task<IActionResult> Login([FromForm]AccountCommand.Login command)
         {
             var principal = await this._mediator.SendAsync<IPrincipal>(command);
 
@@ -102,6 +102,13 @@ namespace SAE.CommonComponent.Identity.Controllers
             var returnUrl = command.ReturnUrl.IsNullOrWhiteSpace() ? "/" :
                 $"{this.Request.Scheme}://{this.Request.Host}{command.ReturnUrl}";
             return this.Redirect(returnUrl);
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        public async Task<string> Register([FromBody]AccountCommand.Register command)
+        {
+            return await this._mediator.SendAsync<string>(command);
         }
 
         [HttpGet, HttpPost]

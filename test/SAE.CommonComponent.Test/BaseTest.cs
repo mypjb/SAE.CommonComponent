@@ -37,8 +37,7 @@ namespace SAE.CommonComponent.Test
                    }).ConfigureDefault()
                    .Start();
 
-            this.UseClient(host.GetTestClient()
-                               .UseDefaultExceptionHandler());
+            this.UseClient(host.GetTestClient());
         }
 
         public BaseTest(ITestOutputHelper output, HttpClient httpClient)

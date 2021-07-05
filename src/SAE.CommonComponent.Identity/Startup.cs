@@ -64,8 +64,7 @@ namespace SAE.CommonComponent.Identity
             services.AddMvc(options =>
                     {
                         options.Filters.Add(new AuthorizeFilter());
-                    })
-                    .AddResponseResult();
+                    });
 
             var assemblys = new[] { typeof(AppDto).Assembly, Assembly.GetExecutingAssembly() };
 
