@@ -18,9 +18,11 @@ const tailLayout = {
 
 
 export default connect()(({ dispatch }) => {
-    const model = useModel('@@initialState');
 
-    console.log({ model });
+
+    const { masterPush } = useModel('@@initialState').initialState?.masterProps;
+
+    const { signIn } = useModel('@@initialState').initialState?.masterProps.masterState.siteConfig;
 
     const [form] = Form.useForm();
 
@@ -29,7 +31,7 @@ export default connect()(({ dispatch }) => {
             type: "account/register",
             payload: {
                 callback: () => {
-                    console.log(`${data.name} register ok`);
+                    masterPush(signIn);
                 },
                 data
             }
