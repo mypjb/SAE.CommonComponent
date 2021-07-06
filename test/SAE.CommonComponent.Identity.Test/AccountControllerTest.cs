@@ -23,20 +23,19 @@ namespace SAE.CommonComponent.Identity.Test
     public class AccountControllerTest : BaseTest
     {
         public const string API = "account";
-        private UserControllerTest _userController;
-        private UserRoleControllerTest _userRoleController;
+        private  UserControllerTest _userController;
 
         public AccountControllerTest(ITestOutputHelper output) : base(output)
         {
-            this._userRoleController = new UserRoleControllerTest(this._output);
+            
         }
 
         protected override IWebHostBuilder UseStartup(IWebHostBuilder builder)
         {
-
+            this._userController = new UserControllerTest(this._output);
             return builder.ConfigureServices(services =>
             {
-                this._userController = new UserControllerTest(this._output);
+                
                 var authenticationHandlers = ServiceFacade.ServiceProvider.GetServices<ICommandHandler<UserCommand.Authentication, UserDto>>();
                 services.AddSingleton(authenticationHandlers);
 

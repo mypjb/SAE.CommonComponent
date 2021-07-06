@@ -104,7 +104,7 @@ namespace SAE.CommonComponent.User.Domains
         /// <summary>
         /// create create time
         /// </summary>
-        public DateTime CrateTime { get; set; }
+        public DateTime CreateTime { get; set; }
 
         /// <summary>
         /// account is exist

@@ -25,7 +25,7 @@ namespace SAE.CommonComponent.User.Converts
                 {
                     Name= user.Account?.Name
                 },
-                CreateTime = user.CrateTime,
+                CreateTime = user.CreateTime,
                 Id = user.Id,
                 Name = user.Name,
                 Status = user.Status

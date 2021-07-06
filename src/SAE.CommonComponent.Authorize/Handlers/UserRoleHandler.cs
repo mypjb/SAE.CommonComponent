@@ -44,13 +44,13 @@ namespace SAE.CommonComponent.Authorize.Handlers
 
         public async Task HandleAsync(UserRoleCommand.ReferenceRole command)
         {
-            var userRoles = command.RoleIds.Select(s => new UserRole(command.Id, s));
+            var userRoles = command.RoleIds.Select(s => new UserRole(command.UserId, s));
             await this._documentStore.SaveAsync(userRoles);
         }
 
         public Task HandleAsync(UserRoleCommand.DeleteRole command)
         {
-            var userRoles = command.RoleIds.Select(s => new UserRole(command.Id, s));
+            var userRoles = command.RoleIds.Select(s => new UserRole(command.UserId, s));
             return this._documentStore.DeleteAsync(userRoles);
         }
 

@@ -23,6 +23,7 @@ using System.Text.RegularExpressions;
 using SAE.CommonComponent.Routing.Commands;
 using SAE.CommonComponent.Routing.Dtos;
 using System.Reflection;
+using SAE.CommonComponent.Identity.Commands;
 
 namespace SAE.CommonComponent.InitializeData
 {
@@ -360,7 +361,7 @@ namespace SAE.CommonComponent.InitializeData
 
         public virtual async Task User()
         {
-            await this._mediator.SendAsync<string>(new UserCommand.Register
+            await this._mediator.SendAsync<string>(new AccountCommand.Register
             {
                 Name = Constants.User.Name,
                 Password = Constants.User.Password,

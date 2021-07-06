@@ -29,6 +29,7 @@
     <ProjectReference Include="..\SAE.CommonComponent.Application.Abstract\SAE.CommonComponent.Application.Abstract.csproj" />
     <ProjectReference Include="..\SAE.CommonComponent.Authorize.Abstract\SAE.CommonComponent.Authorize.Abstract.csproj" />
     <ProjectReference Include="..\SAE.CommonComponent.ConfigServer.Abstract\SAE.CommonComponent.ConfigServer.Abstract.csproj" />
+    <ProjectReference Include="..\SAE.CommonComponent.Identity\SAE.CommonComponent.Identity.csproj" />
     <ProjectReference Include="..\SAE.CommonComponent.Routing.Abstract\SAE.CommonComponent.Routing.Abstract.csproj" />
     <ProjectReference Include="..\SAE.CommonComponent.User.Abstract\SAE.CommonComponent.User.Abstract.csproj" />
   </ItemGroup>

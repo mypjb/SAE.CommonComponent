@@ -39,7 +39,7 @@ namespace SAE.CommonComponent.Authorize.Test
         {
             var command = new UserRoleCommand.ReferenceRole()
             {
-                Id = userId.IsNullOrWhiteSpace() ? Guid.NewGuid().ToString("N") : userId
+                UserId = userId.IsNullOrWhiteSpace() ? Guid.NewGuid().ToString("N") : userId
             };
 
             var roleDtos = new List<RoleDto>();
@@ -57,11 +57,11 @@ namespace SAE.CommonComponent.Authorize.Test
 
             httpResponse.EnsureSuccessStatusCode();
 
-            var roles = await this.Get(command.Id);
+            var roles = await this.Get(command.UserId);
 
             Assert.True(roles.All(s => command.RoleIds.Contains(s.Id)));
 
-            return command.Id;
+            return command.UserId;
 
         }
 
@@ -72,7 +72,7 @@ namespace SAE.CommonComponent.Authorize.Test
             var userRoles = await this.Get(userId);
             var command = new UserRoleCommand.DeleteRole
             {
-                Id = userId,
+                UserId = userId,
                 RoleIds = new[] { userRoles.First().Id }
             };
 
@@ -82,7 +82,7 @@ namespace SAE.CommonComponent.Authorize.Test
 
             httpResponse.EnsureSuccessStatusCode();
 
-            var roles = await this.Get(command.Id);
+            var roles = await this.Get(command.UserId);
 
             Assert.True(!roles.Any(s => command.RoleIds.Contains(s.Id)));
         }
