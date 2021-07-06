@@ -10,8 +10,8 @@ namespace SAE.CommonComponent.Authorize.Commands
     {
         public class ReferenceRole
         {
-            public string UserId { get; set; }
-            public string[] Ids { get; set; }
+            public string Id { get; set; }
+            public string[] RoleIds { get; set; }
         }
         public class DeleteRole : ReferenceRole
         {

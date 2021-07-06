@@ -30,7 +30,7 @@ namespace SAE.CommonComponent.User.Controllers
             return dto;
         }
 
-        [HttpPost()]
+        [HttpPost]
         public async Task<object> Create(UserCommand.Create command)
         {
             var id = await this._mediator.SendAsync<string>(command);
@@ -48,10 +48,8 @@ namespace SAE.CommonComponent.User.Controllers
             return this._mediator.SendAsync(command);
         }
 
-        [HttpGet]
-        [HttpPost]
-        [Route("{action}")]
-        public Task<IPagedList<UserDto>> Paging(UserCommand.Query command)
+        [HttpGet("{action}")]
+        public Task<IPagedList<UserDto>> Paging([FromQuery]UserCommand.Query command)
         {
             return this._mediator.SendAsync<IPagedList<UserDto>>(command);
         }

@@ -45,7 +45,6 @@ namespace SAE.CommonComponent.Identity.Test
                 services.AddSingleton(createUserHandlers);
             }).UseStartup<Startup>();
         }
-#warning Stop
         [Fact]
         public async Task Login()
         {

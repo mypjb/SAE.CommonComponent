@@ -11,6 +11,7 @@ using Xunit.Abstractions;
 using SAE.CommonLibrary.Extension;
 using SAE.CommonComponent.User.Abstract.Dtos;
 using Assert = Xunit.Assert;
+using SAE.CommonComponent.Authorize.Test;
 
 namespace SAE.CommonComponent.User.Test
 {
@@ -18,9 +19,10 @@ namespace SAE.CommonComponent.User.Test
     {
         public const string API = "user";
         public const string DefaultPassword = "Aa123456";
+        private UserRoleControllerTest _userRoleController;
         public UserControllerTest(ITestOutputHelper output) : base(output)
         {
-
+            this._userRoleController = new UserRoleControllerTest(output);
         }
 
         protected override IWebHostBuilder UseStartup(IWebHostBuilder builder)
@@ -29,7 +31,7 @@ namespace SAE.CommonComponent.User.Test
         }
 
         [Fact]
-        public async Task<UserDto> Register()
+        public async Task<UserDto> Add()
         {
             var command = new UserCommand.Create
             {
@@ -47,11 +49,12 @@ namespace SAE.CommonComponent.User.Test
             return user;
         }
 
+
         [Fact]
         public async Task Password()
         {
             var password = this.GetRandom();
-            var dto = await this.Register();
+            var dto = await this.Add();
 
             var command = new UserCommand.ChangePassword
             {
@@ -71,7 +74,7 @@ namespace SAE.CommonComponent.User.Test
         public async Task Status()
         {
             var password = this.GetRandom();
-            var dto = await this.Register();
+            var dto = await this.Add();
 
             var command = new UserCommand.ChangeStatus
             {

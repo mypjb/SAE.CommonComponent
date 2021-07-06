@@ -39,7 +39,7 @@ namespace SAE.CommonComponent.Authorize.Test
         {
             var command = new UserRoleCommand.ReferenceRole()
             {
-                UserId = userId.IsNullOrWhiteSpace() ? Guid.NewGuid().ToString("N") : userId
+                Id = userId.IsNullOrWhiteSpace() ? Guid.NewGuid().ToString("N") : userId
             };
 
             var roleDtos = new List<RoleDto>();
@@ -49,7 +49,7 @@ namespace SAE.CommonComponent.Authorize.Test
                            roleDtos.Add(await this._roleController.RelevancePermission());
                        });
 
-            command.Ids = roleDtos.Select(s => s.Id).ToArray();
+            command.RoleIds = roleDtos.Select(s => s.Id).ToArray();
 
             var request = new HttpRequestMessage(HttpMethod.Post, $"{API}");
             request.AddJsonContent(command);
@@ -57,11 +57,11 @@ namespace SAE.CommonComponent.Authorize.Test
 
             httpResponse.EnsureSuccessStatusCode();
 
-            var roles = await this.Get(command.UserId);
+            var roles = await this.Get(command.Id);
 
-            Assert.True(roles.All(s => command.Ids.Contains(s.Id)));
+            Assert.True(roles.All(s => command.RoleIds.Contains(s.Id)));
 
-            return command.UserId;
+            return command.Id;
 
         }
 
@@ -72,8 +72,8 @@ namespace SAE.CommonComponent.Authorize.Test
             var userRoles = await this.Get(userId);
             var command = new UserRoleCommand.DeleteRole
             {
-                UserId = userId,
-                Ids = new[] { userRoles.First().Id }
+                Id = userId,
+                RoleIds = new[] { userRoles.First().Id }
             };
 
             var request = new HttpRequestMessage(HttpMethod.Delete, $"{API}");
@@ -82,9 +82,9 @@ namespace SAE.CommonComponent.Authorize.Test
 
             httpResponse.EnsureSuccessStatusCode();
 
-            var roles = await this.Get(command.UserId);
+            var roles = await this.Get(command.Id);
 
-            Assert.True(!roles.Any(s => command.Ids.Contains(s.Id)));
+            Assert.True(!roles.Any(s => command.RoleIds.Contains(s.Id)));
         }
 
 
