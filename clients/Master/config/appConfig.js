@@ -58,10 +58,16 @@ let appConfig = {
 };
 
 if (ENV == "prod") {
-    apps[0].entry = '//configserver.client.sae.com'
-    apps[1].entry = '//identity.client.sae.com'
-    apps[2].entry = '//oauth.client.sae.com'
-    apps[3].entry = '//routing.client.sae.com'
+    apps[0].entry = '//configserver.client.sae.com';
+    apps[1].entry = '//identity.client.sae.com';
+    apps[2].entry = '//oauth.client.sae.com';
+    apps[3].entry = '//routing.client.sae.com';
+    apps[4].entry = '//authorize.client.sae.com';
+    apps.push({
+        name: 'user', // 唯一 id
+        entry: '//localhost:8000', // html entry
+        path: "/user",
+    });
     appConfig.siteConfig = {
         ...appConfig.siteConfig,
         "appId": "localhost.test",

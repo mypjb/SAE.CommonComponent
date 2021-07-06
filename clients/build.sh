@@ -16,7 +16,7 @@ yarn config set registry https://registry.npm.taobao.org
 
 yarn
 
-project_array=(ConfigServer Identity Master OAuth Routing)
+project_array=(ConfigServer Identity Master OAuth Routing Authorize)
 
 for project in ${project_array[@]};do
 

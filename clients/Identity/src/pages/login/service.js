@@ -9,5 +9,12 @@ httpClient.login = async function (data) {
     });
 };
 
+httpClient.register = async function (data) {
+    return request("/account/register", {
+        method: "post",
+        data
+    });
+};
+
 export default httpClient;
 
