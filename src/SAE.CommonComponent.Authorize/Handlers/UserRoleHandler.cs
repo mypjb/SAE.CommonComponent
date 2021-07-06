@@ -124,18 +124,23 @@ namespace SAE.CommonComponent.Authorize.Handlers
         {
             if (command.Referenced)
             {
-                var ids = PagedList.Build(this._storage.AsQueryable<UserRole>()
+                var paging = PagedList.Build(this._storage.AsQueryable<UserRole>()
                                    .Where(s => s.UserId == command.UserId), command);
+
+                var ids = paging.Select(ur => ur.RoleId).ToArray();
+
                 return PagedList.Build(this._storage.AsQueryable<RoleDto>()
-                                                    .Where(s=>ids.Select(ur=>ur.RoleId).Contains(s.Id))
-                                                    .ToList(), ids);
+                                                    .Where(s=> ids.Contains(s.Id))
+                                                    .ToList(), paging);
 
             }
             else
             {
                 var ids = this._storage.AsQueryable<UserRole>()
                                        .Where(s => s.UserId == command.UserId)
-                                       .Select(s=>s.RoleId);
+                                       .Select(s=>s.RoleId)
+                                       .ToArray();
+
                 return PagedList.Build(this._storage.AsQueryable<RoleDto>()
                                            .Where(s => !ids.Contains(s.Id)), command);
             }
