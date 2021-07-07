@@ -33,13 +33,13 @@ namespace SAE.CommonComponent.Identity.Test
         protected override IWebHostBuilder UseStartup(IWebHostBuilder builder)
         {
             this._userController = new UserControllerTest(this._output);
+            
             return builder.ConfigureServices(services =>
             {
-                
-                var authenticationHandlers = ServiceFacade.ServiceProvider.GetServices<ICommandHandler<UserCommand.Authentication, UserDto>>();
+                var serviceProvider = this._userController.ServiceProvider;
+                var authenticationHandlers = serviceProvider.GetServices<ICommandHandler<UserCommand.Authentication, UserDto>>();
+                var createUserHandlers = serviceProvider.GetServices<ICommandHandler<UserCommand.Create, string>>();
                 services.AddSingleton(authenticationHandlers);
-
-                var createUserHandlers = ServiceFacade.ServiceProvider.GetServices<ICommandHandler<UserCommand.Create, string>>();
                 services.AddSingleton(authenticationHandlers);
                 services.AddSingleton(createUserHandlers);
             }).UseStartup<Startup>();

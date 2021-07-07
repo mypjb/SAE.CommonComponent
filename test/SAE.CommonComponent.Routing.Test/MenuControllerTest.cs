@@ -35,11 +35,11 @@ namespace SAE.CommonComponent.Routing.Test
 
         protected override IWebHostBuilder UseStartup(IWebHostBuilder builder)
         {
+            roleControllerTest = new RoleControllerTest(this._output);
             return builder.UseStartup<Startup>()
                           .ConfigureServices(services =>
                           {
-                              roleControllerTest = new RoleControllerTest(this._output);
-                              var handlers = ServiceFacade.ServiceProvider.GetServices<ICommandHandler<PermissionCommand.Finds, IEnumerable<PermissionDto>>>();
+                              var handlers = roleControllerTest.ServiceProvider.GetServices<ICommandHandler<PermissionCommand.Finds, IEnumerable<PermissionDto>>>();
 
                               services.AddSingleton(handlers);
                           });

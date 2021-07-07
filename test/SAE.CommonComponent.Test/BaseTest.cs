@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using SAE.CommonLibrary;
 using SAE.CommonLibrary.Extension;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using Xunit.Abstractions;
@@ -13,6 +14,7 @@ namespace SAE.CommonComponent.Test
     public abstract class BaseTest
     {
         protected readonly ITestOutputHelper _output;
+        public IServiceProvider ServiceProvider { get; private set; }
         protected HttpClient HttpClient
         {
             get; private set;
@@ -37,7 +39,21 @@ namespace SAE.CommonComponent.Test
                    }).ConfigureDefault()
                    .Start();
 
-            this.UseClient(host.GetTestClient().UseDefaultExceptionHandler());
+            this.ServiceProvider = host.Services;
+
+            this.UseClient(host.GetTestClient().UseExceptionHandler(async response =>
+            {
+                if (response.StatusCode != System.Net.HttpStatusCode.Found)
+                {
+                    var json = await response.Content.ReadAsStringAsync();
+                    if (json.IsNullOrWhiteSpace())
+                    {
+                        throw new SAEException((int)response.StatusCode, json);
+                    }
+                    var output = json.ToObject<ErrorOutput>();
+                    throw new SAEException(output);
+                }
+            }));
         }
 
         public BaseTest(ITestOutputHelper output, HttpClient httpClient)
