@@ -9,6 +9,11 @@ namespace Microsoft.AspNetCore.Hosting
 {
     public static class DefaultHostBuilderExtensions
     {
+        /// <summary>
+        /// Use Default Configure
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <returns></returns>
         public static IHostBuilder ConfigureDefault(this IHostBuilder builder)
         {
 #if DEBUG

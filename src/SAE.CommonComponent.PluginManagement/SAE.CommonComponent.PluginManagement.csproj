@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SAE.CommonLibrary.Plugin.AspNetCore" Version="2.0.3.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SAE.CommonComponent.PluginManagement.Abstract\SAE.CommonComponent.PluginManagement.Abstract.csproj" />
+    <ProjectReference Include="..\SAE.CommonComponent\SAE.CommonComponent.csproj" />
+  </ItemGroup>
+
+</Project>
