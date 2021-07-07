@@ -1,7 +1,6 @@
-import { request } from "umi";
 import service from "@/utils/service";
 
-const httpClient = service('role');
+const httpClient = service('user/role');
 
 export default httpClient;
 

@@ -8,19 +8,13 @@ export default (props) => {
 
     const [form] = Form.useForm();
 
-    const [handleSave] = defaultFormBuild({ ...props, form, dispatchType: "role/edit" });
+    const [handleSave] = defaultFormBuild({ ...props, form, dispatchType: "user/edit" });
 
     form.setFieldsValue(model);
 
     return (
         <Form form={form} onFinish={handleSave} size='middl'>
             <Form.Item name="id" label="id" rules={[{ required: true }]} hidden>
-                <Input />
-            </Form.Item>
-            <Form.Item name="name" label="name" rules={[{ required: true }]}>
-                <Input />
-            </Form.Item>
-            <Form.Item name="descriptor" label="descriptor" rules={[{ required: true }]}>
                 <Input />
             </Form.Item>
         </Form>
