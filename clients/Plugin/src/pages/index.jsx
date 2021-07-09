@@ -3,23 +3,20 @@ import React from 'react';
 import { Row, Col, Button, Modal, Table, Input } from 'antd';
 import { connect } from 'umi';
 import styles from './index.less';
-import AddForm from './components/AddForm';
 import EditForm from './components/EditForm';
-import RoleManage from './components/RoleManage';
 import PagingTable from '@/components/PagingTable';
 import { defaultDispatchType, defaultHandler, defaultOperation, Format } from '@/utils/utils';
 
 const { Search } = Input;
 
-export default connect(({ user }) => (
+export default connect(({ plugin }) => (
     {
-        user
+        plugin
     }))((props) => {
 
-        const { dispatch, user } = props;
+        const { dispatch, plugin } = props;
 
-        const dispatchType = defaultDispatchType("user");
-
+        const dispatchType = defaultDispatchType("plugin");
 
         const handleDelete = defaultHandler.delete({ dispatch, dispatchType: dispatchType.delete });
 
@@ -40,7 +37,7 @@ export default connect(({ user }) => (
 
         const handleStatus = (row) => {
             dispatch({
-                type: "user/status",
+                type: "plugin/status",
                 payload: {
                     id: row.id,
                     status: Math.abs(row.status - 1)
@@ -48,17 +45,6 @@ export default connect(({ user }) => (
             })
         };
 
-        const handleRoleManage = (user) => {
-            defaultOperation.add({
-                dispatch,
-                modalProps: {
-                    title: "Role Manage",
-                    width: "75%"
-                },
-                element: RoleManage,
-                user
-            });
-        }
 
         const columns = [
             {
@@ -71,13 +57,22 @@ export default connect(({ user }) => (
             {
                 title: 'name',
                 dataIndex: 'name'
-            }, {
+            },
+            {
+                title: 'entry',
+                dataIndex: 'entry'
+            },
+            {
+                title: 'path',
+                dataIndex: 'path'
+            }
+            , {
                 title: 'status',
                 dataIndex: 'status',
                 render: (status, row) => {
                     return Format.status(status, { onClick: handleStatus.bind(row, row) });
                 }
-            }, 
+            },
             {
                 title: 'createTime',
                 dataIndex: 'createTime',
@@ -86,7 +81,6 @@ export default connect(({ user }) => (
                 title: 'action',
                 render: (text, row) => (
                     <span>
-                        <Button type='link' onClick={handleRoleManage.bind(row, row)}>Role Manage</Button>
                         <Button type='link' value={row.id} onClick={handleEdit.bind(row, row)} style={{ marginRight: 16 }}>Edit</Button>
                         <Button type='link' disabled onClick={handleDelete.bind(row, { id: [row.id] })}>Delete</Button>
                     </span>
@@ -105,7 +99,7 @@ export default connect(({ user }) => (
                             <Search placeholder="input search text" onSearch={(name) => handleSearch({ name })} className={styles.search} enterButton />
                         </Col>
                     </Row>
-                    <PagingTable {...props} {...user} dispatchType={dispatchType.paging} columns={columns} />
+                    <PagingTable {...props} {...plugin} dispatchType={dispatchType.paging} columns={columns} />
                 </div>
             </PageHeaderWrapper>
         );

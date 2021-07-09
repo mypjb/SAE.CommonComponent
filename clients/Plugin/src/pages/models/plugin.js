@@ -9,7 +9,7 @@ export default {
     ...defaultModel.reducers
   },
   effects: {
-    ...defaultModel.effects({ request, name: "user" })
+    ...defaultModel.effects({ request, name: "plugin" })
   },
   subscriptions: {
     setup({ dispatch, history }) {
