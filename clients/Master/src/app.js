@@ -28,14 +28,13 @@ const processingData = function (menus) {
     return list;
 }
 
-let appSetting = {};
 export const qiankun = fetch(appConfig.api.app).then(async (response) => {
     console.log("qiankun");
     const apps = await response.json();
     const menuResponse = await fetch(appConfig.api.menu);
     const routes = processingData(await menuResponse.json());
-    appSetting.apps = apps;
-    appSetting.routes = routes;
+    appConfig.apps = apps;
+    appConfig.routes = routes;
     return {
         // 注册子应用信息
         apps,
@@ -129,6 +128,6 @@ export const layout = () => {
 };
 
 export const getInitialState = () => {
-    return appSetting;
+    return appConfig;
 }
 
