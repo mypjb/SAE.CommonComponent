@@ -1,29 +1,30 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using SAE.CommonComponent.Application.Commands;
+using SAE.CommonComponent.Application.Dtos;
 using SAE.CommonComponent.ConfigServer.Commands;
-using SAE.CommonComponent.User.Commands;
+using SAE.CommonComponent.ConfigServer.Dtos;
+using SAE.CommonComponent.Identity.Commands;
+using SAE.CommonComponent.PluginManagement.Commands;
+using SAE.CommonComponent.PluginManagement.Dtos;
+using SAE.CommonComponent.Routing.Commands;
+using SAE.CommonComponent.Routing.Dtos;
 using SAE.CommonLibrary.Abstract.Mediator;
+using SAE.CommonLibrary.Abstract.Model;
+using SAE.CommonLibrary.EventStore.Document;
 using SAE.CommonLibrary.Extension;
 using SAE.CommonLibrary.Logging;
+using SAE.CommonLibrary.Plugin;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AppCommand = SAE.CommonComponent.Application.Commands.AppCommand;
-using System.Linq;
-using System.Text;
-using SAE.CommonComponent.ConfigServer.Dtos;
-using SAE.CommonLibrary.EventStore.Document;
-using Microsoft.Extensions.Hosting;
-using SAE.CommonLibrary.Abstract.Model;
-using SAE.CommonComponent.Application.Dtos;
-using SAE.CommonComponent.Application.Dtos;
-using System.Text.RegularExpressions;
-using SAE.CommonComponent.Routing.Commands;
-using SAE.CommonComponent.Routing.Dtos;
-using System.Reflection;
-using SAE.CommonComponent.Identity.Commands;
 
 namespace SAE.CommonComponent.InitializeData
 {
@@ -34,6 +35,7 @@ namespace SAE.CommonComponent.InitializeData
         protected readonly ILogging _logging;
         private readonly IServiceProvider _serviceProvider;
         private readonly IConfiguration _configuration;
+        private readonly IPluginManage _pluginManage;
 
         public InitializeService(IServiceProvider serviceProvider)
         {
@@ -42,9 +44,10 @@ namespace SAE.CommonComponent.InitializeData
             this._logging = loggingFactory.Create(this.GetType().Name);
             this._serviceProvider = serviceProvider;
             this._configuration = this._serviceProvider.GetService<IConfiguration>();
+            this._pluginManage = serviceProvider.GetService<IPluginManage>();
         }
 
-        public virtual async Task Application()
+        public virtual async Task ApplicationAsync()
         {
             var solutions = await this._mediator.SendAsync<IPagedList<SolutionDto>>(new SolutionCommand.Query());
             if (!solutions.Any())
@@ -145,12 +148,12 @@ namespace SAE.CommonComponent.InitializeData
             return new Dictionary<string, string>();
         }
 
-        public virtual async Task Authorize()
+        public virtual async Task AuthorizeAsync()
         {
 
         }
 
-        public virtual async Task ConfigServer()
+        public virtual async Task ConfigServerAsync()
         {
             var configPath = this._configuration.GetValue<string>(SAE.CommonLibrary.Configuration.Constants.ConfigRootDirectoryKey);
 
@@ -272,34 +275,38 @@ namespace SAE.CommonComponent.InitializeData
 
         }
 
-        public virtual async Task Initial()
+        public virtual async Task InitialAsync()
         {
             var templates = await this._mediator.SendAsync<IEnumerable<TemplateDto>>(new Command.List<TemplateDto>());
             if (templates.Any()) return;
-            this._logging.Info($"start initial {nameof(ConfigServer)}");
+            this._logging.Info($"start initial {nameof(ConfigServerAsync)}");
 
-            await this.ConfigServer();
+            await this.ConfigServerAsync();
 
-            this._logging.Info($"end initial {nameof(ConfigServer)}");
+            this._logging.Info($"end initial {nameof(ConfigServerAsync)}");
 
-            this._logging.Info($"start initial {nameof(Application)}");
-            await this.Application();
-            this._logging.Info($"end initial {nameof(Application)}");
+            this._logging.Info($"start initial {nameof(ApplicationAsync)}");
+            await this.ApplicationAsync();
+            this._logging.Info($"end initial {nameof(ApplicationAsync)}");
 
-            this._logging.Info($"start initial {nameof(Authorize)}");
-            await this.Authorize();
-            this._logging.Info($"end initial {nameof(Authorize)}");
+            this._logging.Info($"start initial {nameof(AuthorizeAsync)}");
+            await this.AuthorizeAsync();
+            this._logging.Info($"end initial {nameof(AuthorizeAsync)}");
 
-            this._logging.Info($"start initial {nameof(Routing)}");
-            await this.Routing();
-            this._logging.Info($"end initial {nameof(Routing)}");
+            this._logging.Info($"start initial {nameof(RoutingAsync)}");
+            await this.RoutingAsync();
+            this._logging.Info($"end initial {nameof(RoutingAsync)}");
 
-            this._logging.Info($"start initial {nameof(User)}");
-            await this.User();
-            this._logging.Info($"end initial {nameof(User)}");
+            this._logging.Info($"start initial {nameof(UserAsync)}");
+            await this.UserAsync();
+            this._logging.Info($"end initial {nameof(UserAsync)}");
+
+            this._logging.Info($"start initial {nameof(PluginAsync)}");
+            await this.PluginAsync();
+            this._logging.Info($"end initial {nameof(PluginAsync)}");
         }
 
-        public virtual async Task Routing()
+        public virtual async Task RoutingAsync()
         {
             var assembly = Assembly.GetExecutingAssembly();
 
@@ -359,7 +366,7 @@ namespace SAE.CommonComponent.InitializeData
             }
         }
 
-        public virtual async Task User()
+        public virtual async Task UserAsync()
         {
             await this._mediator.SendAsync<string>(new AccountCommand.Register
             {
@@ -367,6 +374,25 @@ namespace SAE.CommonComponent.InitializeData
                 Password = Constants.User.Password,
                 ConfirmPassword = Constants.User.Password
             });
+        }
+
+        public async Task PluginAsync()
+        {
+            this._logging.Info($"Plugin manage:{this._pluginManage?.Plugins?.ToJsonString()}");
+            foreach (var plugin in this._pluginManage.Plugins)
+            {
+                var command = new PluginCommand.Create
+                {
+                    Name = plugin.Name,
+                    Description = plugin.Description,
+                    Order = plugin.Order,
+                    Status = plugin.Status ? Status.Enable : Status.Disable,
+                    Version = plugin.Version
+                };
+                await this._mediator.SendAsync<string>(command);
+            }
+            var plugins = await this._mediator.SendAsync<IEnumerable<PluginDto>>(new Command.List<PluginDto>());
+            this._logging.Info($"Plugin list:{plugins?.ToJsonString()}");
         }
     }
 }

@@ -7,11 +7,12 @@ namespace SAE.CommonComponent.InitializeData
 {
     public interface IInitializeService
     {
-        Task Initial();
-        Task Application();
-        Task Authorize();
-        Task User();
-        Task Routing();
-        Task ConfigServer();
+        Task InitialAsync();
+        Task ApplicationAsync();
+        Task AuthorizeAsync();
+        Task UserAsync();
+        Task RoutingAsync();
+        Task ConfigServerAsync();
+        Task PluginAsync();
     }
 }

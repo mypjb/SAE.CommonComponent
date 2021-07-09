@@ -2,14 +2,17 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <Version>1.0.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SAE.CommonLibrary.Abstract" Version="2.0.3.3" />
-    <PackageReference Include="SAE.CommonLibrary.AspNetCore" Version="2.0.3.3" />
-    <PackageReference Include="SAE.CommonLibrary.EventStore.Document" Version="2.0.3.3" />
-    <PackageReference Include="SAE.CommonLibrary.ObjectMapper.TinyMapper" Version="2.0.3.3" />
-    <PackageReference Include="SAE.CommonLibrary.Plugin.AspNetCore" Version="2.0.3.3" />
+    <PackageReference Include="SAE.CommonLibrary.Abstract" Version="2.0.3.4" />
+    <PackageReference Include="SAE.CommonLibrary.AspNetCore" Version="2.0.3.4" />
+    <PackageReference Include="SAE.CommonLibrary.EventStore.Document" Version="2.0.3.4" />
+    <PackageReference Include="SAE.CommonLibrary.ObjectMapper.TinyMapper" Version="2.0.3.4" />
+    <PackageReference Include="SAE.CommonLibrary.Plugin.AspNetCore" Version="2.0.3.4" />
   </ItemGroup>
 
   <ItemGroup>

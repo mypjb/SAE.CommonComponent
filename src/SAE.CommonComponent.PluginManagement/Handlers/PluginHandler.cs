@@ -6,6 +6,7 @@ using SAE.CommonLibrary.Abstract.Model;
 using SAE.CommonLibrary.Data;
 using SAE.CommonLibrary.EventStore.Document;
 using SAE.CommonLibrary.Extension;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -18,7 +19,8 @@ namespace SAE.CommonComponent.PluginManagement.Handlers
                                  ICommandHandler<PluginCommand.ChangeEntry>,
                                  ICommandHandler<Command.Delete<Plugin>>,
                                  ICommandHandler<Command.Find<PluginDto>, PluginDto>,
-                                 ICommandHandler<PluginCommand.Query, IPagedList<PluginDto>>
+                                 ICommandHandler<PluginCommand.Query, IPagedList<PluginDto>>,
+                                 ICommandHandler<Command.List<PluginDto>, IEnumerable<PluginDto>>
 
     {
         private readonly IStorage _storage;
@@ -92,6 +94,14 @@ namespace SAE.CommonComponent.PluginManagement.Handlers
             var plugin = await this._documentStore.FindAsync<Plugin>(command.Id);
             plugin.ChangeEntry(command);
             await this._documentStore.SaveAsync(plugin);
+        }
+
+        public Task<IEnumerable<PluginDto>> HandleAsync(Command.List<PluginDto> command)
+        {
+            var plugins= this._storage.AsQueryable<PluginDto>()
+                             .ToList();
+
+            return Task.FromResult(plugins.AsEnumerable());
         }
     }
 }

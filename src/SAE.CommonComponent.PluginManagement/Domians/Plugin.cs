@@ -21,7 +21,7 @@ namespace SAE.CommonComponent.PluginManagement.Domians
         {
             this.Apply<PluginEvent.Create>(command,e=>
             {
-                e.Id = e.Name.Trim().ToMd5();
+                e.Id = e.Name.Trim().ToMd5().ToLower();
                 e.CreateTime = DateTime.Now;
             });
         }

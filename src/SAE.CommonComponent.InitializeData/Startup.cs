@@ -45,7 +45,7 @@ namespace SAE.CommonComponent.InitializeData
             }
             try
             {
-                initializeService.Initial();
+                initializeService.InitialAsync();
             }catch(Exception ex)
             {
                 app.ApplicationServices.GetService<ILogging<IInitializeService>>()

@@ -15,7 +15,7 @@ namespace SAE.CommonComponent.InitializeData
         {
         }
 
-        public override async Task Application()
+        public override async Task ApplicationAsync()
         {
             //var scopeCommand = new ScopeCommand.Create
             //{
@@ -50,27 +50,27 @@ namespace SAE.CommonComponent.InitializeData
             //    Status = Status.Enable
             //});
 
-            await base.Application();
+            await base.ApplicationAsync();
         }
 
-        public override Task Authorize()
+        public override Task AuthorizeAsync()
         {
-            return base.Authorize();
+            return base.AuthorizeAsync();
         }
 
-        public override Task ConfigServer()
+        public override Task ConfigServerAsync()
         {
-            return base.ConfigServer();
+            return base.ConfigServerAsync();
         }
 
-        public override Task Routing()
+        public override Task RoutingAsync()
         {
-            return base.Routing();
+            return base.RoutingAsync();
         }
 
-        public override Task User()
+        public override Task UserAsync()
         {
-            return base.User();
+            return base.UserAsync();
         }
     }
 }

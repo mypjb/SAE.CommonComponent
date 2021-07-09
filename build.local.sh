@@ -6,7 +6,7 @@ release_dir=${1:-"plugin"}
 
 mkdir -p $release_dir
 
-project_array=(Application Authorize Identity OAuth Routing User InitializeData ConfigServer)
+project_array=(Application Authorize Identity OAuth Routing User InitializeData ConfigServer PluginManagement)
 
 if [ x"$2" != x ]; then 
 project_array=($2);

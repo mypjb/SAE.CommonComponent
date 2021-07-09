@@ -56,6 +56,13 @@ namespace SAE.CommonComponent.PluginManagement.Controllers
         {
             return await this._mediator.SendAsync<IPagedList<PluginDto>>(command);
         }
-       
+
+        [AllowAnonymous]
+        [HttpGet("{action}")]
+        public async Task<object> List()
+        {
+            return await this._mediator.SendAsync<IEnumerable<PluginDto>>(new Command.List<PluginDto>());
+        }
+
     }
 }
