@@ -12,7 +12,7 @@ plugin_dir=$main_dir/plugins
 
 mkdir -p $plugin_dir
 
-project_array=(Master ConfigServer InitializeData)
+project_array=(Master ConfigServer InitializeData PluginManagement)
 
 index=0
 
