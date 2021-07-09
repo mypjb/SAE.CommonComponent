@@ -2,7 +2,7 @@
 using IdentityModel;
 using IdentityServer4;
 using SAE.CommonComponent.Identity.Commands;
-using SAE.CommonComponent.User.Abstract.Dtos;
+using SAE.CommonComponent.User.Dtos;
 using SAE.CommonComponent.User.Commands;
 using SAE.CommonLibrary;
 using SAE.CommonLibrary.Abstract.Mediator;

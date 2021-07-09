@@ -41,7 +41,7 @@ namespace SAE.CommonComponent.Authorize.Test
             var command = new PermissionCommand.Create
             {
                 Name = $"test_{this.GetRandom()}",
-                Descriptor = "add permission",
+                Description = "add permission",
                 Flag = "/",
                 Method = AccessMethod.Custom
             };
@@ -52,7 +52,7 @@ namespace SAE.CommonComponent.Authorize.Test
             var permission = await this.Get(id);
 
             Assert.Equal(permission.Name, command.Name);
-            Assert.Equal(permission.Descriptor, command.Descriptor);
+            Assert.Equal(permission.Description, command.Description);
             Assert.Equal(permission.Flag, command.Flag);
             this.WriteLine(permission);
             return permission;
@@ -65,7 +65,7 @@ namespace SAE.CommonComponent.Authorize.Test
             {
                 Id = dto.Id,
                 Name = dto.Name,
-                Descriptor = "edit permission",
+                Description = "edit permission",
                 Flag = "/edit"
             };
             var request = new HttpRequestMessage(HttpMethod.Put, $"{API}");
@@ -74,7 +74,7 @@ namespace SAE.CommonComponent.Authorize.Test
             var permission = await this.Get(dto.Id);
 
             Assert.Equal(permission.Name, command.Name);
-            Assert.Equal(permission.Descriptor, command.Descriptor);
+            Assert.Equal(permission.Description, command.Description);
             Assert.Equal(permission.Flag, command.Flag);
             this.WriteLine(permission);
         }
@@ -104,7 +104,7 @@ namespace SAE.CommonComponent.Authorize.Test
                       .Select(s => new PermissionCommand.Create
                       {
                           Name = $"localtion_{s}",
-                          Descriptor = $"location {s}",
+                          Description = $"location {s}",
                           Flag = $"/location/{s}",
                           Method = Enum.Parse<AccessMethod>((s % 10).ToString())
                       });

@@ -23,7 +23,7 @@ namespace SAE.CommonComponent.Application.Converts
                 Name = app.Name,
                 Status = app.Status,
                 CreateTime=app.CreateTime,
-                Endpoint=new Abstract.Dtos.EndpointDto
+                Endpoint=new Dtos.EndpointDto
                 {
                      PostLogoutRedirectUris= app.Endpoint.PostLogoutRedirectUris,
                      RedirectUris=app.Endpoint.RedirectUris,

@@ -17,7 +17,7 @@ using SAE.CommonComponent.ConfigServer.Dtos;
 using SAE.CommonLibrary.EventStore.Document;
 using Microsoft.Extensions.Hosting;
 using SAE.CommonLibrary.Abstract.Model;
-using SAE.CommonComponent.Application.Abstract.Dtos;
+using SAE.CommonComponent.Application.Dtos;
 using SAE.CommonComponent.Application.Dtos;
 using System.Text.RegularExpressions;
 using SAE.CommonComponent.Routing.Commands;

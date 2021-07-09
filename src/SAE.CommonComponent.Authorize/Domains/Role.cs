@@ -44,7 +44,7 @@ namespace SAE.CommonComponent.Authorize.Domains
         /// <summary>
         /// role descriptor
         /// </summary>
-        public string Descriptor { get; set; }
+        public string Description { get; set; }
         /// <summary>
         /// role createtime
         /// </summary>

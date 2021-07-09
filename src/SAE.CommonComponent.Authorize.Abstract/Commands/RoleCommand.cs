@@ -9,7 +9,7 @@ namespace SAE.CommonComponent.Authorize.Commands
         public class Create
         {
             public string Name { get; set; }
-            public string Descriptor { get; set; }
+            public string Description { get; set; }
         }
 
         public class Change : Create

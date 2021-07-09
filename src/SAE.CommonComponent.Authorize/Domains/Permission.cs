@@ -32,9 +32,9 @@ namespace SAE.CommonComponent.Authorize.Domains
         /// </summary>
         public string Name { get; set; }
         /// <summary>
-        ///  permission descriptor
+        ///  permission description
         /// </summary>
-        public string Descriptor { get; set; }
+        public string Description { get; set; }
         /// <summary>
         /// permission flag
         /// </summary>

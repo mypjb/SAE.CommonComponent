@@ -1,22 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using SAE.CommonComponent.User.Abstract.Dtos;
-using SAE.CommonComponent.User.Commands;
-using SAE.CommonComponent.User.Domains;
-using SAE.CommonComponent.User.Events;
-using SAE.CommonLibrary.Abstract.Mediator;
-using SAE.CommonLibrary.Plugin.AspNetCore;
-using SAE.CommonLibrary.ObjectMapper;
+using SAE.CommonComponent.User.Dtos;
 using SAE.CommonComponent.User.Converts;
+using SAE.CommonComponent.User.Events;
+using SAE.CommonLibrary.ObjectMapper;
+using SAE.CommonLibrary.Plugin.AspNetCore;
 using System.ComponentModel;
+using System.Reflection;
 
 namespace SAE.CommonComponent.User
 {

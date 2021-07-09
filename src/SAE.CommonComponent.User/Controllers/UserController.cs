@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SAE.CommonComponent.User.Abstract.Dtos;
+using SAE.CommonComponent.User.Dtos;
 using SAE.CommonComponent.User.Commands;
 using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.Abstract.Model;

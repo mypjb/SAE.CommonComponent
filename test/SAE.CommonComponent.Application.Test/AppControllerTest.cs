@@ -30,7 +30,7 @@ namespace SAE.CommonComponent.Application.Test
             var command = new AppCommand.Create
             {
                 Name = this.GetRandom(),
-                Endpoint = new Abstract.Dtos.EndpointDto
+                Endpoint = new Dtos.EndpointDto
                 {
                     PostLogoutRedirectUris = new[] { this.GetRandom() },
                     RedirectUris = new[] { this.GetRandom() },

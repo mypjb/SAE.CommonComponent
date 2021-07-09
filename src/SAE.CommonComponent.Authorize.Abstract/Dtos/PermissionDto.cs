@@ -9,7 +9,7 @@ namespace SAE.CommonComponent.Authorize.Dtos
     {
         public string Id { get; set; }
         public string Name { get; set; }
-        public string Descriptor { get; set; }
+        public string Description { get; set; }
         public string Flag { get; set; }
         public AccessMethod Method { get; set; }
         public DateTime CreateTime { get; set; }

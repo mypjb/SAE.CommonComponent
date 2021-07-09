@@ -18,7 +18,7 @@ namespace SAE.CommonComponent.Authorize.Events
         public class Change : IEvent
         {
             public string Name { get; set; }
-            public string Descriptor { get; set; }
+            public string Description { get; set; }
         }
 
         public class ChangeStatus : IEvent

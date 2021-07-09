@@ -1,5 +1,5 @@
 ﻿using SAE.CommonComponent.Authorize.Commands;
-using SAE.CommonComponent.User.Abstract.Dtos;
+using SAE.CommonComponent.User.Dtos;
 using SAE.CommonComponent.User.Commands;
 using SAE.CommonComponent.User.Domains;
 using SAE.CommonLibrary;

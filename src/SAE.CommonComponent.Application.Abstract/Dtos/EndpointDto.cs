@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SAE.CommonComponent.Application.Abstract.Dtos
+namespace SAE.CommonComponent.Application.Dtos
 {
     public class EndpointDto
     {

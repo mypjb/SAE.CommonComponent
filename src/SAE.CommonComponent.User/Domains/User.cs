@@ -8,7 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using SAE.CommonLibrary.Extension;
 using System.ComponentModel.Design;
-using SAE.CommonComponent.User.Abstract.Dtos;
+using SAE.CommonComponent.User.Dtos;
 
 namespace SAE.CommonComponent.User.Domains
 {
@@ -131,7 +131,7 @@ namespace SAE.CommonComponent.User.Domains
             this.Apply(@event);
         }
 
-        internal void ChangeStatus(UserCommand.ChangeStatus command)
+        public void ChangeStatus(UserCommand.ChangeStatus command)
         {
             this.Apply<UserEvent.ChangeStatus>(command);
         }

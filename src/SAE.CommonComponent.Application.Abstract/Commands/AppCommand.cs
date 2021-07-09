@@ -1,4 +1,4 @@
-using SAE.CommonComponent.Application.Abstract.Dtos;
+using SAE.CommonComponent.Application.Dtos;
 using SAE.CommonLibrary.Abstract.Model;
 using System.Collections.Generic;
 

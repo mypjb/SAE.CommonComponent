@@ -8,7 +8,7 @@ using System.Reflection;
 
 namespace SAE.CommonComponent.PluginManagement
 {
-    public class Startup: WebPlugin
+    public class Startup : WebPlugin
     {
         public Startup(IConfiguration configuration)
         {
@@ -38,24 +38,17 @@ namespace SAE.CommonComponent.PluginManagement
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                endpoints.MapDefaultControllerRoute();
             });
         }
 
         public override void PluginConfigureServices(IServiceCollection services)
         {
 
-            services.AddTinyMapper()
-                    .AddBuilder(builder =>
-                    {
-                        builder.Bind<UserEvent.ChangePassword, Domains.User>(config =>
-                        {
-                            config.Bind(@event => @event.Password, user => user.Account.Password);
-                        });
-                    });
+            services.AddTinyMapper();
 
 
-            var assemblies = new[] { Assembly.GetExecutingAssembly(), typeof(UserDto).Assembly };
+            var assemblies = new[] { Assembly.GetExecutingAssembly(),typeof(Commands.PluginCommand.Create).Assembly };
 
             services.AddMvc()
                     .AddResponseResult();
@@ -72,7 +65,7 @@ namespace SAE.CommonComponent.PluginManagement
 
         public override void PluginConfigure(IApplicationBuilder app)
         {
-            
+            app.UseServiceFacade();
         }
     }
 }

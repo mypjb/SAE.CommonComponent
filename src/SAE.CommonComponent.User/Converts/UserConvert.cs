@@ -1,4 +1,4 @@
-﻿using SAE.CommonComponent.User.Abstract.Dtos;
+﻿using SAE.CommonComponent.User.Dtos;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

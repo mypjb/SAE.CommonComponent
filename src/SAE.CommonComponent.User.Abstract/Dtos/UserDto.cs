@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SAE.CommonComponent.User.Abstract.Dtos
+namespace SAE.CommonComponent.User.Dtos
 {
     public class AccountDto
     {

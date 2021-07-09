@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SAE.CommonComponent.Authorize.Test;
 using SAE.CommonComponent.Identity.Commands;
 using SAE.CommonComponent.Test;
-using SAE.CommonComponent.User.Abstract.Dtos;
+using SAE.CommonComponent.User.Dtos;
 using SAE.CommonComponent.User.Commands;
 using SAE.CommonComponent.User.Test;
 using SAE.CommonLibrary;

@@ -46,7 +46,7 @@ namespace SAE.CommonComponent.Authorize.Test
             var command = new RoleCommand.Create
             {
                 Name = $"test_{this.GetRandom()}",
-                Descriptor = "add Role"
+                Description = "add Role"
             };
             var request = new HttpRequestMessage(HttpMethod.Post, $"{API}");
             request.AddJsonContent(command);
@@ -55,7 +55,7 @@ namespace SAE.CommonComponent.Authorize.Test
             var Role = await this.Get(id);
 
             Assert.Equal(Role.Name, command.Name);
-            Assert.Equal(Role.Descriptor, command.Descriptor);
+            Assert.Equal(Role.Description, command.Description);
             this.WriteLine(Role);
             return Role;
         }
@@ -67,7 +67,7 @@ namespace SAE.CommonComponent.Authorize.Test
             {
                 Id = dto.Id,
                 Name = dto.Name,
-                Descriptor = "edit Role",
+                Description = "edit Role",
             };
             var request = new HttpRequestMessage(HttpMethod.Put, $"{API}");
             request.AddJsonContent(command);
@@ -75,7 +75,7 @@ namespace SAE.CommonComponent.Authorize.Test
             var Role = await this.Get(dto.Id);
 
             Assert.Equal(Role.Name, command.Name);
-            Assert.Equal(Role.Descriptor, command.Descriptor);
+            Assert.Equal(Role.Description, command.Description);
             this.WriteLine(Role);
         }
 

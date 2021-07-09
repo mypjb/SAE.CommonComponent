@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 using SAE.CommonLibrary.Extension;
-using SAE.CommonComponent.User.Abstract.Dtos;
+using SAE.CommonComponent.User.Dtos;
 using Assert = Xunit.Assert;
 using SAE.CommonComponent.Authorize.Test;
 
