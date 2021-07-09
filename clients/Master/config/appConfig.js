@@ -63,7 +63,8 @@ let appConfig = {
         }
     },
     "api": {
-        "menu": "http://api.sae.com/menu/tree"
+        "menu": "http://api.sae.com/menu/tree",
+        "app": "http://api.sae.com/plugin/list"
     }
 };
 

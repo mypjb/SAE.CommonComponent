@@ -28,12 +28,17 @@ const processingData = function (menus) {
     return list;
 }
 
-
-export const qiankun = fetch(appConfig.api.menu).then(async (response) => {
-    const routes = processingData(await response.json());
+let appSetting = {};
+export const qiankun = fetch(appConfig.api.app).then(async (response) => {
+    console.log("qiankun");
+    const apps = await response.json();
+    const menuResponse = await fetch(appConfig.api.menu);
+    const routes = processingData(await menuResponse.json());
+    appSetting.apps = apps;
+    appSetting.routes = routes;
     return {
         // 注册子应用信息
-        apps: appConfig.apps,
+        apps,
         routes,
         layout: {
             name: 'SAE',
@@ -60,7 +65,6 @@ const checkLogin = (user) => {
     return false;
 }
 export function useQiankunStateForSlave() {
-
     const [masterState, setMasterState] = useState(appConfig);
     const initial = (requestConfig) => {
         requestConfig.prefix = appConfig.siteConfig.apiHost;
@@ -123,4 +127,8 @@ export const layout = () => {
         layout: 'side'
     };
 };
+
+export const getInitialState = () => {
+    return appSetting;
+}
 
