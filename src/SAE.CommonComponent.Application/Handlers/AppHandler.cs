@@ -34,8 +34,8 @@ namespace SAE.CommonComponent.Application.Abstract.Handlers
         private readonly IStorage _storage;
         private readonly ILogging<AppHandler> _logging;
         public string ScopeKey = nameof(ScopeKey);
-        public AppHandler(IDocumentStore documentStore, 
-                          IDistributedCache distributedCache, 
+        public AppHandler(IDocumentStore documentStore,
+                          IDistributedCache distributedCache,
                           IStorage storage,
                           ILogging<AppHandler> logging) : base(documentStore)
         {
@@ -80,7 +80,7 @@ namespace SAE.CommonComponent.Application.Abstract.Handlers
         {
             var dto = this._storage.AsQueryable<AppDto>()
                           .FirstOrDefault(s => s.Id == command.Id);
-            
+
             this._logging.Info($"find app '{command.Id}',find '{dto?.ToJsonString()}' ");
             return dto;
         }
@@ -98,33 +98,42 @@ namespace SAE.CommonComponent.Application.Abstract.Handlers
 
         public async Task HandleAsync(ScopeCommand.Create command)
         {
-            var scopes = (await this._distributedCache.GetAsync<List<ScopeDto>>(ScopeKey)) ?? new List<ScopeDto>();
-            if (!scopes.Any(s => s.Name.Equals(command.Name, StringComparison.OrdinalIgnoreCase)))
-            {
-                scopes.Add(command.To<ScopeDto>());
-                await this._distributedCache.AddAsync(ScopeKey, scopes, TimeSpan.FromDays(365 * 100));
-            }
+            //var scopes = (await this._distributedCache.GetAsync<List<ScopeDto>>(ScopeKey)) ?? new List<ScopeDto>();
+            //if (!scopes.Any(s => s.Name.Equals(command.Name, StringComparison.OrdinalIgnoreCase)))
+            //{
+            //    scopes.Add(command.To<ScopeDto>());
+            //    await this._distributedCache.AddAsync(ScopeKey, scopes, TimeSpan.FromDays(365 * 100));
+            //}
         }
 
         public async Task<IEnumerable<ScopeDto>> HandleAsync(Command.List<ScopeDto> command)
         {
-            return (await this._distributedCache.GetAsync<IEnumerable<ScopeDto>>(ScopeKey))?.Distinct() ?? Enumerable.Empty<ScopeDto>();
+            return new[] { new ScopeDto
+            {
+                Display=Constants.Scope,
+                Name=Constants.Scope
+            }};
+            //return (await this._distributedCache.GetAsync<IEnumerable<ScopeDto>>(ScopeKey))?.Distinct() ?? Enumerable.Empty<ScopeDto>();
         }
 
         public async Task<IPagedList<ScopeDto>> HandleAsync(ScopeCommand.Query command)
         {
-            var scopes = await this._distributedCache.GetAsync<List<ScopeDto>>(ScopeKey);
-            return PagedList.Build(scopes?.AsQueryable(), command);
+            //var scopes = await this._distributedCache.GetAsync<List<ScopeDto>>(ScopeKey);
+            return PagedList.Build(new[] { new ScopeDto
+            {
+                Display=Constants.Scope,
+                Name=Constants.Scope
+            }}, command);
         }
 
         public async Task HandleAsync(ScopeCommand.Delete command)
         {
-            var scopes = await this._distributedCache.GetAsync<List<ScopeDto>>(ScopeKey);
-            if (scopes != null && scopes.Any(s => s.Name.Equals(command.Name, StringComparison.OrdinalIgnoreCase)))
-            {
-                scopes.RemoveAll(s => s.Name.Equals(command.Name, StringComparison.OrdinalIgnoreCase));
-                await this._distributedCache.AddAsync(ScopeKey, scopes, TimeSpan.FromDays(365 * 100));
-            }
+            //var scopes = await this._distributedCache.GetAsync<List<ScopeDto>>(ScopeKey);
+            //if (scopes != null && scopes.Any(s => s.Name.Equals(command.Name, StringComparison.OrdinalIgnoreCase)))
+            //{
+            //    scopes.RemoveAll(s => s.Name.Equals(command.Name, StringComparison.OrdinalIgnoreCase));
+            //    await this._distributedCache.AddAsync(ScopeKey, scopes, TimeSpan.FromDays(365 * 100));
+            //}
         }
     }
 }
