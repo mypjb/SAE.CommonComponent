@@ -29,17 +29,18 @@ namespace SAE.CommonComponent.ConfigServer.Handles
             var environment = this._storage.AsQueryable<EnvironmentVariableDto>()
                                     .FirstOrDefault(e => e.Name == command.Env);
 
-            if (environment != null)
-            {
-                var projectData = this._storage.AsQueryable<ProjectData>()
+            Assert.Build(environment)
+                  .NotNull($"env '{command.Env}' not exist!");
+
+            var projectData = this._storage.AsQueryable<ProjectData>()
                                                .FirstOrDefault(s => s.ProjectId == command.Id &&
                                                                s.EnvironmentId == environment.Id);
-                app.Version = projectData.Version;
-                if (projectData != null && projectData.Version != command.Version)
-                {
-                    app.Data = projectData.Data.ToObject<Dictionary<string, object>>();
-                }
+            app.Version = projectData.Version;
+            if (projectData != null && projectData.Version != command.Version)
+            {
+                app.Data = projectData.Data.ToObject<Dictionary<string, object>>();
             }
+
             return app;
         }
     }

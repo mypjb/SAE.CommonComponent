@@ -14,7 +14,7 @@ namespace SAE.CommonComponent.Master
     {
         public static void Main(string[] args)
         {
-           var assembly= System.Reflection.Assembly.LoadFrom(Path.Combine(AppContext.BaseDirectory, "SAE.CommonLibrary.Plugin.AspNetCore.dll"));
+           //var assembly= System.Reflection.Assembly.LoadFrom(Path.Combine(AppContext.BaseDirectory, "SAE.CommonLibrary.Plugin.AspNetCore.dll"));
             CreateHostBuilder(args).Build().Run();
         }
 

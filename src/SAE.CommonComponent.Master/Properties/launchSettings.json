@@ -21,8 +21,6 @@
       "commandName": "Project",
       "launchUrl": "weatherforecast",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT_Temp": "Production",
-        "SAE__CONFIG__URL": "http://localhost:8080/app/config?id=0dbbcfdf123f44baad50ac830106c87b&env=Development",
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "applicationUrl": "http://0.0.0.0:8080"

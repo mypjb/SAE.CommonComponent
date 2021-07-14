@@ -23,17 +23,17 @@ namespace SAE.CommonComponent.Identity.Test
     public class AccountControllerTest : BaseTest
     {
         public const string API = "account";
-        private  UserControllerTest _userController;
+        private UserControllerTest _userController;
 
         public AccountControllerTest(ITestOutputHelper output) : base(output)
         {
-            
+
         }
 
         protected override IWebHostBuilder UseStartup(IWebHostBuilder builder)
         {
             this._userController = new UserControllerTest(this._output);
-            
+
             return builder.ConfigureServices(services =>
             {
                 var serviceProvider = this._userController.ServiceProvider;

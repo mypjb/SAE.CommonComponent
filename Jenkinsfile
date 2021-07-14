@@ -107,7 +107,7 @@ docker build --rm -t $DOCKER_NAME:$(echo $DOCKER_TAG | sed "s/\\//-/g") .'''
           }
           steps {
             sh '''if [ $(docker ps -q -a -f name=$DOCKER_CONTAINER_NAME  | wc -l) != 0 ]; then docker rm -f $(docker ps -q -a -f name=$DOCKER_CONTAINER_NAME); fi
-docker run -d --name $DOCKER_CONTAINER_NAME --net=$DOCKER_CLUSTER_NETWORK -p $DOCKER_PORT:80 -e ASPNETCORE_ENVIRONMENT=Production -e SAE__CONFIG__URL="http://localhost/app/config?id=0dbbcfdf123f44baad50ac830106c87b&env=Production"  $DOCKER_NAME:$(echo $DOCKER_TAG | sed "s/\\//-/g") '''
+docker run -d --name $DOCKER_CONTAINER_NAME --net=$DOCKER_CLUSTER_NETWORK -p $DOCKER_PORT:80 -e ASPNETCORE_ENVIRONMENT=Production $DOCKER_NAME:$(echo $DOCKER_TAG | sed "s/\\//-/g") '''
           }
         }
 		stage('Client') {
