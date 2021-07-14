@@ -1,42 +1,52 @@
 const ENV = process.env.UMI_ENV;
 
-let apps = [
-    {
-        name: 'config-server', // 唯一 id
-        entry: '//localhost:8001', // html entry
-        path: "/config",
-    },
-    {
-        name: 'identity', // 唯一 id
-        entry: '//localhost:8002', // html entry
-        path: "/identity",
+// let apps = [
+//     {
+//         name: 'config-server', // 唯一 id
+//         entry: '//localhost:8001', // html entry
+//         path: "/config",
+//     },
+//     {
+//         name: 'identity', // 唯一 id
+//         entry: '//localhost:8002', // html entry
+//         path: "/identity",
 
-    },
-    {
-        name: 'oauth', // 唯一 id
-        entry: '//localhost:8003', // html entry
-        path: "/oauth",
+//     },
+//     {
+//         name: 'oauth', // 唯一 id
+//         entry: '//localhost:8003', // html entry
+//         path: "/oauth",
 
-    },
-    {
-        name: 'routing', // 唯一 id
-        entry: '//localhost:8004', // html entry
-        path: "/routing",
-    },
-    {
-        name: 'authorize', // 唯一 id
-        entry: '//localhost:8005', // html entry
-        path: "/auth",
-    }
-];
+//     },
+//     {
+//         name: 'routing', // 唯一 id
+//         entry: '//localhost:8004', // html entry
+//         path: "/routing",
+//     },
+//     {
+//         name: 'authorize', // 唯一 id
+//         entry: '//localhost:8005', // html entry
+//         path: "/auth",
+//     },
+//     {
+//         name: 'user', // 唯一 id
+//         entry: '//localhost:8006', // html entry
+//         path: "/user",
+//     },
+//     {
+//         name: 'plugin', // 唯一 id
+//         entry: '//localhost:8000', // html entry
+//         path: "/plugin",
+//     }
+// ];
 
 
 const callBackUrlKey = "saeCallbackUrl";
 
 
-let appConfig = {
+const appConfig = {
     callBackUrlKey,
-    apps,
+    // apps,
     "siteConfig": {
         "appId": "localhost.dev",
         "appName": "master.dev",
@@ -53,21 +63,18 @@ let appConfig = {
         }
     },
     "api": {
-        "menu": "http://api.sae.com/menu/tree"
+        "menu": "http://api.sae.com/menu/tree",
+        "app": "http://api.sae.com/plugin/list"
     }
 };
 
 if (ENV == "prod") {
-    apps[0].entry = '//configserver.client.sae.com';
-    apps[1].entry = '//identity.client.sae.com';
-    apps[2].entry = '//oauth.client.sae.com';
-    apps[3].entry = '//routing.client.sae.com';
-    apps[4].entry = '//authorize.client.sae.com';
-    apps.push({
-        name: 'user', // 唯一 id
-        entry: '//localhost:8000', // html entry
-        path: "/user",
-    });
+    // apps[0].entry = '//configserver.client.sae.com';
+    // apps[1].entry = '//identity.client.sae.com';
+    // apps[2].entry = '//oauth.client.sae.com';
+    // apps[3].entry = '//routing.client.sae.com';
+    // apps[4].entry = '//authorize.client.sae.com';
+    // apps[5].entry = '//user.client.sae.com';
     appConfig.siteConfig = {
         ...appConfig.siteConfig,
         "appId": "localhost.test",
