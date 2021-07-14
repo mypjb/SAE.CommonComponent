@@ -14,7 +14,7 @@ namespace SAE.CommonComponent.Routing.Domains
 {
     public class Menu : Document
     {
-        public const string DefaultId = "00000000000000000000000000000000";
+        public const string DefaultId = "menu_00000000000000000000000000000000";
         public Menu()
         {
             this.ParentId = DefaultId;
