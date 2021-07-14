@@ -34,10 +34,9 @@ namespace SAE.CommonComponent.ConfigServer.Handles
                 var projectData = this._storage.AsQueryable<ProjectData>()
                                                .FirstOrDefault(s => s.ProjectId == command.Id &&
                                                                s.EnvironmentId == environment.Id);
-
+                app.Version = projectData.Version;
                 if (projectData != null && projectData.Version != command.Version)
                 {
-                    app.Version = projectData.Version;
                     app.Data = projectData.Data.ToObject<Dictionary<string, object>>();
                 }
             }
