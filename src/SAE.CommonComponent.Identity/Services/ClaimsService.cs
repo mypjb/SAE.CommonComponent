@@ -29,6 +29,8 @@ namespace SAE.CommonComponent.Identity.Services
                 }
             }
 
+            claims.Add(new Claim(CommonLibrary.AspNetCore.Constants.Administrator, "1", Constants.Claim.CustomType));
+
             return claims;
         }
 
