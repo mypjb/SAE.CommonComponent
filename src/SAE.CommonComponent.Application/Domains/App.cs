@@ -11,9 +11,6 @@ namespace SAE.CommonComponent.Application.Abstract.Domains
 {
     public class App : Document
     {
-        //public const string DefaultRedirectUri = "/signin-oidc";
-        //public const string DefaultPostLogoutRedirectUris = "/signout-oidc";
-        //public const string DefaultSignIn = "/account/login";
         public App()
         {
             this.Scopes = Enumerable.Empty<string>().ToArray();
@@ -25,20 +22,6 @@ namespace SAE.CommonComponent.Application.Abstract.Domains
                 e.Id = command.Id ?? Utils.GenerateId();
                 e.CreateTime = DateTime.UtcNow;
                 e.Secret = command.Secret ?? Utils.GenerateId();
-                //if (e.Endpoint.RedirectUris.IsNull()||!e.Endpoint.RedirectUris.Any())
-                //{
-                //    e.Endpoint.RedirectUris = new[] { $"{command.Host}{DefaultRedirectUri}" };
-                //}
-
-                //if (e.Endpoint.RedirectUris.IsNull() || !e.Endpoint.PostLogoutRedirectUris.Any())
-                //{
-                //    e.Endpoint.RedirectUris = new[] { $"{command.Host}{DefaultPostLogoutRedirectUris}" };
-                //}
-
-                //if (!e.Endpoint.SignIn.IsNullOrWhiteSpace())
-                //{
-                //    e.Endpoint.SignIn = $"{command.Host}{DefaultSignIn}";
-                //}
             });
         }
 
@@ -73,7 +56,14 @@ namespace SAE.CommonComponent.Application.Abstract.Domains
         /// </summary>
         /// <value></value>
         public Status Status { get; set; }
-
+        /// <summary>
+        /// solution id
+        /// </summary>
+        public string SolutionId { get; set; }
+        /// <summary>
+        /// app config ids
+        /// </summary>
+        public IEnumerable<string> AppConfigIds { get; set; }
         public void Change(AppCommand.Change command)
         {
             this.Apply<AppEvent.Change>(command);

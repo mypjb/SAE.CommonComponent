@@ -29,7 +29,7 @@ namespace SAE.CommonComponent.InitializeData
             return base.AuthorizeAsync();
         }
 
-        protected override string GetProjectId()
+        protected override string GenerateProjectId()
         {
             return Guid.Empty.ToString("N");
         }

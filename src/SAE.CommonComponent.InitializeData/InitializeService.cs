@@ -50,6 +50,42 @@ namespace SAE.CommonComponent.InitializeData
             this._configuration = this._serviceProvider.GetService<IConfiguration>();
             this._pluginManage = serviceProvider.GetService<IPluginManage>();
         }
+        /// <summary>
+        /// Find project config
+        /// </summary>
+        /// <param name="project"></param>
+        /// <param name="env"></param>
+        /// <returns></returns>
+        protected virtual async Task<IDictionary<string, string>> FindConfigAsync(ProjectDto project, string env)
+        {
+            var appConfig = await this._mediator.SendAsync<AppConfigDto>(new ConfigServer.Commands.AppCommand.Config
+            {
+                Id = project.Id,
+                Env = env
+            });
+            IEnumerable<KeyValuePair<string, object>> siteConfigDatas = appConfig.Data
+                                            .Where(s => s.Key.Equals(SiteConfig.Option, StringComparison.OrdinalIgnoreCase));
+            if (siteConfigDatas.Any())
+            {
+                var dic = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                var pairs = siteConfigDatas.First().Value.ToJsonString().ToObject<Dictionary<string, object>>();
+                foreach (var kv in pairs)
+                {
+                    dic[kv.Key] = kv.Value.ToJsonString();
+                }
+                return dic;
+            }
+
+            return new Dictionary<string, string>();
+        }
+        /// <summary>
+        /// Generate project id
+        /// </summary>
+        /// <returns></returns>
+        protected virtual string GenerateProjectId()
+        {
+            return Utils.GenerateId();
+        }
 
         public virtual async Task InitialAsync()
         {
@@ -191,37 +227,11 @@ namespace SAE.CommonComponent.InitializeData
             }
         }
 
-        private async Task<IDictionary<string, string>> FindConfigAsync(ProjectDto project, string env)
-        {
-            var appConfig = await this._mediator.SendAsync<AppConfigDto>(new ConfigServer.Commands.AppCommand.Config
-            {
-                Id = project.Id,
-                Env = env
-            });
-            IEnumerable<KeyValuePair<string, object>> siteConfigDatas = appConfig.Data
-                                            .Where(s => s.Key.Equals(SiteConfig.Option, StringComparison.OrdinalIgnoreCase));
-            if (siteConfigDatas.Any())
-            {
-                var dic = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-                var pairs = siteConfigDatas.First().Value.ToJsonString().ToObject<Dictionary<string, object>>();
-                foreach (var kv in pairs)
-                {
-                    dic[kv.Key] = kv.Value.ToJsonString();
-                }
-                return dic;
-            }
-
-            return new Dictionary<string, string>();
-        }
-
         public virtual async Task AuthorizeAsync()
         {
 
         }
-        protected virtual string GetProjectId()
-        {
-            return Utils.GenerateId();
-        }
+        
         public virtual async Task ConfigServerAsync()
         {
             var configPath = this._configuration.GetValue<string>(SAE.CommonLibrary.Configuration.Constants.ConfigRootDirectoryKey);
@@ -247,7 +257,7 @@ namespace SAE.CommonComponent.InitializeData
             {
                 Name = projectName,
                 SolutionId = slnId,
-                Id=this.GetProjectId()
+                Id=this.GenerateProjectId()
             });
 
             this._logging.Info($"Create project '{projectName}'-'{projectId}'");
@@ -435,6 +445,5 @@ namespace SAE.CommonComponent.InitializeData
             this._logging.Info($"Plugin list:{plugins?.ToJsonString()}");
         }
 
-        
     }
 }

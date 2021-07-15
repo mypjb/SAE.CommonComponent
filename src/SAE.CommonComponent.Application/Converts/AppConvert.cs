@@ -22,15 +22,15 @@ namespace SAE.CommonComponent.Application.Converts
                 Id = app.Id,
                 Name = app.Name,
                 Status = app.Status,
-                CreateTime=app.CreateTime,
-                Endpoint=new Dtos.EndpointDto
+                CreateTime = app.CreateTime,
+                Endpoint = new Dtos.EndpointDto
                 {
-                     PostLogoutRedirectUris= app.Endpoint.PostLogoutRedirectUris,
-                     RedirectUris=app.Endpoint.RedirectUris,
-                     SignIn=app.Endpoint.SignIn
+                    PostLogoutRedirectUris = app.Endpoint.PostLogoutRedirectUris,
+                    RedirectUris = app.Endpoint.RedirectUris,
+                    SignIn = app.Endpoint.SignIn
                 },
-                Scopes=app.Scopes,
-                Secret=app.Secret
+                Scopes = app.Scopes,
+                Secret = app.Secret
             };
             return result;
         }
