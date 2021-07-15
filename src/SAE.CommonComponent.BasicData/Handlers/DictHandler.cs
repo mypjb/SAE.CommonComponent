@@ -33,10 +33,10 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
             this._mediator = mediator;
         }
 
-        private async Task PermutationAsync(DictItemDto Dict, IEnumerable<DictItemDto> DictItems)
+        private async Task PermutationAsync(DictItemDto dict, IEnumerable<DictItemDto> DictItems)
         {
-            var items = DictItems.Where(s => s.ParentId == Dict.Id).ToArray();
-            Dict.Items = items;
+            var items = DictItems.Where(s => s.ParentId == dict.Id).ToArray();
+            dict.Items = items;
             await items.ForEachAsync(async item => await this.PermutationAsync(item, DictItems));
         }
 
@@ -51,29 +51,29 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
             }
         }
 
-        private Task<bool> DictIsExistAsync(Dict Dict)
+        private Task<bool> DictIsExistAsync(Dict dict)
         {
             return Task.FromResult(this._storage.AsQueryable<DictItemDto>()
-                         .Count(s => s.ParentId == Dict.ParentId &&
-                                     s.Type == Dict.Type &&
-                                     s.Id != Dict.Id &&
-                                     s.Name == Dict.Name) > 0);
+                         .Count(s => s.ParentId == dict.ParentId &&
+                                     s.Type == dict.Type &&
+                                     s.Id != dict.Id &&
+                                     s.Name == dict.Name) > 0);
         }
 
         public async Task<string> HandleAsync(DictCommand.Create command)
         {
-            var Dict = new Dict(command);
-            await Dict.ParentExist(this._documentStore.FindAsync<Dict>);
-            await Dict.NotExist(this.DictIsExistAsync);
-            await this.AddAsync(Dict);
-            return Dict.Id;
+            var dict = new Dict(command);
+            await dict.ParentExist(this._documentStore.FindAsync<Dict>);
+            await dict.NotExist(this.DictIsExistAsync);
+            await this.AddAsync(dict);
+            return dict.Id;
         }
 
         public async Task HandleAsync(DictCommand.Change command)
         {
-            var Dict = await this._documentStore.FindAsync<Dict>(command.Id);
-            await Dict.Change(command, this._documentStore.FindAsync<Dict>, this.DictIsExistAsync);
-            await this._documentStore.SaveAsync(Dict);
+            var dict = await this._documentStore.FindAsync<Dict>(command.Id);
+            await dict.Change(command, this._documentStore.FindAsync<Dict>, this.DictIsExistAsync);
+            await this._documentStore.SaveAsync(dict);
         }
 
         public async Task<DictDto> HandleAsync(Command.Find<DictDto> command)
@@ -126,29 +126,27 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
 
         public async Task<IEnumerable<DictItemDto>> HandleAsync(DictCommand.Tree command)
         {
-            if (command.Type == 0)
-            {
-                if (command.Id.IsNullOrWhiteSpace())
-                {
-                    return Enumerable.Empty<DictItemDto>();
-                }
 
-                var dict = this._storage.AsQueryable<DictDto>().FirstOrDefault(s => s.Id == command.Id);
-                command.Type = dict.Type;
-            }
-            else if (command.Id.IsNullOrWhiteSpace())
+            var query = this._storage.AsQueryable<DictDto>();
+
+            if (command.Id.IsNullOrWhiteSpace() || Dict.DefaultId.Equals(command.Id))
             {
                 command.Id = Dict.DefaultId;
             }
+            else
+            {
+                var dict = this._storage.AsQueryable<DictDto>().FirstOrDefault(s => s.Id == command.Id);
+                command.Type = dict.Type;
+                query = query.Where(s => s.Type == command.Type);
+            }
 
-            var dicts = this._storage.AsQueryable<DictDto>()
-                                     .Select(s => new DictItemDto
-                                     {
-                                         Id = s.Id,
-                                         Name = s.Name,
-                                         ParentId = s.ParentId,
-                                         Type = s.Type
-                                     }).ToArray();
+            var dicts =query.Select(s => new DictItemDto
+                            {
+                                Id = s.Id,
+                                Name = s.Name,
+                                ParentId = s.ParentId,
+                                Type = s.Type
+                            }).ToArray();
 
             var rootDicts = dicts.Where(s => s.ParentId == command.Id).ToArray();
 

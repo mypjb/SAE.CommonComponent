@@ -11,8 +11,10 @@ namespace SAE.CommonComponent.BasicData.Commands
             public int Type { get; set; }
         }
 
-        public class Change : Create
+        public class Change 
         {
+            public string ParentId { get; set; }
+            public string Name { get; set; }
             public string Id { get; set; }
         }
 

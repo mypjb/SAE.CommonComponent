@@ -9,7 +9,7 @@ using System.Reflection;
 
 namespace SAE.CommonComponent.ConfigServer
 {
-    public class Startup:WebPlugin
+    public class Startup : WebPlugin
     {
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
@@ -32,9 +32,9 @@ namespace SAE.CommonComponent.ConfigServer
             this.PluginConfigure(app);
 
             app.UseEndpoints(endpoints =>
-               {
-                   endpoints.MapControllers();
-               });
+            {
+                endpoints.MapControllers();
+            });
         }
 
         public override void PluginConfigureServices(IServiceCollection services)

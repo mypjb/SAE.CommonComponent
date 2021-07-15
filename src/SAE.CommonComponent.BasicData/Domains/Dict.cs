@@ -63,9 +63,12 @@ namespace SAE.CommonComponent.BasicData.Domains
         public async Task ParentExist(Func<string, Task<Dict>> DictProvider)
         {
             if (this.IsRoot()) return;
-
-            Assert.Build(await DictProvider.Invoke(this.ParentId))
+            var root = await DictProvider.Invoke(this.ParentId);
+            Assert.Build(root)
                   .NotNull("parent not exist and not root node!");
+
+            Assert.Build(this.Type == root.Type)
+                  .True($"type not equal parent");
         }
 
         public async Task NotExist(Func<Dict, Task<bool>> DictProvider)

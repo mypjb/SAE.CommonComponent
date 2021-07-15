@@ -71,9 +71,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SAE.CommonComponent.PluginM
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SAE.CommonComponent.PluginManagement.Test", "test\SAE.CommonComponent.PluginManagement.Test\SAE.CommonComponent.PluginManagement.Test.csproj", "{17B3DB7B-1F6C-456C-B7A8-2ABAC77A51C6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAE.CommonComponent.BasicData", "src\SAE.CommonComponent.BasicData\SAE.CommonComponent.BasicData.csproj", "{DDAEB48D-62B8-4DB1-BD87-6DA809264B58}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SAE.CommonComponent.BasicData", "src\SAE.CommonComponent.BasicData\SAE.CommonComponent.BasicData.csproj", "{DDAEB48D-62B8-4DB1-BD87-6DA809264B58}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAE.CommonComponent.BasicData.Abstract", "src\SAE.CommonComponent.BasicData.Abstract\SAE.CommonComponent.BasicData.Abstract.csproj", "{CB5D0D0A-A59D-4073-87C9-4D0EEAE05BF7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SAE.CommonComponent.BasicData.Abstract", "src\SAE.CommonComponent.BasicData.Abstract\SAE.CommonComponent.BasicData.Abstract.csproj", "{CB5D0D0A-A59D-4073-87C9-4D0EEAE05BF7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAE.CommonComponent.BasicData.Test", "test\SAE.CommonComponent.BasicData.Test\SAE.CommonComponent.BasicData.Test.csproj", "{4327A029-C317-4FD4-B9C1-1036DCFDE3CD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -189,6 +191,10 @@ Global
 		{CB5D0D0A-A59D-4073-87C9-4D0EEAE05BF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CB5D0D0A-A59D-4073-87C9-4D0EEAE05BF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CB5D0D0A-A59D-4073-87C9-4D0EEAE05BF7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4327A029-C317-4FD4-B9C1-1036DCFDE3CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4327A029-C317-4FD4-B9C1-1036DCFDE3CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4327A029-C317-4FD4-B9C1-1036DCFDE3CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4327A029-C317-4FD4-B9C1-1036DCFDE3CD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -221,6 +227,7 @@ Global
 		{17B3DB7B-1F6C-456C-B7A8-2ABAC77A51C6} = {81E9D704-8CD3-4A8D-9AB0-62C63829990A}
 		{DDAEB48D-62B8-4DB1-BD87-6DA809264B58} = {6D4B2D09-B108-452D-B80A-C66817BE846D}
 		{CB5D0D0A-A59D-4073-87C9-4D0EEAE05BF7} = {6D4B2D09-B108-452D-B80A-C66817BE846D}
+		{4327A029-C317-4FD4-B9C1-1036DCFDE3CD} = {81E9D704-8CD3-4A8D-9AB0-62C63829990A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E3F15B03-989E-49CA-AC48-4DA76E675671}

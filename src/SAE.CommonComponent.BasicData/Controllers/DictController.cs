@@ -25,8 +25,8 @@ namespace SAE.CommonComponent.BasicData.Controllers
         {
             return await this._mediator.SendAsync<string>(command);
         }
-        [HttpDelete]
-        public async Task<object> Delete([FromBody] Command.BatchDelete<Dict> command)
+        [HttpDelete("{id}")]
+        public async Task<object> Delete([FromRoute] Command.Delete<Dict> command)
         {
             await this._mediator.SendAsync(command);
             return this.Ok();
