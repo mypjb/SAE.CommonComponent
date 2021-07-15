@@ -34,6 +34,15 @@ namespace SAE.CommonComponent.Application.Dtos
         public string[] Scopes { get; set; }
 
         /// <summary>
+        /// solution id
+        /// </summary>
+        public string SolutionId { get; set; }
+        /// <summary>
+        /// app config ids
+        /// </summary>
+        public IEnumerable<string> AppConfigIds { get; set; }
+
+        /// <summary>
         /// create time
         /// </summary>
         public DateTime CreateTime { get; set; }

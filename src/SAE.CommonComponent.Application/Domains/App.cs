@@ -95,7 +95,7 @@ namespace SAE.CommonComponent.Application.Abstract.Domains
                 Scopes = scopes.Distinct().ToArray()
             });
         }
-        public void CancelReference(AppCommand.CancelReferenceScope command)
+        public void CancelReference(AppCommand.DeleteScope command)
         {
             if (!command.Scopes.Any()) return;
 

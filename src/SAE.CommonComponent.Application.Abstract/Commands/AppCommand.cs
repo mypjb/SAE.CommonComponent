@@ -26,6 +26,26 @@ namespace SAE.CommonComponent.Application.Commands
         {
             public string Id { get; set; }
         }
+        /// <summary>
+        /// Once the solution is assigned, it will not change
+        /// </summary>
+        public class DistributionSolution
+        {
+            public string Id { get; set; }
+            public string SolutionId { get; set; }
+        }
+
+        public class RelevanceAppConfig
+        {
+            public string Id { get; set; }
+            public string[] AppConfigIds { get; set; }
+        }
+
+        public class DeleteAppConfig
+        {
+            public string Id { get; set; }
+            public string[] AppConfigIds { get; set; }
+        }
 
         public class ReferenceScope
         {
@@ -33,7 +53,7 @@ namespace SAE.CommonComponent.Application.Commands
             public string[] Scopes { get; set; }
         }
 
-        public class CancelReferenceScope
+        public class DeleteScope
         {
             public string Id { get; set; }
             public string[] Scopes { get; set; }

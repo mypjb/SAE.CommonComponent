@@ -59,7 +59,7 @@ namespace SAE.CommonComponent.Application.Controllers
         }
 
         [HttpPost("{action}")]
-        public async Task<object> CancelReferenceScope(AppCommand.CancelReferenceScope command)
+        public async Task<object> CancelReferenceScope(AppCommand.DeleteScope command)
         {
             await this._mediator.SendAsync(command);
             return this.Ok();

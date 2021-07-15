@@ -20,7 +20,7 @@ namespace SAE.CommonComponent.Application.Abstract.Handlers
                               ICommandHandler<AppCommand.Create, string>,
                               ICommandHandler<AppCommand.Change>,
                               ICommandHandler<AppCommand.ChangeStatus>,
-                              ICommandHandler<AppCommand.CancelReferenceScope>,
+                              ICommandHandler<AppCommand.DeleteScope>,
                               ICommandHandler<AppCommand.ReferenceScope>,
                               ICommandHandler<AppCommand.RefreshSecret>,
                               ICommandHandler<AppCommand.Query, IPagedList<AppDto>>,
@@ -53,7 +53,7 @@ namespace SAE.CommonComponent.Application.Abstract.Handlers
             return this.UpdateAsync<App>(command.Id, app => app.ChangeStatus(command));
         }
 
-        public Task HandleAsync(AppCommand.CancelReferenceScope command)
+        public Task HandleAsync(AppCommand.DeleteScope command)
         {
             return this.UpdateAsync<App>(command.Id, app => app.CancelReference(command));
         }
