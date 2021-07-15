@@ -31,5 +31,14 @@ namespace SAE.CommonComponent
             public const string CustomType = "0";
         }
 
+        public class Menu
+        {
+            public const string DefaultId = "menu_00000000000000000000000000000000";
+        }
+
+        public class Dict
+        {
+            public const string DefaultId = "dict_00000000000000000000000000000000";
+        }
     }
 }

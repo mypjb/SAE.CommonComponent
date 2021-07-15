@@ -4,9 +4,9 @@ namespace SAE.CommonComponent
 {
     public enum Status
     {
-        Delete=-1,
-        Disable=0,
-        Enable=1
+        Delete = -1,
+        Disable = 0,
+        Enable = 1
     }
 
     public enum AccessMethod
@@ -22,5 +22,13 @@ namespace SAE.CommonComponent
         Options = 8,
         Custom = 9,
         None = byte.MaxValue
+    }
+    /// <summary>
+    /// dict type
+    /// </summary>
+    public enum DictType
+    {
+        Environment = 1,
+        Scope = 2
     }
 }

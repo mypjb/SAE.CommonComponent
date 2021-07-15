@@ -8,6 +8,7 @@ namespace SAE.CommonComponent.InitializeData
     public interface IInitializeService
     {
         Task InitialAsync();
+        Task BasicDataAsync();
         Task ApplicationAsync();
         Task AuthorizeAsync();
         Task UserAsync();

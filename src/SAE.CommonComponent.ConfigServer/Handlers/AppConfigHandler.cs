@@ -1,4 +1,6 @@
-﻿using SAE.CommonComponent.ConfigServer.Commands;
+﻿using SAE.CommonComponent.BasicData.Commands;
+using SAE.CommonComponent.BasicData.Dtos;
+using SAE.CommonComponent.ConfigServer.Commands;
 using SAE.CommonComponent.ConfigServer.Domains;
 using SAE.CommonComponent.ConfigServer.Dtos;
 using SAE.CommonLibrary.Abstract.Mediator;
@@ -16,25 +18,32 @@ namespace SAE.CommonComponent.ConfigServer.Handles
     {
         private readonly IStorage _storage;
         private readonly IDocumentStore _documentStore;
+        private readonly IMediator _mediator;
 
-        public AppConfigHandler(IStorage storage, IDocumentStore documentStore)
+        public AppConfigHandler(IStorage storage,
+                                IDocumentStore documentStore,
+                                IMediator mediator)
         {
             this._storage = storage;
             this._documentStore = documentStore;
+            this._mediator = mediator;
         }
         public async Task<AppConfigDto> HandleAsync(AppCommand.Config command)
         {
             var app = new AppConfigDto();
 
-            var environment = this._storage.AsQueryable<EnvironmentVariableDto>()
-                                    .FirstOrDefault(e => e.Name == command.Env);
+            var envs = await this._mediator.SendAsync<IEnumerable<DictDto>>(new DictCommand.List
+            {
+                Type = (int)DictType.Environment
+            });
 
-            Assert.Build(environment)
+            var env = envs.FirstOrDefault(s => s.Name == command.Env);
+            Assert.Build(env)
                   .NotNull($"env '{command.Env}' not exist!");
 
             var projectData = this._storage.AsQueryable<ProjectData>()
                                                .FirstOrDefault(s => s.ProjectId == command.Id &&
-                                                               s.EnvironmentId == environment.Id);
+                                                               s.EnvironmentId == env.Id);
             app.Version = projectData.Version;
             if (projectData != null && projectData.Version != command.Version)
             {

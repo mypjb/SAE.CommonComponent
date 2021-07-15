@@ -14,10 +14,9 @@ namespace SAE.CommonComponent.Routing.Domains
 {
     public class Menu : Document
     {
-        public const string DefaultId = "menu_00000000000000000000000000000000";
         public Menu()
         {
-            this.ParentId = DefaultId;
+            this.ParentId = Constants.Menu.DefaultId;
             this.PermissionIds = Enumerable.Empty<string>().ToArray();
         }
 
@@ -25,7 +24,7 @@ namespace SAE.CommonComponent.Routing.Domains
         {
             if (command.ParentId.IsNullOrWhiteSpace())
             {
-                command.ParentId = DefaultId;
+                command.ParentId = Constants.Menu.DefaultId;
             }
             this.Apply<MenuEvent.Create>(command, e => e.Id = Utils.GenerateId());
         }
@@ -65,7 +64,7 @@ namespace SAE.CommonComponent.Routing.Domains
         {
             if (command.ParentId.IsNullOrWhiteSpace())
             {
-                command.ParentId = DefaultId;
+                command.ParentId = Constants.Menu.DefaultId;
             }
             this.Apply<MenuEvent.Change>(command);
             await this.ParentExist(parentProvider);
@@ -92,7 +91,7 @@ namespace SAE.CommonComponent.Routing.Domains
         /// <returns></returns>
         public bool IsRoot()
         {
-            return this.ParentId == DefaultId;
+            return this.ParentId == Constants.Menu.DefaultId;
         }
 
         /// <summary>

@@ -28,6 +28,7 @@ namespace SAE.CommonComponent.ConfigServer.Commands
             public string Name { get; set; }
             public string SolutionId { get; set; }
             public int Version { get; set; }
+            public string Id { get; set; }
         }
 
         public class Change : Create
@@ -68,6 +69,6 @@ namespace SAE.CommonComponent.ConfigServer.Commands
             public string EnvironmentId { get; set; }
         }
 
-       
+
     }
 }

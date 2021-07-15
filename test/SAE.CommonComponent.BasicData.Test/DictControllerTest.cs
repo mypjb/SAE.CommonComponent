@@ -31,14 +31,14 @@ namespace SAE.CommonComponent.BasicData.Test
         }
 
         [Theory]
-        [InlineData(null)]
-        public async Task<DictDto> Add(string parentId = null)
+        [InlineData(null, 0)]
+        public async Task<DictDto> Add(string parentId = null, int type = 0)
         {
             var command = new DictCommand.Create
             {
                 Name = this.GetRandom(),
                 ParentId = parentId,
-                Type = Math.Abs(this.GetRandom().GetHashCode() / 100)
+                Type = type > 0 ? type : Math.Abs(this.GetRandom().GetHashCode() / 100)
             };
 
             if (!parentId.IsNullOrWhiteSpace())

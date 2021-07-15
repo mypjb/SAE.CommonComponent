@@ -3,6 +3,7 @@ using SAE.CommonComponent.Application.Commands;
 using SAE.CommonComponent.Application.Dtos;
 using SAE.CommonComponent.Test;
 using SAE.CommonLibrary.Extension;
+using System;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -27,6 +28,7 @@ namespace SAE.CommonComponent.Application.Test
         [Fact]
         public async Task<AppDto> Add()
         {
+            this.WriteLine(Guid.Empty.ToString("N"));
             var command = new AppCommand.Create
             {
                 Name = this.GetRandom(),

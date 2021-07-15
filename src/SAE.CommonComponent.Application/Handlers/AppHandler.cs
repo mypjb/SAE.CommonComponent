@@ -24,22 +24,14 @@ namespace SAE.CommonComponent.Application.Abstract.Handlers
                               ICommandHandler<AppCommand.ReferenceScope>,
                               ICommandHandler<AppCommand.RefreshSecret>,
                               ICommandHandler<AppCommand.Query, IPagedList<AppDto>>,
-                              ICommandHandler<Command.Find<AppDto>, AppDto>,
-                              ICommandHandler<ScopeCommand.Create>,
-                              ICommandHandler<Command.List<ScopeDto>, IEnumerable<ScopeDto>>,
-                              ICommandHandler<ScopeCommand.Query, IPagedList<ScopeDto>>,
-                              ICommandHandler<ScopeCommand.Delete>
+                              ICommandHandler<Command.Find<AppDto>, AppDto>
     {
-        private readonly IDistributedCache _distributedCache;
         private readonly IStorage _storage;
         private readonly ILogging<AppHandler> _logging;
-        public string ScopeKey = nameof(ScopeKey);
         public AppHandler(IDocumentStore documentStore,
-                          IDistributedCache distributedCache,
                           IStorage storage,
                           ILogging<AppHandler> logging) : base(documentStore)
         {
-            this._distributedCache = distributedCache;
             this._storage = storage;
             this._logging = logging;
         }
@@ -96,44 +88,5 @@ namespace SAE.CommonComponent.Application.Abstract.Handlers
             return Task.FromResult(PagedList.Build(query, command));
         }
 
-        public async Task HandleAsync(ScopeCommand.Create command)
-        {
-            //var scopes = (await this._distributedCache.GetAsync<List<ScopeDto>>(ScopeKey)) ?? new List<ScopeDto>();
-            //if (!scopes.Any(s => s.Name.Equals(command.Name, StringComparison.OrdinalIgnoreCase)))
-            //{
-            //    scopes.Add(command.To<ScopeDto>());
-            //    await this._distributedCache.AddAsync(ScopeKey, scopes, TimeSpan.FromDays(365 * 100));
-            //}
-        }
-
-        public async Task<IEnumerable<ScopeDto>> HandleAsync(Command.List<ScopeDto> command)
-        {
-            return new[] { new ScopeDto
-            {
-                Display=Constants.Scope,
-                Name=Constants.Scope
-            }};
-            //return (await this._distributedCache.GetAsync<IEnumerable<ScopeDto>>(ScopeKey))?.Distinct() ?? Enumerable.Empty<ScopeDto>();
-        }
-
-        public async Task<IPagedList<ScopeDto>> HandleAsync(ScopeCommand.Query command)
-        {
-            //var scopes = await this._distributedCache.GetAsync<List<ScopeDto>>(ScopeKey);
-            return PagedList.Build(new[] { new ScopeDto
-            {
-                Display=Constants.Scope,
-                Name=Constants.Scope
-            }}, command);
-        }
-
-        public async Task HandleAsync(ScopeCommand.Delete command)
-        {
-            //var scopes = await this._distributedCache.GetAsync<List<ScopeDto>>(ScopeKey);
-            //if (scopes != null && scopes.Any(s => s.Name.Equals(command.Name, StringComparison.OrdinalIgnoreCase)))
-            //{
-            //    scopes.RemoveAll(s => s.Name.Equals(command.Name, StringComparison.OrdinalIgnoreCase));
-            //    await this._distributedCache.AddAsync(ScopeKey, scopes, TimeSpan.FromDays(365 * 100));
-            //}
-        }
     }
 }

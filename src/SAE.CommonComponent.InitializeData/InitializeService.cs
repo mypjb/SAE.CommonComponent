@@ -3,6 +3,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SAE.CommonComponent.Application.Commands;
 using SAE.CommonComponent.Application.Dtos;
+using SAE.CommonComponent.BasicData.Commands;
+using SAE.CommonComponent.BasicData.Dtos;
 using SAE.CommonComponent.ConfigServer.Commands;
 using SAE.CommonComponent.ConfigServer.Dtos;
 using SAE.CommonComponent.Identity.Commands;
@@ -10,6 +12,7 @@ using SAE.CommonComponent.PluginManagement.Commands;
 using SAE.CommonComponent.PluginManagement.Dtos;
 using SAE.CommonComponent.Routing.Commands;
 using SAE.CommonComponent.Routing.Dtos;
+using SAE.CommonLibrary;
 using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.Abstract.Model;
 using SAE.CommonLibrary.EventStore.Document;
@@ -47,6 +50,18 @@ namespace SAE.CommonComponent.InitializeData
             this._pluginManage = serviceProvider.GetService<IPluginManage>();
         }
 
+        public virtual async Task BasicDataAsync()
+        {
+            var scopeCommand = new DictCommand.Create
+            {
+                Name = Constants.Scope,
+                Type = (int)DictType.Scope
+            };
+
+            this._logging.Info($"add default scope:{scopeCommand.ToJsonString()}");
+
+            await this._mediator.SendAsync(scopeCommand);
+        }
         public virtual async Task ApplicationAsync()
         {
             var solutions = await this._mediator.SendAsync<IPagedList<SolutionDto>>(new SolutionCommand.Query());
@@ -63,18 +78,10 @@ namespace SAE.CommonComponent.InitializeData
 
             if (!projects.Any()) { return; }
 
-
-            var scopeCommand = new ScopeCommand.Create
+            var environments = await this._mediator.SendAsync<IEnumerable<DictDto>>(new DictCommand.List
             {
-                Name = Constants.Scope,
-                Display = Constants.Scope
-            };
-
-            this._logging.Info($"add default scope:{scopeCommand.ToJsonString()}");
-
-            await this._mediator.SendAsync(scopeCommand);
-
-            var environments = await this._mediator.SendAsync<IEnumerable<EnvironmentVariableDto>>(new Command.List<EnvironmentVariableDto>());
+                Type = (int)DictType.Environment
+            });
 
             foreach (var project in projects)
             {
@@ -152,7 +159,10 @@ namespace SAE.CommonComponent.InitializeData
         {
 
         }
-
+        protected virtual string GetProjectId()
+        {
+            return Utils.GenerateId();
+        }
         public virtual async Task ConfigServerAsync()
         {
             var configPath = this._configuration.GetValue<string>(SAE.CommonLibrary.Configuration.Constants.ConfigRootDirectoryKey);
@@ -177,7 +187,8 @@ namespace SAE.CommonComponent.InitializeData
             var projectId = await this._mediator.SendAsync<string>(new ProjectCommand.Create
             {
                 Name = projectName,
-                SolutionId = slnId
+                SolutionId = slnId,
+                Id=this.GetProjectId()
             });
 
             this._logging.Info($"Create project '{projectName}'-'{projectId}'");
@@ -215,9 +226,10 @@ namespace SAE.CommonComponent.InitializeData
 
             foreach (var kvs in dictionary)
             {
-                var environmentId = await this._mediator.SendAsync<string>(new EnvironmentVariableCommand.Create
+                var environmentId = await this._mediator.SendAsync<string>(new DictCommand.Create
                 {
-                    Name = kvs.Key
+                    Name = kvs.Key,
+                    Type = (int)DictType.Environment
                 });
 
                 this._logging.Info($"Create EnvironmentVariable '{kvs.Key}'");
@@ -279,10 +291,13 @@ namespace SAE.CommonComponent.InitializeData
         {
             var templates = await this._mediator.SendAsync<IEnumerable<TemplateDto>>(new Command.List<TemplateDto>());
             if (templates.Any()) return;
+
+            this._logging.Info($"start initial {nameof(BasicDataAsync)}");
+            await this.BasicDataAsync();
+            this._logging.Info($"end initial {nameof(BasicDataAsync)}");
+
             this._logging.Info($"start initial {nameof(ConfigServerAsync)}");
-
             await this.ConfigServerAsync();
-
             this._logging.Info($"end initial {nameof(ConfigServerAsync)}");
 
             this._logging.Info($"start initial {nameof(ApplicationAsync)}");
@@ -394,5 +409,7 @@ namespace SAE.CommonComponent.InitializeData
             var plugins = await this._mediator.SendAsync<IEnumerable<PluginDto>>(new Command.List<PluginDto>());
             this._logging.Info($"Plugin list:{plugins?.ToJsonString()}");
         }
+
+        
     }
 }

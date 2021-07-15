@@ -11,17 +11,16 @@ namespace SAE.CommonComponent.BasicData.Domains
 {
     public class Dict : Document
     {
-        public const string DefaultId = "dict_00000000000000000000000000000000";
         public Dict()
         {
-            this.ParentId = DefaultId;
+            this.ParentId = Constants.Dict.DefaultId;
         }
 
         public Dict(DictCommand.Create command)
         {
             if (command.ParentId.IsNullOrWhiteSpace())
             {
-                command.ParentId = DefaultId;
+                command.ParentId = Constants.Dict.DefaultId;
             }
             this.Apply<DictEvent.Create>(command, e => e.Id = Utils.GenerateId());
         }
@@ -53,7 +52,7 @@ namespace SAE.CommonComponent.BasicData.Domains
         {
             if (command.ParentId.IsNullOrWhiteSpace())
             {
-                command.ParentId = DefaultId;
+                command.ParentId = Constants.Dict.DefaultId;
             }
             this.Apply<DictEvent.Change>(command);
             await this.ParentExist(parentProvider);
@@ -83,7 +82,7 @@ namespace SAE.CommonComponent.BasicData.Domains
         /// <returns></returns>
         public bool IsRoot()
         {
-            return this.ParentId == DefaultId;
+            return this.ParentId == Constants.Dict.DefaultId;
         }
 
     }

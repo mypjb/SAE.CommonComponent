@@ -1,8 +1,15 @@
-﻿using SAE.CommonComponent.ConfigServer.Commands;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using SAE.CommonComponent.BasicData.Commands;
+using SAE.CommonComponent.BasicData.Dtos;
+using SAE.CommonComponent.BasicData.Test;
+using SAE.CommonComponent.ConfigServer.Commands;
 using SAE.CommonComponent.ConfigServer.Dtos;
 using SAE.CommonLibrary;
+using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.Abstract.Model;
 using SAE.CommonLibrary.Extension;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -14,15 +21,30 @@ namespace SAE.CommonComponent.ConfigServer.Test
 {
     public class ProjectControllerTest : ControllerTest
     {
+        public const string API = "Project";
+        private DictControllerTest _dictControllerTest;
+        private ConfigControllerTest _configController;
+        private SolutionControllerTest _solutionController;
+        private readonly string _environmentName;
         public ProjectControllerTest(ITestOutputHelper output) : base(output)
         {
-            this._configController = new ConfigControllerTest(this._output, this.HttpClient);
-            this._solutionController = new SolutionControllerTest(output, this.HttpClient);
+            this._dictControllerTest = new DictControllerTest(this._output);
+            var dictDto = this._dictControllerTest.Add(null, (int)DictType.Environment).GetAwaiter().GetResult();
+            this._environmentName = dictDto.Name;
+            this._configController = new ConfigControllerTest(this._output, this.HttpClient, dictDto.Id);
+            this._solutionController = new SolutionControllerTest(this._output, this.HttpClient);
         }
 
-        public const string API = "Project";
-        private readonly ConfigControllerTest _configController;
-        private readonly SolutionControllerTest _solutionController;
+        protected override IWebHostBuilder UseStartup(IWebHostBuilder builder)
+        {
+            return base.UseStartup(builder).ConfigureServices(services =>
+            {
+                services.AddSingleton(p=>
+                {
+                    return this._dictControllerTest.ServiceProvider.GetServices<ICommandHandler<DictCommand.List, IEnumerable<DictDto>>>();
+                });
+            });
+        }
 
         [Theory]
         [InlineData("")]
@@ -141,7 +163,7 @@ namespace SAE.CommonComponent.ConfigServer.Test
             var appConfigCommand = new AppCommand.Config
             {
                 Id = project.Id,
-                Env = EnvironmentControllerTest.DefaultEnv
+                Env = this._environmentName
             };
 
             var requestMessage = new HttpRequestMessage(HttpMethod.Get, $"app/config?{nameof(appConfigCommand.Id)}={appConfigCommand.Id}&{nameof(appConfigCommand.Env)}={appConfigCommand.Env}&{nameof(appConfigCommand.Version)}={appConfigCommand.Version}");
@@ -149,7 +171,7 @@ namespace SAE.CommonComponent.ConfigServer.Test
             var responseMessage = await this.HttpClient.SendAsync(requestMessage);
 
             var content = await responseMessage.Content.ReadAsStringAsync();
-           
+
             Assert.Contains(config.Content, content);
         }
 

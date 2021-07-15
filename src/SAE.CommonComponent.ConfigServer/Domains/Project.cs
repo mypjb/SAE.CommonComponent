@@ -22,7 +22,7 @@ namespace SAE.CommonComponent.ConfigServer.Domains
         {
             this.Apply<ProjectEvent.Create>(command, e =>
             {
-                e.Id = Utils.GenerateId();
+                e.Id = command.Id.IsNullOrWhiteSpace() ? Utils.GenerateId() : command.Id;
                 e.CreateTime = DateTime.UtcNow;
             });
         }

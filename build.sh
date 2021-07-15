@@ -15,7 +15,7 @@ plugin_dir=$main_dir/plugins
 
 mkdir -p $plugin_dir
 
-project_array=(Application Authorize Identity OAuth Routing User InitializeData ConfigServer PluginManagement Master)
+project_array=(BasicData Application Authorize Identity OAuth Routing User InitializeData ConfigServer PluginManagement Master)
 
 index=0
 

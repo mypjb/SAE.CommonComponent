@@ -88,7 +88,7 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
             var query = this._storage.AsQueryable<DictDto>();
             if (command.Root)
             {
-                query = query.Where(s => s.ParentId == Dict.DefaultId);
+                query = query.Where(s => s.ParentId == Constants.Dict.DefaultId);
             }
             if (!command.Name.IsNullOrWhiteSpace())
             {
@@ -129,9 +129,9 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
 
             var query = this._storage.AsQueryable<DictDto>();
 
-            if (command.Id.IsNullOrWhiteSpace() || Dict.DefaultId.Equals(command.Id))
+            if (command.Id.IsNullOrWhiteSpace() || Constants.Dict.DefaultId.Equals(command.Id))
             {
-                command.Id = Dict.DefaultId;
+                command.Id = Constants.Dict.DefaultId;
             }
             else
             {

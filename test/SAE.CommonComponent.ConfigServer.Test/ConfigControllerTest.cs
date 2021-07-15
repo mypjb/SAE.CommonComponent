@@ -2,6 +2,7 @@
 using SAE.CommonComponent.ConfigServer.Dtos;
 using SAE.CommonLibrary;
 using SAE.CommonLibrary.Extension;
+using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
@@ -12,35 +13,24 @@ namespace SAE.CommonComponent.ConfigServer.Test
 {
     public class ConfigControllerTest : ControllerTest
     {
+        public const string API = "Config";
+        private readonly TemplateControllerTest _templateController;
+        private readonly SolutionControllerTest _solutionController;
+        private readonly string _environmentId;
         public ConfigControllerTest(ITestOutputHelper output) : base(output)
         {
             this._templateController = new TemplateControllerTest(output, this.HttpClient);
             this._solutionController = new SolutionControllerTest(output, this.HttpClient);
-            this._environmentControllerTest = new EnvironmentControllerTest(output, this.HttpClient);
-            this._environmentId = this._environmentControllerTest
-                                      .Add()
-                                      .GetAwaiter()
-                                      .GetResult()
-                                      .Id;
+            this._environmentId = Guid.NewGuid().ToString("N");
         }
 
-        internal ConfigControllerTest(ITestOutputHelper output, HttpClient httpClient) : base(output, httpClient)
+        internal ConfigControllerTest(ITestOutputHelper output, HttpClient httpClient,string envId) : base(output, httpClient)
         {
             this._templateController = new TemplateControllerTest(output, this.HttpClient);
             this._solutionController = new SolutionControllerTest(output, this.HttpClient);
-            this._environmentControllerTest = new EnvironmentControllerTest(output, this.HttpClient);
-            this._environmentId = this._environmentControllerTest
-                                      .Add()
-                                      .GetAwaiter()
-                                      .GetResult()
-                                      .Id;
+            this._environmentId = envId;
         }
 
-        public const string API = "Config";
-        private readonly TemplateControllerTest _templateController;
-        private readonly SolutionControllerTest _solutionController;
-        private readonly EnvironmentControllerTest _environmentControllerTest;
-        private readonly string _environmentId;
         [Fact]
         public async Task<ConfigDto> Add()
         {
