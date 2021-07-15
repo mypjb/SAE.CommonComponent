@@ -21,6 +21,7 @@ using SAE.CommonLibrary.Logging;
 using SAE.CommonLibrary.Plugin;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -48,6 +49,64 @@ namespace SAE.CommonComponent.InitializeData
             this._serviceProvider = serviceProvider;
             this._configuration = this._serviceProvider.GetService<IConfiguration>();
             this._pluginManage = serviceProvider.GetService<IPluginManage>();
+        }
+
+        public virtual async Task InitialAsync()
+        {
+            var templates = await this._mediator.SendAsync<IEnumerable<TemplateDto>>(new Command.List<TemplateDto>());
+            if (templates.Any()) return;
+            var totalTime = 0d;
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            this._logging.Info($"start initial {nameof(BasicDataAsync)}");
+            await this.BasicDataAsync();
+            this._logging.Info($"end initial {nameof(BasicDataAsync)} elapsed time {stopwatch.ElapsedMilliseconds}");
+            stopwatch.Stop();
+            totalTime += stopwatch.ElapsedMilliseconds;
+            stopwatch.Restart();
+
+            this._logging.Info($"start initial {nameof(ConfigServerAsync)}");
+            await this.ConfigServerAsync();
+            this._logging.Info($"end initial {nameof(ConfigServerAsync)} elapsed time {stopwatch.ElapsedMilliseconds}");
+            stopwatch.Stop();
+            totalTime += stopwatch.ElapsedMilliseconds;
+            stopwatch.Restart();
+
+            this._logging.Info($"start initial {nameof(ApplicationAsync)}");
+            await this.ApplicationAsync();
+            this._logging.Info($"end initial {nameof(ApplicationAsync)} elapsed time {stopwatch.ElapsedMilliseconds}");
+            stopwatch.Stop();
+            totalTime += stopwatch.ElapsedMilliseconds;
+            stopwatch.Restart();
+
+            this._logging.Info($"start initial {nameof(AuthorizeAsync)}");
+            await this.AuthorizeAsync();
+            this._logging.Info($"end initial {nameof(AuthorizeAsync)} elapsed time {stopwatch.ElapsedMilliseconds}");
+            stopwatch.Stop();
+            totalTime += stopwatch.ElapsedMilliseconds;
+            stopwatch.Restart();
+
+            this._logging.Info($"start initial {nameof(RoutingAsync)}");
+            await this.RoutingAsync();
+            this._logging.Info($"end initial {nameof(RoutingAsync)} elapsed time {stopwatch.ElapsedMilliseconds}");
+            stopwatch.Stop();
+            totalTime += stopwatch.ElapsedMilliseconds;
+            stopwatch.Restart();
+
+            this._logging.Info($"start initial {nameof(UserAsync)}");
+            await this.UserAsync();
+            this._logging.Info($"end initial {nameof(UserAsync)} elapsed time {stopwatch.ElapsedMilliseconds}");
+            stopwatch.Stop();
+            totalTime += stopwatch.ElapsedMilliseconds;
+            stopwatch.Restart();
+
+            this._logging.Info($"start initial {nameof(PluginAsync)}");
+            await this.PluginAsync();
+            this._logging.Info($"end initial {nameof(PluginAsync)} elapsed time {stopwatch.ElapsedMilliseconds}");
+            stopwatch.Stop();
+            totalTime += stopwatch.ElapsedMilliseconds;;
+
+            this._logging.Info($"total {totalTime}");
         }
 
         public virtual async Task BasicDataAsync()
@@ -285,40 +344,6 @@ namespace SAE.CommonComponent.InitializeData
                 this._logging.Info($"Add project config {projectName}-{kvs.Key} : {appConfigDto.ToJsonString()}");
             }
 
-        }
-
-        public virtual async Task InitialAsync()
-        {
-            var templates = await this._mediator.SendAsync<IEnumerable<TemplateDto>>(new Command.List<TemplateDto>());
-            if (templates.Any()) return;
-
-            this._logging.Info($"start initial {nameof(BasicDataAsync)}");
-            await this.BasicDataAsync();
-            this._logging.Info($"end initial {nameof(BasicDataAsync)}");
-
-            this._logging.Info($"start initial {nameof(ConfigServerAsync)}");
-            await this.ConfigServerAsync();
-            this._logging.Info($"end initial {nameof(ConfigServerAsync)}");
-
-            this._logging.Info($"start initial {nameof(ApplicationAsync)}");
-            await this.ApplicationAsync();
-            this._logging.Info($"end initial {nameof(ApplicationAsync)}");
-
-            this._logging.Info($"start initial {nameof(AuthorizeAsync)}");
-            await this.AuthorizeAsync();
-            this._logging.Info($"end initial {nameof(AuthorizeAsync)}");
-
-            this._logging.Info($"start initial {nameof(RoutingAsync)}");
-            await this.RoutingAsync();
-            this._logging.Info($"end initial {nameof(RoutingAsync)}");
-
-            this._logging.Info($"start initial {nameof(UserAsync)}");
-            await this.UserAsync();
-            this._logging.Info($"end initial {nameof(UserAsync)}");
-
-            this._logging.Info($"start initial {nameof(PluginAsync)}");
-            await this.PluginAsync();
-            this._logging.Info($"end initial {nameof(PluginAsync)}");
         }
 
         public virtual async Task RoutingAsync()
