@@ -63,7 +63,7 @@ namespace SAE.CommonComponent.Routing.Controllers
         }
 
         [HttpPost("permission")]
-        public async Task<IActionResult> Relevance(MenuCommand.RelevancePermission command)
+        public async Task<IActionResult> Reference(MenuCommand.ReferencePermission command)
         {
             await this._mediator.SendAsync(command);
             return this.Ok();

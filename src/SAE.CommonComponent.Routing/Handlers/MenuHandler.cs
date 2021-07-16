@@ -25,7 +25,7 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
                                  ICommandHandler<Command.Find<MenuDto>, MenuDto>,
                                  ICommandHandler<MenuCommand.Query, IPagedList<MenuDto>>,
                                  ICommandHandler<MenuCommand.Tree, IEnumerable<MenuItemDto>>,
-                                 ICommandHandler<MenuCommand.RelevancePermission>,
+                                 ICommandHandler<MenuCommand.ReferencePermission>,
                                  ICommandHandler<MenuCommand.DeletePermission>,
                                  ICommandHandler<MenuCommand.PermissionQuery, IPagedList<PermissionDto>>
 
@@ -114,10 +114,10 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
             return this._documentStore.DeleteAsync<Menu>(command.Ids);
         }
 
-        public async Task HandleAsync(MenuCommand.RelevancePermission command)
+        public async Task HandleAsync(MenuCommand.ReferencePermission command)
         {
             var menu = await this._documentStore.FindAsync<Menu>(command.Id);
-            menu.RelevancePermission(command);
+            menu.ReferencePermission(command);
             await this._documentStore.SaveAsync(menu);
         }
 

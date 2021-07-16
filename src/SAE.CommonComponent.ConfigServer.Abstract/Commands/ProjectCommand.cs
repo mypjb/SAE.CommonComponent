@@ -36,7 +36,7 @@ namespace SAE.CommonComponent.ConfigServer.Commands
             public string Id { get; set; }
         }
 
-        public class RelevanceConfig
+        public class ReferenceConfig
         {
             public string ProjectId { get; set; }
             public string[] ConfigIds { get; set; }
@@ -52,9 +52,10 @@ namespace SAE.CommonComponent.ConfigServer.Commands
         {
             public string Name { get; set; }
             /// <summary>
-            /// 解决方案Id
+            /// Solution Id
             /// </summary>
             public string SolutionId { get; set; }
+            public string[] IgnoreIds { get; set; }
         }
 
         public class ConfigQuery : Paging

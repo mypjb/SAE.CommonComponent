@@ -26,12 +26,12 @@ namespace SAE.CommonComponent.Authorize.Events
             public Status Status { get; set; }
         }
 
-        public class RelevancePermission : IEvent
+        public class ReferencePermission : IEvent
         {
             public string[] PermissionIds { get; set; }
         }
 
-        public class RelevanceMenu : IEvent
+        public class ReferenceMenu : IEvent
         {
             public string[] MenuIds { get; set; }
         }

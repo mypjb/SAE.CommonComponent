@@ -98,7 +98,7 @@ namespace SAE.CommonComponent.Authorize.Test
         }
 
         [Fact]
-        public async Task<RoleDto> RelevancePermission()
+        public async Task<RoleDto> ReferencePermission()
         {
             var roleDto = await this.Add();
             var permissionDtos = new List<PermissionDto>();
@@ -108,7 +108,7 @@ namespace SAE.CommonComponent.Authorize.Test
                            permissionDtos.Add(await this._permissionController.Add());
                        });
 
-            var command = new RoleCommand.RelevancePermission
+            var command = new RoleCommand.ReferencePermission
             {
                 Id = roleDto.Id,
                 PermissionIds = permissionDtos.Select(s => s.Id).ToArray()
@@ -144,9 +144,9 @@ namespace SAE.CommonComponent.Authorize.Test
         [Fact]
         public async Task DeletePermission()
         {
-            var roleDto = await this.RelevancePermission();
+            var roleDto = await this.ReferencePermission();
 
-            var command = new RoleCommand.RelevancePermission
+            var command = new RoleCommand.ReferencePermission
             {
                 Id = roleDto.Id,
                 PermissionIds = roleDto.PermissionIds.ToArray()
@@ -172,7 +172,7 @@ namespace SAE.CommonComponent.Authorize.Test
 
         public async Task DeleteMenu(string[] menuIds)
         {
-            var roleDto = await this.RelevanceMenu(menuIds);
+            var roleDto = await this.ReferenceMenu(menuIds);
 
             var command = new RoleCommand.DeleteMenu
             {
@@ -191,11 +191,11 @@ namespace SAE.CommonComponent.Authorize.Test
             Assert.True(!role.MenuIds.Any(s => command.MenuIds.Contains(s)));
         }
 
-        public async Task<RoleDto> RelevanceMenu(string[] menuIds)
+        public async Task<RoleDto> ReferenceMenu(string[] menuIds)
         {
             var roleDto = await this.Add();
 
-            var command = new RoleCommand.RelevanceMenu
+            var command = new RoleCommand.ReferenceMenu
             {
                 Id = roleDto.Id,
                 MenuIds = menuIds,

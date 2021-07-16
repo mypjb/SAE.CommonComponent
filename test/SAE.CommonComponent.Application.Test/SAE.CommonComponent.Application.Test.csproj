@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\SAE.CommonComponent.Application\SAE.CommonComponent.Application.csproj" />
+    <ProjectReference Include="..\SAE.CommonComponent.ConfigServer.Test\SAE.CommonComponent.ConfigServer.Test.csproj" />
     <ProjectReference Include="..\SAE.CommonComponent.Test\SAE.CommonComponent.Test.csproj" />
   </ItemGroup>
 

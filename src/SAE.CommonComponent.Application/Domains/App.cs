@@ -14,6 +14,7 @@ namespace SAE.CommonComponent.Application.Abstract.Domains
         public App()
         {
             this.Scopes = Enumerable.Empty<string>().ToArray();
+            this.ProjectIds = Enumerable.Empty<string>().ToArray();
         }
         public App(AppCommand.Create command) : this()
         {
@@ -57,13 +58,9 @@ namespace SAE.CommonComponent.Application.Abstract.Domains
         /// <value></value>
         public Status Status { get; set; }
         /// <summary>
-        /// solution id
-        /// </summary>
-        public string SolutionId { get; set; }
-        /// <summary>
         /// app config ids
         /// </summary>
-        public IEnumerable<string> AppConfigIds { get; set; }
+        public string[] ProjectIds { get; set; }
         public void Change(AppCommand.Change command)
         {
             this.Apply<AppEvent.Change>(command);
@@ -77,7 +74,7 @@ namespace SAE.CommonComponent.Application.Abstract.Domains
             });
         }
 
-        public void Reference(AppCommand.ReferenceScope command)
+        public void ReferenceScope(AppCommand.ReferenceScope command)
         {
             if (!command.Scopes.Any()) return;
 
@@ -95,7 +92,7 @@ namespace SAE.CommonComponent.Application.Abstract.Domains
                 Scopes = scopes.Distinct().ToArray()
             });
         }
-        public void CancelReference(AppCommand.DeleteScope command)
+        public void DeleteScope(AppCommand.DeleteScope command)
         {
             if (!command.Scopes.Any()) return;
 
@@ -118,6 +115,36 @@ namespace SAE.CommonComponent.Application.Abstract.Domains
             {
                 Id = this.Id,
                 Status = Status.Delete
+            });
+        }
+
+        public void ReferenceProject(AppCommand.ReferenceProject command)
+        {
+            if (!command.ProjectIds.Any()) return;
+
+            if (this.ProjectIds == null)
+            {
+                this.ProjectIds = Enumerable.Empty<string>().ToArray();
+            }
+
+            var projectIds = this.ProjectIds.ToList();
+
+            projectIds.AddRange(command.ProjectIds);
+
+            this.Apply(new AppEvent.ReferenceProject
+            {
+                ProjectIds = projectIds.Distinct().ToArray()
+            });
+        }
+        public void DeleteProject(AppCommand.DeleteProject command)
+        {
+            if (!command.ProjectIds.Any()) return;
+
+            var projectIds = this.ProjectIds.ToList();
+            projectIds.RemoveAll(command.ProjectIds.Contains);
+            this.Apply(new AppEvent.DeleteProject
+            {
+                ProjectIds = projectIds.Distinct().ToArray()
             });
         }
     }

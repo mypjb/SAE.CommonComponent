@@ -330,9 +330,9 @@ namespace SAE.CommonComponent.InitializeData
                     configIds.Add(configId);
                 }
 
-                this._logging.Info($"Relevance {configIds.Aggregate((a, b) => $"{a},{b}")}");
+                this._logging.Info($"Reference {configIds.Aggregate((a, b) => $"{a},{b}")}");
 
-                await this._mediator.SendAsync(new ProjectCommand.RelevanceConfig
+                await this._mediator.SendAsync(new ProjectCommand.ReferenceConfig
                 {
                     ProjectId = projectId,
                     ConfigIds = configIds.ToArray()

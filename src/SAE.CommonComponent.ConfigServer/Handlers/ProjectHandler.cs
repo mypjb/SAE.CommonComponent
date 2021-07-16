@@ -55,6 +55,10 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
         public async Task<IPagedList<ProjectDto>> HandleAsync(ProjectCommand.Query command)
         {
             var query = this._storage.AsQueryable<ProjectDto>().Where(s => s.SolutionId == command.SolutionId);
+            if (command.IgnoreIds?.Any() ?? false)
+            {
+                query = query.Where(s => !command.IgnoreIds.Contains(s.Id));
+            }
             if (!command.Name.IsNullOrWhiteSpace())
             {
                 query = query.Where(s => s.Name.Contains(command.Name));

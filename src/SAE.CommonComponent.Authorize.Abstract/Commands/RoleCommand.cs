@@ -22,23 +22,23 @@ namespace SAE.CommonComponent.Authorize.Commands
             public string Id { get; set; }
             public Status Status { get; set; }
         }
-        public class RelevancePermission
+        public class ReferencePermission
         {
             public string Id { get; set; }
             public string[] PermissionIds { get; set; }
         }
 
-        public class DeletePermission : RelevancePermission
+        public class DeletePermission : ReferencePermission
         {
         }
 
-        public class RelevanceMenu
+        public class ReferenceMenu
         {
             public string Id { get; set; }
             public string[] MenuIds { get; set; }
         }
 
-        public class DeleteMenu : RelevanceMenu
+        public class DeleteMenu : ReferenceMenu
         {
         }
         public class Query : Paging

@@ -22,7 +22,7 @@ namespace SAE.CommonComponent.ConfigServer.Domains
             Assert.Build(project.SolutionId == config.SolutionId)
                   .True($"项目'{project.Name}',和配置'{config.Name}'所属解决方案不一致,无法建立引用");
 
-            this.Apply(new ProjectEvent.RelevanceConfig
+            this.Apply(new ProjectEvent.ReferenceConfig
             {
                 Id = $"{project.Id}{Constants.DefaultSeparator}{config.Id}{Constants.DefaultSeparator}{config.EnvironmentId}",
                 ProjectId = project.Id,

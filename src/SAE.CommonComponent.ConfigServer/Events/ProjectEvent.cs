@@ -18,7 +18,7 @@ namespace SAE.CommonComponent.ConfigServer.Events
             public string Name { get; set; }
         }
 
-        public class RelevanceConfig : IEvent
+        public class ReferenceConfig : IEvent
         {
             /// <summary>
             /// 

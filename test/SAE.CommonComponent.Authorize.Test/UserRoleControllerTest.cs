@@ -46,7 +46,7 @@ namespace SAE.CommonComponent.Authorize.Test
             await Enumerable.Range(0, 10)
                        .ForEachAsync(async s =>
                        {
-                           roleDtos.Add(await this._roleController.RelevancePermission());
+                           roleDtos.Add(await this._roleController.ReferencePermission());
                        });
 
             command.RoleIds = roleDtos.Select(s => s.Id).ToArray();

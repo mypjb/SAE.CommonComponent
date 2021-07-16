@@ -70,11 +70,11 @@ namespace SAE.CommonComponent.ConfigServer.Test
             return project;
         }
         [Fact]
-        public async Task Relevance()
+        public async Task Reference()
         {
             var config = await this._configController.Add();
             var project = await this.Add(config.SolutionId);
-            var command = new ProjectCommand.RelevanceConfig
+            var command = new ProjectCommand.ReferenceConfig
             {
                 ProjectId = project.Id,
                 ConfigIds = new[] { config.Id }
@@ -132,7 +132,7 @@ namespace SAE.CommonComponent.ConfigServer.Test
         {
             var config = await this._configController.Add();
             var project = await this.Add(config.SolutionId);
-            var command = new ProjectCommand.RelevanceConfig
+            var command = new ProjectCommand.ReferenceConfig
             {
                 ProjectId = project.Id,
                 ConfigIds = new[] { config.Id }

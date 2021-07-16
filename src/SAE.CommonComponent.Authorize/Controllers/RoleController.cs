@@ -61,7 +61,7 @@ namespace SAE.CommonComponent.Authorize.Controllers
 
 
         [HttpPost("permission")]
-        public async Task<IActionResult> RelevancePermission(RoleCommand.RelevancePermission command)
+        public async Task<IActionResult> ReferencePermission(RoleCommand.ReferencePermission command)
         {
             await this._mediator.SendAsync(command);
             return this.Ok();
@@ -82,7 +82,7 @@ namespace SAE.CommonComponent.Authorize.Controllers
         }
 
         [HttpPost("menu")]
-        public async Task<IActionResult> RelevanceMenu(RoleCommand.RelevanceMenu command)
+        public async Task<IActionResult> ReferenceMenu(RoleCommand.ReferenceMenu command)
         {
             await this._mediator.SendAsync(command);
             return this.Ok();

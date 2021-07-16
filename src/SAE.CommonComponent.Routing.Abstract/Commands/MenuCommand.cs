@@ -20,7 +20,7 @@ namespace SAE.CommonComponent.Routing.Commands
             public string Id { get; set; }
         }
 
-        public class RelevancePermission
+        public class ReferencePermission
         {
             /// <summary>
             /// menu Id
@@ -32,7 +32,7 @@ namespace SAE.CommonComponent.Routing.Commands
             public string[] PermissionIds { get; set; }
         }
 
-        public class DeletePermission: RelevancePermission
+        public class DeletePermission: ReferencePermission
         {
         }
 

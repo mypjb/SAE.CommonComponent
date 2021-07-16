@@ -51,7 +51,7 @@ namespace SAE.CommonComponent.ConfigServer.Domains
 
         public void Change(ProjectCommand.Change command) => this.Apply<ProjectEvent.Change>(command);
    
-        public IEnumerable<ProjectConfig> Relevance(IEnumerable<Config> configs)
+        public IEnumerable<ProjectConfig> Reference(IEnumerable<Config> configs)
         {
             return configs.Select(config => new ProjectConfig(this, config)).ToArray();
         }

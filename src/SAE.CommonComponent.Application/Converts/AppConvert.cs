@@ -30,7 +30,8 @@ namespace SAE.CommonComponent.Application.Converts
                     SignIn = app.Endpoint.SignIn
                 },
                 Scopes = app.Scopes,
-                Secret = app.Secret
+                Secret = app.Secret,
+                ProjectIds = app.ProjectIds
             };
             return result;
         }

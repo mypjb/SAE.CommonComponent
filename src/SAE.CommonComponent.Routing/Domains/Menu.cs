@@ -95,16 +95,16 @@ namespace SAE.CommonComponent.Routing.Domains
         }
 
         /// <summary>
-        /// Relevance permission
+        /// Reference permission
         /// </summary>
         /// <param name="command"></param>
-        public void RelevancePermission(MenuCommand.RelevancePermission command)
+        public void ReferencePermission(MenuCommand.ReferencePermission command)
         {
             var permissionIds = (this.PermissionIds ?? new string[0] { }).Concat(command.PermissionIds)
                                                    .Distinct()
                                                    .ToArray();
 
-            this.Apply(new MenuEvent.RelevancePermission
+            this.Apply(new MenuEvent.ReferencePermission
             {
                 PermissionIds = permissionIds
             });
@@ -123,7 +123,7 @@ namespace SAE.CommonComponent.Routing.Domains
 
             permissionIds.RemoveAll(s => command.PermissionIds.Contains(s));
 
-            this.Apply(new MenuEvent.RelevancePermission
+            this.Apply(new MenuEvent.ReferencePermission
             {
                 PermissionIds = permissionIds.ToArray()
             });

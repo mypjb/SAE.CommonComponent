@@ -82,13 +82,13 @@ namespace SAE.CommonComponent.Authorize.Domains
             this.Apply<RoleEvent.ChangeStatus>(command);
 
 
-        public void RelevancePermission(RoleCommand.RelevancePermission command)
+        public void ReferencePermission(RoleCommand.ReferencePermission command)
         {
             var permissionIds = this.PermissionIds.Concat(command.PermissionIds)
                                                  .Distinct()
                                                  .ToArray();
 
-            this.Apply(new RoleEvent.RelevancePermission
+            this.Apply(new RoleEvent.ReferencePermission
             {
                 PermissionIds = permissionIds
             });
@@ -103,19 +103,19 @@ namespace SAE.CommonComponent.Authorize.Domains
 
             permissionIds.RemoveAll(s => command.PermissionIds.Contains(s));
 
-            this.Apply(new RoleEvent.RelevancePermission
+            this.Apply(new RoleEvent.ReferencePermission
             {
                 PermissionIds = permissionIds.ToArray()
             });
         }
 
-        internal void RelevanceMenu(RoleCommand.RelevanceMenu command)
+        internal void ReferenceMenu(RoleCommand.ReferenceMenu command)
         {
             var menuIds = this.MenuIds.Concat(command.MenuIds)
                                                  .Distinct()
                                                  .ToArray();
 
-            this.Apply(new RoleEvent.RelevanceMenu
+            this.Apply(new RoleEvent.ReferenceMenu
             {
                 MenuIds = menuIds
             });
@@ -129,7 +129,7 @@ namespace SAE.CommonComponent.Authorize.Domains
 
             menuIds.RemoveAll(s => command.MenuIds.Contains(s));
 
-            this.Apply(new RoleEvent.RelevanceMenu
+            this.Apply(new RoleEvent.ReferenceMenu
             {
                 MenuIds = menuIds.ToArray()
             });

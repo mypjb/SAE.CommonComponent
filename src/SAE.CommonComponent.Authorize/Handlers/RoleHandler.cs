@@ -21,13 +21,13 @@ namespace SAE.CommonComponent.Authorize.Handlers
                               ICommandHandler<RoleCommand.Create, string>,
                               ICommandHandler<RoleCommand.Change>,
                               ICommandHandler<RoleCommand.ChangeStatus>,
-                              ICommandHandler<RoleCommand.RelevancePermission>,
+                              ICommandHandler<RoleCommand.ReferencePermission>,
                               ICommandHandler<RoleCommand.DeletePermission>,
                               ICommandHandler<Command.BatchDelete<Role>>,
                               ICommandHandler<Command.Find<RoleDto>,RoleDto>,
                               ICommandHandler<RoleCommand.Query, IPagedList<RoleDto>>,
                               ICommandHandler<RoleCommand.PermissionQuery, IPagedList<PermissionDto>>,
-                              ICommandHandler<RoleCommand.RelevanceMenu>,
+                              ICommandHandler<RoleCommand.ReferenceMenu>,
                               ICommandHandler<RoleCommand.DeleteMenu>
 
     {
@@ -106,14 +106,14 @@ namespace SAE.CommonComponent.Authorize.Handlers
             return dto;
         }
 
-        public async Task HandleAsync(RoleCommand.RelevancePermission command)
+        public async Task HandleAsync(RoleCommand.ReferencePermission command)
         {
             var role =await this.FindAsync(command.Id);
 
             Assert.Build(role)
                   .IsNotNull();
 
-            role.RelevancePermission(command);
+            role.ReferencePermission(command);
 
             await this._documentStore.SaveAsync(role);
         }
@@ -153,10 +153,10 @@ namespace SAE.CommonComponent.Authorize.Handlers
             }
         }
 
-        public async Task HandleAsync(RoleCommand.RelevanceMenu command)
+        public async Task HandleAsync(RoleCommand.ReferenceMenu command)
         {                                          
             var role = await this._documentStore.FindAsync<Role>(command.Id);
-            role.RelevanceMenu(command);
+            role.ReferenceMenu(command);
             await this._documentStore.SaveAsync(role);
         }
 

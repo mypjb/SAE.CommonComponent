@@ -52,7 +52,7 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
         }
 
         [HttpPost("config")]
-        public async Task<object> Relevance(ProjectCommand.RelevanceConfig command)
+        public async Task<object> Reference(ProjectCommand.ReferenceConfig command)
         {
             await this._mediator.SendAsync(command);
 
@@ -105,7 +105,7 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
             return await this._mediator.SendAsync<IPagedList<ProjectConfigDto>>(command);
         }
 
-        [HttpGet("config/relevance/{action}")]
+        [HttpGet("config/reference/{action}")]
         public async Task<object> Paging([FromQuery] ProjectCommand.ConfigQuery command)
         {
             return await this._mediator.SendAsync<IPagedList<ConfigDto>>(command);

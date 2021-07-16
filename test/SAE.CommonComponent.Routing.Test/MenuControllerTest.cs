@@ -126,15 +126,15 @@ namespace SAE.CommonComponent.Routing.Test
         }
 
         [Fact]
-        public async Task RelevancePermission()
+        public async Task ReferencePermission()
         {
 
             var url = $"/{API}/permission";
 
-            var roleDto = await roleControllerTest.RelevancePermission();
+            var roleDto = await roleControllerTest.ReferencePermission();
 
             var menu = await this.Add();
-            var command = new MenuCommand.RelevancePermission
+            var command = new MenuCommand.ReferencePermission
             {
                 Id = menu.Id,
                 PermissionIds = roleDto.PermissionIds.Take(10).ToList().ToArray()
@@ -202,7 +202,7 @@ namespace SAE.CommonComponent.Routing.Test
         }
 
         [Fact]
-        public async Task<RoleDto> RoleRelevanceMenu()
+        public async Task<RoleDto> RoleReferenceMenu()
         {
             var menus = new List<MenuDto>();
             await Enumerable.Range(0, 10)
@@ -211,13 +211,13 @@ namespace SAE.CommonComponent.Routing.Test
                            menus.Add(await this.Add());
                        });
 
-            return await this.roleControllerTest.RelevanceMenu(menus.Select(s => s.Id).ToArray());
+            return await this.roleControllerTest.ReferenceMenu(menus.Select(s => s.Id).ToArray());
         }
 
         [Fact]
         public async Task RoleDeleteMenu()
         {
-            var roleDto=await this.RoleRelevanceMenu();
+            var roleDto=await this.RoleReferenceMenu();
             await this.roleControllerTest.DeleteMenu(roleDto.MenuIds);
         }
 

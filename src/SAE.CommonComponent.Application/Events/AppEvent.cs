@@ -31,7 +31,7 @@ namespace SAE.CommonComponent.Application.Abstract.Events
         {
             public string[] Scopes { get; set; }
         }
-        public class CancelReferenceScope : ReferenceScope
+        public class DeleteScope : ReferenceScope
         {
 
         }
@@ -39,6 +39,16 @@ namespace SAE.CommonComponent.Application.Abstract.Events
         public class ChangeStatus : IEvent
         {
             public Status Status { get; set; }
+        }
+
+       
+        public class ReferenceProject : IEvent
+        {
+            public string[] ProjectIds { get; set; }
+        }
+        public class DeleteProject : ReferenceProject
+        {
+
         }
     }
 }

@@ -26,25 +26,17 @@ namespace SAE.CommonComponent.Application.Commands
         {
             public string Id { get; set; }
         }
-        /// <summary>
-        /// Once the solution is assigned, it will not change
-        /// </summary>
-        public class DistributionSolution
+     
+        public class ReferenceProject
         {
             public string Id { get; set; }
-            public string SolutionId { get; set; }
+            public string[] ProjectIds { get; set; }
         }
 
-        public class RelevanceAppConfig
+        public class DeleteProject
         {
             public string Id { get; set; }
-            public string[] AppConfigIds { get; set; }
-        }
-
-        public class DeleteAppConfig
-        {
-            public string Id { get; set; }
-            public string[] AppConfigIds { get; set; }
+            public string[] ProjectIds { get; set; }
         }
 
         public class ReferenceScope
@@ -63,6 +55,16 @@ namespace SAE.CommonComponent.Application.Commands
         {
             public string Id { get; set; }
             public Status Status { get; set; }
+        }
+
+        public class ProjectQuery : Paging
+        {
+            /// <summary>
+            /// app Id
+            /// </summary>
+            public string Id { get; set; }
+            public string SolutionId { get; set; }
+            public string Name { get; set; }
         }
     }
 }

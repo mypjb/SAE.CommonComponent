@@ -16,7 +16,7 @@ using SAE.CommonLibrary.Abstract.Builder;
 namespace SAE.CommonComponent.ConfigServer.Handlers
 {
     public class ProjectConfigHandler : AbstractHandler<ProjectConfig>,
-                                        ICommandHandler<ProjectCommand.RelevanceConfig>,
+                                        ICommandHandler<ProjectCommand.ReferenceConfig>,
                                         ICommandHandler<Command.BatchDelete<ProjectConfig>>,
                                         ICommandHandler<ProjectCommand.ConfigQuery, IPagedList<ProjectConfigDto>>,
                                         ICommandHandler<ProjectCommand.ConfigQuery, IPagedList<ConfigDto>>,
@@ -37,7 +37,7 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
             this._storage = storage;
         }
 
-        public async Task HandleAsync(ProjectCommand.RelevanceConfig command)
+        public async Task HandleAsync(ProjectCommand.ReferenceConfig command)
         {
             if (!command.ConfigIds?.Any() ?? false)
             {
@@ -46,7 +46,7 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
 
             var project = await this._documentStore.FindAsync<Project>(command.ProjectId);
 
-            var projectConfigs = project.Relevance(this._storage.AsQueryable<Config>()
+            var projectConfigs = project.Reference(this._storage.AsQueryable<Config>()
                                                                 .Where(s => command.ConfigIds.Contains(s.Id))
                                                                 .ToArray());
 

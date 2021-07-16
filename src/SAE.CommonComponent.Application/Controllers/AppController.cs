@@ -1,10 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using SAE.CommonComponent.Application.Commands;
 using SAE.CommonComponent.Application.Dtos;
-using SAE.CommonLibrary;
+using SAE.CommonComponent.ConfigServer.Dtos;
 using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.Abstract.Model;
 using SAE.CommonLibrary.EventStore.Document;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SAE.CommonComponent.Application.Controllers
@@ -51,15 +52,15 @@ namespace SAE.CommonComponent.Application.Controllers
             return this.Ok();
         }
 
-        [HttpPost("{action}")]
+        [HttpPost("scope")]
         public async Task<object> ReferenceScope(AppCommand.ReferenceScope command)
         {
             await this._mediator.SendAsync(command);
             return this.Ok();
         }
 
-        [HttpPost("{action}")]
-        public async Task<object> CancelReferenceScope(AppCommand.DeleteScope command)
+        [HttpDelete("scope")]
+        public async Task<object> DeleteScope(AppCommand.DeleteScope command)
         {
             await this._mediator.SendAsync(command);
             return this.Ok();
@@ -69,6 +70,27 @@ namespace SAE.CommonComponent.Application.Controllers
         public async Task<object> Paging([FromQuery]AppCommand.Query command)
         {
             return await this._mediator.SendAsync<IPagedList<AppDto>>(command);
+        }
+
+
+        [HttpPost("project")]
+        public async Task<object> ReferenceProject([FromBody] AppCommand.ReferenceProject command)
+        {
+            await this._mediator.SendAsync(command);
+            return this.Ok();
+        }
+
+        [HttpDelete("project")]
+        public async Task<object> DeleteAppConfig([FromBody] AppCommand.DeleteProject command)
+        {
+            await this._mediator.SendAsync(command);
+            return this.Ok();
+        }
+
+        [HttpGet("project/{action}")]
+        public async Task<IEnumerable<ProjectDto>> Paging([FromQuery] AppCommand.ProjectQuery command)
+        {
+            return await this._mediator.SendAsync<IPagedList<ProjectDto>>(command);
         }
 
     }

@@ -19,6 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\SAE.CommonComponent.Application.Abstract\SAE.CommonComponent.Application.Abstract.csproj" />
     <ProjectReference Include="..\SAE.CommonComponent.BasicData.Abstract\SAE.CommonComponent.BasicData.Abstract.csproj" />
+    <ProjectReference Include="..\SAE.CommonComponent.ConfigServer.Abstract\SAE.CommonComponent.ConfigServer.Abstract.csproj" />
   </ItemGroup>
 
 </Project>
