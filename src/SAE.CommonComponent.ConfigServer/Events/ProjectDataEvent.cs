@@ -13,7 +13,7 @@ namespace SAE.CommonComponent.ConfigServer.Events
         {
 
         }
-        public class Publish :IEvent
+        public class Publish : IEvent
         {
             /// <summary>
             /// 版本号
@@ -23,6 +23,10 @@ namespace SAE.CommonComponent.ConfigServer.Events
             /// 项目已发布的配置数据
             /// </summary>
             public string Data { get; set; }
+            /// <summary>
+            /// public data
+            /// </summary>
+            public string PublicData{get;set;}
         }
     }
 }

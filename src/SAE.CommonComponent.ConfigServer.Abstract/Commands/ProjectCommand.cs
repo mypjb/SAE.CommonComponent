@@ -42,10 +42,14 @@ namespace SAE.CommonComponent.ConfigServer.Commands
             public string[] ConfigIds { get; set; }
         }
 
-        public class ConfigChangeAlias
+        public class ConfigChange
         {
             public string Id { get; set; }
             public string Alias { get; set; }
+            /// <summary>
+            /// private
+            /// </summary>
+            public bool Private { get; set; }
         }
 
         public class Query : Paging

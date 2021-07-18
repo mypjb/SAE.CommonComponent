@@ -30,13 +30,11 @@ namespace SAE.CommonComponent.Application.Commands
         public class ReferenceProject
         {
             public string Id { get; set; }
-            public string[] ProjectIds { get; set; }
+            public string ProjectId { get; set; }
         }
 
-        public class DeleteProject
+        public class DeleteProject: ReferenceProject
         {
-            public string Id { get; set; }
-            public string[] ProjectIds { get; set; }
         }
 
         public class ReferenceScope

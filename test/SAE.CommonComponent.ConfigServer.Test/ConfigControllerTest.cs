@@ -24,24 +24,30 @@ namespace SAE.CommonComponent.ConfigServer.Test
             this._environmentId = Guid.NewGuid().ToString("N");
         }
 
-        internal ConfigControllerTest(ITestOutputHelper output, HttpClient httpClient,string envId) : base(output, httpClient)
+        internal ConfigControllerTest(ITestOutputHelper output, HttpClient httpClient, string envId) : base(output, httpClient)
         {
             this._templateController = new TemplateControllerTest(output, this.HttpClient);
             this._solutionController = new SolutionControllerTest(output, this.HttpClient);
             this._environmentId = envId;
         }
 
-        [Fact]
-        public async Task<ConfigDto> Add()
+        [Theory]
+        [InlineData(null)]
+        public async Task<ConfigDto> Add(string solutionId = null)
         {
-            var solution = await this._solutionController.Add();
+            if (solutionId.IsNullOrWhiteSpace())
+            {
+                var solution = await this._solutionController.Add();
+                solutionId = solution.Id;
+            }
+            
             var template = await this._templateController.Add();
             var commond = new ConfigCommand.Create
             {
                 Name = template.Name,
                 Content = template.Format,
-                SolutionId = solution.Id,
-                EnvironmentId=this._environmentId
+                SolutionId = solutionId,
+                EnvironmentId = this._environmentId
             };
             var message = new HttpRequestMessage(HttpMethod.Post, API);
             message.AddJsonContent(commond);

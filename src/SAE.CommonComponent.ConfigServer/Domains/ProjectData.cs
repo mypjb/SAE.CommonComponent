@@ -40,17 +40,18 @@ namespace SAE.CommonComponent.ConfigServer.Domains
         /// </summary>
         public string Data { get; set; }
 
+        public string PublicData { get; set; }
+
         protected override string GetIdentity()
         {
             return this.Id;
         }
 
-        public void Change(string data)
+        public void Change(ProjectDataEvent.Publish @event)
         {
-            this.Apply(new ProjectDataEvent.Publish
+            this.Apply<ProjectDataEvent.Publish>(@event, e =>
             {
-                Data = data,
-                Version = this.Version + 1
+                e.Version = this.Version + 1;
             });
         }
     }

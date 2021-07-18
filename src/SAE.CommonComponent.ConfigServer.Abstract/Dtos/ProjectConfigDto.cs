@@ -32,5 +32,9 @@ namespace SAE.CommonComponent.ConfigServer.Dtos
         /// 别名
         /// </summary>
         public string Alias { get; set; }
+        /// <summary>
+        /// private
+        /// </summary>
+        public bool Private { get; set; }
     }
 }

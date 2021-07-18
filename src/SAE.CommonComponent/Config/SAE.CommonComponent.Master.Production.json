@@ -1,8 +1,8 @@
 {
   "siteConfig": {
     "appId": "localhost.test",
-    "appSecret": "localhost.test",
     "appName": "master.test",
+    "scope": "api",
     "authority": "http://oauth.sae.com",
     "redirectUris": [ "http://master.client.sae.com/oauth/signin-oidc" ],
     "postLogoutRedirectUris": [ "http://master.client.sae.com/oauth/signout-oidc" ],

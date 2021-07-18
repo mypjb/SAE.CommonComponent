@@ -68,7 +68,7 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
 
 
         [HttpPut("config")]
-        public async Task<object> ProjectConfig(ProjectCommand.ConfigChangeAlias command)
+        public async Task<object> ProjectConfig(ProjectCommand.ConfigChange command)
         {
             await this._mediator.SendAsync(command);
             return this.Ok();
@@ -90,7 +90,7 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
         [HttpGet("{action}")]
         public async Task<object> Preview([FromQuery]ProjectCommand.Preview command)
         {
-            var data = await this._mediator.SendAsync<object>(command);
+            var data = await this._mediator.SendAsync<ProjectPreviewDto>(command);
             return data;
         }
 

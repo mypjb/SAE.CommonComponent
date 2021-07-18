@@ -25,12 +25,12 @@ namespace SAE.CommonComponent.ConfigServer.Test
         private DictControllerTest _dictControllerTest;
         private ConfigControllerTest _configController;
         private SolutionControllerTest _solutionController;
-        private readonly string _environmentName;
+        private readonly string _environmentId;
         public ProjectControllerTest(ITestOutputHelper output) : base(output)
         {
             this._dictControllerTest = new DictControllerTest(this._output);
             var dictDto = this._dictControllerTest.Add(null, (int)DictType.Environment).GetAwaiter().GetResult();
-            this._environmentName = dictDto.Name;
+            this._environmentId = dictDto.Id;
             this._configController = new ConfigControllerTest(this._output, this.HttpClient, dictDto.Id);
             this._solutionController = new SolutionControllerTest(this._output, this.HttpClient);
         }
@@ -39,7 +39,7 @@ namespace SAE.CommonComponent.ConfigServer.Test
         {
             return base.UseStartup(builder).ConfigureServices(services =>
             {
-                services.AddSingleton(p=>
+                services.AddSingleton(p =>
                 {
                     return this._dictControllerTest.ServiceProvider.GetServices<ICommandHandler<DictCommand.List, IEnumerable<DictDto>>>();
                 });
@@ -87,6 +87,8 @@ namespace SAE.CommonComponent.ConfigServer.Test
 
             var httpResponseMessage = await this.HttpClient.SendAsync(message);
 
+            httpResponseMessage.EnsureSuccessStatusCode();
+
             var responseMessage = await this.HttpClient.GetAsync($"{API}/config/paging?{nameof(command.ProjectId)}={command.ProjectId}&&{nameof(config.EnvironmentId)}={config.EnvironmentId}");
 
             var projectConfigDtos = await responseMessage.AsAsync<PagedList<ProjectConfigDto>>();
@@ -131,18 +133,37 @@ namespace SAE.CommonComponent.ConfigServer.Test
         public async Task AppConfig()
         {
             var config = await this._configController.Add();
+            var publicConfig = await this._configController.Add(config.SolutionId);
             var project = await this.Add(config.SolutionId);
             var command = new ProjectCommand.ReferenceConfig
             {
                 ProjectId = project.Id,
-                ConfigIds = new[] { config.Id }
+                ConfigIds = new[] { config.Id, publicConfig.Id }
             };
-
 
             var message = new HttpRequestMessage(HttpMethod.Post, $"{API}/config")
                               .AddJsonContent(command);
 
             var httpResponseMessage = await this.HttpClient.SendAsync(message);
+
+            var projectConfigsRep = await this.HttpClient.GetAsync($"{API}/config/paging?ProjectId={command.ProjectId}&EnvironmentId={config.EnvironmentId}");
+
+            var projectConfigs = await projectConfigsRep.AsAsync<PagedList<ProjectConfigDto>>();
+
+            var publicProjectConfig = projectConfigs.First(s => s.ConfigId == publicConfig.Id);
+
+            var configChangeCommand = new ProjectCommand.ConfigChange
+            {
+                Id = publicProjectConfig.Id,
+                Alias = this.GetRandom(),
+                Private = false
+            };
+
+            var configChangeReq = new HttpRequestMessage(HttpMethod.Put, $"{API}/config");
+
+            configChangeReq.AddJsonContent(configChangeCommand);
+
+            (await this.HttpClient.SendAsync(configChangeReq)).EnsureSuccessStatusCode();
 
             var publishCommand = new ProjectCommand.Publish
             {
@@ -160,19 +181,24 @@ namespace SAE.CommonComponent.ConfigServer.Test
 
             (await this.HttpClient.SendAsync(publishReq2)).EnsureSuccessStatusCode();
 
-            var appConfigCommand = new AppCommand.Config
+            var previewCommand = new ProjectCommand.Preview
             {
                 Id = project.Id,
-                Env = this._environmentName
+                EnvironmentId = this._environmentId
             };
 
-            var requestMessage = new HttpRequestMessage(HttpMethod.Get, $"app/config?{nameof(appConfigCommand.Id)}={appConfigCommand.Id}&{nameof(appConfigCommand.Env)}={appConfigCommand.Env}&{nameof(appConfigCommand.Version)}={appConfigCommand.Version}");
+            var requestMessage = new HttpRequestMessage(HttpMethod.Get, $"{API}/Preview?{nameof(previewCommand.Id)}={previewCommand.Id}&{nameof(previewCommand.EnvironmentId)}={previewCommand.EnvironmentId}");
 
             var responseMessage = await this.HttpClient.SendAsync(requestMessage);
 
-            var content = await responseMessage.Content.ReadAsStringAsync();
-
-            Assert.Contains(config.Content, content);
+            var projectPreview = await responseMessage.AsAsync<ProjectPreviewDto>();
+            this.WriteLine(new
+            {
+                Source = new { Public = publicConfig, Private = config},
+                New = projectPreview
+            });
+            Assert.Contains(config.Content, projectPreview.Private.ToJsonString());
+            Assert.Contains(publicConfig.Content, projectPreview.Public.ToJsonString());
         }
 
         private async Task<ProjectDto> Get(string id)

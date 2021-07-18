@@ -31,7 +31,7 @@ namespace SAE.CommonComponent.Application.Converts
                 },
                 Scopes = app.Scopes,
                 Secret = app.Secret,
-                ProjectIds = app.ProjectIds
+                ProjectId = app.ProjectId
             };
             return result;
         }

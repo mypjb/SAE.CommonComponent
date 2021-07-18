@@ -1,4 +1,5 @@
-﻿using SAE.CommonComponent.BasicData.Commands;
+﻿using SAE.CommonComponent.Application.Dtos;
+using SAE.CommonComponent.BasicData.Commands;
 using SAE.CommonComponent.BasicData.Dtos;
 using SAE.CommonComponent.ConfigServer.Commands;
 using SAE.CommonComponent.ConfigServer.Domains;
@@ -38,16 +39,21 @@ namespace SAE.CommonComponent.ConfigServer.Handles
             });
 
             var env = envs.FirstOrDefault(s => s.Name == command.Env);
+
             Assert.Build(env)
                   .NotNull($"env '{command.Env}' not exist!");
 
+            var dto = await this._mediator.SendAsync<AppDto>(new Command.Find<AppDto> { Id = command.AppId });
+
             var projectData = this._storage.AsQueryable<ProjectData>()
-                                               .FirstOrDefault(s => s.ProjectId == command.Id &&
-                                                               s.EnvironmentId == env.Id);
+                                           .FirstOrDefault(s => s.ProjectId == dto.ProjectId &&
+                                                                s.EnvironmentId == env.Id);
             app.Version = projectData.Version;
             if (projectData != null && projectData.Version != command.Version)
             {
-                app.Data = projectData.Data.ToObject<Dictionary<string, object>>();
+                app.Data = (command.Private ? projectData.Data : 
+                                              projectData.PublicData)
+                                                         .ToObject<Dictionary<string, object>>();
             }
 
             return app;

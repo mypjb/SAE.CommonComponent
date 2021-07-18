@@ -28,7 +28,8 @@ namespace SAE.CommonComponent.ConfigServer.Domains
                 ProjectId = project.Id,
                 ConfigId = config.Id,
                 Alias = config.Name,
-                EnvironmentId = config.EnvironmentId
+                EnvironmentId = config.EnvironmentId,
+                Private = true
             });
         }
 
@@ -55,14 +56,19 @@ namespace SAE.CommonComponent.ConfigServer.Domains
         /// </summary>
         public string Alias { get; set; }
 
+        /// <summary>
+        /// private
+        /// </summary>
+        public bool Private { get; set; }
+
         protected override string GetIdentity()
         {
             return this.Id;
         }
 
-        internal void Change(ProjectCommand.ConfigChangeAlias command)
+        internal void Change(ProjectCommand.ConfigChange command)
         {
-            this.Apply<ProjectEvent.ConfigChangeAlias>(command);
+            this.Apply<ProjectEvent.ConfigChange>(command);
         }
     }
 }

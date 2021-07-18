@@ -20,7 +20,7 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
                                         ICommandHandler<Command.BatchDelete<ProjectConfig>>,
                                         ICommandHandler<ProjectCommand.ConfigQuery, IPagedList<ProjectConfigDto>>,
                                         ICommandHandler<ProjectCommand.ConfigQuery, IPagedList<ConfigDto>>,
-                                        ICommandHandler<ProjectCommand.ConfigChangeAlias>,
+                                        ICommandHandler<ProjectCommand.ConfigChange>,
                                         ICommandHandler<Command.Find<ProjectConfigDto>, ProjectConfigDto>
     {
         private readonly IMediator _mediator;
@@ -49,7 +49,16 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
             var projectConfigs = project.Reference(this._storage.AsQueryable<Config>()
                                                                 .Where(s => command.ConfigIds.Contains(s.Id))
                                                                 .ToArray());
-
+            projectConfigs.ForEach(pc =>
+            {
+                Assert.Build(this._storage.AsQueryable<ProjectConfigDto>()
+                            .Where(s => s.ProjectId == pc.ProjectId &&
+                                   s.EnvironmentId == pc.EnvironmentId &&
+                                   s.Alias == pc.Alias)
+                            .Count() == 0)
+                 .True($"{pc.Alias} is exist");
+            });
+           
 
             await this._documentStore.SaveAsync(projectConfigs);
         }
@@ -75,7 +84,7 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
             return paging;
         }
 
-        public async Task HandleAsync(ProjectCommand.ConfigChangeAlias command)
+        public async Task HandleAsync(ProjectCommand.ConfigChange command)
         {
             var projectConfig = await this._documentStore.FindAsync<ProjectConfig>(command.Id);
 
@@ -84,13 +93,12 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
             Assert.Build(this._storage.AsQueryable<ProjectConfigDto>()
                              .Where(s => s.ProjectId == projectConfig.ProjectId &&
                                     s.EnvironmentId == projectConfig.EnvironmentId &&
-                                    s.Id != command.Id &&
+                                    s.ConfigId != projectConfig.ConfigId &&
                                     s.Alias == command.Alias)
                              .Count() == 0)
                   .True($"{command.Alias} is exist");
 
             await this._documentStore.SaveAsync(projectConfig);
-
         }
 
         public async Task<ProjectConfigDto> HandleAsync(Command.Find<ProjectConfigDto> command)

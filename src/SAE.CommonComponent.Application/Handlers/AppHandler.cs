@@ -26,7 +26,6 @@ namespace SAE.CommonComponent.Application.Abstract.Handlers
                               ICommandHandler<AppCommand.Query, IPagedList<AppDto>>,
                               ICommandHandler<Command.Find<AppDto>, AppDto>,
                               ICommandHandler<AppCommand.ReferenceProject>,
-                              ICommandHandler<AppCommand.DeleteProject>,
                               ICommandHandler<AppCommand.ProjectQuery, IPagedList<ProjectDto>>
     {
         private readonly IStorage _storage;
@@ -99,17 +98,12 @@ namespace SAE.CommonComponent.Application.Abstract.Handlers
                   .NotNull();
             return await this._mediator.SendAsync<IPagedList<ProjectDto>>(new ProjectCommand.Query
             {
-                IgnoreIds = app.ProjectIds,
+                IgnoreIds = new[] { app.ProjectId },
                 Name = app.Name,
                 SolutionId=command.SolutionId,
                 PageIndex = command.PageIndex,
                 PageSize = command.PageSize
             });
-        }
-
-        public async Task HandleAsync(AppCommand.DeleteProject command)
-        {
-            await this.UpdateAsync<App>(command.Id, app => app.DeleteProject(command));
         }
 
         public async Task HandleAsync(AppCommand.ReferenceProject command)

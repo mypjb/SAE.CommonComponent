@@ -40,11 +40,13 @@ namespace SAE.CommonComponent.ConfigServer.Events
             /// env id
             /// </summary>
             public string EnvironmentId { get; set; }
+            public bool Private { get; set; }
         }
 
-        public class ConfigChangeAlias : IEvent
+        public class ConfigChange : IEvent
         {
             public string Alias { get; set; }
+            public bool Private { get; set; }
         }
 
     }

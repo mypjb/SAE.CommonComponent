@@ -80,13 +80,6 @@ namespace SAE.CommonComponent.Application.Controllers
             return this.Ok();
         }
 
-        [HttpDelete("project")]
-        public async Task<object> DeleteAppConfig([FromBody] AppCommand.DeleteProject command)
-        {
-            await this._mediator.SendAsync(command);
-            return this.Ok();
-        }
-
         [HttpGet("project/{action}")]
         public async Task<IEnumerable<ProjectDto>> Paging([FromQuery] AppCommand.ProjectQuery command)
         {

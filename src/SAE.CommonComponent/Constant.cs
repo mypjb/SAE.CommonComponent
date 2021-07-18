@@ -11,11 +11,17 @@ namespace SAE.CommonComponent
         public const string DefaultSeparator = "_";
         public class Config
         {
-            public const string AppId = "appId";
-            public const string Secret = "appSecret";
+            public class OAuth
+            {
+                public const string Authority = "authority";
+                public const string Scope = "scope";
+                public const string AppId = "appId";
+                public const string AppSecret = "appSecret";
+                public const char ScopeSeparator = ' ';
+            }
+
             public const string AppName = "appName";
             public const string Master = "master";
-            public const string Authority = "authority";
             public const string ConfigExtensionName = ".json";
             public const char Separator = '.';
         }
@@ -29,6 +35,7 @@ namespace SAE.CommonComponent
         public class Claim
         {
             public const string CustomType = "0";
+            public const string ClientId = "client_id";
         }
 
         public class Menu

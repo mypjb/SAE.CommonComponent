@@ -21,7 +21,7 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
                                   ICommandHandler<Command.Find<ProjectDto>, ProjectDto>,
                                   ICommandHandler<ProjectCommand.Query, IPagedList<ProjectDto>>,
                                   ICommandHandler<ProjectCommand.Publish>,
-                                  ICommandHandler<ProjectCommand.Preview, object>
+                                  ICommandHandler<ProjectCommand.Preview, ProjectPreviewDto>
     {
         private readonly IStorage _storage;
 
@@ -68,7 +68,7 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
 
         public async Task HandleAsync(ProjectCommand.Publish command)
         {
-            var data = await this.CombinationConfigAsync(command);
+            var tuple = await this.CombinationConfigAsync(command);
 
             var projectData = this._storage.AsQueryable<ProjectData>()
                                            .FirstOrDefault(s => s.ProjectId == command.Id &&
@@ -80,26 +80,34 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
                 {
                     ProjectId = command.Id,
                     EnvironmentId = command.EnvironmentId,
-                    Data = data.ToJsonString()
+                    Data = tuple.Item2.ToJsonString(),
+                    PublicData = tuple.Item1.ToJsonString(),
                 });
             }
             else
             {
                 projectData = await this._documentStore.FindAsync<ProjectData>(projectData.Id);
-                projectData.Change(data.ToJsonString());
+                projectData.Change(new ProjectDataEvent.Publish
+                {
+                    Data = tuple.Item2.ToJsonString(),
+                    PublicData = tuple.Item1.ToJsonString()
+                });
             }
 
             await this._documentStore.SaveAsync(projectData);
         }
 
-        public async Task<object> HandleAsync(ProjectCommand.Preview command)
+        public async Task<ProjectPreviewDto> HandleAsync(ProjectCommand.Preview command)
         {
-            var data = await this.CombinationConfigAsync(command);
-            return data;
+            var tuple = await this.CombinationConfigAsync(command);
+            return new ProjectPreviewDto
+            {
+                Public = tuple.Item1,
+                Private = tuple.Item2
+            };
         }
 
-
-        private async Task<IDictionary<string, object>> CombinationConfigAsync(ProjectCommand.Publish command)
+        private async Task<Tuple<IDictionary<string, object>, IDictionary<string, object>>> CombinationConfigAsync(ProjectCommand.Publish command)
         {
             var project = await this.FindAsync(command.Id);
 
@@ -114,7 +122,9 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
                                        .Where(s => configIds.Contains(s.Id))
                                        .ToArray();
 
-            var data = new Dictionary<string, object>();
+            var privateData = new Dictionary<string, object>();
+
+            var publicData = new Dictionary<string, object>();
 
             foreach (var projectConfig in projectConfigs.Where(s => configs.Any(c => c.Id == s.ConfigId))
                                                                 .ToArray())
@@ -123,18 +133,24 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
 
                 var key = projectConfig.Alias;
 
-                if (data.ContainsKey(key))
+                if (privateData.ContainsKey(key))
                 {
-
                     key += "_";
-                    data[key] = config?.Content.ToObject<object>();
+                    privateData[key] = config?.Content.ToObject<object>();
                 }
                 else
                 {
-                    data[key] = config?.Content.ToObject<object>();
+                    privateData[key] = config?.Content.ToObject<object>();
                 }
+
+                if (!projectConfig.Private)
+                {
+                    publicData[key] = privateData[key];
+                }
+
             }
-            return data;
+
+            return new Tuple<IDictionary<string, object>, IDictionary<string, object>>(publicData, privateData);
         }
     }
 

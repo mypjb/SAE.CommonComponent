@@ -167,17 +167,12 @@ namespace SAE.CommonComponent.Application.Test
             var app = await this.Add();
             var solution = await this._solutionControllerTest.Add();
 
-            var projects = new List<ProjectDto>();
-            foreach (var item in Enumerable.Range(0, 10))
-            {
-                var project = await this._projectControllerTest.Add(solution.Id);
-                projects.Add(project);
-            }
+            var project = await this._projectControllerTest.Add(solution.Id);
 
             var command = new AppCommand.ReferenceProject
             {
                 Id = app.Id,
-                ProjectIds = projects.Select(s => s.Id).ToArray()
+                ProjectId = project.Id
             };
 
             var url = $"{API}/Project";
@@ -189,34 +184,11 @@ namespace SAE.CommonComponent.Application.Test
 
             var dto = await this.Get(app.Id);
 
-            Assert.True(dto.ProjectIds.All(command.ProjectIds.Contains));
+            Assert.True(dto.ProjectId.All(command.ProjectId.Contains));
             return dto;
         }
 
-        [Fact]
-        public async Task DeleteProject()
-        {
-            var appDto = await this.ReferenceProject();
-
-            var command = new AppCommand.DeleteProject
-            {
-                Id = appDto.Id,
-                ProjectIds = appDto.ProjectIds
-                                   .OrderBy(s => Guid.NewGuid().ToString())
-                                   .Skip(Math.Abs(appDto.GetHashCode() % (appDto.ProjectIds.Length - 1))).ToArray()
-            };
-
-            var url = $"{API}/Project";
-
-            var request = new HttpRequestMessage(HttpMethod.Delete, url);
-            request.AddJsonContent(command);
-            var httpResponse = await this.HttpClient.SendAsync(request);
-
-            httpResponse.EnsureSuccessStatusCode();
-            var dto = await this.Get(appDto.Id);
-
-            Assert.True(!dto.ProjectIds.Any(command.ProjectIds.Contains));
-        }
+        
         private async Task<AppDto> Get(string id)
         {
             var message = new HttpRequestMessage(HttpMethod.Get, $"{API}/{id}");

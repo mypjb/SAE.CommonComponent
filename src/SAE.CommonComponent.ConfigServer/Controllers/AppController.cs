@@ -3,12 +3,14 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SAE.CommonComponent.ConfigServer.Commands;
 using SAE.CommonComponent.ConfigServer.Dtos;
 using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.Configuration;
+using SAE.CommonLibrary.Extension;
 
 namespace SAE.CommonComponent.ConfigServer.Controllers
 {
@@ -23,9 +25,25 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
             this._mediator = mediator;
         }
 
+        [AllowAnonymous]
         [HttpGet("{action}")]
         public async Task<IActionResult> Config([FromQuery] AppCommand.Config command)
         {
+            if (this.User.Identity.IsAuthenticated)
+            {
+                var claim = this.User.FindFirst(Constants.Claim.ClientId);
+
+                command.AppId = claim.Value;
+                command.Private = true;
+            }
+            else
+            {
+                command.Private = false;
+            }
+
+            Assert.Build(command.AppId)
+                  .NotNullOrWhiteSpace($"parameter appid invalid");
+
             var appConfig = await this._mediator.SendAsync<AppConfigDto>(command);
 
             if (command.Version == appConfig.Version)

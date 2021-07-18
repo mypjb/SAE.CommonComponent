@@ -44,11 +44,7 @@ namespace SAE.CommonComponent.Application.Abstract.Events
        
         public class ReferenceProject : IEvent
         {
-            public string[] ProjectIds { get; set; }
-        }
-        public class DeleteProject : ReferenceProject
-        {
-
+            public string ProjectId { get; set; }
         }
     }
 }

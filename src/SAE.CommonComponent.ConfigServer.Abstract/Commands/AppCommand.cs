@@ -10,9 +10,9 @@ namespace SAE.CommonComponent.ConfigServer.Commands
         public class Config
         {
             /// <summary>
-            /// 配置标识
+            /// app id
             /// </summary>
-            public string Id { get; set; }
+            public string AppId { get; set; }
             /// <summary>
             /// 环境类型
             /// </summary>
@@ -21,6 +21,10 @@ namespace SAE.CommonComponent.ConfigServer.Commands
             /// 版本
             /// </summary>
             public int Version { get; set; }
+            /// <summary>
+            /// private
+            /// </summary>
+            public bool Private { get; set; }
         }
     }
 }

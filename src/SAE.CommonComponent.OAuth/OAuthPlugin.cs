@@ -22,14 +22,15 @@ namespace SAE.CommonComponent.OAuth
 
             authenticationBuilder.AddOpenIdConnect(options =>
             {
-                options.Authority = SiteConfig.Get(Constants.Config.Authority);
-                options.ClientId = SiteConfig.Get(Constants.Config.AppId);
+                options.Authority = SiteConfig.Get(Constants.Config.OAuth.Authority);
+                options.ClientId = SiteConfig.Get(Constants.Config.OAuth.AppId);
                 options.ResponseType = "id_token token";
                 options.RequireHttpsMetadata = false;
-                options.Scope.Add(Constants.Scope);
+                foreach (var scope in SiteConfig.Get(Constants.Config.OAuth.Scope).Split(Constants.Config.OAuth.ScopeSeparator))
+                    options.Scope.Add(scope);
                 options.SaveTokens = true;
-                options.CorrelationCookie.SameSite = SameSiteMode.Unspecified;
-                options.NonceCookie.SameSite = SameSiteMode.Unspecified;
+                options.CorrelationCookie.SameSite = SameSiteMode.Lax;
+                options.NonceCookie.SameSite = SameSiteMode.Lax;
             });
         }
 

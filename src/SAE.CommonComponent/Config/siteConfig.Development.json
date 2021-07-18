@@ -1,11 +1,11 @@
 ﻿{
   "siteConfig": {
     "appId": "localhost.dev",
-    "appSecret": "localhost.dev",
     "appName": "master.dev",
-    "authority": "http://oauth.sae.com",
-    "redirectUris": [ "http://localhost:8000/oauth/signin-oidc" ],
-    "postLogoutRedirectUris": [ "http://localhost:8000/oauth/signout-oidc" ],
-    "signIn": "http://localhost:8000/identity/login"
+    "scope": "api",
+    "authority": "http://localhost:8080",
+    "redirectUris": [ "http://localhost:8080/oauth/signin-oidc" ],
+    "postLogoutRedirectUris": [ "http://localhost:8080/oauth/signout-oidc" ],
+    "signIn": "http://localhost:8080/identity/login"
   }
 }

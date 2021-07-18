@@ -36,7 +36,7 @@ namespace SAE.CommonComponent.Application.Dtos
         /// <summary>
         /// app config ids
         /// </summary>
-        public string[] ProjectIds { get; set; }
+        public string ProjectId { get; set; }
 
         /// <summary>
         /// create time
