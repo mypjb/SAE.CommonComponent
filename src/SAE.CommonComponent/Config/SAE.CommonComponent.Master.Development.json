@@ -6,7 +6,9 @@
     "authority": "http://localhost:8080",
     "redirectUris": [ "http://localhost:8080/oauth/signin-oidc" ],
     "postLogoutRedirectUris": [ "http://localhost:8080/oauth/signout-oidc" ],
-    "signIn": "http://localhost:8080/identity/login"
+    "signIn": "http://localhost:8080/identity/login",
+    "login": "http://localhost:8080/account/login",
+    "apiHost": "http://localhost:8080"
   },
   "Nlog": {
     "autoReload": "true",

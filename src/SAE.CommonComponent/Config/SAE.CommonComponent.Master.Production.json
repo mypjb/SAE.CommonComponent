@@ -6,7 +6,9 @@
     "authority": "http://oauth.sae.com",
     "redirectUris": [ "http://master.client.sae.com/oauth/signin-oidc" ],
     "postLogoutRedirectUris": [ "http://master.client.sae.com/oauth/signout-oidc" ],
-    "signIn": "http://master.client.sae.com/identity/login"
+    "signIn": "http://master.client.sae.com/identity/login",
+    "login": "http://oauth.sae.com/account/login",
+    "apiHost": "http://api.sae.com"
   },
   "database": [
     {
