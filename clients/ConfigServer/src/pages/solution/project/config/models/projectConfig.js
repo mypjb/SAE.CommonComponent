@@ -14,8 +14,8 @@ export default {
       const paging = yield select(({ projectConfig }) => (projectConfig.paging));
       yield put({ type: "paging", payload: paging });
     },
-    *relevance({ payload }, { put }) {
-      yield put({ type: "relevance/search", payload });
+    *reference({ payload }, { put }) {
+      yield put({ type: "reference/search", payload });
     }
   }
 };

@@ -2,7 +2,7 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import React, { useEffect } from 'react';
 import { Row, Col, Input, Button, Modal, Select } from 'antd';
 import { connect, useModel } from 'umi';
-import RelevanceTable from './components/RelevanceTable';
+import ReferenceTable from './components/ReferenceTable';
 import EditConfig from './components/EditConfig';
 import PagingTable from '@/components/PagingTable';
 import { defaultOperation, defaultDispatchType } from '@/utils/utils';
@@ -49,8 +49,8 @@ export default connect(({ projectConfig }) => (
       });
     }
 
-    const handleRelevance = () => {
-      defaultOperation.add({ dispatch, element: RelevanceTable, ...match.params, modalProps: { width: "80%" } }, modal);
+    const handleReference = () => {
+      defaultOperation.add({ dispatch, element: ReferenceTable, ...match.params, modalProps: { width: "80%" } }, modal);
     };
 
 
@@ -100,7 +100,7 @@ export default connect(({ projectConfig }) => (
         <div>
           <Row>
             <Col span={18}>
-              <Button type="primary" onClick={handleRelevance}>Relevance</Button>
+              <Button type="primary" onClick={handleReference}>Reference</Button>
               <Button type="primary" onClick={handleDelete}>Delete</Button>
             </Col>
             <Col span={2}>

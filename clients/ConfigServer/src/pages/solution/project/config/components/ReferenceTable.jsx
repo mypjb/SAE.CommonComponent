@@ -23,7 +23,7 @@ export default (props) => {
 
   const handleSkipPage = (pageIndex, pageSize) => {
     dispatch({
-      type: "projectConfigRelevance/paging",
+      type: "projectConfigReference/paging",
       payload: {
         pageIndex,
         pageSize,
@@ -46,7 +46,7 @@ export default (props) => {
 
   props.okCallback((close) => {
     dispatch({
-      type: "projectConfigRelevance/relevance",
+      type: "projectConfigReference/reference",
       payload: {
         data: { configIds, projectId },
         callback: close

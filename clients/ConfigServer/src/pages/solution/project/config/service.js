@@ -11,13 +11,13 @@ httpClient.delete = async function (data) {
     });
 }
 
-httpClient.queryRelevance = async function (params) {
+httpClient.queryReference = async function (params) {
     return request(`/project/config/paging`, {
         params
     });
 }
 
-httpClient.relevance = async function (data) {
+httpClient.reference = async function (data) {
     return request(`/project/config`, {
         method:"post",
         data
