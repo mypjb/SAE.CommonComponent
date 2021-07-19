@@ -12,14 +12,14 @@ export default ({ location }) => {
 
     console.log(signinCallbackUrl);
     const { masterState, setMasterState, masterPush } = useModel('@@initialState').initialState?.masterProps;
-    const { siteConfig } = masterState;
+    const { callbackUrl } = masterState;
     const mgr = new oidc.UserManager(oidcConfig);
     mgr.signinRedirectCallback(signinCallbackUrl).then((user) => {
         setMasterState({
             ...masterState,
             user
         });
-        masterPush(siteConfig.callbackUrl());
+        masterPush(callbackUrl());
     }).catch(e => {
         console.error(e);
     });

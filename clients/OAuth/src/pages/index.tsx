@@ -12,27 +12,17 @@ export default (props) => {
     client_id: appId,
     redirect_uri: redirectUris,
     response_type: "id_token token",
-    scope: "openid profile",
+    scope: "openid profile " + siteConfig.scope,
     post_logout_redirect_uri: postLogoutRedirectUris,
   };
 
   const mgr = new UserManager(oidcConfig);
-  // const { masterState, setMasterState, masterPush } = useModel('@@initialState').initialState?.masterProps;
-  // // mgr.clearStaleState();
-  // mgr.getUser().then(user => {
-  //   debugger;
-  //   setMasterState({
-  //     ...masterState,
-  //     user
-  //   });
-  //   masterPush(siteConfig.callbackUrl());
-  // }).catch(reason => {
-    mgr.createSigninRequest().then(request => {
-      window.location.href = request.url;
-    }).catch(val => {
-      console.error(val);
-    });
-  // });
+
+  mgr.createSigninRequest().then(request => {
+    window.location.href = request.url;
+  }).catch(val => {
+    console.error(val);
+  });
 
   return (<Fragment></Fragment>);
 }

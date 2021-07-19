@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { history } from 'umi';
-import appConfig from '../config/appConfig'
+import { appConfig, load } from '../config/appConfig'
 import indexPage from './pages/index';
 
-
+let globalConfig = {};
 
 const hideLayoutUrls = ['/identity', '/oauth'];
 
@@ -29,21 +29,25 @@ const processingData = function (menus) {
 }
 
 export const qiankun = fetch(appConfig.api.app).then(async (response) => {
-    console.log("qiankun");
+    
+    globalConfig = await load();
+
+    console.log({ type: "qiankun", globalConfig });
+
     const apps = await response.json();
     const menuResponse = await fetch(appConfig.api.menu);
     const routes = processingData(await menuResponse.json());
-    appConfig.apps = apps;
-    appConfig.routes = routes;
+    globalConfig.apps = apps;
+    globalConfig.routes = routes;
     return {
         // 注册子应用信息
         apps,
         routes,
-        layout: {
-            name: 'SAE',
-            locale: true,
-            layout: 'side'
-        },
+        // layout: {
+        //     name: globalConfig.siteConfig.appName,
+        //     locale: true,
+        //     layout: 'side'
+        // },
         lifeCycles: {
             afterMount: props => {
                 console.log(props);
@@ -64,16 +68,16 @@ const checkLogin = (user) => {
     return false;
 }
 export function useQiankunStateForSlave() {
-    const [masterState, setMasterState] = useState(appConfig);
+    const [masterState, setMasterState] = useState(globalConfig);
     const initial = (requestConfig) => {
-        requestConfig.prefix = appConfig.siteConfig.apiHost;
+        requestConfig.prefix = globalConfig.siteConfig.apiHost;
         requestConfig.credentials = "include";
         requestConfig.middlewares = [async (ctx, next) => {
             const req = ctx.req;
             const options = req.options;
 
             if (!checkLogin(masterState?.user)) {
-                window.sessionStorage.setItem(appConfig.callBackUrlKey, window.location.pathname + window.location.search);
+                window.sessionStorage.setItem(globalConfig.callBackUrlKey, window.location.pathname + window.location.search);
                 if (masterState.siteConfig.signIn.startsWith('http')) {
                     window.location.href = masterState.siteConfig.signIn;
                 } else {
@@ -121,13 +125,13 @@ export function useQiankunStateForSlave() {
 
 export const layout = () => {
     return {
-        name: 'SAE',
+        name: globalConfig.siteConfig.appName,
         locale: true,
         layout: 'side'
     };
 };
 
-export const getInitialState = () => {
-    return appConfig;
+export const getInitialState = async () => {
+    return globalConfig;
 }
 
