@@ -13,14 +13,22 @@ namespace SAE.CommonComponent
         {
             public class OAuth
             {
-                public const string Authority = "authority";
-                public const string Scope = "scope";
-                public const string AppId = "appId";
-                public const string AppSecret = "appSecret";
+                public const string Authority = "oauth:authority";
+                public const string Scope = "oauth:scope";
+                public const string AppId = "oauth:appId";
+                public const string AppSecret = "oauth:appSecret";
                 public const char ScopeSeparator = ' ';
             }
-
-            public const string AppName = "appName";
+            public class BasicInfo
+            {
+                public const string Name = "basicInfo:name";
+            }
+            public class Url
+            {
+                public const string Admin = "url:admin";
+                public const string SignIn = "url:signIn";
+            }
+            
             public const string Master = "master";
             public const string ConfigExtensionName = ".json";
             public const char Separator = '.';

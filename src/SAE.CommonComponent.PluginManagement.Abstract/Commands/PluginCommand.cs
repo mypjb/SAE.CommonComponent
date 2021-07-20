@@ -16,6 +16,8 @@ namespace SAE.CommonComponent.PluginManagement.Commands
             public string Description { get; set; }
             public string Version { get; set; }
             public int Order { get; set; }
+            public string Path { get; set; }
+            public string Entry { get; set; }
             public Status Status { get; set; }
            
         }

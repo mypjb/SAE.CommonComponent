@@ -1,14 +1,26 @@
 {
   "siteConfig": {
-    "appId": "localhost.test",
-    "appName": "master.test",
-    "scope": "api",
-    "authority": "http://oauth.sae.com",
-    "redirectUris": [ "http://master.client.sae.com/oauth/signin-oidc" ],
-    "postLogoutRedirectUris": [ "http://master.client.sae.com/oauth/signout-oidc" ],
-    "signIn": "http://master.client.sae.com/identity/login",
-    "login": "http://oauth.sae.com/account/login",
-    "apiHost": "http://api.sae.com"
+    "oauth": {
+      "appId": "localhost.test",
+      "scope": "api",
+      "authority": "http://oauth.sae.com",
+      "redirectUris": [ "http://master.client.sae.com/oauth/signin-oidc" ],
+      "postLogoutRedirectUris": [ "http://master.client.sae.com/oauth/signout-callback-oidc" ]
+    },
+    "basicInfo": {
+      "name": "master.test"
+    },
+    "url": {
+      "admin": "client.sae.com",
+      "signIn": "http://master.client.sae.com/identity/login"
+    },
+    "api": {
+      "host": "http://api.sae.com",
+      "menu": "http://api.sae.com/menu/tree",
+      "app": "http://api.sae.com/plugin/list",
+      "config": "http://api.sae.com/app/config?appid=localhost.test",
+      "login": "http://oauth.sae.com/account/login"
+    }
   },
   "database": [
     {

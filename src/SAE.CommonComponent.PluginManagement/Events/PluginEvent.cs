@@ -13,6 +13,10 @@ namespace SAE.CommonComponent.PluginManagement.Events
             public string Version { get; set; }
 
             public int Order { get; set; }
+
+            public string Path { get; set; }
+            public string Entry { get; set; }
+
             public Status Status { get; set; }
 
             public DateTime CreateTime { get; set; }

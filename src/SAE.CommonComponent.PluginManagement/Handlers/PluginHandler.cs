@@ -55,9 +55,10 @@ namespace SAE.CommonComponent.PluginManagement.Handlers
 
         public async Task HandleAsync(PluginCommand.Change command)
         {
-            var plugin = await this._documentStore.FindAsync<Plugin>(command.Id);
-            plugin.Change(command);
-            await this._documentStore.SaveAsync(plugin);
+            await this.UpdateAsync(command.Id, plugin =>
+            {
+                plugin.Change(command);
+            });
         }
 
         public async Task<PluginDto> HandleAsync(Command.Find<PluginDto> command)
@@ -79,26 +80,28 @@ namespace SAE.CommonComponent.PluginManagement.Handlers
 
         public async Task HandleAsync(Command.Delete<Plugin> command)
         {
-            await this._documentStore.DeleteAsync<Plugin>(command.Id);
+            await this.DeleteAsync(command.Id);
         }
 
         public async Task HandleAsync(PluginCommand.ChangeStatus command)
         {
-            var plugin = await this._documentStore.FindAsync<Plugin>(command.Id);
-            plugin.ChangeStatus(command);
-            await this._documentStore.SaveAsync(plugin);
+            await this.UpdateAsync(command.Id, plugin =>
+            {
+                plugin.ChangeStatus(command);
+            });
         }
 
         public async Task HandleAsync(PluginCommand.ChangeEntry command)
         {
-            var plugin = await this._documentStore.FindAsync<Plugin>(command.Id);
-            plugin.ChangeEntry(command);
-            await this._documentStore.SaveAsync(plugin);
+            await this.UpdateAsync(command.Id, plugin =>
+            {
+                plugin.ChangeEntry(command);
+            });
         }
 
         public Task<IEnumerable<PluginDto>> HandleAsync(Command.List<PluginDto> command)
         {
-            var plugins= this._storage.AsQueryable<PluginDto>()
+            var plugins = this._storage.AsQueryable<PluginDto>()
                              .ToList();
 
             return Task.FromResult(plugins.AsEnumerable());

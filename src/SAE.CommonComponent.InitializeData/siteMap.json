@@ -3,6 +3,7 @@
     "name": "config",
     "path": "/config",
     "hidden": false,
+    "plugin": "configServer",
     "items": [
       {
         "name": "template",
@@ -15,10 +16,16 @@
         "hidden": false
       }
     ]
+  },{
+    "name": "user",
+    "path": "/user",
+    "plugin": "user",
+    "hidden": true
   },
   {
     "name": "auth",
     "path": "/auth",
+    "plugin": "authorize",
     "hidden": false,
     "items": [
       {
@@ -35,17 +42,20 @@
   },
   {
     "name": "routing",
+    "plugin": "routing",
     "path": "/routing",
     "hidden": false
   },
   {
     "name": "identity",
     "path": "/identity",
+    "plugin": "identity",
     "hidden": true
   },
   {
     "name": "oauth",
     "path": "/oauth",
+    "plugin": "oauth",
     "hidden": true
   }
 ]

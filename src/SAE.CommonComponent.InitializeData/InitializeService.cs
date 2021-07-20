@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json.Linq;
 using SAE.CommonComponent.Application.Commands;
 using SAE.CommonComponent.Application.Dtos;
 using SAE.CommonComponent.BasicData.Commands;
@@ -56,12 +57,12 @@ namespace SAE.CommonComponent.InitializeData
         /// <param name="project"></param>
         /// <param name="envId"></param>
         /// <returns></returns>
-        protected virtual async Task<IDictionary<string, string>> FindConfigAsync(ProjectDto project, string envId)
+        protected virtual async Task<IDictionary<string, string>> FindSiteConfigAsync(ProjectDto project, string envId)
         {
             var projectPreviewDto = await this._mediator.SendAsync<ProjectPreviewDto>(new ProjectCommand.Preview
             {
                 Id = project.Id,
-                EnvironmentId= envId
+                EnvironmentId = envId
             });
             var appConfig = projectPreviewDto.Private as IDictionary<string, object>;
             IEnumerable<KeyValuePair<string, object>> siteConfigDatas = appConfig.Where(s => s.Key.Equals(SiteConfig.Option, StringComparison.OrdinalIgnoreCase));
@@ -86,7 +87,46 @@ namespace SAE.CommonComponent.InitializeData
         {
             return Utils.GenerateId();
         }
+        protected virtual async Task<IEnumerable<SiteMap>> GetSiteMapsAsync()
+        {
+            var assembly = Assembly.GetExecutingAssembly();
 
+            var resourceName = assembly.GetManifestResourceNames().FirstOrDefault(s => s.EndsWith(SiteMapPath));
+
+            if (!resourceName.IsNullOrWhiteSpace())
+            {
+                var stream = assembly.GetManifestResourceStream(resourceName);
+                if (stream != null)
+                {
+                    using (stream)
+                    using (var memory = new MemoryStream())
+                    {
+                        await stream.CopyToAsync(memory);
+                        memory.Position = 0;
+                        var json = Constant.Encoding.GetString(memory.ToArray());
+
+                        var siteMaps = json.ToObject<IEnumerable<SiteMap>>();
+
+                        return siteMaps;
+                    }
+                }
+            }
+
+            this._logging.Error($"The assembly resource listing not find '{SiteMapPath}'");
+
+            return Enumerable.Empty<SiteMap>();
+        }
+        protected T GetJTokenValue<T>(JToken token,string name)
+        {
+            var first= token.FirstOrDefault(s => s.Path.Equals(name, StringComparison.OrdinalIgnoreCase));
+            if (first == null)
+            {
+                var message = $"'{token}' no exist '{name}'";
+                this._logging.Error(message);
+                throw new ArgumentException(message);
+            }
+            return token.Value<T>(first.Path);
+        }
         public virtual async Task InitialAsync()
         {
             var templates = await this._mediator.SendAsync<IEnumerable<TemplateDto>>(new Command.List<TemplateDto>());
@@ -177,25 +217,34 @@ namespace SAE.CommonComponent.InitializeData
             {
                 Type = (int)DictType.Environment
             });
-
+            var oauthKey = nameof(Constants.Config.OAuth);
+            var basicInfoKey = nameof(Constants.Config.BasicInfo);
+            var urlKey = nameof(Constants.Config.Url);
             foreach (var project in projects)
             {
                 foreach (var env in environments)
                 {
-                    var pairs = await FindConfigAsync(project, env.Id);
+                    var pairs = await FindSiteConfigAsync(project, env.Id);
 
-                    if (!pairs.Any()) continue;
+                    if (!pairs.Any() ||
+                        !pairs.ContainsKey(oauthKey) ||
+                        !pairs.ContainsKey(basicInfoKey) ||
+                        !pairs.ContainsKey(urlKey)) continue;
+
+                    var oauthJToken = pairs[oauthKey].ToObject<JToken>();
+                    var basicInfoJToken = pairs[basicInfoKey].ToObject<JToken>();
+                    var urlJToken = pairs[urlKey].ToObject<JToken>();
 
                     var appCommand = new AppCommand.Create
                     {
-                        Id = pairs[Constants.Config.OAuth.AppId],
-                        Secret = pairs[Constants.Config.OAuth.AppId],
-                        Name = pairs[Constants.Config.AppName],
+                        Id = this.GetJTokenValue<string>(oauthJToken, nameof(Constants.Config.OAuth.AppId)),
+                        Secret = this.GetJTokenValue<string>(oauthJToken, nameof(Constants.Config.OAuth.AppId)),
+                        Name = this.GetJTokenValue<string>(basicInfoJToken, nameof(Constants.Config.BasicInfo.Name)),
                         Endpoint = new EndpointDto
                         {
-                            RedirectUris = pairs[nameof(EndpointDto.RedirectUris)].ToObject<string[]>(),
-                            PostLogoutRedirectUris = pairs[nameof(EndpointDto.PostLogoutRedirectUris)].ToObject<string[]>(),
-                            SignIn = pairs[nameof(EndpointDto.SignIn)]
+                            RedirectUris = this.GetJTokenValue<string[]>(oauthJToken, nameof(EndpointDto.RedirectUris)),
+                            PostLogoutRedirectUris = this.GetJTokenValue<string[]>(oauthJToken, nameof(EndpointDto.PostLogoutRedirectUris)),
+                            SignIn = this.GetJTokenValue<string>(urlJToken, nameof(EndpointDto.SignIn))
                         }
                     };
 
@@ -264,7 +313,7 @@ namespace SAE.CommonComponent.InitializeData
 
             this._logging.Info($"Create solution '{slnId}'-'{Constants.SolutionName}'");
 
-            var projectName = SiteConfig.Get(Constants.Config.AppName);
+            var projectName = SiteConfig.Get(Constants.Config.BasicInfo.Name);
 
             var projectId = await this._mediator.SendAsync<string>(new ProjectCommand.Create
             {
@@ -340,7 +389,7 @@ namespace SAE.CommonComponent.InitializeData
                         Name = kv.Key,
                         EnvironmentId = environmentId
                     });
-                    if (kv.Key.Equals(SiteConfig.Option,StringComparison.OrdinalIgnoreCase))
+                    if (kv.Key.Equals(SiteConfig.Option, StringComparison.OrdinalIgnoreCase))
                     {
                         publicConfigId = configId;
                     }
@@ -373,7 +422,7 @@ namespace SAE.CommonComponent.InitializeData
                         Id = publicProjectConfig.Id
                     });
                 }
-               
+
                 this._logging.Info($"Publish {projectName}-{kvs.Key} config");
 
                 await this._mediator.SendAsync(new ProjectCommand.Publish
@@ -396,36 +445,17 @@ namespace SAE.CommonComponent.InitializeData
 
         public virtual async Task RoutingAsync()
         {
-            var assembly = Assembly.GetExecutingAssembly();
-
-            var resourceName = assembly.GetManifestResourceNames().FirstOrDefault(s => s.EndsWith(SiteMapPath));
-
-            if (!resourceName.IsNullOrWhiteSpace())
+            IEnumerable<MenuItemDto> menus = await this.GetSiteMapsAsync();
+            if (menus?.Any() ?? false)
             {
-                var stream = assembly.GetManifestResourceStream(resourceName);
-                if (stream != null)
-                {
-                    using (stream)
-                    using (var memory = new MemoryStream())
-                    {
-                        await stream.CopyToAsync(memory);
-                        memory.Position = 0;
-                        var json = SAE.CommonLibrary.Constant.Encoding.GetString(memory.ToArray());
+                this._logging.Info($"local menus : {menus.ToJsonString()}");
 
-                        var menus = json.ToObject<IEnumerable<MenuItemDto>>();
+                await this.AddMenusAsync(menus);
 
-                        this._logging.Info($"local menus : {menus.ToJsonString()}");
+                var dtos = await this._mediator.SendAsync<IEnumerable<MenuItemDto>>(new MenuCommand.Tree());
 
-                        await this.AddMenusAsync(menus);
-
-                        var dtos = await this._mediator.SendAsync<IEnumerable<MenuItemDto>>(new MenuCommand.Tree());
-
-                        this._logging.Info($"remote menu : {dtos}");
-                    }
-                    return;
-                }
+                this._logging.Info($"remote menu : {dtos}");
             }
-            this._logging.Warn($"The assembly resource listing not find '{SiteMapPath}'");
         }
 
         protected async Task AddMenusAsync(IEnumerable<MenuItemDto> menus)
@@ -466,22 +496,29 @@ namespace SAE.CommonComponent.InitializeData
 
         public async Task PluginAsync()
         {
+            var siteMaps = await this.GetSiteMapsAsync();
             this._logging.Info($"Plugin manage:{this._pluginManage?.Plugins?.ToJsonString()}");
+            var baseUrl = SiteConfig.Get(Constants.Config.Url.Admin);
             foreach (var plugin in this._pluginManage.Plugins)
             {
+                var siteMap = siteMaps.FirstOrDefault(s => s.Plugin.Equals(plugin.Name, StringComparison.OrdinalIgnoreCase));
+
                 var command = new PluginCommand.Create
                 {
                     Name = plugin.Name,
                     Description = plugin.Description,
                     Order = plugin.Order,
                     Status = plugin.Status ? Status.Enable : Status.Disable,
-                    Version = plugin.Version
+                    Version = plugin.Version,
+                    Path = siteMap.Path,
+                    Entry = $"//{plugin.Name}{baseUrl}".ToLower()
                 };
                 await this._mediator.SendAsync<string>(command);
             }
             var plugins = await this._mediator.SendAsync<IEnumerable<PluginDto>>(new Command.List<PluginDto>());
             this._logging.Info($"Plugin list:{plugins?.ToJsonString()}");
         }
+
 
     }
 }

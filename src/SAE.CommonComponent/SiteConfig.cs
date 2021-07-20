@@ -10,10 +10,7 @@ namespace SAE.CommonComponent
     public class SiteConfig : Dictionary<string, string>
     {
         public const string Option = nameof(SiteConfig);
-        public SiteConfig()
-        {
-        }
-
+        
         public static string Get(string key)
         {
             var configuration = ServiceFacade.GetService<IConfiguration>()
