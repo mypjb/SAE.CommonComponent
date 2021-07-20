@@ -75,7 +75,7 @@ namespace SAE.CommonComponent.PluginManagement.Handlers
             {
                 query = query.Where(s => s.Name.Contains(command.Name));
             }
-            return PagedList.Build(query, command);
+            return PagedList.Build(query.OrderByDescending(s => s.Order), command);
         }
 
         public async Task HandleAsync(Command.Delete<Plugin> command)
@@ -102,7 +102,8 @@ namespace SAE.CommonComponent.PluginManagement.Handlers
         public Task<IEnumerable<PluginDto>> HandleAsync(Command.List<PluginDto> command)
         {
             var plugins = this._storage.AsQueryable<PluginDto>()
-                             .ToList();
+                              .OrderByDescending(s => s.Order)
+                              .ToList();
 
             return Task.FromResult(plugins.AsEnumerable());
         }

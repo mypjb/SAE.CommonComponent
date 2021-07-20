@@ -127,62 +127,84 @@ namespace SAE.CommonComponent.InitializeData
             }
             return token.Value<T>(first.Path);
         }
+
+        protected IEnumerable<T> GetJTokenValues<T>(JToken token, string name)
+        {
+            var first = token.FirstOrDefault(s => s.Path.Equals(name, StringComparison.OrdinalIgnoreCase));
+            if (first == null)
+            {
+                var message = $"'{token}' no exist '{name}'";
+                this._logging.Error(message);
+                throw new ArgumentException(message);
+            }
+            return (token.SelectToken(first.Path) as JArray).Values<T>();
+        }
+
+
         public virtual async Task InitialAsync()
         {
-            var templates = await this._mediator.SendAsync<IEnumerable<TemplateDto>>(new Command.List<TemplateDto>());
-            if (templates.Any()) return;
-            var totalTime = 0d;
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
-            this._logging.Info($"start initial {nameof(BasicDataAsync)}");
-            await this.BasicDataAsync();
-            this._logging.Info($"end initial {nameof(BasicDataAsync)} elapsed time {stopwatch.ElapsedMilliseconds}");
-            stopwatch.Stop();
-            totalTime += stopwatch.ElapsedMilliseconds;
-            stopwatch.Restart();
+            try
+            {
+                var templates = await this._mediator.SendAsync<IEnumerable<TemplateDto>>(new Command.List<TemplateDto>());
+                if (templates.Any()) return;
+                var totalTime = 0d;
+                var stopwatch = new Stopwatch();
+                stopwatch.Start();
+                this._logging.Info($"start initial {nameof(BasicDataAsync)}");
+                await this.BasicDataAsync();
+                this._logging.Info($"end initial {nameof(BasicDataAsync)} elapsed time {stopwatch.ElapsedMilliseconds}");
+                stopwatch.Stop();
+                totalTime += stopwatch.ElapsedMilliseconds;
+                stopwatch.Restart();
 
-            this._logging.Info($"start initial {nameof(ConfigServerAsync)}");
-            await this.ConfigServerAsync();
-            this._logging.Info($"end initial {nameof(ConfigServerAsync)} elapsed time {stopwatch.ElapsedMilliseconds}");
-            stopwatch.Stop();
-            totalTime += stopwatch.ElapsedMilliseconds;
-            stopwatch.Restart();
+                this._logging.Info($"start initial {nameof(ConfigServerAsync)}");
+                await this.ConfigServerAsync();
+                this._logging.Info($"end initial {nameof(ConfigServerAsync)} elapsed time {stopwatch.ElapsedMilliseconds}");
+                stopwatch.Stop();
+                totalTime += stopwatch.ElapsedMilliseconds;
+                stopwatch.Restart();
 
-            this._logging.Info($"start initial {nameof(ApplicationAsync)}");
-            await this.ApplicationAsync();
-            this._logging.Info($"end initial {nameof(ApplicationAsync)} elapsed time {stopwatch.ElapsedMilliseconds}");
-            stopwatch.Stop();
-            totalTime += stopwatch.ElapsedMilliseconds;
-            stopwatch.Restart();
+                this._logging.Info($"start initial {nameof(ApplicationAsync)}");
+                await this.ApplicationAsync();
+                this._logging.Info($"end initial {nameof(ApplicationAsync)} elapsed time {stopwatch.ElapsedMilliseconds}");
+                stopwatch.Stop();
+                totalTime += stopwatch.ElapsedMilliseconds;
+                stopwatch.Restart();
 
-            this._logging.Info($"start initial {nameof(AuthorizeAsync)}");
-            await this.AuthorizeAsync();
-            this._logging.Info($"end initial {nameof(AuthorizeAsync)} elapsed time {stopwatch.ElapsedMilliseconds}");
-            stopwatch.Stop();
-            totalTime += stopwatch.ElapsedMilliseconds;
-            stopwatch.Restart();
+                this._logging.Info($"start initial {nameof(AuthorizeAsync)}");
+                await this.AuthorizeAsync();
+                this._logging.Info($"end initial {nameof(AuthorizeAsync)} elapsed time {stopwatch.ElapsedMilliseconds}");
+                stopwatch.Stop();
+                totalTime += stopwatch.ElapsedMilliseconds;
+                stopwatch.Restart();
 
-            this._logging.Info($"start initial {nameof(RoutingAsync)}");
-            await this.RoutingAsync();
-            this._logging.Info($"end initial {nameof(RoutingAsync)} elapsed time {stopwatch.ElapsedMilliseconds}");
-            stopwatch.Stop();
-            totalTime += stopwatch.ElapsedMilliseconds;
-            stopwatch.Restart();
+                this._logging.Info($"start initial {nameof(RoutingAsync)}");
+                await this.RoutingAsync();
+                this._logging.Info($"end initial {nameof(RoutingAsync)} elapsed time {stopwatch.ElapsedMilliseconds}");
+                stopwatch.Stop();
+                totalTime += stopwatch.ElapsedMilliseconds;
+                stopwatch.Restart();
 
-            this._logging.Info($"start initial {nameof(UserAsync)}");
-            await this.UserAsync();
-            this._logging.Info($"end initial {nameof(UserAsync)} elapsed time {stopwatch.ElapsedMilliseconds}");
-            stopwatch.Stop();
-            totalTime += stopwatch.ElapsedMilliseconds;
-            stopwatch.Restart();
+                this._logging.Info($"start initial {nameof(UserAsync)}");
+                await this.UserAsync();
+                this._logging.Info($"end initial {nameof(UserAsync)} elapsed time {stopwatch.ElapsedMilliseconds}");
+                stopwatch.Stop();
+                totalTime += stopwatch.ElapsedMilliseconds;
+                stopwatch.Restart();
 
-            this._logging.Info($"start initial {nameof(PluginAsync)}");
-            await this.PluginAsync();
-            this._logging.Info($"end initial {nameof(PluginAsync)} elapsed time {stopwatch.ElapsedMilliseconds}");
-            stopwatch.Stop();
-            totalTime += stopwatch.ElapsedMilliseconds; ;
+                this._logging.Info($"start initial {nameof(PluginAsync)}");
+                await this.PluginAsync();
+                this._logging.Info($"end initial {nameof(PluginAsync)} elapsed time {stopwatch.ElapsedMilliseconds}");
+                stopwatch.Stop();
+                totalTime += stopwatch.ElapsedMilliseconds; ;
 
-            this._logging.Info($"total {totalTime}");
+                this._logging.Info($"total {totalTime}");
+            }catch(Exception ex)
+            {
+                this._logging.Error(ex.Message, ex);
+                throw ex;
+            }
+            
         }
 
         public virtual async Task BasicDataAsync()
@@ -242,8 +264,8 @@ namespace SAE.CommonComponent.InitializeData
                         Name = this.GetJTokenValue<string>(basicInfoJToken, nameof(Constants.Config.BasicInfo.Name)),
                         Endpoint = new EndpointDto
                         {
-                            RedirectUris = this.GetJTokenValue<string[]>(oauthJToken, nameof(EndpointDto.RedirectUris)),
-                            PostLogoutRedirectUris = this.GetJTokenValue<string[]>(oauthJToken, nameof(EndpointDto.PostLogoutRedirectUris)),
+                            RedirectUris = this.GetJTokenValues<string>(oauthJToken, nameof(EndpointDto.RedirectUris)).ToArray(),
+                            PostLogoutRedirectUris = this.GetJTokenValues<string>(oauthJToken, nameof(EndpointDto.PostLogoutRedirectUris)).ToArray(),
                             SignIn = this.GetJTokenValue<string>(urlJToken, nameof(EndpointDto.SignIn))
                         }
                     };
@@ -257,7 +279,7 @@ namespace SAE.CommonComponent.InitializeData
                     await this._mediator.SendAsync(new AppCommand.ReferenceScope
                     {
                         Id = appCommand.Id,
-                        Scopes = new[] { Constants.Scope }
+                        Scopes = this.GetJTokenValue<string>(oauthJToken, nameof(Constants.Config.OAuth.Scope)).Split(Constants.Config.OAuth.ScopeSeparator)
                     });
 
                     this._logging.Info("Reference scope");
@@ -509,10 +531,13 @@ namespace SAE.CommonComponent.InitializeData
                     Description = plugin.Description,
                     Order = plugin.Order,
                     Status = plugin.Status ? Status.Enable : Status.Disable,
-                    Version = plugin.Version,
-                    Path = siteMap.Path,
-                    Entry = $"//{plugin.Name}{baseUrl}".ToLower()
+                    Version = plugin.Version
                 };
+                if (siteMap != null)
+                {
+                    command.Path = siteMap.Path;
+                    command.Entry = $"//{plugin.Name}{baseUrl}".ToLower();
+                }
                 await this._mediator.SendAsync<string>(command);
             }
             var plugins = await this._mediator.SendAsync<IEnumerable<PluginDto>>(new Command.List<PluginDto>());
