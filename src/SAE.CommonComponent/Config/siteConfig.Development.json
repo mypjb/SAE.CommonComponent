@@ -18,7 +18,7 @@
       "host": "http://localhost:8080",
       "menu": "http://localhost:8080/menu/tree",
       "app": "http://localhost:8080/plugin/list",
-      "config": "http://localhost:8080/app/config?appid=localhost.test",
+      "config": "http://localhost:8080/app/config?appid=localhost.dev&env=Development",
       "login": "http://localhost:8080/account/login"
     }
   }

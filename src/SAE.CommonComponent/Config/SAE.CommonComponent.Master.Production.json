@@ -18,7 +18,7 @@
       "host": "http://api.sae.com",
       "menu": "http://api.sae.com/menu/tree",
       "app": "http://api.sae.com/plugin/list",
-      "config": "http://api.sae.com/app/config?appid=localhost.test",
+      "config": "http://api.sae.com/app/config?appid=localhost.test&env=Production",
       "login": "http://oauth.sae.com/account/login"
     }
   },
