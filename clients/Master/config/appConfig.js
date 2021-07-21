@@ -13,7 +13,7 @@ export const appConfig = {
     }
 };
 
-if (ENV != "prod") {
+if (ENV == "prod") {
     configUrl += "&env=Production";
 } else {
     configUrl += "&env=Development";
