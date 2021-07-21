@@ -22,7 +22,7 @@ export default connect()(({ dispatch }) => {
 
     const { masterPush } = useModel('@@initialState').initialState?.masterProps;
 
-    const { signIn } = useModel('@@initialState').initialState?.masterProps.masterState.siteConfig;
+    const { signIn } = useModel('@@initialState').initialState?.masterProps.masterState.siteConfig.url;
 
     const [form] = Form.useForm();
 
