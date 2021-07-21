@@ -536,7 +536,7 @@ namespace SAE.CommonComponent.InitializeData
                 if (siteMap != null)
                 {
                     command.Path = siteMap.Path;
-                    command.Entry = $"//{plugin.Name}{baseUrl}".ToLower();
+                    command.Entry = $"//{plugin.Name}.{baseUrl}".ToLower();
                 }
                 await this._mediator.SendAsync<string>(command);
             }
