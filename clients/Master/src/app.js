@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { history } from 'umi';
-import { appConfig, load } from '../config/appConfig'
+import { load } from '../config/appConfig'
 import indexPage from './pages/index';
 
 let globalConfig = {};
 
 const hideLayoutUrls = ['/identity', '/oauth'];
 
-const processingData = function (menus) {
+const processingMenuData = function (menus) {
     const list = [];
     for (let index = 0; index < menus.length; index++) {
         const element = menus[index];
@@ -21,24 +21,45 @@ const processingData = function (menus) {
             data.menuRender = false;
             data.menuHeaderRender = false;
         }
-        data.routes = processingData(element.items);
+        data.routes = processingMenuData(element.items);
         list.push(data);
     }
     console.log({ list });
     return list;
 }
 
-export const qiankun = fetch(appConfig.api.app).then(async (response) => {
-    
+const processingAppData = function (apps) {
+
+    const array = [];
+
+    for (let index = 0; index < apps.length; index++) {
+        const element = apps[index];
+        if (element.entry && element.path) {
+            array.push(element);
+        }
+    }
+
+    return array;
+}
+
+export const qiankun = async function () {
+
     globalConfig = await load();
 
-    console.log({ type: "qiankun", globalConfig });
+    const { api } = globalConfig.siteConfig;
 
-    const apps = await response.json();
-    const menuResponse = await fetch(appConfig.api.menu);
-    const routes = processingData(await menuResponse.json());
+    const apps = processingAppData(await (await fetch(api.app)).json());
+
+    const menus = await (await fetch(api.menu)).json();
+
+    const routes = processingMenuData(menus);
+
     globalConfig.apps = apps;
+
     globalConfig.routes = routes;
+
+    console.log(globalConfig);
+
     return {
         // 注册子应用信息
         apps,
@@ -55,8 +76,13 @@ export const qiankun = fetch(appConfig.api.app).then(async (response) => {
         },
         addGlobalUncaughtErrorHandler: e => console.log(e)
     }
-});
 
+};
+
+
+// fetch(appConfig.api.app).then(async (response) => {
+
+// });
 
 const checkLogin = (user) => {
     if (user) {
@@ -70,18 +96,20 @@ const checkLogin = (user) => {
 export function useQiankunStateForSlave() {
     const [masterState, setMasterState] = useState(globalConfig);
     const initial = (requestConfig) => {
-        requestConfig.prefix = globalConfig.siteConfig.apiHost;
+        requestConfig.prefix = globalConfig.siteConfig.api.host;
         requestConfig.credentials = "include";
         requestConfig.middlewares = [async (ctx, next) => {
+
+            const { url } = masterState.siteConfig;
             const req = ctx.req;
             const options = req.options;
 
             if (!checkLogin(masterState?.user)) {
                 window.sessionStorage.setItem(globalConfig.callBackUrlKey, window.location.pathname + window.location.search);
-                if (masterState.siteConfig.signIn.startsWith('http')) {
-                    window.location.href = masterState.siteConfig.signIn;
+                if (url.signIn.startsWith('http')) {
+                    window.location.href = url.signIn;
                 } else {
-                    history.push(masterState.siteConfig.signIn);
+                    history.push(url.signIn);
                 }
                 return;
             }
@@ -125,7 +153,7 @@ export function useQiankunStateForSlave() {
 
 export const layout = () => {
     return {
-        name: globalConfig.siteConfig.appName,
+        name: globalConfig.siteConfig.basicInfo.name,
         locale: true,
         layout: 'side'
     };

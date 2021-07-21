@@ -1,7 +1,8 @@
 const ENV = process.env.UMI_ENV;
 
 const callBackUrlKey = "saeCallbackUrl";
-const apiHost = "http://api.sae.com";
+
+let configUrl = "http://api.sae.com/app/config?appid=localhost.test";
 
 export const appConfig = {
     callBackUrlKey,
@@ -9,26 +10,22 @@ export const appConfig = {
         const url = window.sessionStorage.getItem(callBackUrlKey);
         window.sessionStorage.removeItem(callBackUrlKey);
         return url || "/routing";
-    },
-    api: {
-        menu: apiHost + "/menu/tree",
-        app: apiHost + "/plugin/list",
-        config: apiHost + "/app/config?appid=localhost.test"
     }
 };
 
-if (ENV == "prod") {
-    appConfig.api.config += "&env=Production";
+if (ENV != "prod") {
+    configUrl += "&env=Production";
 } else {
-    appConfig.api.config += "&env=Development";
+    configUrl += "&env=Development";
 }
 
 export const load = async () => {
-    const configData = await (await fetch(appConfig.api.config)).json();
+    const configData = await (await fetch(configUrl)).json();
     const globalConfig = {
         ...appConfig,
         ...configData
     };
+    globalConfig
     console.log({ type: "initial", globalConfig });
     return globalConfig;
 };
