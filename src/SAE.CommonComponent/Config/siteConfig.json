@@ -12,7 +12,8 @@
     },
     "url": {
       "admin": "client.sae.com",
-      "signIn": "http://master.client.sae.com/oauth"
+      "signIn": "http://master.client.sae.com/identity/login",
+      "oauth": "http://master.client.sae.com/oauth"
     },
     "api": {
       "host": "http://api.sae.com",

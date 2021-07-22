@@ -520,7 +520,7 @@ namespace SAE.CommonComponent.InitializeData
         {
             var siteMaps = await this.GetSiteMapsAsync();
             this._logging.Info($"Plugin manage:{this._pluginManage?.Plugins?.ToJsonString()}");
-            var baseUrl = SiteConfig.Get(Constants.Config.Url.Admin);
+            var baseUrl = SiteConfig.Get(Constants.Config.Url.Host);
             foreach (var plugin in this._pluginManage.Plugins)
             {
                 var siteMap = siteMaps.FirstOrDefault(s => s.Plugin.Equals(plugin.Name, StringComparison.OrdinalIgnoreCase));

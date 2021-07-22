@@ -12,7 +12,8 @@
     },
     "url": {
       "admin": "client.dev.com",
-      "signIn": "http://master.client.dev.com/oauth"
+      "signIn": "http://master.client.sae.com/identity/login",
+      "oauth": "http://master.client.sae.com/oauth"
     },
     "api": {
       "host": "http://localhost:8080",

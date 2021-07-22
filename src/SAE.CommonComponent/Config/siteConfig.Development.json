@@ -11,8 +11,9 @@
       "name": "master.dev"
     },
     "url": {
-      "admin": "client.dev.com",
-      "signIn": "http://master.client.dev.com/oauth"
+      "host": "client.dev.com",
+      "signIn": "http://master.client.dev.com/identity/login",
+      "oauth": "http://master.client.dev.com/oauth"
     },
     "api": {
       "host": "http://localhost:8080",

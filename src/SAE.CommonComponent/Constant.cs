@@ -25,7 +25,7 @@ namespace SAE.CommonComponent
             }
             public class Url
             {
-                public const string Admin = "url:admin";
+                public const string Host = "url:host";
                 public const string SignIn = "url:signIn";
             }
             
