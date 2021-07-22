@@ -11,7 +11,7 @@
       "name": "master.dev"
     },
     "url": {
-      "admin": "client.dev.com",
+      "host": "client.dev.com",
       "signIn": "http://master.client.sae.com/identity/login",
       "oauth": "http://master.client.sae.com/oauth"
     },

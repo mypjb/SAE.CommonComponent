@@ -11,7 +11,7 @@
       "name": "master.test"
     },
     "url": {
-      "admin": "client.sae.com",
+      "host": "client.sae.com",
       "signIn": "http://master.client.sae.com/identity/login",
       "oauth": "http://master.client.sae.com/oauth"
     },
