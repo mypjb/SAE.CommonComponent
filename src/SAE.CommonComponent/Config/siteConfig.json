@@ -12,7 +12,7 @@
     },
     "url": {
       "admin": "client.sae.com",
-      "signIn": "http://master.client.sae.com/identity/login"
+      "signIn": "http://master.client.sae.com/oauth"
     },
     "api": {
       "host": "http://api.sae.com",

@@ -12,7 +12,7 @@
     },
     "url": {
       "admin": "client.dev.com",
-      "signIn": "http://master.client.dev.com/identity/login"
+      "signIn": "http://master.client.dev.com/oauth"
     },
     "api": {
       "host": "http://localhost:8080",
