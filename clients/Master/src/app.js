@@ -107,9 +107,9 @@ export function useQiankunStateForSlave() {
             if (!checkLogin(masterState?.user)) {
                 window.sessionStorage.setItem(globalConfig.callBackUrlKey, window.location.pathname + window.location.search);
                 if (url.signIn.startsWith('http')) {
-                    window.location.href = url.signIn;
+                    window.location.href = url.oauth;
                 } else {
-                    history.push(url.signIn);
+                    history.push(url.oauth);
                 }
                 return;
             }
