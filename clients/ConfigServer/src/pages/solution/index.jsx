@@ -84,12 +84,6 @@ export default connect(({ solution }) => (
           <Row>
             <Col span={18}>
               <Button type="primary" onClick={handleAdd}>Add</Button>
-              <Link to="/template">
-                <Button type='primary'>Template</Button>
-              </Link>
-              <Link to="/environment">
-                <Button type='primary'>Environment</Button>
-              </Link>
             </Col>
             <Col span={6}>
               <Search placeholder="input search text" onSearch={handleSearch} className={styles.search} enterButton />

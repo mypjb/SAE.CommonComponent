@@ -1,5 +1,19 @@
 import { request } from "umi";
 
+const dictType = {
+    env: 1,
+};
+
+export const dict = {
+    env: async function () {
+        return await request("/dict/list", {
+            params: {
+                ...dictType
+            }
+        });
+    }
+}
+
 export default function (action) {
     const service = {};
 

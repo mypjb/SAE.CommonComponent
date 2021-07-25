@@ -1,20 +1,20 @@
 import { useCallback, useEffect, useState } from "react";
-import request from "@/pages/environment/service";
+import { dict } from "../utils/service";
 
 export default () => {
     const [state, setState] = useState([]);
     const load = useCallback(() => {
-        request.list()
-            .then((data) => {
-                setState(data);
-            }).catch((ex) => {
-                console.error(ex);
+        dict.env
+            .then((response) => {
+                console.log(response);
+                setState(response.data);
             });
     }, []);
-    useEffect(() => {
+
+    useEffect(async () => {
         load();
     }, []);
-    
+
     return {
         state,
         load
