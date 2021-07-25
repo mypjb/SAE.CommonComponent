@@ -84,7 +84,11 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
         {
             var first = this._storage.AsQueryable<DictDto>()
                             .FirstOrDefault(s => s.Id == command.Id);
-            await this._director.Build<IEnumerable<DictDto>>(new[] { first });
+            if (first != null)
+            {
+                await this._director.Build<IEnumerable<DictDto>>(new[] { first });
+            }
+            
             return first;
         }
 

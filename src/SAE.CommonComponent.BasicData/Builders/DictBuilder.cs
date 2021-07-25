@@ -23,9 +23,9 @@ namespace SAE.CommonComponent.BasicData.Builders
         }
         public Task Build(IEnumerable<DictDto> models)
         {
-            var ids = models.Select(s => s.ParentId).ToArray();
-            var parentDtos= this._storage.AsQueryable<DictDto>()
-                                         .Where(s=> ids.Contains(s.ParentId))
+            var parentIds = models.Select(s => s.ParentId).ToArray();
+            var parentDtos = this._storage.AsQueryable<DictDto>()
+                                         .Where(s => parentIds.Contains(s.Id))
                                          .ToList();
             parentDtos.Add(this._root);
 
