@@ -16,7 +16,8 @@
         "hidden": false
       }
     ]
-  },{
+  },
+  {
     "name": "user",
     "path": "/user",
     "plugin": "user",
@@ -45,6 +46,12 @@
     "plugin": "routing",
     "path": "/routing",
     "hidden": false
+  },
+  {
+    "name": "plugin",
+    "path": "/plugin",
+    "plugin": "PluginManagement",
+    "hidden": true
   },
   {
     "name": "identity",
