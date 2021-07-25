@@ -48,12 +48,14 @@ namespace SAE.CommonComponent
 
         public class Menu
         {
-            public const string DefaultId = "menu_00000000000000000000000000000000";
+            public const string RootId = "menu_00000000000000000000000000000000";
+            public const string RootName = "root";
         }
 
         public class Dict
         {
-            public const string DefaultId = "dict_00000000000000000000000000000000";
+            public const string RootId = "dict_00000000000000000000000000000000";
+            public const string RootName = "root";
         }
     }
 }

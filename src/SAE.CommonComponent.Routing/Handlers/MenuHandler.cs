@@ -85,7 +85,7 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
                                          ParentId = s.ParentId,
                                          Hidden = s.Hidden
                                      }).ToArray();
-            var rootMenus = menus.Where(s => s.ParentId == Constants.Menu.DefaultId).ToArray();
+            var rootMenus = menus.Where(s => s.ParentId == Constants.Menu.RootId).ToArray();
 
             await rootMenus.ForEachAsync(async menu => await this.Permutation(menu, menus));
 

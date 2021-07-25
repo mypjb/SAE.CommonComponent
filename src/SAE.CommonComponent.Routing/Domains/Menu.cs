@@ -16,7 +16,7 @@ namespace SAE.CommonComponent.Routing.Domains
     {
         public Menu()
         {
-            this.ParentId = Constants.Menu.DefaultId;
+            this.ParentId = Constants.Menu.RootId;
             this.PermissionIds = Enumerable.Empty<string>().ToArray();
         }
 
@@ -24,7 +24,7 @@ namespace SAE.CommonComponent.Routing.Domains
         {
             if (command.ParentId.IsNullOrWhiteSpace())
             {
-                command.ParentId = Constants.Menu.DefaultId;
+                command.ParentId = Constants.Menu.RootId;
             }
             this.Apply<MenuEvent.Create>(command, e => e.Id = Utils.GenerateId());
         }
@@ -64,7 +64,7 @@ namespace SAE.CommonComponent.Routing.Domains
         {
             if (command.ParentId.IsNullOrWhiteSpace())
             {
-                command.ParentId = Constants.Menu.DefaultId;
+                command.ParentId = Constants.Menu.RootId;
             }
             this.Apply<MenuEvent.Change>(command);
             await this.ParentExist(parentProvider);
@@ -91,7 +91,7 @@ namespace SAE.CommonComponent.Routing.Domains
         /// <returns></returns>
         public bool IsRoot()
         {
-            return this.ParentId == Constants.Menu.DefaultId;
+            return this.ParentId == Constants.Menu.RootId;
         }
 
         /// <summary>

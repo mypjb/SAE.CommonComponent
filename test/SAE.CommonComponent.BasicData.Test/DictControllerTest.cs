@@ -125,7 +125,11 @@ namespace SAE.CommonComponent.BasicData.Test
 
             var responseMessage = await this.HttpClient.SendAsync(message);
 
-            return await responseMessage.AsAsync<DictDto>();
+            var dict = await responseMessage.AsAsync<DictDto>();
+
+            this.WriteLine(dict);
+
+            return dict;
         }
     }
 }

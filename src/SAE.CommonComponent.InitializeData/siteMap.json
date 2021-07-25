@@ -51,7 +51,13 @@
     "name": "plugin",
     "path": "/plugin",
     "plugin": "PluginManagement",
-    "hidden": true
+    "hidden": false
+  },
+  {
+    "name": "basicData",
+    "plugin": "BasicData",
+    "path": "/basicdata",
+    "hidden": false
   },
   {
     "name": "identity",

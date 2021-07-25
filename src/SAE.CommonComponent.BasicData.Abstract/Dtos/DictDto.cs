@@ -11,6 +11,11 @@ namespace SAE.CommonComponent.BasicData.Dtos
         /// <value></value>
         public string Name { get; set; }
         /// <summary>
+        /// 
+        /// </summary>
+        public DictDto Parent { get; set; }
+
+        /// <summary>
         /// Parent id
         /// </summary>
         /// <value></value>

@@ -16,7 +16,6 @@ namespace SAE.CommonComponent.BasicData.Events
         {
             public string ParentId { get; set; }
             public string Name { get; set; }
-            public int Type { get; set; }
         }
 
     }
