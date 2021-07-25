@@ -93,7 +93,7 @@ export default connect(({ plugin }) => (
                 <div>
                     <Row>
                         <Col span={18}>
-                            <Button type="primary" onClick={handleAdd}>Add</Button>
+                           
                         </Col>
                         <Col span={6}>
                             <Search placeholder="input search text" onSearch={(name) => handleSearch({ name })} className={styles.search} enterButton />
