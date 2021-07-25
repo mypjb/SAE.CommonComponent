@@ -10,7 +10,7 @@ namespace SAE.CommonComponent.BasicData.Events
         {
             public string Id { get; set; }
             public DateTime CreateTime { get; set; }
-            
+            public int Type { get; set; }
         }
         public class Change : IEvent
         {
