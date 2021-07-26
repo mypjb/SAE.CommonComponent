@@ -9,6 +9,19 @@ export const Format = {
     return new Date(+new Date(new Date(date).toJSON()) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '');
   }
 }
+const S4 = () => {
+  return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+
+}
+
+//generate guid
+export const guid = function (hasSeparator) {
+  if (hasSeparator) {
+    return (S4() + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + S4() + S4());
+  } else {
+    return (S4() + S4() + S4() + S4() + S4() + S4() + S4() + S4());
+  }
+}
 
 //default state
 export const defaultState = {

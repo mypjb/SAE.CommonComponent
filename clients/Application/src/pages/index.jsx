@@ -1,6 +1,6 @@
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import React from 'react';
-import { Row, Col, Button, Input, Popover } from 'antd';
+import { Row, Col, Button, Input, Modal } from 'antd';
 import { connect } from 'umi';
 import styles from './index.less';
 import AddForm from './components/AddForm';
@@ -19,13 +19,14 @@ export default connect(({ app }) => (
 
         const dispatchType = defaultDispatchType("app");
 
+        const [modal, contextHolder] = Modal.useModal();
 
         const handleDelete = defaultHandler.delete({ dispatch, dispatchType: dispatchType.delete });
 
         const handleSearch = defaultHandler.search({ dispatch, dispatchType: dispatchType.search });
 
         const handleAdd = (parent) => {
-            defaultOperation.add({ dispatch, element: AddForm, parent });
+            defaultOperation.add({ dispatch, element: AddForm, parent }, modal);
         }
 
         const handleEdit = (row) => {
@@ -34,7 +35,7 @@ export default connect(({ app }) => (
                 type: dispatchType.find,
                 data: row.id,
                 element: EditForm
-            });
+            }, modal);
         }
 
         const handleStatus = (row) => {
@@ -93,6 +94,7 @@ export default connect(({ app }) => (
 
         return (
             <PageHeaderWrapper className={styles.main}>
+                {contextHolder}
                 <div>
                     <Row>
                         <Col span={18}>

@@ -5,9 +5,8 @@ export default () => {
     const [state, setState] = useState([]);
     const load = useCallback(() => {
         dict.scope()
-            .then((response) => {
-                console.log(response);
-                setState(response.data);
+            .then((data) => {
+                setState(data);
             });
     }, []);
 
