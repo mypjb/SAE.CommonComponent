@@ -18,20 +18,16 @@ export default (props) => {
         return (<Option value={val.id}>{val.name}</Option>);
     });
 
-
     const defaultModel = {
         id: guid(),
         secret: guid(),
-        redirectUris: ["1", "2"]
+        endpoint: {
+            redirectUris: [""],
+            postLogoutRedirectUris: [""]
+        }
     };
 
 
-    const formItemLayoutWithOutLabel = {
-        wrapperCol: {
-            xs: { span: 24, offset: 0 },
-            sm: { span: 20, offset: 4 },
-        },
-    };
 
     return (<Form form={form} onFinish={handleSave} size='middl' initialValues={defaultModel}>
         <Form.Item name="id" label="id" rules={[{ required: true }]}>
@@ -49,37 +45,36 @@ export default (props) => {
                 {scopeOptions}
             </Select>
         </Form.Item>
-        <Form.List name={['endpoint', 'redirectUris']} rules={[
-            {
-                validator: async (_, redirectUris) => {
-                    if (!redirectUris || redirectUris.length < 1) {
-                        return Promise.reject(new Error('At least 1 passengers'));
-                    }
-                },
-            },
-        ]}>
-
-            {(fields, { add, remove }, { errors }) =>
-                <>
-                    {fields.map((field, index) => (
-                        <Form.Item {...field} label={index === 0 ? 'redirectUris' : ''} wrapperCol={index === 0 ? null : formItemLayoutWithOutLabel.wrapperCol}>
-                            <Input.Group compact>
-                                <Input style={{ width: '80%' }} required={true} />
-                                <Button onClick={() => remove(field.name)} ><MinusCircleOutlined /></Button>
-                            </Input.Group>
-                        </Form.Item>
-                    ))
-                    }
-                    <Button onClick={add}><PlusCircleOutlined /></Button>
-                </>
-            }
+        <Form.List name={['endpoint', 'redirectUris']}>
+            {(fields, { add, remove }) => (
+                fields.map((field, index) => (
+                    <Form.Item
+                        {...field}
+                        label={index === 0 ? 'redirectUri' : (<span style={{ color: "transparent" }}>* redirectUri:</span>)}
+                        rules={[{ required: true }]}
+                        required={index === 0}
+                        colon={index === 0}
+                        validateTrigger={['onChange', 'onBlur']}>
+                        <Input addonAfter={index === 0 ? <PlusCircleOutlined onClick={() => add()} /> : <MinusCircleOutlined onClick={() => remove(field.name)} />} />
+                    </Form.Item>
+                ))
+            )}
         </Form.List>
-        {/* <Form.Item name={['endpoint', 'redirectUris']} label="redirectUri" rules={[{ required: true }]}>
-            <Input />
-        </Form.Item>
-        <Form.Item name={['endpoint', 'postLogoutRedirectUris']} label="postLogoutRedirectUris" rules={[{ required: true }]}>
-            <Input />
-        </Form.Item> */}
+        <Form.List name={['endpoint', 'postLogoutRedirectUris']}>
+            {(fields, { add, remove }) => (
+                fields.map((field, index) => (
+                    <Form.Item
+                        {...field}
+                        label={index === 0 ? 'LogoutRedirect' : (<span style={{ color: "transparent" }}>* LogoutRedirect:</span>)}
+                        rules={[{ required: true }]}
+                        required={index === 0}
+                        colon={index === 0}
+                        validateTrigger={['onChange', 'onBlur']}>
+                        <Input addonAfter={index === 0 ? <PlusCircleOutlined onClick={() => add()} /> : <MinusCircleOutlined onClick={() => remove(field.name)} />} />
+                    </Form.Item>
+                ))
+            )}
+        </Form.List>
         <Form.Item name={['endpoint', 'signIn']} label="signIn" rules={[{ required: true }]}>
             <Input />
         </Form.Item>
