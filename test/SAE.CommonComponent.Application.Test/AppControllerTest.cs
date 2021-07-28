@@ -18,6 +18,8 @@ using SAE.CommonLibrary.Abstract.Model;
 using AppCommand = SAE.CommonComponent.Application.Commands.AppCommand;
 using System.Collections.Generic;
 using System;
+using System.IO;
+using System.Text;
 
 namespace SAE.CommonComponent.Application.Test
 {
@@ -118,10 +120,12 @@ namespace SAE.CommonComponent.Application.Test
 
             responseMessage.EnsureSuccessStatusCode();
 
+            var secret = await responseMessage.Content.ReadAsStringAsync();
+
             var dto = await this.Get(app.Id);
 
             Assert.NotEqual(app.Secret, dto.Secret);
-
+            this.WriteLine(secret);
         }
 
         [Fact]

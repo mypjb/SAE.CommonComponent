@@ -19,8 +19,9 @@ namespace SAE.CommonComponent.Application.Abstract.Handlers
     public class AppHandler : AbstractHandler,
                               ICommandHandler<AppCommand.Create, string>,
                               ICommandHandler<AppCommand.Change>,
+                              ICommandHandler<Command.Delete<App>>,
                               ICommandHandler<AppCommand.ChangeStatus>,
-                              ICommandHandler<AppCommand.RefreshSecret>,
+                              ICommandHandler<AppCommand.RefreshSecret, string>,
                               ICommandHandler<AppCommand.Query, IPagedList<AppDto>>,
                               ICommandHandler<Command.Find<AppDto>, AppDto>,
                               ICommandHandler<AppCommand.ReferenceProject>,
@@ -56,9 +57,15 @@ namespace SAE.CommonComponent.Application.Abstract.Handlers
             return this.UpdateAsync<App>(command.Id, app => app.ChangeStatus(command));
         }
 
-        public Task HandleAsync(AppCommand.RefreshSecret command)
+        public async Task<string> HandleAsync(AppCommand.RefreshSecret command)
         {
-            return this.UpdateAsync<App>(command.Id, app => app.RefreshSecret());
+            var secret = string.Empty;
+            await this.UpdateAsync<App>(command.Id, app =>
+            {
+                app.RefreshSecret();
+                secret = app.Secret;
+            });
+            return secret;
         }
 
         public async Task<AppDto> HandleAsync(Command.Find<AppDto> command)
@@ -81,14 +88,13 @@ namespace SAE.CommonComponent.Application.Abstract.Handlers
 
         public async Task<IPagedList<ProjectDto>> HandleAsync(AppCommand.ProjectQuery command)
         {
-            var app= await this._documentStore.FindAsync<App>(command.Id);
+            var app = await this._documentStore.FindAsync<App>(command.Id);
             Assert.Build(app)
                   .NotNull();
             return await this._mediator.SendAsync<IPagedList<ProjectDto>>(new ProjectCommand.Query
             {
                 IgnoreIds = new[] { app.ProjectId },
                 Name = app.Name,
-                SolutionId=command.SolutionId,
                 PageIndex = command.PageIndex,
                 PageSize = command.PageSize
             });
@@ -99,5 +105,9 @@ namespace SAE.CommonComponent.Application.Abstract.Handlers
             await this.UpdateAsync<App>(command.Id, app => app.ReferenceProject(command));
         }
 
+        public async Task HandleAsync(Command.Delete<App> command)
+        {
+            await this.DeleteAsync<App>(command.Id);
+        }
     }
 }

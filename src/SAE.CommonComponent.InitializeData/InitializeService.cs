@@ -116,9 +116,9 @@ namespace SAE.CommonComponent.InitializeData
 
             return Enumerable.Empty<SiteMap>();
         }
-        protected T GetJTokenValue<T>(JToken token,string name)
+        protected T GetJTokenValue<T>(JToken token, string name)
         {
-            var first= token.FirstOrDefault(s => s.Path.Equals(name, StringComparison.OrdinalIgnoreCase));
+            var first = token.FirstOrDefault(s => s.Path.Equals(name, StringComparison.OrdinalIgnoreCase));
             if (first == null)
             {
                 var message = $"'{token}' no exist '{name}'";
@@ -199,12 +199,13 @@ namespace SAE.CommonComponent.InitializeData
                 totalTime += stopwatch.ElapsedMilliseconds; ;
 
                 this._logging.Info($"total {totalTime}");
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 this._logging.Error(ex.Message, ex);
                 throw ex;
             }
-            
+
         }
 
         public virtual async Task BasicDataAsync()
@@ -242,6 +243,10 @@ namespace SAE.CommonComponent.InitializeData
             var oauthKey = nameof(Constants.Config.OAuth);
             var basicInfoKey = nameof(Constants.Config.BasicInfo);
             var urlKey = nameof(Constants.Config.Url);
+            var scopes = await this._mediator.SendAsync<IEnumerable<DictDto>>(new DictCommand.List
+            {
+                Type = (int)DictType.Scope
+            });
             foreach (var project in projects)
             {
                 foreach (var env in environments)
@@ -257,11 +262,16 @@ namespace SAE.CommonComponent.InitializeData
                     var basicInfoJToken = pairs[basicInfoKey].ToObject<JToken>();
                     var urlJToken = pairs[urlKey].ToObject<JToken>();
 
+                    var scopeNames = this.GetJTokenValue<string>(oauthJToken, nameof(Constants.Config.OAuth.Scope)).Split(Constants.Config.OAuth.ScopeSeparator);
+
                     var appCommand = new AppCommand.Create
                     {
                         Id = this.GetJTokenValue<string>(oauthJToken, nameof(Constants.Config.OAuth.AppId)),
                         Secret = this.GetJTokenValue<string>(oauthJToken, nameof(Constants.Config.OAuth.AppId)),
                         Name = this.GetJTokenValue<string>(basicInfoJToken, nameof(Constants.Config.BasicInfo.Name)),
+                        Scopes = scopes.Where(s => scopeNames.Contains(s.Name, StringComparer.OrdinalIgnoreCase))
+                                       .Select(s=>s.Id)
+                                       .ToArray(),
                         Endpoint = new EndpointDto
                         {
                             RedirectUris = this.GetJTokenValues<string>(oauthJToken, nameof(EndpointDto.RedirectUris)).ToArray(),
@@ -275,14 +285,6 @@ namespace SAE.CommonComponent.InitializeData
                     appCommand.Secret = "************";
 
                     this._logging.Info($"add default app:{appCommand.ToJsonString()}");
-
-                    await this._mediator.SendAsync(new AppCommand.ReferenceScope
-                    {
-                        Id = appCommand.Id,
-                        Scopes = this.GetJTokenValue<string>(oauthJToken, nameof(Constants.Config.OAuth.Scope)).Split(Constants.Config.OAuth.ScopeSeparator)
-                    });
-
-                    this._logging.Info("Reference scope");
 
                     var command = new AppCommand.ReferenceProject
                     {
