@@ -52,19 +52,6 @@ namespace SAE.CommonComponent.Application.Controllers
             return this.Ok();
         }
 
-        [HttpPost("scope")]
-        public async Task<object> ReferenceScope(AppCommand.ReferenceScope command)
-        {
-            await this._mediator.SendAsync(command);
-            return this.Ok();
-        }
-
-        [HttpDelete("scope")]
-        public async Task<object> DeleteScope(AppCommand.DeleteScope command)
-        {
-            await this._mediator.SendAsync(command);
-            return this.Ok();
-        }
 
         [HttpGet("{action}")]
         public async Task<object> Paging([FromQuery]AppCommand.Query command)

@@ -72,37 +72,7 @@ namespace SAE.CommonComponent.Application.Abstract.Domains
                 Secret = Utils.GenerateId()
             });
         }
-
-        public void ReferenceScope(AppCommand.ReferenceScope command)
-        {
-            if (!command.Scopes.Any()) return;
-
-            if (this.Scopes == null)
-            {
-                this.Scopes = Enumerable.Empty<string>().ToArray();
-            }
-
-            var scopes = this.Scopes.ToList();
-
-            scopes.AddRange(command.Scopes);
-
-            this.Apply(new AppEvent.ReferenceScope
-            {
-                Scopes = scopes.Distinct().ToArray()
-            });
-        }
-        public void DeleteScope(AppCommand.DeleteScope command)
-        {
-            if (!command.Scopes.Any()) return;
-
-            var scopes = this.Scopes.ToList();
-            scopes.AddRange(command.Scopes);
-            this.Apply(new AppEvent.ReferenceScope
-            {
-                Scopes = scopes.Distinct().ToArray()
-            });
-        }
-
+        
         public void ChangeStatus(AppCommand.ChangeStatus command)
         {
             this.Apply<AppEvent.ChangeStatus>(command);

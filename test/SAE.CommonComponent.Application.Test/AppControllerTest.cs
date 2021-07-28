@@ -56,6 +56,7 @@ namespace SAE.CommonComponent.Application.Test
             var command = new AppCommand.Create
             {
                 Name = this.GetRandom(),
+                Scopes = new string[] { this.GetRandom(), this.GetRandom() },
                 Endpoint = new Dtos.EndpointDto
                 {
                     PostLogoutRedirectUris = new[] { this.GetRandom() },
@@ -70,6 +71,7 @@ namespace SAE.CommonComponent.Application.Test
             var app = await this.Get(id);
             this.WriteLine(app);
             Assert.Equal(command.Name, app.Name);
+            Assert.Contains(command.Scopes, app.Scopes.Contains);
             Assert.Equal(command.Endpoint.SignIn, app.Endpoint.SignIn);
             Assert.Equal(command.Endpoint.PostLogoutRedirectUris.First(), app.Endpoint.PostLogoutRedirectUris.First());
             Assert.Equal(command.Endpoint.RedirectUris.First(), app.Endpoint.RedirectUris.First());
@@ -85,13 +87,24 @@ namespace SAE.CommonComponent.Application.Test
             var command = new AppCommand.Change
             {
                 Id = app.Id,
-                Name = this.GetRandom()
+                Name = this.GetRandom(),
+                Scopes = new string[] { this.GetRandom(), this.GetRandom() },
+                Endpoint = new Dtos.EndpointDto
+                {
+                    PostLogoutRedirectUris = new[] { this.GetRandom() },
+                    RedirectUris = new[] { this.GetRandom() },
+                    SignIn = this.GetRandom()
+                }
             };
             message.AddJsonContent(command);
             var responseMessage = await this.HttpClient.SendAsync(message);
             responseMessage.EnsureSuccessStatusCode();
             var newApp = await this.Get(app.Id);
-            Assert.NotEqual(newApp.Name, app.Name);
+            Assert.Equal(command.Name, newApp.Name);
+            Assert.Contains(command.Scopes, newApp.Scopes.Contains);
+            Assert.Equal(command.Endpoint.SignIn, newApp.Endpoint.SignIn);
+            Assert.Equal(command.Endpoint.PostLogoutRedirectUris.First(), newApp.Endpoint.PostLogoutRedirectUris.First());
+            Assert.Equal(command.Endpoint.RedirectUris.First(), newApp.Endpoint.RedirectUris.First());
         }
 
         [Fact]
@@ -188,12 +201,12 @@ namespace SAE.CommonComponent.Application.Test
             return dto;
         }
 
-        
+
         private async Task<AppDto> Get(string id)
         {
             var message = new HttpRequestMessage(HttpMethod.Get, $"{API}/{id}");
             var responseMessage = await this.HttpClient.SendAsync(message);
-            var app= await responseMessage.AsAsync<AppDto>();
+            var app = await responseMessage.AsAsync<AppDto>();
             this.WriteLine(app);
             return app;
         }

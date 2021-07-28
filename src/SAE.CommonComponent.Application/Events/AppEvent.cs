@@ -7,33 +7,23 @@ namespace SAE.CommonComponent.Application.Abstract.Events
 {
     public partial class AppEvent
     {
-        public class Create : IEvent
+        public class Create : Change
         {
             public string Id { get; set; }
             public string Secret { get; set; }
-            public string Name { get; set; }
             public DateTime CreateTime { get; set; }
-            public Endpoint Endpoint { get; set; }
         }
 
         public class Change : IEvent
         {
             public string Name { get; set; }
-            public string[] Urls { get; set; }
+            public Endpoint Endpoint { get; set; }
+            public string[] Scopes { get; set; }
         }
 
         public class RefreshSecret : IEvent
         {
             public string Secret { get; set; }
-        }
-
-        public class ReferenceScope : IEvent
-        {
-            public string[] Scopes { get; set; }
-        }
-        public class DeleteScope : ReferenceScope
-        {
-
         }
 
         public class ChangeStatus : IEvent
