@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SAE.CommonComponent.Application.Commands;
 using SAE.CommonComponent.Application.Dtos;
@@ -6,6 +7,7 @@ using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.Abstract.Model;
 using SAE.CommonLibrary.EventStore.Document;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SAE.CommonComponent.Application.Controllers
@@ -41,8 +43,8 @@ namespace SAE.CommonComponent.Application.Controllers
         [HttpPut("{action}/{id}")]
         public async Task<object> Refresh([FromRoute]AppCommand.RefreshSecret command)
         {
-            await this._mediator.SendAsync(command);
-            return this.Ok();
+            var secret = await this._mediator.SendAsync<string>(command);
+            return this.File(Encoding.ASCII.GetBytes(secret), "application/octet-stream",Constants.App.AppSecretFileName);
         }
 
         [HttpPut("{action}")]
@@ -52,6 +54,12 @@ namespace SAE.CommonComponent.Application.Controllers
             return this.Ok();
         }
 
+        [HttpDelete("{id}")]
+        public async Task<object> Delete([FromRoute] Command.Delete<AppDto> command)
+        {
+            await this._mediator.SendAsync(command);
+            return this.Ok();
+        }
 
         [HttpGet("{action}")]
         public async Task<object> Paging([FromQuery]AppCommand.Query command)

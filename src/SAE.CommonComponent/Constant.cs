@@ -9,6 +9,10 @@ namespace SAE.CommonComponent
         public const string Development = nameof(Development);
         public const string Production = nameof(Production);
         public const string DefaultSeparator = "_";
+        public class App
+        {
+            public const string AppSecretFileName = "appSecret.txt";
+        }
         public class Config
         {
             public class OAuth
