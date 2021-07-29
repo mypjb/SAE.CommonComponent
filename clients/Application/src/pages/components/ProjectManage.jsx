@@ -1,6 +1,6 @@
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Select } from 'antd';
+import { Row, Col, Select, Button } from 'antd';
 import { defaultOperation, defaultDispatchType, defaultState, Format } from '@/utils/utils';
 import PagingTable from '@/components/PagingTable';
 
@@ -15,7 +15,8 @@ export default (props) => {
   const [state, setState] = useState({
     ...defaultState,
     params: {
-      id: app.id
+      id: app.id,
+      referenced: true
     }
   });
 
@@ -30,7 +31,7 @@ export default (props) => {
         pageSize,
         ...state.params,
         callback: (data) => {
-          setState({ ...state, ...data, params: state.params});
+          setState({ ...state, ...data, params: state.params });
         }
       }
     });
@@ -38,6 +39,19 @@ export default (props) => {
 
   const handleChange = (referenced) => {
     setState({ ...state, params: { ...state.params, referenced } });
+  }
+
+  const handleProject = (row) => {
+    dispatch({
+      type: dispatchType.add,
+      payload: {
+        id: app.id,
+        projectId: row.id,
+        callback: function () {
+          handleSkipPage();
+        }
+      }
+    });
   }
 
   useEffect(() => {
@@ -55,30 +69,23 @@ export default (props) => {
     {
       title: 'name',
       dataIndex: 'name'
-    }, 
+    },
     {
-      title: 'descriptor',
-      dataIndex: 'descriptor'
+      title: 'solutionName',
+      dataIndex: 'solutionName'
     },
     {
       title: 'createTime',
       dataIndex: 'createTime',
       render: Format.date
+    },
+    {
+      title: 'action',
+      render: (text, row) => (
+        state.params.referenced ? (<></>) : (<Button type='link' onClick={handleProject.bind(row, row)}>Reference Project</Button>)
+      )
     }
   ];
-
-  props.okCallback((close) => {
-    dispatch({
-      type: state.params.referenced ? dispatchType.delete : dispatchType.add,
-      payload: {
-        id: user.id,
-        callback: function () {
-          handleSkipPage();
-        }
-      }
-    });
-    return false;
-  });
 
   return (
     <PageHeaderWrapper >
@@ -97,8 +104,7 @@ export default (props) => {
           {...state}
           handleSkipPage={handleSkipPage}
           columns={columns}
-          rowKey="id"
-          rowSelection={rowSelectionOption} />
+          rowKey="id" />
       </div>
     </PageHeaderWrapper>
   );
