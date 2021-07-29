@@ -76,9 +76,9 @@ namespace SAE.CommonComponent.Application.Controllers
         }
 
         [HttpGet("project/{action}")]
-        public async Task<IEnumerable<ProjectDto>> Paging([FromQuery] AppCommand.ProjectQuery command)
+        public async Task<IEnumerable<ProjectDetailDto>> Paging([FromQuery] AppCommand.ProjectQuery command)
         {
-            return await this._mediator.SendAsync<IPagedList<ProjectDto>>(command);
+            return await this._mediator.SendAsync<IPagedList<ProjectDetailDto>>(command);
         }
 
     }
