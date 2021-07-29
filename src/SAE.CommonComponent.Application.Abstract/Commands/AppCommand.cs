@@ -50,7 +50,7 @@ namespace SAE.CommonComponent.Application.Commands
             /// app Id
             /// </summary>
             public string Id { get; set; }
-            public string SolutionId { get; set; }
+            public bool Referenced { get; set; }
             public string Name { get; set; }
         }
     }

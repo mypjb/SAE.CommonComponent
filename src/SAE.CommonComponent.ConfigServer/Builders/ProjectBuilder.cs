@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace SAE.CommonComponent.ConfigServer.Builders
 {
-    public class ProjectConfigBuilder : IBuilder<IEnumerable<ProjectConfigDto>>
+    public class ProjectBuilder : IBuilder<IEnumerable<ProjectConfigDto>>, IBuilder<IEnumerable<ProjectDetailDto>>
     {
         private readonly IStorage _storage;
 
-        public ProjectConfigBuilder(IStorage storage)
+        public ProjectBuilder(IStorage storage)
         {
             this._storage = storage;
         }
@@ -28,6 +28,20 @@ namespace SAE.CommonComponent.ConfigServer.Builders
             {
                 dto.Config = configDtos.FirstOrDefault(s => s.Id == dto.ConfigId);
             }
+        }
+
+        public Task Build(IEnumerable<ProjectDetailDto> dtos)
+        {
+            var ids= dtos.Select(s => s.SolutionId);
+
+            var solutionDtos= this._storage.AsQueryable<SolutionDto>().Where(s => ids.Contains(s.Id));
+
+            foreach (var dto in dtos)
+            {
+                dto.SolutionName = solutionDtos.FirstOrDefault(s => s.Id == dto.SolutionId)?.Name;
+            }
+
+            return Task.CompletedTask;
         }
     }
 }

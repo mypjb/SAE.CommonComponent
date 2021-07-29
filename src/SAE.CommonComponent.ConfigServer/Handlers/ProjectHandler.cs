@@ -11,6 +11,7 @@ using SAE.CommonLibrary.Abstract.Model;
 using SAE.CommonLibrary.Extension;
 using System.Collections.Generic;
 using SAE.CommonComponent.ConfigServer.Events;
+using SAE.CommonLibrary.Abstract.Builder;
 
 namespace SAE.CommonComponent.ConfigServer.Handlers
 {
@@ -19,15 +20,24 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
                                   ICommandHandler<ProjectCommand.Change>,
                                   ICommandHandler<Command.Delete<Project>>,
                                   ICommandHandler<Command.Find<ProjectDto>, ProjectDto>,
+                                  ICommandHandler<Command.Find<ProjectDetailDto>, ProjectDetailDto>,
                                   ICommandHandler<ProjectCommand.Query, IPagedList<ProjectDto>>,
+                                  ICommandHandler<ProjectCommand.Query, IPagedList<ProjectDetailDto>>,
                                   ICommandHandler<ProjectCommand.Publish>,
                                   ICommandHandler<ProjectCommand.Preview, ProjectPreviewDto>
     {
         private readonly IStorage _storage;
+        private readonly IMediator _mediator;
+        private readonly IDirector _director;
 
-        public ProjectHandler(IDocumentStore documentStore, IStorage storage) : base(documentStore)
+        public ProjectHandler(IDocumentStore documentStore,
+                              IStorage storage,
+                              IMediator mediator,
+                              IDirector director) : base(documentStore)
         {
             this._storage = storage;
+            this._mediator = mediator;
+            this._director = director;
         }
 
         public async Task<string> HandleAsync(ProjectCommand.Create command)
@@ -52,6 +62,20 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
                        .FirstOrDefault(s => s.Id == command.Id));
         }
 
+        public async Task<ProjectDetailDto> HandleAsync(Command.Find<ProjectDetailDto> command)
+        {
+            var projectDto = await this._mediator.SendAsync<ProjectDto>(command.To<Command.Find<ProjectDto>>());
+
+            var projectDetailDto =projectDto.To<ProjectDetailDto>();
+
+            Assert.Build(projectDetailDto)
+                  .NotNull();
+
+            await this._director.Build<IEnumerable<ProjectDetailDto>>(new[] { projectDetailDto });
+
+            return projectDetailDto;
+        }
+
         public async Task<IPagedList<ProjectDto>> HandleAsync(ProjectCommand.Query command)
         {
 
@@ -69,6 +93,14 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
                 query = query.Where(s => s.Name.Contains(command.Name));
             }
             return PagedList.Build(query, command);
+        }
+
+        async Task<IPagedList<ProjectDetailDto>> ICommandHandler<ProjectCommand.Query, IPagedList<ProjectDetailDto>>.HandleAsync(ProjectCommand.Query command)
+        {
+            var paging = await this._mediator.SendAsync<IPagedList<ProjectDto>>(command);
+            var projectDetails = paging.Select(s => s.To<ProjectDetailDto>());
+            await this._director.Build(projectDetails);
+            return PagedList.Build(projectDetails, paging);
         }
 
         public async Task HandleAsync(ProjectCommand.Publish command)
@@ -111,6 +143,8 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
                 Private = tuple.Item2
             };
         }
+
+
 
         private async Task<Tuple<IDictionary<string, object>, IDictionary<string, object>>> CombinationConfigAsync(ProjectCommand.Publish command)
         {
@@ -157,6 +191,8 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
 
             return new Tuple<IDictionary<string, object>, IDictionary<string, object>>(publicData, privateData);
         }
+
+        
     }
 
 }
