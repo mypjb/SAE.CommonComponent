@@ -1,12 +1,21 @@
 import FormModal from "@/components/FormModal";
 import { Modal, Switch } from "antd";
+import { useModel } from 'umi';
+import moment from "moment";
 
 export const Format = {
   status: (status, props) => {
     return (<Switch checkedChildren="Enable" unCheckedChildren="Disable" checked={status == 1} {...props} />);
   },
-  date: (date, props) => {
-    return new Date(+new Date(new Date(date).toJSON()) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '');
+  date: (date, props) => {
+    return moment(date).format('YYYY-MM-DD hh:mm:ss');
+  },
+  scope: (data, props) => {
+    const { scope } = useModel('scope', model => ({ scope: model.state, load: model.load }));
+    const first = scope.find(val => {
+      return val.id == data;
+    });
+    return first ? first.name : data;
   }
 }
 const S4 = () => {

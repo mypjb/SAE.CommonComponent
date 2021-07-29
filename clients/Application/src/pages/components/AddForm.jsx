@@ -27,8 +27,6 @@ export default (props) => {
         }
     };
 
-
-
     return (<Form form={form} onFinish={handleSave} size='middl' initialValues={defaultModel}>
         <Form.Item name="id" label="id" rules={[{ required: true }]}>
             <Input />
