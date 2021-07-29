@@ -114,11 +114,11 @@ namespace SAE.CommonComponent.Application.Abstract.Handlers
             {
                 var queryCommand = new ProjectCommand.Query
                 {
-                    Name = app.Name,
+                    Name = command.Name,
                     PageIndex = command.PageIndex,
                     PageSize = command.PageSize
                 };
-                if (app.ProjectId.IsNullOrWhiteSpace())
+                if (!app.ProjectId.IsNullOrWhiteSpace())
                 {
                     queryCommand.IgnoreIds = new[] { app.ProjectId };
                 }

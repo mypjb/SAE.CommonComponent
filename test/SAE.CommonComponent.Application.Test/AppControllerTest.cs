@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System;
 using System.IO;
 using System.Text;
+using SAE.CommonLibrary.EventStore.Document;
 
 namespace SAE.CommonComponent.Application.Test
 {
@@ -43,6 +44,27 @@ namespace SAE.CommonComponent.Application.Test
                               services.AddSingleton(p =>
                               {
                                   return this._projectControllerTest.ServiceProvider.GetService<ICommandHandler<ProjectCommand.Query, IPagedList<ProjectDto>>>();
+                              });
+
+                              services.AddSingleton(p =>
+                              {
+                                  return this._projectControllerTest.ServiceProvider.GetService<ICommandHandler<ProjectCommand.Query, IPagedList<ProjectDetailDto>>>();
+                              });
+
+                              services.AddSingleton(p =>
+                              {
+                                  return this._projectControllerTest.ServiceProvider.GetService<ICommandHandler<Command.Find<ProjectDto>, ProjectDto>>();
+                              });
+
+
+                              services.AddSingleton(p =>
+                              {
+                                  return this._projectControllerTest.ServiceProvider.GetService<ICommandHandler<Command.Find<ProjectDetailDto>, ProjectDetailDto>>();
+                              });
+
+                              services.AddSingleton(p =>
+                              {
+                                  return this._projectControllerTest.ServiceProvider.GetService<ICommandHandler<ProjectCommand.Query, IPagedList<ProjectDetailDto>>>();
                               });
 
                               services.AddSingleton(p =>
@@ -199,9 +221,30 @@ namespace SAE.CommonComponent.Application.Test
 
             var httpResponseMessage = await this.HttpClient.SendAsync(message);
 
+            httpResponseMessage.EnsureSuccessStatusCode();
+
+            var queryUrl = $"{url}/Paging";
+            
+
+            var referencedQueryReq = new HttpRequestMessage(HttpMethod.Get, $"{queryUrl}?id={app.Id}&referenced=true");
+
+            var queryRep = await this.HttpClient.SendAsync(referencedQueryReq);
+
+            var projects = await queryRep.AsAsync<PagedList<ProjectDetailDto>>();
+
             var dto = await this.Get(app.Id);
 
-            Assert.True(dto.ProjectId.All(command.ProjectId.Contains));
+            Assert.Equal(dto.ProjectId, command.ProjectId);
+
+            Assert.Contains(projects, s => s.Id == command.ProjectId);
+
+            var unReferencedQueryReq = new HttpRequestMessage(HttpMethod.Get, $"{queryUrl}?id={app.Id}&referenced=false");
+
+            queryRep = await this.HttpClient.SendAsync(unReferencedQueryReq);
+
+            projects = await queryRep.AsAsync<PagedList<ProjectDetailDto>>();
+
+            Assert.True(projects.All(s => s.Id != command.ProjectId));
             return dto;
         }
 
