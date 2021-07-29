@@ -48,6 +48,23 @@ export default connect(({ app }) => (
             })
         };
 
+        const handleRefreshSecret = (row) => {
+            modal.warning({
+                title: "Update secret",
+                content: "Note that this action refreshes and downloads the app secret",
+                closable: true,
+                onOk: function (e) {
+                    dispatch({
+                        type: "app/refreshSecret",
+                        payload: {
+                            data: row.id,
+                            callback:e
+                        }
+                    })
+                }
+            })
+        }
+
 
         const columns = [
             {
@@ -63,7 +80,8 @@ export default connect(({ app }) => (
             },
             {
                 title: 'scopes',
-                dataIndex: 'scopes'
+                dataIndex: 'scopes',
+                render: Format.scope
             },
             {
                 title: 'app id',
@@ -85,6 +103,7 @@ export default connect(({ app }) => (
                 title: 'action',
                 render: (text, row) => (
                     <span>
+                        <Button type='link' onClick={handleRefreshSecret.bind(row, row)}>Refresh Secret</Button>
                         <Button type='link' value={row.id} onClick={handleEdit.bind(row, row)} style={{ marginRight: 16 }}>Edit</Button>
                         <Button type='link' onClick={handleDelete.bind(row, { id: row.id })}>Delete</Button>
                     </span>
