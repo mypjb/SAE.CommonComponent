@@ -41,20 +41,20 @@ namespace SAE.CommonComponent.Application.Test
             return builder.UseStartup<Startup>()
                           .ConfigureServices(services =>
                           {
-                              services.AddSingleton(p =>
-                              {
-                                  return this._projectControllerTest.ServiceProvider.GetService<ICommandHandler<ProjectCommand.Query, IPagedList<ProjectDto>>>();
-                              });
+                              //services.AddSingleton(p =>
+                              //{
+                              //    return this._projectControllerTest.ServiceProvider.GetService<ICommandHandler<ProjectCommand.Query, IPagedList<ProjectDto>>>();
+                              //});
 
                               services.AddSingleton(p =>
                               {
                                   return this._projectControllerTest.ServiceProvider.GetService<ICommandHandler<ProjectCommand.Query, IPagedList<ProjectDetailDto>>>();
                               });
 
-                              services.AddSingleton(p =>
-                              {
-                                  return this._projectControllerTest.ServiceProvider.GetService<ICommandHandler<Command.Find<ProjectDto>, ProjectDto>>();
-                              });
+                              //services.AddSingleton(p =>
+                              //{
+                              //    return this._projectControllerTest.ServiceProvider.GetService<ICommandHandler<Command.Find<ProjectDto>, ProjectDto>>();
+                              //});
 
 
                               services.AddSingleton(p =>
@@ -62,10 +62,6 @@ namespace SAE.CommonComponent.Application.Test
                                   return this._projectControllerTest.ServiceProvider.GetService<ICommandHandler<Command.Find<ProjectDetailDto>, ProjectDetailDto>>();
                               });
 
-                              services.AddSingleton(p =>
-                              {
-                                  return this._projectControllerTest.ServiceProvider.GetService<ICommandHandler<ProjectCommand.Query, IPagedList<ProjectDetailDto>>>();
-                              });
 
                               services.AddSingleton(p =>
                               {
@@ -208,6 +204,8 @@ namespace SAE.CommonComponent.Application.Test
 
             var project = await this._projectControllerTest.Add(solution.Id);
 
+            await this._projectControllerTest.Add(solution.Id);
+
             var command = new AppCommand.ReferenceProject
             {
                 Id = app.Id,
@@ -231,7 +229,7 @@ namespace SAE.CommonComponent.Application.Test
             var queryRep = await this.HttpClient.SendAsync(referencedQueryReq);
 
             var projects = await queryRep.AsAsync<PagedList<ProjectDetailDto>>();
-
+            
             var dto = await this.Get(app.Id);
 
             Assert.Equal(dto.ProjectId, command.ProjectId);
@@ -243,7 +241,7 @@ namespace SAE.CommonComponent.Application.Test
             queryRep = await this.HttpClient.SendAsync(unReferencedQueryReq);
 
             projects = await queryRep.AsAsync<PagedList<ProjectDetailDto>>();
-
+            this.WriteLine(projects);
             Assert.True(projects.All(s => s.Id != command.ProjectId));
             return dto;
         }

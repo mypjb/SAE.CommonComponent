@@ -66,7 +66,7 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
         {
             var projectDto = await this._mediator.SendAsync<ProjectDto>(command.To<Command.Find<ProjectDto>>());
 
-            var projectDetailDto =projectDto.To<ProjectDetailDto>();
+            var projectDetailDto = projectDto.To<ProjectDetailDto>();
 
             Assert.Build(projectDetailDto)
                   .NotNull();
@@ -98,8 +98,9 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
         async Task<IPagedList<ProjectDetailDto>> ICommandHandler<ProjectCommand.Query, IPagedList<ProjectDetailDto>>.HandleAsync(ProjectCommand.Query command)
         {
             var paging = await this._mediator.SendAsync<IPagedList<ProjectDto>>(command);
-            var projectDetails = paging.Select(s => s.To<ProjectDetailDto>());
-            await this._director.Build(projectDetails);
+            var projectDetails = paging.Select(s => s.To<ProjectDetailDto>())
+                                       .ToArray();
+            await this._director.Build<IEnumerable<ProjectDetailDto>>(projectDetails);
             return PagedList.Build(projectDetails, paging);
         }
 
@@ -192,7 +193,7 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
             return new Tuple<IDictionary<string, object>, IDictionary<string, object>>(publicData, privateData);
         }
 
-        
+
     }
 
 }

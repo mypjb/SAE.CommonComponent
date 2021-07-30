@@ -76,18 +76,20 @@ namespace SAE.CommonComponent.Authorize.Handlers
         {
 
             var dtos = this._storage.AsQueryable<PermissionDto>()
-                                    .OrderBy(s => s.Id)
+                                    .OrderBy(s => s.CreateTime)
                                     .ToArray();
 
             var endpoints = new List<BitmapEndpoint>(dtos.Count());
 
             for (int i = 0; i < dtos.Length; i++)
             {
+                var dto = dtos[i];
                 endpoints.Add(new BitmapEndpoint
                 {
                     Index = i,
-                    Path = dtos[i].Flag,
-                    Name = dtos[i].Name
+                    Path = dto.Flag,
+                    Name = dto.Name,
+                    Method=dto.Method.ToString()
                 });
             }
 

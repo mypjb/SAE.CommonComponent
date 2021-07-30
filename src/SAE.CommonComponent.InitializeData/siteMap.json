@@ -1,5 +1,23 @@
 [
   {
+    "name": "basicData",
+    "plugin": "BasicData",
+    "path": "/basicdata",
+    "hidden": false
+  },
+  {
+    "name": "plugin",
+    "path": "/plugin",
+    "plugin": "PluginManagement",
+    "hidden": false
+  },
+  {
+    "name": "app",
+    "path": "/app",
+    "plugin": "Application",
+    "hidden": false
+  },
+  {
     "name": "config",
     "path": "/config",
     "hidden": false,
@@ -16,6 +34,12 @@
         "hidden": false
       }
     ]
+  },
+  {
+    "name": "routing",
+    "plugin": "routing",
+    "path": "/routing",
+    "hidden": false
   },
   {
     "name": "user",
@@ -40,24 +64,6 @@
         "hidden": false
       }
     ]
-  },
-  {
-    "name": "routing",
-    "plugin": "routing",
-    "path": "/routing",
-    "hidden": false
-  },
-  {
-    "name": "plugin",
-    "path": "/plugin",
-    "plugin": "PluginManagement",
-    "hidden": false
-  },
-  {
-    "name": "basicData",
-    "plugin": "BasicData",
-    "path": "/basicdata",
-    "hidden": false
   },
   {
     "name": "identity",
