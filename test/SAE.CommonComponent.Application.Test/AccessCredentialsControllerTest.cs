@@ -15,7 +15,7 @@ using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonComponent.ConfigServer.Dtos;
 using SAE.CommonComponent.ConfigServer.Commands;
 using SAE.CommonLibrary.Abstract.Model;
-using AppCommand = SAE.CommonComponent.Application.Commands.AppCommand;
+using AccessCredentialsCommand = SAE.CommonComponent.Application.Commands.AccessCredentialsCommand;
 using System.Collections.Generic;
 using System;
 using System.IO;
@@ -24,13 +24,13 @@ using SAE.CommonLibrary.EventStore.Document;
 
 namespace SAE.CommonComponent.Application.Test
 {
-    public class AppControllerTest : BaseTest
+    public class AccessCredentialsControllerTest : BaseTest
     {
-        public const string API = "app";
+        public const string API = "AccessCredentials";
         private readonly SolutionControllerTest _solutionControllerTest;
         private readonly ProjectControllerTest _projectControllerTest;
 
-        public AppControllerTest(ITestOutputHelper output) : base(output)
+        public AccessCredentialsControllerTest(ITestOutputHelper output) : base(output)
         {
             this._solutionControllerTest = new SolutionControllerTest(this._output);
             this._projectControllerTest = new ProjectControllerTest(this._output);
@@ -71,11 +71,18 @@ namespace SAE.CommonComponent.Application.Test
         }
 
         [Fact]
-        public async Task<AppDto> Add()
+        public async Task<AccessCredentialsDto> Add()
         {
-            var command = new AppCommand.Create
+            var command = new AccessCredentialsCommand.Create
             {
-                Name = this.GetRandom()
+                Name = this.GetRandom(),
+                Scopes = new string[] { this.GetRandom(), this.GetRandom() },
+                Endpoint = new Dtos.EndpointDto
+                {
+                    PostLogoutRedirectUris = new[] { this.GetRandom() },
+                    RedirectUris = new[] { this.GetRandom() },
+                    SignIn = this.GetRandom()
+                }
             };
             var message = new HttpRequestMessage(HttpMethod.Post, API);
             message.AddJsonContent(command);
@@ -84,6 +91,11 @@ namespace SAE.CommonComponent.Application.Test
             var app = await this.Get(id);
             this.WriteLine(app);
             Assert.Equal(command.Name, app.Name);
+            Assert.Contains(command.Scopes, app.Scopes.Contains);
+            Assert.Equal(command.Endpoint.SignIn, app.Endpoint.SignIn);
+            Assert.Equal(command.Endpoint.PostLogoutRedirectUris.First(), app.Endpoint.PostLogoutRedirectUris.First());
+            Assert.Equal(command.Endpoint.RedirectUris.First(), app.Endpoint.RedirectUris.First());
+
             return app;
         }
 
@@ -92,25 +104,54 @@ namespace SAE.CommonComponent.Application.Test
         {
             var app = await this.Add();
             var message = new HttpRequestMessage(HttpMethod.Put, API);
-            var command = new AppCommand.Change
+            var command = new AccessCredentialsCommand.Change
             {
                 Id = app.Id,
-                Name = this.GetRandom()
+                Name = this.GetRandom(),
+                Scopes = new string[] { this.GetRandom(), this.GetRandom() },
+                Endpoint = new Dtos.EndpointDto
+                {
+                    PostLogoutRedirectUris = new[] { this.GetRandom() },
+                    RedirectUris = new[] { this.GetRandom() },
+                    SignIn = this.GetRandom()
+                }
             };
             message.AddJsonContent(command);
             var responseMessage = await this.HttpClient.SendAsync(message);
             responseMessage.EnsureSuccessStatusCode();
             var newApp = await this.Get(app.Id);
             Assert.Equal(command.Name, newApp.Name);
+            Assert.Contains(command.Scopes, newApp.Scopes.Contains);
+            Assert.Equal(command.Endpoint.SignIn, newApp.Endpoint.SignIn);
+            Assert.Equal(command.Endpoint.PostLogoutRedirectUris.First(), newApp.Endpoint.PostLogoutRedirectUris.First());
+            Assert.Equal(command.Endpoint.RedirectUris.First(), newApp.Endpoint.RedirectUris.First());
         }
 
+        [Fact]
+        public async Task Refresh()
+        {
+            var app = await this.Add();
+
+            var message = new HttpRequestMessage(HttpMethod.Put, $"{API}/{nameof(Refresh)}/{app.Id}");
+
+            var responseMessage = await this.HttpClient.SendAsync(message);
+
+            responseMessage.EnsureSuccessStatusCode();
+
+            var secret = await responseMessage.Content.ReadAsStringAsync();
+
+            var dto = await this.Get(app.Id);
+
+            Assert.NotEqual(app.Secret, dto.Secret);
+            this.WriteLine(secret);
+        }
 
         [Fact]
         public async Task ChangeStatus()
         {
             var app = await this.Add();
 
-            var command = new AppCommand.ChangeStatus
+            var command = new AccessCredentialsCommand.ChangeStatus
             {
                 Id = app.Id,
                 Status = app.Status == Status.Enable ? Status.Disable : Status.Enable
@@ -129,62 +170,11 @@ namespace SAE.CommonComponent.Application.Test
         }
 
 
-        [Fact]
-        public async Task<AppDto> ReferenceProject()
-        {
-            var app = await this.Add();
-            var solution = await this._solutionControllerTest.Add();
-
-            var project = await this._projectControllerTest.Add(solution.Id);
-
-            await this._projectControllerTest.Add(solution.Id);
-
-            var command = new AppCommand.ReferenceProject
-            {
-                Id = app.Id,
-                ProjectId = project.Id
-            };
-
-            var url = $"{API}/Project";
-
-            var message = new HttpRequestMessage(HttpMethod.Post, url)
-                              .AddJsonContent(command);
-
-            var httpResponseMessage = await this.HttpClient.SendAsync(message);
-
-            httpResponseMessage.EnsureSuccessStatusCode();
-
-            var queryUrl = $"{url}/Paging";
-
-
-            var referencedQueryReq = new HttpRequestMessage(HttpMethod.Get, $"{queryUrl}?id={app.Id}&referenced=true");
-
-            var queryRep = await this.HttpClient.SendAsync(referencedQueryReq);
-
-            var projects = await queryRep.AsAsync<PagedList<ProjectDetailDto>>();
-
-            var dto = await this.Get(app.Id);
-
-            Assert.Equal(dto.ProjectId, command.ProjectId);
-
-            Assert.Contains(projects, s => s.Id == command.ProjectId);
-
-            var unReferencedQueryReq = new HttpRequestMessage(HttpMethod.Get, $"{queryUrl}?id={app.Id}&referenced=false");
-
-            queryRep = await this.HttpClient.SendAsync(unReferencedQueryReq);
-
-            projects = await queryRep.AsAsync<PagedList<ProjectDetailDto>>();
-            this.WriteLine(projects);
-            Assert.True(projects.All(s => s.Id != command.ProjectId));
-            return dto;
-        }
-
-
-        private async Task<AppDto> Get(string id)
+        private async Task<AccessCredentialsDto> Get(string id)
         {
             var message = new HttpRequestMessage(HttpMethod.Get, $"{API}/{id}");
             var responseMessage = await this.HttpClient.SendAsync(message);
-            var app = await responseMessage.AsAsync<AppDto>();
+            var app = await responseMessage.AsAsync<AccessCredentialsDto>();
             this.WriteLine(app);
             return app;
         }

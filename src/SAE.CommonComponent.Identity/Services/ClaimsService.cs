@@ -28,8 +28,8 @@ namespace SAE.CommonComponent.Identity.Services
                     claims.Add(claim);
                 }
             }
-
-            claims.Add(new Claim(CommonLibrary.AspNetCore.Constants.Administrator, "1", Constants.Claim.CustomType));
+#warning 专用于测试
+            claims.Add(new Claim(CommonLibrary.AspNetCore.Constants.BitmapAuthorize.Administrator, "1", Constants.Claim.CustomType));
 
             return claims;
         }

@@ -1,5 +1,4 @@
-using SAE.CommonComponent.Application.Abstract.Domains;
-using SAE.CommonComponent.Application.Commands;
+using SAE.CommonComponent.Application.Domains;
 using SAE.CommonComponent.Application.Dtos;
 using SAE.CommonComponent.ConfigServer.Commands;
 using SAE.CommonComponent.ConfigServer.Dtos;
@@ -9,7 +8,6 @@ using SAE.CommonLibrary.Data;
 using SAE.CommonLibrary.EventStore.Document;
 using SAE.CommonLibrary.Extension;
 using SAE.CommonLibrary.Logging;
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 using AppCommand = SAE.CommonComponent.Application.Commands.AppCommand;
@@ -21,7 +19,6 @@ namespace SAE.CommonComponent.Application.Abstract.Handlers
                               ICommandHandler<AppCommand.Change>,
                               ICommandHandler<Command.Delete<App>>,
                               ICommandHandler<AppCommand.ChangeStatus>,
-                              ICommandHandler<AppCommand.RefreshSecret, string>,
                               ICommandHandler<AppCommand.Query, IPagedList<AppDto>>,
                               ICommandHandler<Command.Find<AppDto>, AppDto>,
                               ICommandHandler<AppCommand.ReferenceProject>,
@@ -57,16 +54,6 @@ namespace SAE.CommonComponent.Application.Abstract.Handlers
             return this.UpdateAsync<App>(command.Id, app => app.ChangeStatus(command));
         }
 
-        public async Task<string> HandleAsync(AppCommand.RefreshSecret command)
-        {
-            var secret = string.Empty;
-            await this.UpdateAsync<App>(command.Id, app =>
-            {
-                app.RefreshSecret();
-                secret = app.Secret;
-            });
-            return secret;
-        }
 
         public async Task<AppDto> HandleAsync(Command.Find<AppDto> command)
         {

@@ -6,18 +6,18 @@ using System.Globalization;
 
 namespace SAE.CommonComponent.Application.Converts
 {
-    public class AppConvert : TypeConverter
+    public class AccessCredentialsConvert : TypeConverter
     {
         public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
         {
-            return destinationType == typeof(AppDto);
+            return destinationType == typeof(AccessCredentialsDto);
         }
 
         public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
         {
             if (value == null) return null;
-            var app = (App)value;
-            var result = new AppDto
+            var app = (AccessCredentials)value;
+            var result = new AccessCredentialsDto
             {
                 Id = app.Id,
                 Name = app.Name,
@@ -30,8 +30,7 @@ namespace SAE.CommonComponent.Application.Converts
                     SignIn = app.Endpoint.SignIn
                 },
                 Scopes = app.Scopes,
-                Secret = app.Secret,
-                ProjectId = app.ProjectId
+                Secret = app.Secret
             };
             return result;
         }

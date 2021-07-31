@@ -73,7 +73,7 @@ namespace SAE.CommonComponent.Identity.Controllers
                 string clientId;
                 if (kv.TryGetValue("client_Id", out clientId))
                 {
-                    var app = await this._mediator.SendAsync<AppDto>(new Command.Find<AppDto> { Id = clientId });
+                    var app = await this._mediator.SendAsync<AccessCredentialsDto>(new Command.Find<AccessCredentialsDto> { Id = clientId });
                     var paramsters = app.Endpoint.SignIn.IndexOf('?') == -1 ? this.Request.QueryString.ToString() :
                                                                               this.Request.QueryString.ToString().Substring(1);
                     return this.Redirect($"{app.Endpoint.SignIn}{paramsters}");

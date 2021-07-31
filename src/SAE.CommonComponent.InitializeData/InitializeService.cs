@@ -29,7 +29,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using AppCommand = SAE.CommonComponent.Application.Commands.AppCommand;
+using AccessCredentialsCommand = SAE.CommonComponent.Application.Commands.AccessCredentialsCommand;
 
 namespace SAE.CommonComponent.InitializeData
 {
@@ -216,7 +216,7 @@ namespace SAE.CommonComponent.InitializeData
                 Type = (int)DictType.Scope
             };
 
-            this._logging.Info($"add default scope:{scopeCommand.ToJsonString()}");
+            this._logging.Info($"Add default scope:{scopeCommand.ToJsonString()}");
 
             await this._mediator.SendAsync<string>(scopeCommand);
         }
@@ -264,7 +264,7 @@ namespace SAE.CommonComponent.InitializeData
 
                     var scopeNames = this.GetJTokenValue<string>(oauthJToken, nameof(Constants.Config.OAuth.Scope)).Split(Constants.Config.OAuth.ScopeSeparator);
 
-                    var appCommand = new AppCommand.Create
+                    var appCommand = new AccessCredentialsCommand.Create
                     {
                         Id = this.GetJTokenValue<string>(oauthJToken, nameof(Constants.Config.OAuth.AppId)),
                         Secret = this.GetJTokenValue<string>(oauthJToken, nameof(Constants.Config.OAuth.AppId)),
@@ -284,25 +284,25 @@ namespace SAE.CommonComponent.InitializeData
 
                     appCommand.Secret = "************";
 
-                    this._logging.Info($"add default app:{appCommand.ToJsonString()}");
+                    this._logging.Info($"Add default access credentials:{appCommand.ToJsonString()}");
+#warning 项目挂载 app，app添加AccessCredentials
+                    //var command = new AccessCredentialsCommand.ReferenceProject
+                    //{
+                    //    Id = appCommand.Id,
+                    //    ProjectId = project.Id
+                    //};
 
-                    var command = new AppCommand.ReferenceProject
-                    {
-                        Id = appCommand.Id,
-                        ProjectId = project.Id
-                    };
+                    //await this._mediator.SendAsync(command);
 
-                    await this._mediator.SendAsync(command);
+                    //this._logging.Info("Reference project");
 
-                    this._logging.Info("Reference project");
-
-                    await this._mediator.SendAsync(new AppCommand.ChangeStatus
+                    await this._mediator.SendAsync(new AccessCredentialsCommand.ChangeStatus
                     {
                         Id = appCommand.Id,
                         Status = Status.Enable
                     });
 
-                    var app = await this._mediator.SendAsync<AppDto>(new Command.Find<AppDto>
+                    var app = await this._mediator.SendAsync<AccessCredentialsDto>(new Command.Find<AccessCredentialsDto>
                     {
                         Id = appCommand.Id
                     });
@@ -320,7 +320,7 @@ namespace SAE.CommonComponent.InitializeData
 
         public virtual async Task ConfigServerAsync()
         {
-            var configPath = this._configuration.GetValue<string>(SAE.CommonLibrary.Configuration.Constants.ConfigRootDirectoryKey);
+            var configPath = this._configuration.GetValue<string>(SAE.CommonLibrary.Configuration.Constants.Config.RootDirectoryKey);
 
             var environmentName = this._configuration.GetValue<string>(HostDefaults.EnvironmentKey);
 

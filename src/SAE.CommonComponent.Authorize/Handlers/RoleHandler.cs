@@ -75,11 +75,19 @@ namespace SAE.CommonComponent.Authorize.Handlers
             await command.Ids.ForEachAsync(async id =>
             {
                 var userRoles = this._storage.AsQueryable<UserRole>()
-                         .Where(s => s.RoleId==id);
+                                             .Where(s => s.RoleId==id);
                 await this._mediator.SendAsync(new Command.BatchDelete<UserRole>
                 {
                     Ids = userRoles.Select(s => s.Id)
                 });
+
+                var appRoles = this._storage.AsQueryable<AppRole>()
+                                             .Where(s => s.RoleId == id);
+                await this._mediator.SendAsync(new Command.BatchDelete<AppRole>
+                {
+                    Ids = appRoles.Select(s => s.Id)
+                });
+
                 await this._storage.DeleteAsync<Role>(id);
 
             });

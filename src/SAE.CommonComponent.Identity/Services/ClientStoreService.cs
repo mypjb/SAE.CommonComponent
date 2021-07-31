@@ -25,7 +25,7 @@ namespace SAE.CommonComponent.Identity.Services
         }
         public async Task<Client> FindClientByIdAsync(string clientId)
         {
-            var app = await this._mediator.SendAsync<AppDto>(new Command.Find<AppDto> { Id = clientId });
+            var app = await this._mediator.SendAsync<AccessCredentialsDto>(new Command.Find<AccessCredentialsDto> { Id = clientId });
 
             var dicts = await this._mediator.SendAsync<IEnumerable<DictDto>>(new DictCommand.List
             {

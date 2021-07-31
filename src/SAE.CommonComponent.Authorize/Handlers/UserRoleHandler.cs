@@ -86,10 +86,10 @@ namespace SAE.CommonComponent.Authorize.Handlers
                 var dto = dtos[i];
                 endpoints.Add(new BitmapEndpoint
                 {
-                    Index = i,
+                    Index = i + 1,
                     Path = dto.Flag,
                     Name = dto.Name,
-                    Method=dto.Method.ToString()
+                    Method = dto.Method.ToString()
                 });
             }
 
@@ -132,7 +132,7 @@ namespace SAE.CommonComponent.Authorize.Handlers
                 var ids = paging.Select(ur => ur.RoleId).ToArray();
 
                 return PagedList.Build(this._storage.AsQueryable<RoleDto>()
-                                                    .Where(s=> ids.Contains(s.Id))
+                                                    .Where(s => ids.Contains(s.Id))
                                                     .ToList(), paging);
 
             }
@@ -140,7 +140,7 @@ namespace SAE.CommonComponent.Authorize.Handlers
             {
                 var ids = this._storage.AsQueryable<UserRole>()
                                        .Where(s => s.UserId == command.UserId)
-                                       .Select(s=>s.RoleId)
+                                       .Select(s => s.RoleId)
                                        .ToArray();
 
                 return PagedList.Build(this._storage.AsQueryable<RoleDto>()

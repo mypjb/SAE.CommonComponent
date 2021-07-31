@@ -46,11 +46,11 @@ namespace SAE.CommonComponent.Application
         }
         public override void PluginConfigureServices(IServiceCollection services)
         {
-            TypeDescriptor.AddAttributes(typeof(App), new TypeConverterAttribute(typeof(AppConvert)));
+            TypeDescriptor.AddAttributes(typeof(AccessCredentials), new TypeConverterAttribute(typeof(AccessCredentialsConvert)));
 
             services.AddMvc()
                     .AddResponseResult();
-            var assemblys = new[] { typeof(AppDto).Assembly, Assembly.GetExecutingAssembly() };
+            var assemblys = new[] { typeof(AccessCredentialsDto).Assembly, Assembly.GetExecutingAssembly() };
 
             services.AddServiceFacade()
                     .AddMediator(assemblys)
@@ -72,7 +72,7 @@ namespace SAE.CommonComponent.Application
                     build.Run(async context =>
                     {
                         var mediator = context.RequestServices.GetService<IMediator>();
-                        var paging = await mediator.SendAsync<CommonLibrary.Abstract.Model.IPagedList<AppDto>>(new AppCommand.Query());
+                        var paging = await mediator.SendAsync<CommonLibrary.Abstract.Model.IPagedList<AccessCredentialsDto>>(new AccessCredentialsCommand.Query());
                         await context.Response.WriteAsync(Newtonsoft.Json.JsonConvert.SerializeObject(paging));
                     });
                 });

@@ -65,14 +65,7 @@ namespace SAE.CommonComponent.Authorize
                     .AddDataPersistenceService(assemblys);
 
             services.AddBitmapAuthorization()
-                    .AddLocalBitmapEndpointProvider(provider =>
-                    {
-                        var mediator = provider.GetService<IMediator>();
-
-                        return mediator.SendAsync<Command.List<BitmapEndpoint>, IEnumerable<BitmapEndpoint>>(new Command.List<BitmapEndpoint>())
-                                       .GetAwaiter()
-                                       .GetResult();
-                    });
+                    .AddLocalBitmapEndpointProvider();
 
             services.AddAuthentication()
                     .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>

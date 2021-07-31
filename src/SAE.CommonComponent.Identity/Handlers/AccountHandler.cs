@@ -40,8 +40,9 @@ namespace SAE.CommonComponent.Identity.Handlers
             identity.AddClaim(new Claim(JwtClaimTypes.Subject, dto.Id.ToLower()));
             identity.AddClaim(new Claim(JwtClaimTypes.Name, dto.Name));
             identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, dto.Account.Name));
-            identity.AddClaim(new Claim(CommonLibrary.AspNetCore.Constants.PermissionBits,dto.AuthorizeCode??string.Empty, Constants.Claim.CustomType));
-            identity.AddClaim(new Claim(CommonLibrary.AspNetCore.Constants.Administrator, "1", Constants.Claim.CustomType));
+#warning 使用权限组进行替换
+            identity.AddClaim(new Claim(CommonLibrary.AspNetCore.Constants.BitmapAuthorize.Claim,dto.AuthorizeCode??string.Empty, Constants.Claim.CustomType));
+            identity.AddClaim(new Claim(CommonLibrary.AspNetCore.Constants.BitmapAuthorize.Administrator, "1", Constants.Claim.CustomType));
             var principal = new ClaimsPrincipal(identity);
 
             return principal;
