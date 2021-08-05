@@ -1,7 +1,5 @@
 using SAE.CommonComponent.Application.Domains;
 using SAE.CommonComponent.Application.Dtos;
-using SAE.CommonComponent.ConfigServer.Commands;
-using SAE.CommonComponent.ConfigServer.Dtos;
 using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.Abstract.Model;
 using SAE.CommonLibrary.Data;

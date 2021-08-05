@@ -54,6 +54,7 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
                 Id = command.AppId
             });
 
+            Assert.Build(appDto).IsNotNull();
 
             var appConfigs = this._storage.AsQueryable<Config>()
                                          .Where(s => command.ConfigIds.Contains(s.Id))
@@ -100,19 +101,19 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
 
         public async Task HandleAsync(AppConfigCommand.Change command)
         {
-            var projectConfig = await this._documentStore.FindAsync<AppConfig>(command.Id);
+            var appConfig = await this._documentStore.FindAsync<AppConfig>(command.Id);
 
-            projectConfig.Change(command);
+            appConfig.Change(command);
 
             Assert.Build(this._storage.AsQueryable<AppConfigDto>()
-                             .Where(s => s.AppId == projectConfig.AppId &&
-                                    s.EnvironmentId == projectConfig.EnvironmentId &&
-                                    s.ConfigId != projectConfig.ConfigId &&
+                             .Where(s => s.AppId == appConfig.AppId &&
+                                    s.EnvironmentId == appConfig.EnvironmentId &&
+                                    s.ConfigId != appConfig.ConfigId &&
                                     s.Alias == command.Alias)
                              .Count() == 0)
                   .True($"{command.Alias} is exist");
 
-            await this._documentStore.SaveAsync(projectConfig);
+            await this._documentStore.SaveAsync(appConfig);
         }
 
         public async Task<AppConfigDto> HandleAsync(Command.Find<AppConfigDto> command)

@@ -5,7 +5,8 @@ namespace SAE.CommonComponent
     public class Constants
     {
         public const string Scope = "api";
-        public const string SolutionName = "Default";
+        public const string ClusterName = "Default";
+        public const string AppId = "default:appid";
         public const string Development = nameof(Development);
         public const string Production = nameof(Production);
         public const string DefaultSeparator = "_";
@@ -48,6 +49,7 @@ namespace SAE.CommonComponent
         {
             public const string CustomType = "0";
             public const string ClientId = "client_id";
+            public const string AppId = "app_id";
         }
 
         public class Menu

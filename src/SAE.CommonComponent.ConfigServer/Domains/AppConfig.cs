@@ -22,7 +22,7 @@ namespace SAE.CommonComponent.ConfigServer.Domains
 
             this.Apply(new AppConfigEvent.ReferenceConfig
             {
-                Id = $"{appId}{Constants.DefaultSeparator}{config.Id}{Constants.DefaultSeparator}{config.EnvironmentId}",
+                Id = $"{appId}{Constants.DefaultSeparator}{config.Id}{Constants.DefaultSeparator}{config.EnvironmentId}".ToMd5(),
                 AppId = appId,
                 ConfigId = config.Id,
                 Alias = config.Name,

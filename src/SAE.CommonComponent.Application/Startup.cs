@@ -46,7 +46,7 @@ namespace SAE.CommonComponent.Application
         }
         public override void PluginConfigureServices(IServiceCollection services)
         {
-            TypeDescriptor.AddAttributes(typeof(Client), new TypeConverterAttribute(typeof(AccessCredentialsConvert)));
+            TypeDescriptor.AddAttributes(typeof(Client), new TypeConverterAttribute(typeof(ClientConvert)));
 
             services.AddMvc()
                     .AddResponseResult();

@@ -16,35 +16,18 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
 {
     [ApiController]
     [Route("{controller}")]
-    public class AppController : Controller
+    public class AppDataController : Controller
     {
         private readonly IMediator _mediator;
 
-        public AppController(IMediator mediator)
+        public AppDataController(IMediator mediator)
         {
             this._mediator = mediator;
         }
 
-        [AllowAnonymous]
-        [HttpGet("{action}")]
-        public async Task<IActionResult> Config([FromQuery] AppConfigDataCommand.Find command)
+        private async Task<IActionResult> FindAsync(AppDataCommand.Find command)
         {
-            if (this.User.Identity.IsAuthenticated)
-            {
-                var claim = this.User.FindFirst(Constants.Claim.ClientId);
-
-                command.AppId = claim.Value;
-                command.Private = true;
-            }
-            else
-            {
-                command.Private = false;
-            }
-
-            Assert.Build(command.AppId)
-                  .NotNullOrWhiteSpace($"parameter appid invalid");
-
-            var appConfig = await this._mediator.SendAsync<AppConfigDataDto>(command);
+            var appConfig = await this._mediator.SendAsync<AppDataDto>(command);
 
             if (command.Version == appConfig.Version)
             {
@@ -70,6 +53,33 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
 
                 return this.Json(appConfig.Data);
             }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Get([FromQuery] AppDataCommand.Find command)
+        {
+            var claim = this.User.FindFirst(Constants.Claim.AppId);
+
+            command.AppId = claim.Value;
+
+            command.Private = true;
+
+            Assert.Build(command.AppId)
+                  .NotNullOrWhiteSpace($"parameter appid invalid");
+
+            return await this.FindAsync(command);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("{action}")]
+        public async Task<IActionResult> Public([FromQuery] AppDataCommand.Find command)
+        {
+            command.Private = false;
+
+            Assert.Build(command.AppId)
+                  .NotNullOrWhiteSpace($"parameter appid invalid");
+
+            return await this.FindAsync(command);
         }
     }
 }

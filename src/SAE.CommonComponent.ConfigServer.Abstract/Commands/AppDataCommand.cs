@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SAE.CommonComponent.ConfigServer.Commands
 {
-    public partial class AppConfigDataCommand
+    public partial class AppDataCommand
     {
         public class Find
         {
@@ -13,6 +13,8 @@ namespace SAE.CommonComponent.ConfigServer.Commands
             /// app id
             /// </summary>
             public string AppId { get; set; }
+
+
             /// <summary>
             /// 环境类型
             /// </summary>

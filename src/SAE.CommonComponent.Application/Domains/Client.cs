@@ -24,10 +24,14 @@ namespace SAE.CommonComponent.Application.Abstract.Domains
         }
 
         /// <summary>
-        /// app id
+        /// client id
         /// </summary>
         /// <value></value>
         public string Id { get; set; }
+        /// <summary>
+        /// app id
+        /// </summary>
+        public string AppId { get; set; }
         /// <summary>
         /// app name
         /// </summary>

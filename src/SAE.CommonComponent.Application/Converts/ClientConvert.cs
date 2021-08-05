@@ -6,7 +6,7 @@ using System.Globalization;
 
 namespace SAE.CommonComponent.Application.Converts
 {
-    public class AccessCredentialsConvert : TypeConverter
+    public class ClientConvert : TypeConverter
     {
         public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
         {
@@ -16,21 +16,22 @@ namespace SAE.CommonComponent.Application.Converts
         public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
         {
             if (value == null) return null;
-            var app = (Client)value;
+            var client = (Client)value;
             var result = new ClientDto
             {
-                Id = app.Id,
-                Name = app.Name,
-                Status = app.Status,
-                CreateTime = app.CreateTime,
+                Id = client.Id,
+                AppId = client.AppId,
+                Name = client.Name,
+                Status = client.Status,
+                CreateTime = client.CreateTime,
                 Endpoint = new Dtos.EndpointDto
                 {
-                    PostLogoutRedirectUris = app.Endpoint.PostLogoutRedirectUris,
-                    RedirectUris = app.Endpoint.RedirectUris,
-                    SignIn = app.Endpoint.SignIn
+                    PostLogoutRedirectUris = client.Endpoint.PostLogoutRedirectUris,
+                    RedirectUris = client.Endpoint.RedirectUris,
+                    SignIn = client.Endpoint.SignIn
                 },
-                Scopes = app.Scopes,
-                Secret = app.Secret
+                Scopes = client.Scopes,
+                Secret = client.Secret
             };
             return result;
         }

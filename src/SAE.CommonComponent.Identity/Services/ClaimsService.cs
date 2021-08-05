@@ -1,6 +1,9 @@
 ﻿using IdentityServer4.Services;
 using IdentityServer4.Validation;
 using Microsoft.Extensions.Logging;
+using SAE.CommonComponent.Application.Dtos;
+using SAE.CommonLibrary.Abstract.Mediator;
+using SAE.CommonLibrary.EventStore.Document;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,16 +14,28 @@ namespace SAE.CommonComponent.Identity.Services
 {
     public class ClaimsService : DefaultClaimsService, IClaimsService
     {
-        public ClaimsService(IProfileService profile, ILogger<DefaultClaimsService> logger) : base(profile, logger)
-        {
+        private readonly IMediator _mediator;
 
+        public ClaimsService(IProfileService profile,
+                             ILogger<DefaultClaimsService> logger,
+                             IMediator mediator) : base(profile, logger)
+        {
+            this._mediator = mediator;
         }
 
         public override async Task<IEnumerable<Claim>> GetAccessTokenClaimsAsync(ClaimsPrincipal subject,
             ResourceValidationResult resourceResult,
             ValidatedRequest request)
         {
-            var claims=(await base.GetAccessTokenClaimsAsync(subject, resourceResult, request)).ToList();
+            var claims = (await base.GetAccessTokenClaimsAsync(subject, resourceResult, request)).ToList();
+
+#warning 专用于测试
+            claims.Add(new Claim(CommonLibrary.AspNetCore.Constants.BitmapAuthorize.Administrator, "1", Constants.Claim.CustomType));
+
+            var client = await this._mediator.SendAsync<ClientDto>(new Command.Find<ClientDto> { Id = request.ClientId });
+
+            claims.Add(new Claim(Constants.Claim.AppId, client.AppId, Constants.Claim.CustomType));
+
             foreach (var claim in this.GetCustomClaim(subject))
             {
                 if (!claims.Any(s => s.Type.Equals(claim.Type, StringComparison.OrdinalIgnoreCase)))
@@ -28,18 +43,17 @@ namespace SAE.CommonComponent.Identity.Services
                     claims.Add(claim);
                 }
             }
-#warning 专用于测试
-            claims.Add(new Claim(CommonLibrary.AspNetCore.Constants.BitmapAuthorize.Administrator, "1", Constants.Claim.CustomType));
+
 
             return claims;
         }
 
         public override async Task<IEnumerable<Claim>> GetIdentityTokenClaimsAsync(ClaimsPrincipal subject,
-            ResourceValidationResult resources, 
-            bool includeAllIdentityClaims, 
+            ResourceValidationResult resources,
+            bool includeAllIdentityClaims,
             ValidatedRequest request)
         {
-            var claims= await base.GetIdentityTokenClaimsAsync(subject, resources, includeAllIdentityClaims, request);
+            var claims = await base.GetIdentityTokenClaimsAsync(subject, resources, includeAllIdentityClaims, request);
             return claims;
         }
 

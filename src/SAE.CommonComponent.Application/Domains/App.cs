@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using SAE.CommonLibrary.Extension;
 
 namespace SAE.CommonComponent.Application.Domains
 {
@@ -19,7 +20,11 @@ namespace SAE.CommonComponent.Application.Domains
         {
             this.Apply<AppEvent.Create>(command, e =>
             {
-                e.Id = Utils.GenerateId();
+                if (e.Id.IsNullOrWhiteSpace())
+                {
+                    e.Id = Utils.GenerateId();
+                }
+                
                 e.CreateTime = DateTime.UtcNow;
             });
         }

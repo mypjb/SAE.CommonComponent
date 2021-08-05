@@ -8,14 +8,13 @@ using System.Threading.Tasks;
 
 namespace SAE.CommonComponent.ConfigServer.Dtos
 {
-    public class AppConfigDataDto
+    public class AppDataDto
     {
-        public AppConfigDataDto()
+        public AppDataDto()
         {
             this.Data = new Dictionary<string, object>();
         }
 
-        public string Id { get; set; }
 
         public int Version { get; set; }
         public IDictionary<string, object> Data { get; set; }

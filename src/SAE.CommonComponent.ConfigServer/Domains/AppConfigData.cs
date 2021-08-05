@@ -1,5 +1,6 @@
 ﻿using SAE.CommonComponent.ConfigServer.Events;
 using SAE.CommonLibrary.EventStore.Document;
+using SAE.CommonLibrary.Extension;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +18,7 @@ namespace SAE.CommonComponent.ConfigServer.Domains
         {
             this.Apply<AppConfigDataEvent.Create>(@event,e=>
             {
-                e.Id = $"{@event.AppId}{Constants.DefaultSeparator}{@event.EnvironmentId}";
+                e.Id = $"{@event.AppId}{Constants.DefaultSeparator}{@event.EnvironmentId}".ToMd5();
                 e.Version = 1;
             });
         }

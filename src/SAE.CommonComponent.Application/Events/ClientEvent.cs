@@ -10,6 +10,10 @@ namespace SAE.CommonComponent.Application.Events
         public class Create : Change
         {
             public string Id { get; set; }
+            /// <summary>
+            /// app id
+            /// </summary>
+            public string AppId { get; set; }
             public string Secret { get; set; }
             public DateTime CreateTime { get; set; }
         }

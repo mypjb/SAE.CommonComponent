@@ -26,7 +26,6 @@ namespace SAE.CommonComponent.Identity.Services
             this._identities = new List<IdentityResource>();
             this._identities.Add(new IdentityResources.Profile());
             var openId = new IdentityResources.OpenId();
-            openId.UserClaims.Add(SAE.CommonLibrary.AspNetCore.Constants.BitmapAuthorize.Administrator);
             this._identities.Add(openId);
         }
 
@@ -49,9 +48,6 @@ namespace SAE.CommonComponent.Identity.Services
                 return null;
             }
             var apiResource = new ApiResource(scope.Name, scope.Name);
-# warning 该处是否可以统一设置？不同的应用Claim可能不同
-            apiResource.UserClaims.Add(SAE.CommonLibrary.AspNetCore.Constants.BitmapAuthorize.Administrator);
-            apiResource.UserClaims.Add(SAE.CommonLibrary.AspNetCore.Constants.BitmapAuthorize.Claim);
             return apiResource;
         }
 
@@ -67,9 +63,6 @@ namespace SAE.CommonComponent.Identity.Services
                          .Select(s =>
                          {
                              var apiResource = new ApiResource(s.Name, s.Name);
-#warning 该处是否可以统一设置？不同的应用Claim可能不同
-                             apiResource.UserClaims.Add(SAE.CommonLibrary.AspNetCore.Constants.BitmapAuthorize.Administrator);
-                             apiResource.UserClaims.Add(SAE.CommonLibrary.AspNetCore.Constants.BitmapAuthorize.Claim);
                              return apiResource;
                          });
         }
@@ -80,9 +73,6 @@ namespace SAE.CommonComponent.Identity.Services
             return scopes.Select(s =>
             {
                 var apiResource = new ApiScope(s.Name, s.Name);
-#warning 该处是否可以统一设置？不同的应用Claim可能不同
-                apiResource.UserClaims.Add(SAE.CommonLibrary.AspNetCore.Constants.BitmapAuthorize.Administrator);
-                apiResource.UserClaims.Add(SAE.CommonLibrary.AspNetCore.Constants.BitmapAuthorize.Claim);
                 return apiResource;
             }).ToArray();
         }
@@ -99,17 +89,11 @@ namespace SAE.CommonComponent.Identity.Services
                                  scopes.Select(s =>
                                  {
                                      var apiResource = new ApiResource(s.Name, s.Name);
-#warning 该处是否可以统一设置？不同的应用Claim可能不同
-                                     apiResource.UserClaims.Add(SAE.CommonLibrary.AspNetCore.Constants.BitmapAuthorize.Administrator);
-                                     apiResource.UserClaims.Add(SAE.CommonLibrary.AspNetCore.Constants.BitmapAuthorize.Claim);
                                      return apiResource;
                                  }).ToArray(),
                                  scopes.Select(s =>
                                  {
                                      var apiResource = new ApiScope(s.Name, s.Name);
-#warning 该处是否可以统一设置？不同的应用Claim可能不同
-                                     apiResource.UserClaims.Add(SAE.CommonLibrary.AspNetCore.Constants.BitmapAuthorize.Administrator);
-                                     apiResource.UserClaims.Add(SAE.CommonLibrary.AspNetCore.Constants.BitmapAuthorize.Claim);
                                      return apiResource;
                                  }).ToArray());
         }
