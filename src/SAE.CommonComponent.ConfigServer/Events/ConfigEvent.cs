@@ -8,9 +8,9 @@ namespace SAE.CommonComponent.ConfigServer.Events
         public class Create : Change
         {
             /// <summary>
-            /// 解决方案Id
+            /// Cluster Id
             /// </summary>
-            public string SolutionId { get; set; }
+            public string ClusterId { get; set; }
             /// <summary>
             /// 创建时间
             /// </summary>

@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace SAE.CommonComponent.ConfigServer.Events
 {
-    public class ProjectDataEvent
+    public class AppConfigDataEvent
     {
-        public class Create: ProjectData, IEvent
+        public class Create: AppConfigData, IEvent
         {
 
         }

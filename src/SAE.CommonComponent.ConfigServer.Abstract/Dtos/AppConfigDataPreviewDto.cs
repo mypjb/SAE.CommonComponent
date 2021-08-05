@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SAE.CommonComponent.ConfigServer.Dtos
 {
-    public class ProjectPreviewDto
+    public class AppConfigDataPreviewDto
     {
         /// <summary>
         /// Public data

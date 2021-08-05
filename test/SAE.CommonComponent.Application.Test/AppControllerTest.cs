@@ -1,26 +1,13 @@
 ﻿using Microsoft.AspNetCore.Hosting;
-using SAE.CommonComponent.Application.Commands;
 using SAE.CommonComponent.Application.Dtos;
-using SAE.CommonComponent.ConfigServer.Test;
 using SAE.CommonComponent.Test;
 using SAE.CommonLibrary.Extension;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
-using Assert = Xunit.Assert;
-using Microsoft.Extensions.DependencyInjection;
-using SAE.CommonLibrary.Abstract.Mediator;
-using SAE.CommonComponent.ConfigServer.Dtos;
-using SAE.CommonComponent.ConfigServer.Commands;
-using SAE.CommonLibrary.Abstract.Model;
 using AppCommand = SAE.CommonComponent.Application.Commands.AppCommand;
-using System.Collections.Generic;
-using System;
-using System.IO;
-using System.Text;
-using SAE.CommonLibrary.EventStore.Document;
+using Assert = Xunit.Assert;
 
 namespace SAE.CommonComponent.Application.Test
 {

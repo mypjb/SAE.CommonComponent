@@ -7,26 +7,26 @@ using System.Threading.Tasks;
 
 namespace SAE.CommonComponent.ConfigServer.Domains
 {
-    public class ProjectData:Document
+    public class AppConfigData:Document
     {
-        public ProjectData()
+        public AppConfigData()
         {
 
         }
-        public ProjectData(ProjectDataEvent.Create @event)
+        public AppConfigData(AppConfigDataEvent.Create @event)
         {
-            this.Apply<ProjectDataEvent.Create>(@event,e=>
+            this.Apply<AppConfigDataEvent.Create>(@event,e=>
             {
-                e.Id = $"{@event.ProjectId}{Constants.DefaultSeparator}{@event.EnvironmentId}";
+                e.Id = $"{@event.AppId}{Constants.DefaultSeparator}{@event.EnvironmentId}";
                 e.Version = 1;
             });
         }
 
         public string Id { get; set; }
         /// <summary>
-        /// 项目Id
+        /// App Id
         /// </summary>
-        public string ProjectId { get; set; }
+        public string AppId { get; set; }
         /// <summary>
         /// 版本号
         /// </summary>
@@ -47,9 +47,9 @@ namespace SAE.CommonComponent.ConfigServer.Domains
             return this.Id;
         }
 
-        public void Change(ProjectDataEvent.Publish @event)
+        public void Change(AppConfigDataEvent.Publish @event)
         {
-            this.Apply<ProjectDataEvent.Publish>(@event, e =>
+            this.Apply<AppConfigDataEvent.Publish>(@event, e =>
             {
                 e.Version = this.Version + 1;
             });

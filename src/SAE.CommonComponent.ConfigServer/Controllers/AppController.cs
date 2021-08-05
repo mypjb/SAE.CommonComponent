@@ -27,7 +27,7 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
 
         [AllowAnonymous]
         [HttpGet("{action}")]
-        public async Task<IActionResult> Config([FromQuery] AppCommand.Config command)
+        public async Task<IActionResult> Config([FromQuery] AppConfigDataCommand.Find command)
         {
             if (this.User.Identity.IsAuthenticated)
             {
@@ -44,7 +44,7 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
             Assert.Build(command.AppId)
                   .NotNullOrWhiteSpace($"parameter appid invalid");
 
-            var appConfig = await this._mediator.SendAsync<AppConfigDto>(command);
+            var appConfig = await this._mediator.SendAsync<AppConfigDataDto>(command);
 
             if (command.Version == appConfig.Version)
             {

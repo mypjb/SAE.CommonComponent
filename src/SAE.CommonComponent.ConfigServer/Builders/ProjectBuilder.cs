@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SAE.CommonComponent.ConfigServer.Builders
 {
-    public class ProjectBuilder : IBuilder<IEnumerable<ProjectConfigDto>>, IBuilder<IEnumerable<ProjectDetailDto>>
+    public class ProjectBuilder : IBuilder<IEnumerable<AppConfigDto>>
     {
         private readonly IStorage _storage;
 
@@ -18,7 +18,7 @@ namespace SAE.CommonComponent.ConfigServer.Builders
         }
 
 
-        public async Task Build(IEnumerable<ProjectConfigDto> dtos)
+        public async Task Build(IEnumerable<AppConfigDto> dtos)
         {
             var ids = dtos.Select(s => s.ConfigId);
 
@@ -30,18 +30,5 @@ namespace SAE.CommonComponent.ConfigServer.Builders
             }
         }
 
-        public Task Build(IEnumerable<ProjectDetailDto> dtos)
-        {
-            var ids= dtos.Select(s => s.SolutionId);
-
-            var solutionDtos= this._storage.AsQueryable<SolutionDto>().Where(s => ids.Contains(s.Id));
-
-            foreach (var dto in dtos)
-            {
-                dto.SolutionName = solutionDtos.FirstOrDefault(s => s.Id == dto.SolutionId)?.Name;
-            }
-
-            return Task.CompletedTask;
-        }
     }
 }

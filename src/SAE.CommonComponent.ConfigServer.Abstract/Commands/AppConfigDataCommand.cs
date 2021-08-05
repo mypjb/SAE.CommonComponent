@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace SAE.CommonComponent.ConfigServer.Commands
 {
-    public partial class AppCommand
+    public partial class AppConfigDataCommand
     {
-        public class Config
+        public class Find
         {
             /// <summary>
             /// app id

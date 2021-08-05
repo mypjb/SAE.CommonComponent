@@ -10,22 +10,20 @@ using SAE.CommonComponent.ConfigServer.Commands;
 
 namespace SAE.CommonComponent.ConfigServer.Domains
 {
-    public class ProjectConfig : Document
+    public class AppConfig : Document
     {
-        public ProjectConfig()
+        public AppConfig()
         {
 
         }
 
-        public ProjectConfig(Project project, Config config)
+        public AppConfig(string appId, Config config)
         {
-            Assert.Build(project.SolutionId == config.SolutionId)
-                  .True($"项目'{project.Name}',和配置'{config.Name}'所属解决方案不一致,无法建立引用");
 
-            this.Apply(new ProjectEvent.ReferenceConfig
+            this.Apply(new AppConfigEvent.ReferenceConfig
             {
-                Id = $"{project.Id}{Constants.DefaultSeparator}{config.Id}{Constants.DefaultSeparator}{config.EnvironmentId}",
-                ProjectId = project.Id,
+                Id = $"{appId}{Constants.DefaultSeparator}{config.Id}{Constants.DefaultSeparator}{config.EnvironmentId}",
+                AppId = appId,
                 ConfigId = config.Id,
                 Alias = config.Name,
                 EnvironmentId = config.EnvironmentId,
@@ -38,9 +36,9 @@ namespace SAE.CommonComponent.ConfigServer.Domains
         /// </summary>
         public string Id { get; set; }
         /// <summary>
-        /// 项目Id
+        /// App Id
         /// </summary>
-        public string ProjectId { get; set; }
+        public string AppId { get; set; }
         /// <summary>
         /// 配置Id
         /// </summary>
@@ -66,9 +64,9 @@ namespace SAE.CommonComponent.ConfigServer.Domains
             return this.Id;
         }
 
-        internal void Change(ProjectCommand.ConfigChange command)
+        internal void Change(AppConfigCommand.Change command)
         {
-            this.Apply<ProjectEvent.ConfigChange>(command);
+            this.Apply<AppConfigEvent.ConfigChange>(command);
         }
     }
 }

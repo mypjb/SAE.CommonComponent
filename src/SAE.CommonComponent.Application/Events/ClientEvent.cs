@@ -34,7 +34,7 @@ namespace SAE.CommonComponent.Application.Events
        
         public class ReferenceProject : IEvent
         {
-            public string ProjectId { get; set; }
+            public string AppId { get; set; }
         }
     }
 }

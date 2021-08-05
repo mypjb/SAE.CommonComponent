@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace SAE.CommonComponent.ConfigServer.Commands
 {
-    public class ProjectCommand
+    public class AppConfigCommand
     {
         public class Publish
         {
             /// <summary>
-            /// 项目Id
+            /// App Id
             /// </summary>
             public string Id { get; set; }
             /// <summary>
@@ -23,26 +23,14 @@ namespace SAE.CommonComponent.ConfigServer.Commands
         public class Preview : Publish
         {
         }
-        public class Create
-        {
-            public string Name { get; set; }
-            public string SolutionId { get; set; }
-            public int Version { get; set; }
-            public string Id { get; set; }
-        }
-
-        public class Change : Create
-        {
-            public string Id { get; set; }
-        }
-
+       
         public class ReferenceConfig
         {
-            public string ProjectId { get; set; }
+            public string AppId { get; set; }
             public string[] ConfigIds { get; set; }
         }
 
-        public class ConfigChange
+        public class Change
         {
             public string Id { get; set; }
             public string Alias { get; set; }
@@ -54,26 +42,15 @@ namespace SAE.CommonComponent.ConfigServer.Commands
 
         public class Query : Paging
         {
-            public string Name { get; set; }
             /// <summary>
-            /// Solution Id
+            /// App Id
             /// </summary>
-            public string SolutionId { get; set; }
-            public string[] IgnoreIds { get; set; }
-        }
-
-        public class ConfigQuery : Paging
-        {
-            /// <summary>
-            /// 项目Id
-            /// </summary>
-            public string ProjectId { get; set; }
+            public string AppId { get; set; }
             /// <summary>
             /// 环境变量Id
             /// </summary>
             public string EnvironmentId { get; set; }
         }
-
 
     }
 }

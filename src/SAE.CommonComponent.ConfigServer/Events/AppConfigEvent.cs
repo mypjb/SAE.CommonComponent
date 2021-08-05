@@ -5,19 +5,8 @@ using System.Collections.Generic;
 
 namespace SAE.CommonComponent.ConfigServer.Events
 {
-    public class ProjectEvent
+    public class AppConfigEvent
     {
-        public class Create : Change
-        {
-            public string SolutionId { get; set; }
-            public DateTime CreateTime { get; set; }
-            public string Id { get; set; }
-        }
-        public class Change : IEvent
-        {
-            public string Name { get; set; }
-        }
-
         public class ReferenceConfig : IEvent
         {
             /// <summary>
@@ -25,9 +14,9 @@ namespace SAE.CommonComponent.ConfigServer.Events
             /// </summary>
             public string Id { get; set; }
             /// <summary>
-            /// project id
+            /// App Id
             /// </summary>
-            public string ProjectId { get; set; }
+            public string AppId { get; set; }
             /// <summary>
             /// config id
             /// </summary>

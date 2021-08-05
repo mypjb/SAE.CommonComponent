@@ -51,7 +51,7 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
         public async Task<IPagedList<ConfigDto>> HandleAsync(ConfigCommand.Query command)
         {
             var query = this._storage.AsQueryable<ConfigDto>()
-                                     .Where(s => s.SolutionId == command.SolutionId &&
+                                     .Where(s => s.ClusterId == command.ClusterId &&
                                                  s.EnvironmentId == command.EnvironmentId);
             if (!command.Name.IsNullOrWhiteSpace())
             {

@@ -12,9 +12,9 @@ namespace SAE.CommonComponent.ConfigServer.Dtos
         /// </summary>
         public string Id { get; set; }
         /// <summary>
-        /// 解决方案Id
+        /// Cluster Id
         /// </summary>
-        public string SolutionId { get; set; }
+        public string ClusterId { get; set; }
         /// <summary>
         /// 环境变量
         /// </summary>

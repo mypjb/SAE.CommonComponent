@@ -57,11 +57,11 @@ namespace SAE.CommonComponent.InitializeData
         /// <param name="project"></param>
         /// <param name="envId"></param>
         /// <returns></returns>
-        protected virtual async Task<IDictionary<string, string>> FindSiteConfigAsync(ProjectDto project, string envId)
+        protected virtual async Task<IDictionary<string, string>> FindSiteConfigAsync(AppDto appDto, string envId)
         {
-            var projectPreviewDto = await this._mediator.SendAsync<ProjectPreviewDto>(new ProjectCommand.Preview
+            var projectPreviewDto = await this._mediator.SendAsync<AppConfigDataPreviewDto>(new AppConfigCommand.Preview
             {
-                Id = project.Id,
+                Id = appDto.Id,
                 EnvironmentId = envId
             });
             var appConfig = projectPreviewDto.Private as IDictionary<string, object>;
@@ -83,7 +83,7 @@ namespace SAE.CommonComponent.InitializeData
         /// Generate project id
         /// </summary>
         /// <returns></returns>
-        protected virtual string GenerateProjectId()
+        protected virtual string GenerateAppId()
         {
             return Utils.GenerateId();
         }
@@ -229,9 +229,9 @@ namespace SAE.CommonComponent.InitializeData
             }
             var solution = solutions.First();
 
-            var projects = await this._mediator.SendAsync<IPagedList<ProjectDto>>(new ProjectCommand.Query
+            var projects = await this._mediator.SendAsync<IPagedList<ProjectDto>>(new AppConfigCommand.Query
             {
-                SolutionId = solution.Id
+                ClusterId = solution.Id
             });
 
             if (!projects.Any()) { return; }
@@ -289,7 +289,7 @@ namespace SAE.CommonComponent.InitializeData
                     //var command = new AccessCredentialsCommand.ReferenceProject
                     //{
                     //    Id = appCommand.Id,
-                    //    ProjectId = project.Id
+                    //    AppId = project.Id
                     //};
 
                     //await this._mediator.SendAsync(command);
@@ -339,11 +339,11 @@ namespace SAE.CommonComponent.InitializeData
 
             var projectName = SiteConfig.Get(Constants.Config.BasicInfo.Name);
 
-            var projectId = await this._mediator.SendAsync<string>(new ProjectCommand.Create
+            var projectId = await this._mediator.SendAsync<string>(new AppConfigCommand.Create
             {
                 Name = projectName,
-                SolutionId = slnId,
-                Id = this.GenerateProjectId()
+                ClusterId = slnId,
+                Id = this.GenerateAppId()
             });
 
             this._logging.Info($"Create project '{projectName}'-'{projectId}'");
@@ -408,7 +408,7 @@ namespace SAE.CommonComponent.InitializeData
                     this._logging.Info($"Create config {kv.Key}-{kvs.Key}");
                     var configId = await this._mediator.SendAsync<string>(new ConfigCommand.Create
                     {
-                        SolutionId = slnId,
+                        ClusterId = slnId,
                         Content = kv.Value,
                         Name = kv.Key,
                         EnvironmentId = environmentId
@@ -422,24 +422,24 @@ namespace SAE.CommonComponent.InitializeData
 
                 this._logging.Info($"Reference {configIds.Aggregate((a, b) => $"{a},{b}")}");
 
-                await this._mediator.SendAsync(new ProjectCommand.ReferenceConfig
+                await this._mediator.SendAsync(new AppConfigCommand.ReferenceConfig
                 {
-                    ProjectId = projectId,
+                    AppId = projectId,
                     ConfigIds = configIds.ToArray()
                 });
 
                 if (!publicConfigId.IsNullOrWhiteSpace())
                 {
-                    var projectConfigs = await this._mediator.SendAsync<IPagedList<ProjectConfigDto>>(new ProjectCommand.ConfigQuery
+                    var projectConfigs = await this._mediator.SendAsync<IPagedList<AppConfigDto>>(new AppConfigCommand.ConfigQuery
                     {
-                        ProjectId = projectId,
+                        AppId = projectId,
                         EnvironmentId = environmentId,
                         PageSize = int.MaxValue
                     });
 
                     var publicProjectConfig = projectConfigs.First(s => s.ConfigId == publicConfigId);
 
-                    await this._mediator.SendAsync(new ProjectCommand.ConfigChange
+                    await this._mediator.SendAsync(new AppConfigCommand.ConfigChange
                     {
                         Alias = publicProjectConfig.Alias,
                         Private = false,
@@ -449,14 +449,14 @@ namespace SAE.CommonComponent.InitializeData
 
                 this._logging.Info($"Publish {projectName}-{kvs.Key} config");
 
-                await this._mediator.SendAsync(new ProjectCommand.Publish
+                await this._mediator.SendAsync(new AppConfigCommand.Publish
                 {
                     Id = projectId,
                     EnvironmentId = environmentId
                 });
                 this._logging.Info($"Publish {projectName}-{kvs.Key} config");
 
-                var appConfig = await this._mediator.SendAsync<object>(new ProjectCommand.Preview
+                var appConfig = await this._mediator.SendAsync<object>(new AppConfigCommand.Preview
                 {
                     Id = projectId,
                     EnvironmentId = environmentId

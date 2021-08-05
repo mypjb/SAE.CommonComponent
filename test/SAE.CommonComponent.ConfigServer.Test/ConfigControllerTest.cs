@@ -1,4 +1,5 @@
-﻿using SAE.CommonComponent.ConfigServer.Commands;
+﻿using SAE.CommonComponent.Application.Test;
+using SAE.CommonComponent.ConfigServer.Commands;
 using SAE.CommonComponent.ConfigServer.Dtos;
 using SAE.CommonLibrary;
 using SAE.CommonLibrary.Extension;
@@ -15,30 +16,30 @@ namespace SAE.CommonComponent.ConfigServer.Test
     {
         public const string API = "Config";
         private readonly TemplateControllerTest _templateController;
-        private readonly SolutionControllerTest _solutionController;
+        private readonly AppClusterControllerTest _appClusterControllerTest;
         private readonly string _environmentId;
         public ConfigControllerTest(ITestOutputHelper output) : base(output)
         {
             this._templateController = new TemplateControllerTest(output, this.HttpClient);
-            this._solutionController = new SolutionControllerTest(output, this.HttpClient);
+            this._appClusterControllerTest= new AppClusterControllerTest(this._output);
             this._environmentId = Guid.NewGuid().ToString("N");
         }
 
         internal ConfigControllerTest(ITestOutputHelper output, HttpClient httpClient, string envId) : base(output, httpClient)
         {
-            this._templateController = new TemplateControllerTest(output, this.HttpClient);
-            this._solutionController = new SolutionControllerTest(output, this.HttpClient);
+            this._appClusterControllerTest = new AppClusterControllerTest(this._output);
+            this._templateController = new TemplateControllerTest(this._output, this.HttpClient);
             this._environmentId = envId;
         }
 
         [Theory]
         [InlineData(null)]
-        public async Task<ConfigDto> Add(string solutionId = null)
+        public async Task<ConfigDto> Add(string clusterId = null)
         {
-            if (solutionId.IsNullOrWhiteSpace())
+            if (clusterId.IsNullOrWhiteSpace())
             {
-                var solution = await this._solutionController.Add();
-                solutionId = solution.Id;
+                var clusterDto = await this._appClusterControllerTest.Add();
+                clusterId = clusterDto.Id;
             }
             
             var template = await this._templateController.Add();
@@ -46,7 +47,7 @@ namespace SAE.CommonComponent.ConfigServer.Test
             {
                 Name = template.Name,
                 Content = template.Format,
-                SolutionId = solutionId,
+                ClusterId = clusterId,
                 EnvironmentId = this._environmentId
             };
             var message = new HttpRequestMessage(HttpMethod.Post, API);
@@ -58,7 +59,7 @@ namespace SAE.CommonComponent.ConfigServer.Test
             Assert.Equal(commond.Name, config.Name);
             Assert.Equal(commond.Content, config.Content);
             Assert.Equal(commond.EnvironmentId, config.EnvironmentId);
-            Assert.Equal(commond.SolutionId, config.SolutionId);
+            Assert.Equal(commond.ClusterId, config.ClusterId);
             return config;
         }
 

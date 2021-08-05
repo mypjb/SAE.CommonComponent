@@ -11,9 +11,9 @@ namespace SAE.CommonComponent.ConfigServer.Commands
         public class Create
         {
             /// <summary>
-            /// 解决方案Id
+            /// Cluster Id
             /// </summary>
-            public string SolutionId { get; set; }
+            public string ClusterId { get; set; }
             /// <summary>
             /// 名称
             /// </summary>
@@ -43,9 +43,9 @@ namespace SAE.CommonComponent.ConfigServer.Commands
         public class Query : Paging
         {
             /// <summary>
-            /// 解决方案Id
+            /// Cluster Id
             /// </summary>
-            public string SolutionId { get; set; }
+            public string ClusterId { get; set; }
             /// <summary>
             /// 环境变量Id
             /// </summary>
