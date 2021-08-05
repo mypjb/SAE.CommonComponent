@@ -13,6 +13,7 @@ namespace SAE.CommonComponent.Application.Commands
         }
         public class Create : Change
         {
+            public string AppId { get; set; }
             public string Secret { get; set; }
         }
         public class Change

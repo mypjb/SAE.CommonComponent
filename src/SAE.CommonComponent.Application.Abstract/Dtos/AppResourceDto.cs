@@ -31,10 +31,10 @@ namespace SAE.CommonComponent.Application.Dtos
         /// <summary>
         /// resource method (get、post、put...)
         /// </summary>
-        public string Method { get; }
+        public string Method { get; set; }
         /// <summary>
         /// 
         /// </summary>
-        public DateTime DateTime { get; set; }
+        public DateTime CreateTime { get; set; }
     }
 }

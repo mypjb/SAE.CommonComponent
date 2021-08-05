@@ -9,6 +9,7 @@ using SAE.CommonLibrary.Data;
 using SAE.CommonLibrary.EventStore.Document;
 using SAE.CommonLibrary.Extension;
 using SAE.CommonLibrary.Logging;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -19,7 +20,8 @@ namespace SAE.CommonComponent.Application.Abstract.Handlers
                               ICommandHandler<AppResourceCommand.Change>,
                               ICommandHandler<Command.Delete<AppResource>>,
                               ICommandHandler<AppResourceCommand.Query, IPagedList<AppResourceDto>>,
-                              ICommandHandler<Command.Find<AppResourceDto>, AppResourceDto>
+                              ICommandHandler<Command.Find<AppResourceDto>, AppResourceDto>,
+                              ICommandHandler<AppResourceCommand.List, IEnumerable<AppResourceDto>>
     {
         private readonly IStorage _storage;
         private readonly IMediator _mediator;
@@ -68,6 +70,14 @@ namespace SAE.CommonComponent.Application.Abstract.Handlers
         public async Task HandleAsync(Command.Delete<AppResource> command)
         {
             await this.DeleteAsync<AppResource>(command.Id);
+        }
+
+        public Task<IEnumerable<AppResourceDto>> HandleAsync(AppResourceCommand.List command)
+        {
+            return Task.FromResult(this._storage.AsQueryable<AppResourceDto>()
+                 .Where(s => s.AppId == command.AppId)
+                 .ToArray()
+                 .AsEnumerable());
         }
     }
 }

@@ -20,9 +20,7 @@ namespace SAE.CommonComponent.Application.Abstract.Handlers
                               ICommandHandler<Command.Delete<App>>,
                               ICommandHandler<AppCommand.ChangeStatus>,
                               ICommandHandler<AppCommand.Query, IPagedList<AppDto>>,
-                              ICommandHandler<Command.Find<AppDto>, AppDto>,
-                              ICommandHandler<AppCommand.ReferenceProject>,
-                              ICommandHandler<AppCommand.ProjectQuery, IPagedList<ProjectDetailDto>>
+                              ICommandHandler<Command.Find<AppDto>, AppDto>                              
     {
         private readonly IStorage _storage;
         private readonly IMediator _mediator;
@@ -72,52 +70,7 @@ namespace SAE.CommonComponent.Application.Abstract.Handlers
 
             return Task.FromResult(PagedList.Build(query, command));
         }
-
-        public async Task<IPagedList<ProjectDetailDto>> HandleAsync(AppCommand.ProjectQuery command)
-        {
-            var app = await this._documentStore.FindAsync<App>(command.Id);
-            Assert.Build(app)
-                  .NotNull();
-
-            if (command.Referenced)
-            {
-                if (app.ProjectId.IsNullOrWhiteSpace())
-                {
-                    return PagedList.Build(Enumerable.Empty<ProjectDetailDto>(), command);
-                }
-                else
-                {
-                    var projectDetailDto = await this._mediator.SendAsync<ProjectDetailDto>(new Command.Find<ProjectDetailDto>
-                    {
-                        Id = app.ProjectId
-                    });
-                    IPaging paging = command;
-                    paging.TotalCount = projectDetailDto == null ? 0 : 1;
-                    return PagedList.Build(new[] { projectDetailDto }, command);
-                }
-
-            }
-            else
-            {
-                var queryCommand = new ProjectCommand.Query
-                {
-                    Name = command.Name,
-                    PageIndex = command.PageIndex,
-                    PageSize = command.PageSize
-                };
-                if (!app.ProjectId.IsNullOrWhiteSpace())
-                {
-                    queryCommand.IgnoreIds = new[] { app.ProjectId };
-                }
-                return await this._mediator.SendAsync<IPagedList<ProjectDetailDto>>(queryCommand);
-            }
-        }
-
-        public async Task HandleAsync(AppCommand.ReferenceProject command)
-        {
-            await this.UpdateAsync<App>(command.Id, app => app.ReferenceProject(command));
-        }
-
+       
         public async Task HandleAsync(Command.Delete<App> command)
         {
             await this.DeleteAsync<App>(command.Id);

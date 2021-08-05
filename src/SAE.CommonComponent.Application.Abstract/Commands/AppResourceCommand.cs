@@ -14,10 +14,11 @@ namespace SAE.CommonComponent.Application.Commands
             /// <summary>
             /// resource method (get、post、put...)
             /// </summary>
-            public string Method { get; }
+            public string Method { get; set; }
         }
         public class Create
         {
+            public string AppId { get; set; }
             /// <summary>
             /// resource name
             /// </summary>
@@ -29,16 +30,28 @@ namespace SAE.CommonComponent.Application.Commands
             /// <summary>
             /// resource method (get、post、put...)
             /// </summary>
-            public string Method { get; }
+            public string Method { get; set; }
         }
-        public class Change: Create
+        public class Change
         {
             public string Id { get; set; }
             /// <summary>
-            /// resource index relative to the app
+            /// resource name
             /// </summary>
-            public int Index { get; set; }
+            public string Name { get; set; }
+            /// <summary>
+            /// resource path
+            /// </summary>
+            public string Path { get; set; }
+            /// <summary>
+            /// resource method (get、post、put...)
+            /// </summary>
+            public string Method { get; set; }
+        }
 
+        public class List
+        {
+            public string AppId { get; set; }
         }
     }
 }

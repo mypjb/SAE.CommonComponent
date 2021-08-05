@@ -1,73 +1,34 @@
 ﻿using Microsoft.AspNetCore.Hosting;
-using SAE.CommonComponent.Application.Commands;
 using SAE.CommonComponent.Application.Dtos;
-using SAE.CommonComponent.ConfigServer.Test;
 using SAE.CommonComponent.Test;
 using SAE.CommonLibrary.Extension;
+using System;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
-using Assert = Xunit.Assert;
-using Microsoft.Extensions.DependencyInjection;
-using SAE.CommonLibrary.Abstract.Mediator;
-using SAE.CommonComponent.ConfigServer.Dtos;
-using SAE.CommonComponent.ConfigServer.Commands;
-using SAE.CommonLibrary.Abstract.Model;
 using AccessCredentialsCommand = SAE.CommonComponent.Application.Commands.AccessCredentialsCommand;
-using System.Collections.Generic;
-using System;
-using System.IO;
-using System.Text;
-using SAE.CommonLibrary.EventStore.Document;
+using Assert = Xunit.Assert;
 
 namespace SAE.CommonComponent.Application.Test
 {
     public class AccessCredentialsControllerTest : BaseTest
     {
         public const string API = "AccessCredentials";
-        private readonly SolutionControllerTest _solutionControllerTest;
-        private readonly ProjectControllerTest _projectControllerTest;
-
         public AccessCredentialsControllerTest(ITestOutputHelper output) : base(output)
         {
-            this._solutionControllerTest = new SolutionControllerTest(this._output);
-            this._projectControllerTest = new ProjectControllerTest(this._output);
+            
+        }
+
+        internal AccessCredentialsControllerTest(ITestOutputHelper output, HttpClient httpClient) : base(output, httpClient)
+        {
+            
         }
 
         protected override IWebHostBuilder UseStartup(IWebHostBuilder builder)
         {
-            return builder.UseStartup<Startup>()
-                          .ConfigureServices(services =>
-                          {
-                              //services.AddSingleton(p =>
-                              //{
-                              //    return this._projectControllerTest.ServiceProvider.GetService<ICommandHandler<ProjectCommand.Query, IPagedList<ProjectDto>>>();
-                              //});
-
-                              services.AddSingleton(p =>
-                              {
-                                  return this._projectControllerTest.ServiceProvider.GetService<ICommandHandler<ProjectCommand.Query, IPagedList<ProjectDetailDto>>>();
-                              });
-
-                              //services.AddSingleton(p =>
-                              //{
-                              //    return this._projectControllerTest.ServiceProvider.GetService<ICommandHandler<Command.Find<ProjectDto>, ProjectDto>>();
-                              //});
-
-
-                              services.AddSingleton(p =>
-                              {
-                                  return this._projectControllerTest.ServiceProvider.GetService<ICommandHandler<Command.Find<ProjectDetailDto>, ProjectDetailDto>>();
-                              });
-
-
-                              services.AddSingleton(p =>
-                              {
-                                  return this._solutionControllerTest.ServiceProvider.GetService<ICommandHandler<SolutionCommand.Query, IPagedList<SolutionDto>>>();
-                              });
-                          });
+            return builder.UseStartup<Startup>();
         }
 
         [Fact]

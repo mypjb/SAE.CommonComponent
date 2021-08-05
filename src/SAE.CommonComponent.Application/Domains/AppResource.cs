@@ -28,6 +28,7 @@ namespace SAE.CommonComponent.Application.Domains
         /// identity
         /// </summary>
         public string Id { get; set; }
+#warning Missing index calculation
         /// <summary>
         /// resource index relative to the app
         /// </summary>
@@ -47,9 +48,9 @@ namespace SAE.CommonComponent.Application.Domains
         /// <summary>
         /// resource method (get、post、put...)
         /// </summary>
-        public string Method { get; }
+        public string Method { get; set; }
 
-        public DateTime DateTime { get; set; }
+        public DateTime CreateTime { get; set; }
 
         public void Change(AppResourceCommand.Change command)
         {

@@ -5,14 +5,10 @@ using System.Collections.Generic;
 
 namespace SAE.CommonComponent.Application.Events
 {
-    public partial class AppEvent
+    public partial class AppClusterEvent
     {
         public class Create : Change
         {
-            /// <summary>
-            /// cluster id
-            /// </summary>
-            public string ClusterId { get; set; }
             public string Id { get; set; }
             public DateTime CreateTime { get; set; }
         }

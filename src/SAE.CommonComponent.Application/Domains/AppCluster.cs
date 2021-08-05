@@ -9,30 +9,27 @@ using System.Threading.Tasks;
 
 namespace SAE.CommonComponent.Application.Domains
 {
-    public class App:Document
+    public class AppCluster:Document
     {
-        public App()
+        public AppCluster()
         {
 
         }
-        public App(AppCommand.Create command)
+        public AppCluster(AppClusterCommand.Create command)
         {
-            this.Apply<AppEvent.Create>(command, e =>
+            this.Apply<AppClusterEvent.Create>(command, e =>
             {
                 e.Id = Utils.GenerateId();
                 e.CreateTime = DateTime.UtcNow;
             });
         }
+
         /// <summary>
-        /// system id
+        /// id
         /// </summary>
         public string Id { get; set; }
         /// <summary>
-        /// cluster id
-        /// </summary>
-        public string ClusterId { get; set; }
-        /// <summary>
-        /// system name
+        /// name
         /// </summary>
         public string Name { get; set; }
         /// <summary>
@@ -46,14 +43,14 @@ namespace SAE.CommonComponent.Application.Domains
         /// <value></value>
         public Status Status { get; set; }
 
-        public void Change(AppCommand.Change command)
+        public void Change(AppClusterCommand.Change command)
         {
-            this.Apply<AppEvent.Change>(command);
-        } 
+            this.Apply<AppClusterEvent.Change>(command);
+        }
 
-        public void ChangeStatus(AppCommand.ChangeStatus command)
+        public void ChangeStatus(AppClusterCommand.ChangeStatus command)
         {
-            this.Apply<AppEvent.ChangeStatus>(command);
+            this.Apply<AppClusterEvent.ChangeStatus>(command);
         }
     }
 }

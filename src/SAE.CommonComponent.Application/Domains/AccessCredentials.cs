@@ -81,7 +81,5 @@ namespace SAE.CommonComponent.Application.Abstract.Domains
             });
         }
 
-        
-        
     }
 }

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace SAE.CommonComponent.Application.Commands
 {
-    public class AppCommand
+    public class AppClusterCommand
     {
         public class Query : Paging
         {

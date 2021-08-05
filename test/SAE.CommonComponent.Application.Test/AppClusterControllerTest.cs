@@ -15,7 +15,7 @@ using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonComponent.ConfigServer.Dtos;
 using SAE.CommonComponent.ConfigServer.Commands;
 using SAE.CommonLibrary.Abstract.Model;
-using AppCommand = SAE.CommonComponent.Application.Commands.AppCommand;
+using AppClusterCommand = SAE.CommonComponent.Application.Commands.AppClusterCommand;
 using System.Collections.Generic;
 using System;
 using System.IO;
@@ -24,19 +24,16 @@ using SAE.CommonLibrary.EventStore.Document;
 
 namespace SAE.CommonComponent.Application.Test
 {
-    public class AppControllerTest : BaseTest
+    public class AppClusterControllerTest : BaseTest
     {
-        public const string API = "/cluster/app";
-        private readonly AppClusterControllerTest _clusterControllerTest;
+        public const string API = "cluster";
 
-        public AppControllerTest(ITestOutputHelper output) : base(output)
+        public AppClusterControllerTest(ITestOutputHelper output) : base(output)
         {
-            this._clusterControllerTest = new AppClusterControllerTest(this._output, this.HttpClient);
         }
 
-        internal AppControllerTest(ITestOutputHelper output, HttpClient httpClient) : base(output, httpClient)
+        internal AppClusterControllerTest(ITestOutputHelper output, HttpClient httpClient) : base(output, httpClient)
         {
-            this._clusterControllerTest = new AppClusterControllerTest(this._output, this.HttpClient);
         }
 
         protected override IWebHostBuilder UseStartup(IWebHostBuilder builder)
@@ -44,19 +41,12 @@ namespace SAE.CommonComponent.Application.Test
             return builder.UseStartup<Startup>();
         }
 
-        [Theory]
-        [InlineData("")]
-        public async Task<AppDto> Add(string clusterId = null)
+        [Fact]
+        public async Task<AppClusterDto> Add()
         {
-            if (clusterId.IsNullOrWhiteSpace())
+            var command = new AppClusterCommand.Create
             {
-                var clusterDto = await this._clusterControllerTest.Add();
-                clusterId = clusterDto.Id;
-            }
-            var command = new AppCommand.Create
-            {
-                Name = this.GetRandom(),
-                ClusterId= clusterId
+                Name = this.GetRandom()
             };
             var message = new HttpRequestMessage(HttpMethod.Post, API);
             message.AddJsonContent(command);
@@ -73,7 +63,7 @@ namespace SAE.CommonComponent.Application.Test
         {
             var app = await this.Add();
             var message = new HttpRequestMessage(HttpMethod.Put, API);
-            var command = new AppCommand.Change
+            var command = new AppClusterCommand.Change
             {
                 Id = app.Id,
                 Name = this.GetRandom()
@@ -91,7 +81,7 @@ namespace SAE.CommonComponent.Application.Test
         {
             var app = await this.Add();
 
-            var command = new AppCommand.ChangeStatus
+            var command = new AppClusterCommand.ChangeStatus
             {
                 Id = app.Id,
                 Status = app.Status == Status.Enable ? Status.Disable : Status.Enable
@@ -109,13 +99,11 @@ namespace SAE.CommonComponent.Application.Test
             Assert.Equal(command.Status, dto.Status);
         }
 
-
-
-        private async Task<AppDto> Get(string id)
+        private async Task<AppClusterDto> Get(string id)
         {
             var message = new HttpRequestMessage(HttpMethod.Get, $"{API}/{id}");
             var responseMessage = await this.HttpClient.SendAsync(message);
-            var app = await responseMessage.AsAsync<AppDto>();
+            var app = await responseMessage.AsAsync<AppClusterDto>();
             this.WriteLine(app);
             return app;
         }

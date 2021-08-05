@@ -6,18 +6,14 @@ using System.Threading.Tasks;
 
 namespace SAE.CommonComponent.Application.Dtos
 {
-    public class AppDto
+    public class AppClusterDto
     {
         /// <summary>
-        /// system id
+        /// id
         /// </summary>
         public string Id { get; set; }
         /// <summary>
-        /// cluster id
-        /// </summary>
-        public string ClusterId { get; set; }
-        /// <summary>
-        /// system name
+        /// name
         /// </summary>
         public string Name { get; set; }
         /// <summary>
@@ -25,7 +21,7 @@ namespace SAE.CommonComponent.Application.Dtos
         /// </summary>
         public DateTime CreateTime { get; set; }
         /// <summary>
-        /// app status
+        /// status
         /// </summary>
         /// <value></value>
         public Status Status { get; set; }

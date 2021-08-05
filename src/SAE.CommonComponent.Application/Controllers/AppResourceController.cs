@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace SAE.CommonComponent.Application.Controllers
 {
     [ApiController]
-    [Route("{controller}")]
+    [Route("/cluster/app/resource")]
     public class AppResourceController : Controller
     {
         private readonly IMediator _mediator;
@@ -50,6 +50,12 @@ namespace SAE.CommonComponent.Application.Controllers
         public async Task<object> Paging([FromQuery]AppResourceCommand.Query command)
         {
             return await this._mediator.SendAsync<IPagedList<AppResourceDto>>(command);
+        }
+
+        [HttpGet("{action}")]
+        public async Task<object> List([FromQuery] AppResourceCommand.List command)
+        {
+            return await this._mediator.SendAsync<IEnumerable<AppResourceDto>>(command);
         }
     }
 }

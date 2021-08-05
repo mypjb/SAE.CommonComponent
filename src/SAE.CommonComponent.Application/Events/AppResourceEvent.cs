@@ -10,16 +10,16 @@ namespace SAE.CommonComponent.Application.Events
         public class Create : Change
         {
             public string Id { get; set; }
+            /// <summary>
+            /// resource index relative to the app
+            /// </summary>
+            public int Index { get; set; }
             public string AppId { get; set; }
             public DateTime CreateTime { get; set; }
         }
 
         public class Change : IEvent
         {
-            /// <summary>
-            /// resource index relative to the app
-            /// </summary>
-            public int Index { get; set; }
             /// <summary>
             /// resource name
             /// </summary>
@@ -31,7 +31,7 @@ namespace SAE.CommonComponent.Application.Events
             /// <summary>
             /// resource method (get、post、put...)
             /// </summary>
-            public string Method { get; }
+            public string Method { get; set; }
         }
 
     }
