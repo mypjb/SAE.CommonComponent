@@ -66,7 +66,7 @@ namespace SAE.CommonComponent.Identity
                         options.Filters.Add(new AuthorizeFilter());
                     });
 
-            var assemblys = new[] { typeof(AccessCredentialsDto).Assembly, Assembly.GetExecutingAssembly() };
+            var assemblys = new[] { typeof(ClientDto).Assembly, Assembly.GetExecutingAssembly() };
 
             services.AddServiceFacade()
                     .AddMediator(assemblys)

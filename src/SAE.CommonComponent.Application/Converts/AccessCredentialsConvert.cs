@@ -10,14 +10,14 @@ namespace SAE.CommonComponent.Application.Converts
     {
         public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
         {
-            return destinationType == typeof(AccessCredentialsDto);
+            return destinationType == typeof(ClientDto);
         }
 
         public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
         {
             if (value == null) return null;
-            var app = (AccessCredentials)value;
-            var result = new AccessCredentialsDto
+            var app = (Client)value;
+            var result = new ClientDto
             {
                 Id = app.Id,
                 Name = app.Name,

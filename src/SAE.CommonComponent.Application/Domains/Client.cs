@@ -7,15 +7,15 @@ using System.Linq;
 
 namespace SAE.CommonComponent.Application.Abstract.Domains
 {
-    public class AccessCredentials : Document
+    public class Client : Document
     {
-        public AccessCredentials()
+        public Client()
         {
             this.Scopes = Enumerable.Empty<string>().ToArray();
         }
-        public AccessCredentials(AccessCredentialsCommand.Create command) : this()
+        public Client(ClientCommand.Create command) : this()
         {
-            this.Apply<AccessCredentialsEvent.Create>(command, e =>
+            this.Apply<ClientEvent.Create>(command, e =>
             {
                 e.Id = command.Id ?? Utils.GenerateId();
                 e.CreateTime = DateTime.UtcNow;
@@ -54,27 +54,27 @@ namespace SAE.CommonComponent.Application.Abstract.Domains
         /// </summary>
         /// <value></value>
         public Status Status { get; set; }
-        public void Change(AccessCredentialsCommand.Change command)
+        public void Change(ClientCommand.Change command)
         {
-            this.Apply<AccessCredentialsEvent.Change>(command);
+            this.Apply<ClientEvent.Change>(command);
         }
 
         public void RefreshSecret()
         {
-            this.Apply(new AccessCredentialsEvent.RefreshSecret
+            this.Apply(new ClientEvent.RefreshSecret
             {
                 Secret = Utils.GenerateId()
             });
         }
         
-        public void ChangeStatus(AccessCredentialsCommand.ChangeStatus command)
+        public void ChangeStatus(ClientCommand.ChangeStatus command)
         {
-            this.Apply<AccessCredentialsEvent.ChangeStatus>(command);
+            this.Apply<ClientEvent.ChangeStatus>(command);
         }
 
         public void Delete()
         {
-            this.ChangeStatus(new AccessCredentialsCommand.ChangeStatus
+            this.ChangeStatus(new ClientCommand.ChangeStatus
             {
                 Id = this.Id,
                 Status = Status.Delete

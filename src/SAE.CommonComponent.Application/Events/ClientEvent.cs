@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace SAE.CommonComponent.Application.Events
 {
-    public partial class AccessCredentialsEvent
+    public partial class ClientEvent
     {
         public class Create : Change
         {

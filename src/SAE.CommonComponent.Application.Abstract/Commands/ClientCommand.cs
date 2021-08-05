@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace SAE.CommonComponent.Application.Commands
 {
-    public class AccessCredentialsCommand
+    public class ClientCommand
     {
         public class Query : Paging
         {

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace SAE.CommonComponent.Application.Dtos
 {
-    public class AccessCredentialsDto
+    public class ClientDto
     {
         /// <summary>
         /// app id

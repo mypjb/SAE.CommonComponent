@@ -8,20 +8,20 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
-using AccessCredentialsCommand = SAE.CommonComponent.Application.Commands.AccessCredentialsCommand;
+using ClientCommand = SAE.CommonComponent.Application.Commands.ClientCommand;
 using Assert = Xunit.Assert;
 
 namespace SAE.CommonComponent.Application.Test
 {
-    public class AccessCredentialsControllerTest : BaseTest
+    public class ClientControllerTest : BaseTest
     {
-        public const string API = "AccessCredentials";
-        public AccessCredentialsControllerTest(ITestOutputHelper output) : base(output)
+        public const string API = "/client";
+        public ClientControllerTest(ITestOutputHelper output) : base(output)
         {
             
         }
 
-        internal AccessCredentialsControllerTest(ITestOutputHelper output, HttpClient httpClient) : base(output, httpClient)
+        internal ClientControllerTest(ITestOutputHelper output, HttpClient httpClient) : base(output, httpClient)
         {
             
         }
@@ -32,9 +32,9 @@ namespace SAE.CommonComponent.Application.Test
         }
 
         [Fact]
-        public async Task<AccessCredentialsDto> Add()
+        public async Task<ClientDto> Add()
         {
-            var command = new AccessCredentialsCommand.Create
+            var command = new ClientCommand.Create
             {
                 Name = this.GetRandom(),
                 Scopes = new string[] { this.GetRandom(), this.GetRandom() },
@@ -65,7 +65,7 @@ namespace SAE.CommonComponent.Application.Test
         {
             var app = await this.Add();
             var message = new HttpRequestMessage(HttpMethod.Put, API);
-            var command = new AccessCredentialsCommand.Change
+            var command = new ClientCommand.Change
             {
                 Id = app.Id,
                 Name = this.GetRandom(),
@@ -112,7 +112,7 @@ namespace SAE.CommonComponent.Application.Test
         {
             var app = await this.Add();
 
-            var command = new AccessCredentialsCommand.ChangeStatus
+            var command = new ClientCommand.ChangeStatus
             {
                 Id = app.Id,
                 Status = app.Status == Status.Enable ? Status.Disable : Status.Enable
@@ -131,11 +131,11 @@ namespace SAE.CommonComponent.Application.Test
         }
 
 
-        private async Task<AccessCredentialsDto> Get(string id)
+        private async Task<ClientDto> Get(string id)
         {
             var message = new HttpRequestMessage(HttpMethod.Get, $"{API}/{id}");
             var responseMessage = await this.HttpClient.SendAsync(message);
-            var app = await responseMessage.AsAsync<AccessCredentialsDto>();
+            var app = await responseMessage.AsAsync<ClientDto>();
             this.WriteLine(app);
             return app;
         }

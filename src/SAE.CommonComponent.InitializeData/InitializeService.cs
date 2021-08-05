@@ -29,7 +29,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using AccessCredentialsCommand = SAE.CommonComponent.Application.Commands.AccessCredentialsCommand;
+using ClientCommand = SAE.CommonComponent.Application.Commands.ClientCommand;
 
 namespace SAE.CommonComponent.InitializeData
 {
@@ -264,7 +264,7 @@ namespace SAE.CommonComponent.InitializeData
 
                     var scopeNames = this.GetJTokenValue<string>(oauthJToken, nameof(Constants.Config.OAuth.Scope)).Split(Constants.Config.OAuth.ScopeSeparator);
 
-                    var appCommand = new AccessCredentialsCommand.Create
+                    var appCommand = new ClientCommand.Create
                     {
                         Id = this.GetJTokenValue<string>(oauthJToken, nameof(Constants.Config.OAuth.AppId)),
                         Secret = this.GetJTokenValue<string>(oauthJToken, nameof(Constants.Config.OAuth.AppId)),
@@ -296,13 +296,13 @@ namespace SAE.CommonComponent.InitializeData
 
                     //this._logging.Info("Reference project");
 
-                    await this._mediator.SendAsync(new AccessCredentialsCommand.ChangeStatus
+                    await this._mediator.SendAsync(new ClientCommand.ChangeStatus
                     {
                         Id = appCommand.Id,
                         Status = Status.Enable
                     });
 
-                    var app = await this._mediator.SendAsync<AccessCredentialsDto>(new Command.Find<AccessCredentialsDto>
+                    var app = await this._mediator.SendAsync<ClientDto>(new Command.Find<ClientDto>
                     {
                         Id = appCommand.Id
                     });
