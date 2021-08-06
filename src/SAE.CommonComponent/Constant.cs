@@ -6,7 +6,6 @@ namespace SAE.CommonComponent
     {
         public const string Scope = "api";
         public const string ClusterName = "Default";
-        public const string AppId = "default:appid";
         public const string Development = nameof(Development);
         public const string Production = nameof(Production);
         public const string DefaultSeparator = "_";

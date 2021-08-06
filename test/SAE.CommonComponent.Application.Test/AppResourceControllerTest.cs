@@ -2,6 +2,7 @@
 using SAE.CommonComponent.Application.Dtos;
 using SAE.CommonComponent.Test;
 using SAE.CommonLibrary.Extension;
+using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
@@ -42,36 +43,44 @@ namespace SAE.CommonComponent.Application.Test
             }
             var command = new AppResourceCommand.Create
             {
-                AppId= appId,
+                AppId = appId,
                 Name = this.GetRandom(),
-                Method= this.GetRandom(),
-                Path= this.GetRandom()
+                Method = this.GetRandom(),
+                Path = this.GetRandom(),
+                Index = Math.Abs(this.GetRandom().GetHashCode() % 100)
             };
             var message = new HttpRequestMessage(HttpMethod.Post, API);
             message.AddJsonContent(command);
             var responseMessage = await this.HttpClient.SendAsync(message);
             var id = await responseMessage.AsAsync<string>();
-            var app = await this.Get(id);
-            this.WriteLine(app);
-            Assert.Equal(command.Name, app.Name);
-            return app;
+            var appResource = await this.Get(id);
+            this.WriteLine(appResource);
+            Assert.Equal(command.Name, appResource.Name);
+            Assert.Equal(command.Method, appResource.Method);
+            Assert.Equal(command.Index, appResource.Index);
+            Assert.Equal(command.Path, appResource.Path);
+            return appResource;
         }
 
         [Fact]
         public async Task Edit()
         {
-            var app = await this.Add();
+            var appResource = await this.Add();
             var message = new HttpRequestMessage(HttpMethod.Put, API);
             var command = new AppResourceCommand.Change
             {
-                Id = app.Id,
-                Name = this.GetRandom()
+                Id = appResource.Id,
+                Name = this.GetRandom(),
+                Method=this.GetRandom(),
+                Path=this.GetRandom()
             };
             message.AddJsonContent(command);
             var responseMessage = await this.HttpClient.SendAsync(message);
             responseMessage.EnsureSuccessStatusCode();
-            var newApp = await this.Get(app.Id);
-            Assert.Equal(command.Name, newApp.Name);
+            var newAppResource = await this.Get(appResource.Id);
+            Assert.Equal(command.Name, newAppResource.Name);
+            Assert.Equal(command.Method, newAppResource.Method);
+            Assert.Equal(command.Path, newAppResource.Path);
         }
 
         private async Task<AppResourceDto> Get(string id)

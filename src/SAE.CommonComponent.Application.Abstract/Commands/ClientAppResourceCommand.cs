@@ -18,11 +18,14 @@ namespace SAE.CommonComponent.Application.Commands
         {
         }
 
-
         public class Query : Paging
         {
             public string ClientId{ get; set; }
             public bool Referenced { get; set; }
+        }
+        public class List
+        {
+            public string ClientId { get; set; }
         }
     }
 }

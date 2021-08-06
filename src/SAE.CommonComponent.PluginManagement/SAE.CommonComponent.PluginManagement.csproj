@@ -8,11 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SAE.CommonLibrary.Abstract" Version="2.0.4.1" />
-    <PackageReference Include="SAE.CommonLibrary.AspNetCore" Version="2.0.4.1" />
-    <PackageReference Include="SAE.CommonLibrary.EventStore.Document" Version="2.0.4.1" />
-    <PackageReference Include="SAE.CommonLibrary.ObjectMapper.TinyMapper" Version="2.0.4.1" />
-    <PackageReference Include="SAE.CommonLibrary.Plugin.AspNetCore" Version="2.0.4.1" />
+    <PackageReference Include="SAE.CommonLibrary.Abstract" Version="2.0.4.2" />
+    <PackageReference Include="SAE.CommonLibrary.AspNetCore" Version="2.0.4.2" />
+    <PackageReference Include="SAE.CommonLibrary.EventStore.Document" Version="2.0.4.2" />
+    <PackageReference Include="SAE.CommonLibrary.ObjectMapper.TinyMapper" Version="2.0.4.2" />
+    <PackageReference Include="SAE.CommonLibrary.Plugin.AspNetCore" Version="2.0.4.2" />
   </ItemGroup>
 
   <ItemGroup>

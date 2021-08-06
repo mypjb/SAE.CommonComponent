@@ -16,6 +16,9 @@ using SAE.CommonComponent.Routing.Dtos;
 using SAE.CommonLibrary;
 using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.Abstract.Model;
+using SAE.CommonLibrary.AspNetCore;
+using SAE.CommonLibrary.AspNetCore.Authorization;
+using SAE.CommonLibrary.AspNetCore.Routing;
 using SAE.CommonLibrary.EventStore.Document;
 using SAE.CommonLibrary.Extension;
 using SAE.CommonLibrary.Logging;
@@ -41,6 +44,10 @@ namespace SAE.CommonComponent.InitializeData
         private readonly IServiceProvider _serviceProvider;
         private readonly IConfiguration _configuration;
         private readonly IPluginManage _pluginManage;
+        private readonly IBitmapEndpointProvider _bitmapEndpointProvider;
+        private readonly IPathDescriptorProvider _pathDescriptorProvider;
+        private readonly IBitmapAuthorization _bitmapAuthorization;
+        private readonly SystemOptions _systemOptions;
 
         public InitializeService(IServiceProvider serviceProvider)
         {
@@ -50,6 +57,11 @@ namespace SAE.CommonComponent.InitializeData
             this._serviceProvider = serviceProvider;
             this._configuration = this._serviceProvider.GetService<IConfiguration>();
             this._pluginManage = serviceProvider.GetService<IPluginManage>();
+            this._bitmapEndpointProvider = serviceProvider.GetService<IBitmapEndpointProvider>();
+            this._pathDescriptorProvider = serviceProvider.GetService<IPathDescriptorProvider>();
+            this._bitmapAuthorization = serviceProvider.GetService<IBitmapAuthorization>();
+            this._systemOptions= _configuration.GetSection(SystemOptions.Option)
+                                               .Get<SystemOptions>();
         }
         /// <summary>
         /// Find app config
@@ -139,7 +151,6 @@ namespace SAE.CommonComponent.InitializeData
             }
             return (token.SelectToken(first.Path) as JArray).Values<T>();
         }
-
 
         public virtual async Task InitialAsync()
         {
@@ -254,6 +265,29 @@ namespace SAE.CommonComponent.InitializeData
                 Type = (int)DictType.Scope
             });
 
+            var pathDescriptors = this._pathDescriptorProvider.GetDescriptors();
+
+            var appFirst = appDtos.First();
+
+            foreach (var pathDescriptor in pathDescriptors)
+            {
+                await this._mediator.SendAsync<string>(new AppResourceCommand.Create
+                {
+                    AppId = appFirst.Id,
+                    Method = pathDescriptor.Method,
+                    Name = pathDescriptor.Name,
+                    Path = pathDescriptor.Path,
+                    Index = pathDescriptor.Index
+                });
+            }
+
+            var appResourceDtos = await this._mediator.SendAsync<IEnumerable<AppResourceDto>>(new AppResourceCommand.List
+            {
+                AppId = appFirst.Id
+            });
+
+            this._logging.Info($"app resource:{appResourceDtos.ToJsonString()}");
+
             foreach (var appDto in appDtos)
             {
                 foreach (var env in environments)
@@ -306,7 +340,24 @@ namespace SAE.CommonComponent.InitializeData
                     });
 
                     clientDto.Secret = clientCommand.Secret;
+
                     this._logging.Info($"output default app:{clientDto.ToJsonString()}");
+
+                    var clientAppResourceCommand = new ClientAppResourceCommand.ReferenceAppResource
+                    {
+                        AppResourceIds = appResourceDtos.Select(s => s.Id).ToArray(),
+                        ClientId = clientDto.Id
+                    };
+
+                    await this._mediator.SendAsync(clientAppResourceCommand);
+
+                    var appResources = await this._mediator.SendAsync<IEnumerable<AppResourceDto>>(new ClientAppResourceCommand.List
+                    {
+                        ClientId = clientDto.Id
+                    });
+
+                    var authorizeCode = this._bitmapAuthorization.GeneratePermissionCode(appResources.Select(s => s.Index));
+                    this._logging.Info($"app '{clientDto.Id}' authorize code:{authorizeCode}");
                 }
             }
         }
@@ -341,7 +392,7 @@ namespace SAE.CommonComponent.InitializeData
 
             var appCommand = new AppCommand.Create
             {
-                Id=this._configuration.GetSection(Constants.AppId)?.Value,
+                Id = _systemOptions.Id,
                 Name = appName,
                 ClusterId = clusterId
             };

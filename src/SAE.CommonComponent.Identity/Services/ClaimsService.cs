@@ -1,8 +1,10 @@
 ﻿using IdentityServer4.Services;
 using IdentityServer4.Validation;
 using Microsoft.Extensions.Logging;
+using SAE.CommonComponent.Application.Commands;
 using SAE.CommonComponent.Application.Dtos;
 using SAE.CommonLibrary.Abstract.Mediator;
+using SAE.CommonLibrary.AspNetCore.Authorization;
 using SAE.CommonLibrary.EventStore.Document;
 using System;
 using System.Collections.Generic;
@@ -15,12 +17,15 @@ namespace SAE.CommonComponent.Identity.Services
     public class ClaimsService : DefaultClaimsService, IClaimsService
     {
         private readonly IMediator _mediator;
+        private readonly IBitmapAuthorization _bitmapAuthorization;
 
         public ClaimsService(IProfileService profile,
                              ILogger<DefaultClaimsService> logger,
-                             IMediator mediator) : base(profile, logger)
+                             IMediator mediator,
+                             IBitmapAuthorization bitmapAuthorization) : base(profile, logger)
         {
             this._mediator = mediator;
+            this._bitmapAuthorization = bitmapAuthorization;
         }
 
         public override async Task<IEnumerable<Claim>> GetAccessTokenClaimsAsync(ClaimsPrincipal subject,
@@ -30,7 +35,7 @@ namespace SAE.CommonComponent.Identity.Services
             var claims = (await base.GetAccessTokenClaimsAsync(subject, resourceResult, request)).ToList();
 
 #warning 专用于测试
-            claims.Add(new Claim(CommonLibrary.AspNetCore.Constants.BitmapAuthorize.Administrator, "1", Constants.Claim.CustomType));
+            //claims.Add(new Claim(CommonLibrary.AspNetCore.Constants.BitmapAuthorize.Administrator, "1", Constants.Claim.CustomType));
 
             var client = await this._mediator.SendAsync<ClientDto>(new Command.Find<ClientDto> { Id = request.ClientId });
 
@@ -44,6 +49,23 @@ namespace SAE.CommonComponent.Identity.Services
                 }
             }
 
+            if (!claims.Any(s => s.Type == CommonLibrary.AspNetCore.Constants.BitmapAuthorize.Claim))
+            {
+                var appResources = await this._mediator.SendAsync<IEnumerable<AppResourceDto>>(new ClientAppResourceCommand.List
+                {
+                    ClientId = client.Id
+                });
+
+                foreach (var group in appResources.GroupBy(s => s.AppId)
+                                               .ToArray())
+                {
+                    var authorizeCode = this._bitmapAuthorization.GeneratePermissionCode(group.Select(s => s.Index));
+                    claims.Add(new Claim(CommonLibrary.AspNetCore.Constants.BitmapAuthorize.Claim,
+                                         string.Format(CommonLibrary.AspNetCore.Constants.BitmapAuthorize.Format,
+                                                       group.Key,
+                                                       authorizeCode)));
+                }
+            }
 
             return claims;
         }

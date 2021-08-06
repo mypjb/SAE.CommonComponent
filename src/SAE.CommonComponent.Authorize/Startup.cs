@@ -101,7 +101,8 @@ namespace SAE.CommonComponent.Authorize
         public override void PluginConfigure(IApplicationBuilder app)
         {
             //app.UseMediatorOrleansSilo();
-            app.UseServiceFacade();
+            app.UseServiceFacade()
+               .UseBitmapAuthorization();
         }
     }
 }

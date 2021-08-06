@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using SAE.CommonComponent.ConfigServer.Commands;
 using SAE.CommonComponent.ConfigServer.Dtos;
 using SAE.CommonLibrary.Abstract.Mediator;
+using SAE.CommonLibrary.AspNetCore.Authorization;
 using SAE.CommonLibrary.Configuration;
 using SAE.CommonLibrary.Extension;
 
@@ -19,14 +20,17 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
     public class AppDataController : Controller
     {
         private readonly IMediator _mediator;
+        private readonly IBitmapEndpointStorage _bitmapEndpointStorage;
 
-        public AppDataController(IMediator mediator)
+        public AppDataController(IMediator mediator, IBitmapEndpointStorage bitmapEndpointStorage)
         {
             this._mediator = mediator;
+            this._bitmapEndpointStorage = bitmapEndpointStorage;
         }
 
         private async Task<IActionResult> FindAsync(AppDataCommand.Find command)
         {
+            
             var appConfig = await this._mediator.SendAsync<AppDataDto>(command);
 
             if (command.Version == appConfig.Version)
@@ -74,6 +78,7 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
         [HttpGet("{action}")]
         public async Task<IActionResult> Public([FromQuery] AppDataCommand.Find command)
         {
+            var index = this._bitmapEndpointStorage.GetIndex(this.HttpContext);
             command.Private = false;
 
             Assert.Build(command.AppId)

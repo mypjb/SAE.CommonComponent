@@ -15,7 +15,8 @@ namespace SAE.CommonComponent.Application.Handlers
     public class ClientAppResourceHandler : AbstractHandler<ClientAppResource>,
                                                        ICommandHandler<ClientAppResourceCommand.ReferenceAppResource>,
                                                        ICommandHandler<ClientAppResourceCommand.DeleteAppResource>,
-                                                       ICommandHandler<ClientAppResourceCommand.Query,IPagedList<AppResourceDto>>
+                                                       ICommandHandler<ClientAppResourceCommand.Query, IPagedList<AppResourceDto>>,
+                                                       ICommandHandler<ClientAppResourceCommand.List, IEnumerable<AppResourceDto>>
     {
         private readonly IStorage _storage;
 
@@ -54,7 +55,7 @@ namespace SAE.CommonComponent.Application.Handlers
         {
             var accessCredentialsAppResources = command.AppResourceIds.Select(s => new ClientAppResource(command.ClientId, s))
                                                                       .ToArray();
-            await this._documentStore.SaveAsync(accessCredentialsAppResources);            
+            await this._documentStore.SaveAsync(accessCredentialsAppResources);
         }
 
         public async Task HandleAsync(ClientAppResourceCommand.DeleteAppResource command)
@@ -63,6 +64,17 @@ namespace SAE.CommonComponent.Application.Handlers
                                                   .ToArray();
 
             await this._documentStore.DeleteAsync(accessCredentialsAppResources);
+        }
+
+        public async Task<IEnumerable<AppResourceDto>> HandleAsync(ClientAppResourceCommand.List command)
+        {
+            var clientAppResources = this._storage.AsQueryable<ClientAppResource>()
+                                         .Where(s => s.ClientId == command.ClientId);
+
+            var appResourceDtos = this._storage.AsQueryable<AppResourceDto>()
+                                      .Where(ar => clientAppResources.Any(car => ar.Id == car.AppResourceId))
+                                      .ToArray();
+            return appResourceDtos;
         }
     }
 }

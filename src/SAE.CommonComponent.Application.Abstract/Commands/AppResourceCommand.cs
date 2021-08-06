@@ -20,6 +20,10 @@ namespace SAE.CommonComponent.Application.Commands
         {
             public string AppId { get; set; }
             /// <summary>
+            /// 
+            /// </summary>
+            public int Index { get; set; }
+            /// <summary>
             /// resource name
             /// </summary>
             public string Name { get; set; }
