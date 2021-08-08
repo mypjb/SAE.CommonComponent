@@ -9,21 +9,21 @@ using System.Threading.Tasks;
 
 namespace SAE.CommonComponent.Authorize.Domains
 {
-    public class AppRole : Document,IEvent
+    public class ClientRole : Document,IEvent
     {
-        public AppRole()
+        public ClientRole()
         {
 
         }
-        public AppRole(string appId,string roleId)
+        public ClientRole(string clientId,string roleId)
         {
-            this.AppId = appId;
+            this.ClientId = clientId;
             this.RoleId = roleId;
-            this.Id = $"{this.AppId}_{this.RoleId}".ToMd5();
+            this.Id = $"{this.ClientId}_{this.RoleId}".ToMd5();
             this.Apply(this);
         }
         public string Id { get; set; }
-        public string AppId { get; set; }
+        public string ClientId { get; set; }
         public string RoleId { get; set; }
     }
 }

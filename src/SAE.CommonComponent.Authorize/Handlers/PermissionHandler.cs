@@ -110,7 +110,7 @@ namespace SAE.CommonComponent.Authorize.Handlers
             var dtos = (await this._mediator.SendAsync<IEnumerable<PermissionDto>>(new Command.List<PermissionDto>()))
                                 .ToList();
 
-            var permissionCreateCommands = commands.Where(c => !dtos.Any(s => s.Flag.Equals(c.Flag, StringComparison.OrdinalIgnoreCase)))
+            var permissionCreateCommands = commands.Where(c => !dtos.Any(s => s.Path.Equals(c.Path, StringComparison.OrdinalIgnoreCase)))
                                                    .ToArray();
 
             if (permissionCreateCommands.Any())//不存在
@@ -136,8 +136,8 @@ namespace SAE.CommonComponent.Authorize.Handlers
                 endpoints.Add(new BitmapEndpoint
                 {
                     Name = command.Name,
-                    Index = dtos.FindIndex(s => s.Flag.Equals(command.Flag, StringComparison.OrdinalIgnoreCase)),
-                    Path = command.Flag,
+                    Index = dtos.FindIndex(s => s.Path.Equals(command.Path, StringComparison.OrdinalIgnoreCase)),
+                    Path = command.Path,
                 });
             }
 
@@ -148,11 +148,13 @@ namespace SAE.CommonComponent.Authorize.Handlers
         {
             return this._storage.AsQueryable<PermissionDto>();
         }
-        private Task<Permission> FindPermission(string name)
+        private Task<Permission> FindPermission(Permission permission)
         {
-            var permission = this._storage.AsQueryable<Permission>()
-                                   .FirstOrDefault(s => s.Name.Contains(name));
-            return Task.FromResult(permission);
+            var oldPermission = this._storage.AsQueryable<Permission>()
+                                   .FirstOrDefault(s => s.AppId == permission.AppId
+                                                        && s.Name == permission.Name
+                                                        && s.Id != permission.Id);
+            return Task.FromResult(oldPermission);
         }
 
         public async Task<IEnumerable<PermissionDto>> HandleAsync(PermissionCommand.Finds command)

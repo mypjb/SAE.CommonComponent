@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 
 namespace SAE.CommonComponent.Authorize.Dtos
 {
-    public class AppRoleDto
+    public class ClientRoleDto
     {
         public string Id { get; set; }
-        public string AppId { get; set; }
+        public string ClientId { get; set; }
         public string RoleId { get; set; }
     }
 }

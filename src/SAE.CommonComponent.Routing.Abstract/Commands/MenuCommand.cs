@@ -8,6 +8,7 @@ namespace SAE.CommonComponent.Routing.Commands
     {
         public class Create
         {
+            public string AppId { get; set; }
             public string ParentId { get; set; }
             public string Name { get; set; }
             public string Path { get; set; }

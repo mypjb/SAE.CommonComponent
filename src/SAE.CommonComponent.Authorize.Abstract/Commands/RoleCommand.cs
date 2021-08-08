@@ -8,6 +8,7 @@ namespace SAE.CommonComponent.Authorize.Commands
 
         public class Create
         {
+            public string AppId { get; set; }
             public string Name { get; set; }
             public string Description { get; set; }
         }

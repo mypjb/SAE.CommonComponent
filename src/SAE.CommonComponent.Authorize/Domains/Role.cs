@@ -28,7 +28,10 @@ namespace SAE.CommonComponent.Authorize.Domains
         }
         public string Id { get; set; }
 
-
+        /// <summary>
+        /// app id
+        /// </summary>
+        public string AppId { get; set; }
         /// <summary>
         /// role permission ids
         /// </summary>
@@ -59,9 +62,9 @@ namespace SAE.CommonComponent.Authorize.Domains
         /// </summary>
         /// <param name="provider"></param>
         /// <returns></returns>
-        public async Task NameExist(Func<string, Task<Role>> provider)
+        public async Task NameExist(Func<Role, Task<Role>> provider)
         {
-            var role = await provider.Invoke(this.Name);
+            var role = await provider.Invoke(this);
             if (role == null || this.Id.Equals(role.Id, StringComparison.OrdinalIgnoreCase))
             {
                 return;

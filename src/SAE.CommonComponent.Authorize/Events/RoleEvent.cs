@@ -11,6 +11,7 @@ namespace SAE.CommonComponent.Authorize.Events
         public class Create : Change
         {
             public string Id { get; set; }
+            public string AppId { get; set; }
             public DateTime CreateTime { get; set; }
             public Status Status { get; set; }
         }

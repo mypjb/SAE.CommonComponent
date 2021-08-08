@@ -13,11 +13,11 @@ namespace SAE.CommonComponent.Authorize.Controllers
 {
     [ApiController]
     [Route("app/role")]
-    public class AppRoleController : Controller
+    public class ClientRoleController : Controller
     {
         private readonly IMediator _mediator;
 
-        public AppRoleController(IMediator mediator)
+        public ClientRoleController(IMediator mediator)
         {
             this._mediator = mediator;
         }

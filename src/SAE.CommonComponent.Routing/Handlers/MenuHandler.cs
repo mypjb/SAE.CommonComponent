@@ -104,9 +104,9 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
         {
             return this._storage.AsQueryable<MenuDto>()
                          .Count(s => s.ParentId == menu.ParentId &&
+                                s.AppId == menu.AppId &&
                                 s.Id != menu.Id &&
-                               (s.Name == menu.Name ||
-                                s.Path == menu.Path)) > 0;
+                               (s.Name == menu.Name)) > 0;
         }
 
         public Task HandleAsync(Command.BatchDelete<Menu> command)

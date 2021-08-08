@@ -7,11 +7,11 @@ namespace SAE.CommonComponent.Authorize.Commands
     {
         public class Create
         {
+            public string AppId { get; set; }
             public string Name { get; set; }
             public string Description { get; set; }
 
-            public string Flag { get; set; }
-            public AccessMethod Method { get; set; }
+            public string Path { get; set; }
         }
 
 

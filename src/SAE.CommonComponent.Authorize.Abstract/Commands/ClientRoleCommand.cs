@@ -6,25 +6,25 @@ using System.Threading.Tasks;
 
 namespace SAE.CommonComponent.Authorize.Commands
 {
-    public class AppRoleCommand
+    public class ClientRoleCommand
     {
         public class ReferenceRole
         {
-            public string AppId { get; set; }
+            public string ClientId { get; set; }
             public string[] RoleIds { get; set; }
         }
         public class DeleteRole : ReferenceRole
         {
         }
         
-        public class QueryAppAuthorizeCode
+        public class QueryClientAuthorizeCode
         {
-            public string AppId { get; set; }
+            public string ClientId { get; set; }
         }
 
         public class Query:Paging
         {
-            public string AppId { get; set; }
+            public string ClientId { get; set; }
             public bool Referenced { get; set; }
         }
     }

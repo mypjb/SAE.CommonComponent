@@ -30,6 +30,8 @@ namespace SAE.CommonComponent.Routing.Domains
         }
 
         public string Id { get; set; }
+
+        public string AppId { get; set; }
         /// <summary>
         /// menu name
         /// </summary>

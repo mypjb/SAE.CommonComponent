@@ -4,6 +4,7 @@ namespace SAE.CommonComponent.Routing.Dtos
 {
     public class MenuDto
     {
+        public string AppId { get; set; }
         public string Id { get; set; }
         /// <summary>
         /// menu name

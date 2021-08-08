@@ -28,6 +28,10 @@ namespace SAE.CommonComponent.Authorize.Domains
         }
         public string Id { get; set; }
         /// <summary>
+        /// app id
+        /// </summary>
+        public string AppId { get; set; }
+        /// <summary>
         /// permission name
         /// </summary>
         public string Name { get; set; }
@@ -38,11 +42,7 @@ namespace SAE.CommonComponent.Authorize.Domains
         /// <summary>
         /// permission flag
         /// </summary>
-        public string Flag { get; set; }
-        /// <summary>
-        /// request method
-        /// </summary>
-        public AccessMethod Method { get; set; }
+        public string Path { get; set; }
 
         /// <summary>
         /// permission createTime
@@ -53,10 +53,13 @@ namespace SAE.CommonComponent.Authorize.Domains
         /// </summary>
         /// <param name="provider">role provider</param>
         /// <returns></returns>
-        public async Task NameExist(Func<string, Task<Permission>> provider)
+        public async Task NameExist(Func<Permission, Task<Permission>> provider)
         {
-            var permission = await provider.Invoke(this.Name);
-            if (permission == null || this.Id.Equals(permission.Id, StringComparison.OrdinalIgnoreCase))
+            var permission = await provider.Invoke(this);
+            if (permission == null ||
+                this.Id == permission.Id ||
+                this.AppId != permission.AppId ||
+                !this.Name.Equals(permission.Name, StringComparison.OrdinalIgnoreCase))
             {
                 return;
             }

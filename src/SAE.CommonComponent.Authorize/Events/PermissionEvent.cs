@@ -12,6 +12,7 @@ namespace SAE.CommonComponent.Authorize.Events
         public class Create : Change
         {
             public string Id { get; set; }
+            public string AppId { get; set; }
             public DateTime CreateTime { get; set; }
             public Status Status { get; set; }
         }
@@ -21,7 +22,7 @@ namespace SAE.CommonComponent.Authorize.Events
             public string Name { get; set; }
             public string Description { get; set; }
 
-            public string Flag { get; set; }
+            public string Path { get; set; }
             /// <summary>
             /// request method
             /// </summary>

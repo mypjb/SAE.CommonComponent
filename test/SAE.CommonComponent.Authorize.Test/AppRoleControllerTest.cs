@@ -35,9 +35,9 @@ namespace SAE.CommonComponent.Authorize.Test
         [InlineData(null)]
         public async Task<string> Reference(string appId = null)
         {
-            var command = new AppRoleCommand.ReferenceRole()
+            var command = new ClientRoleCommand.ReferenceRole()
             {
-                AppId = appId.IsNullOrWhiteSpace() ? Guid.NewGuid().ToString("N") : appId
+                ClientId = appId.IsNullOrWhiteSpace() ? Guid.NewGuid().ToString("N") : appId
             };
 
             var roleDtos = new List<RoleDto>();
@@ -55,11 +55,11 @@ namespace SAE.CommonComponent.Authorize.Test
 
             httpResponse.EnsureSuccessStatusCode();
 
-            var roles = await this.Get(command.AppId);
+            var roles = await this.Get(command.ClientId);
 
             Assert.True(roles.All(s => command.RoleIds.Contains(s.Id)));
 
-            return command.AppId;
+            return command.ClientId;
 
         }
 
@@ -68,9 +68,9 @@ namespace SAE.CommonComponent.Authorize.Test
         {
             var appId = await this.Reference();
             var appRoles = await this.Get(appId);
-            var command = new AppRoleCommand.DeleteRole
+            var command = new ClientRoleCommand.DeleteRole
             {
-                AppId = appId,
+                ClientId = appId,
                 RoleIds = new[] { appRoles.First().Id }
             };
 
@@ -80,7 +80,7 @@ namespace SAE.CommonComponent.Authorize.Test
 
             httpResponse.EnsureSuccessStatusCode();
 
-            var roles = await this.Get(command.AppId);
+            var roles = await this.Get(command.ClientId);
 
             Assert.True(!roles.Any(s => command.RoleIds.Contains(s.Id)));
         }

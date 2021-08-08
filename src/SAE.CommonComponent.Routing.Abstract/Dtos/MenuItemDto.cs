@@ -3,7 +3,8 @@ namespace SAE.CommonComponent.Routing.Dtos
 {
     public class MenuItemDto
     {
-        public string Id { get; set; } 
+        public string Id { get; set; }
+        public string AppId { get; set; }
         public string Name { get; set; }
         public string Path { get; set; }
         public string ParentId { get; set; }

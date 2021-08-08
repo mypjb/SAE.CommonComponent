@@ -11,6 +11,8 @@ using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Collections.Generic;
+using SAE.CommonComponent.Authorize.Commands;
 
 namespace SAE.CommonComponent.Identity.Handlers
 {
@@ -40,9 +42,22 @@ namespace SAE.CommonComponent.Identity.Handlers
             identity.AddClaim(new Claim(JwtClaimTypes.Subject, dto.Id.ToLower()));
             identity.AddClaim(new Claim(JwtClaimTypes.Name, dto.Name));
             identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, dto.Account.Name));
-#warning 使用权限组进行替换
-            identity.AddClaim(new Claim(CommonLibrary.AspNetCore.Constants.BitmapAuthorize.Claim,dto.AuthorizeCode??string.Empty, Constants.Claim.CustomType));
-            identity.AddClaim(new Claim(CommonLibrary.AspNetCore.Constants.BitmapAuthorize.Administrator, "1", Constants.Claim.CustomType));
+            var userCodes = await this._mediator.SendAsync<Dictionary<string, string>>(new UserRoleCommand.QueryUserAuthorizeCode
+            {
+                UserId = dto.Id
+            });
+
+            if (userCodes != null)
+            {
+                foreach (var kv in userCodes)
+                {
+                    identity.AddClaim(new Claim(CommonLibrary.AspNetCore.Constants.BitmapAuthorize.Claim,
+                                             string.Format(CommonLibrary.AspNetCore.Constants.BitmapAuthorize.Format,
+                                                           kv.Key,
+                                                           kv.Value)));
+                }
+            }
+            
             var principal = new ClaimsPrincipal(identity);
 
             return principal;

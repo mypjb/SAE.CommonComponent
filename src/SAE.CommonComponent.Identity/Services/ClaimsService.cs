@@ -3,6 +3,7 @@ using IdentityServer4.Validation;
 using Microsoft.Extensions.Logging;
 using SAE.CommonComponent.Application.Commands;
 using SAE.CommonComponent.Application.Dtos;
+using SAE.CommonComponent.Authorize.Commands;
 using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.AspNetCore.Authorization;
 using SAE.CommonLibrary.EventStore.Document;
@@ -51,19 +52,17 @@ namespace SAE.CommonComponent.Identity.Services
 
             if (!claims.Any(s => s.Type == CommonLibrary.AspNetCore.Constants.BitmapAuthorize.Claim))
             {
-                var appResources = await this._mediator.SendAsync<IEnumerable<AppResourceDto>>(new ClientAppResourceCommand.List
+                var clientCodes = await this._mediator.SendAsync<Dictionary<string, string>>(new ClientRoleCommand.QueryClientAuthorizeCode
                 {
                     ClientId = client.Id
                 });
 
-                foreach (var group in appResources.GroupBy(s => s.AppId)
-                                               .ToArray())
+                foreach (var kv in clientCodes)
                 {
-                    var authorizeCode = this._bitmapAuthorization.GeneratePermissionCode(group.Select(s => s.Index));
                     claims.Add(new Claim(CommonLibrary.AspNetCore.Constants.BitmapAuthorize.Claim,
                                          string.Format(CommonLibrary.AspNetCore.Constants.BitmapAuthorize.Format,
-                                                       group.Key,
-                                                       authorizeCode)));
+                                                       kv.Key,
+                                                       kv.Value)));
                 }
             }
 

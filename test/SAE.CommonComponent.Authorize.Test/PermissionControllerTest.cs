@@ -42,8 +42,7 @@ namespace SAE.CommonComponent.Authorize.Test
             {
                 Name = $"test_{this.GetRandom()}",
                 Description = "add permission",
-                Flag = "/",
-                Method = AccessMethod.Custom
+                Path = "/"
             };
             var request = new HttpRequestMessage(HttpMethod.Post, $"{API}");
             request.AddJsonContent(command);
@@ -53,7 +52,7 @@ namespace SAE.CommonComponent.Authorize.Test
 
             Assert.Equal(permission.Name, command.Name);
             Assert.Equal(permission.Description, command.Description);
-            Assert.Equal(permission.Flag, command.Flag);
+            Assert.Equal(permission.Path, command.Path);
             this.WriteLine(permission);
             return permission;
         }
@@ -66,7 +65,7 @@ namespace SAE.CommonComponent.Authorize.Test
                 Id = dto.Id,
                 Name = dto.Name,
                 Description = "edit permission",
-                Flag = "/edit"
+                Path = "/edit"
             };
             var request = new HttpRequestMessage(HttpMethod.Put, $"{API}");
             request.AddJsonContent(command);
@@ -75,7 +74,7 @@ namespace SAE.CommonComponent.Authorize.Test
 
             Assert.Equal(permission.Name, command.Name);
             Assert.Equal(permission.Description, command.Description);
-            Assert.Equal(permission.Flag, command.Flag);
+            Assert.Equal(permission.Path, command.Path);
             this.WriteLine(permission);
         }
 
@@ -105,8 +104,7 @@ namespace SAE.CommonComponent.Authorize.Test
                       {
                           Name = $"localtion_{s}",
                           Description = $"location {s}",
-                          Flag = $"/location/{s}",
-                          Method = Enum.Parse<AccessMethod>((s % 10).ToString())
+                          Path = $"/location/{s}"
                       });
 
             var request = new HttpRequestMessage(HttpMethod.Post, $"{API}/{nameof(Location)}");
@@ -119,7 +117,7 @@ namespace SAE.CommonComponent.Authorize.Test
 
             foreach (var command in commands)
             {
-                Assert.Contains(endpoints, s => s.Name.Equals(command.Name) && s.Path.Equals(command.Flag));
+                Assert.Contains(endpoints, s => s.Name.Equals(command.Name) && s.Path.Equals(command.Path));
             }
             this.WriteLine(endpoints);
         }

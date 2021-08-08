@@ -81,9 +81,9 @@ namespace SAE.CommonComponent.Authorize.Handlers
                     Ids = userRoles.Select(s => s.Id)
                 });
 
-                var appRoles = this._storage.AsQueryable<AppRole>()
+                var appRoles = this._storage.AsQueryable<ClientRole>()
                                              .Where(s => s.RoleId == id);
-                await this._mediator.SendAsync(new Command.BatchDelete<AppRole>
+                await this._mediator.SendAsync(new Command.BatchDelete<ClientRole>
                 {
                     Ids = appRoles.Select(s => s.Id)
                 });
@@ -177,11 +177,13 @@ namespace SAE.CommonComponent.Authorize.Handlers
 
         
 
-        private Task<Role> FindRole(string name)
+        private Task<Role> FindRole(Role role)
         {
-            var role = this._storage.AsQueryable<Role>()
-                                   .FirstOrDefault(s => s.Name.Contains(name));
-            return Task.FromResult(role);
+            var oldRole = this._storage.AsQueryable<Role>()
+                                   .FirstOrDefault(s => s.AppId == role.AppId
+                                                        && s.Name == role.Name
+                                                        && s.Id != role.Id);
+            return Task.FromResult(oldRole);
         }
     }
 }

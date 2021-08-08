@@ -9,7 +9,7 @@ namespace SAE.CommonComponent.Routing.Events
         public class Create : Change
         {
             public string Id { get; set; }
-
+            public string AppId { get; set; }
             public DateTime CreateTime { get; set; }
         }
         public class Change : IEvent

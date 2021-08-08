@@ -4,6 +4,7 @@ using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json.Linq;
 using SAE.CommonComponent.Application.Commands;
 using SAE.CommonComponent.Application.Dtos;
+using SAE.CommonComponent.Authorize.Commands;
 using SAE.CommonComponent.BasicData.Commands;
 using SAE.CommonComponent.BasicData.Dtos;
 using SAE.CommonComponent.ConfigServer.Commands;
@@ -13,6 +14,8 @@ using SAE.CommonComponent.PluginManagement.Commands;
 using SAE.CommonComponent.PluginManagement.Dtos;
 using SAE.CommonComponent.Routing.Commands;
 using SAE.CommonComponent.Routing.Dtos;
+using SAE.CommonComponent.User.Commands;
+using SAE.CommonComponent.User.Dtos;
 using SAE.CommonLibrary;
 using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.Abstract.Model;
@@ -60,7 +63,7 @@ namespace SAE.CommonComponent.InitializeData
             this._bitmapEndpointProvider = serviceProvider.GetService<IBitmapEndpointProvider>();
             this._pathDescriptorProvider = serviceProvider.GetService<IPathDescriptorProvider>();
             this._bitmapAuthorization = serviceProvider.GetService<IBitmapAuthorization>();
-            this._systemOptions= _configuration.GetSection(SystemOptions.Option)
+            this._systemOptions = _configuration.GetSection(SystemOptions.Option)
                                                .Get<SystemOptions>();
         }
         /// <summary>
@@ -184,6 +187,13 @@ namespace SAE.CommonComponent.InitializeData
                 totalTime += stopwatch.ElapsedMilliseconds;
                 stopwatch.Restart();
 
+                this._logging.Info($"start initial {nameof(UserAsync)}");
+                await this.UserAsync();
+                this._logging.Info($"end initial {nameof(UserAsync)} elapsed time {stopwatch.ElapsedMilliseconds}");
+                stopwatch.Stop();
+                totalTime += stopwatch.ElapsedMilliseconds;
+                stopwatch.Restart();
+
                 this._logging.Info($"start initial {nameof(AuthorizeAsync)}");
                 await this.AuthorizeAsync();
                 this._logging.Info($"end initial {nameof(AuthorizeAsync)} elapsed time {stopwatch.ElapsedMilliseconds}");
@@ -194,13 +204,6 @@ namespace SAE.CommonComponent.InitializeData
                 this._logging.Info($"start initial {nameof(RoutingAsync)}");
                 await this.RoutingAsync();
                 this._logging.Info($"end initial {nameof(RoutingAsync)} elapsed time {stopwatch.ElapsedMilliseconds}");
-                stopwatch.Stop();
-                totalTime += stopwatch.ElapsedMilliseconds;
-                stopwatch.Restart();
-
-                this._logging.Info($"start initial {nameof(UserAsync)}");
-                await this.UserAsync();
-                this._logging.Info($"end initial {nameof(UserAsync)} elapsed time {stopwatch.ElapsedMilliseconds}");
                 stopwatch.Stop();
                 totalTime += stopwatch.ElapsedMilliseconds;
                 stopwatch.Restart();
@@ -265,28 +268,21 @@ namespace SAE.CommonComponent.InitializeData
                 Type = (int)DictType.Scope
             });
 
-            var pathDescriptors = this._pathDescriptorProvider.GetDescriptors();
+            var bitmapEndpoints = await this._bitmapEndpointProvider.FindsAsync(this._pathDescriptorProvider.GetDescriptors());
 
             var appFirst = appDtos.First();
 
-            foreach (var pathDescriptor in pathDescriptors)
+            foreach (var bitmapEndpoint in bitmapEndpoints)
             {
                 await this._mediator.SendAsync<string>(new AppResourceCommand.Create
                 {
                     AppId = appFirst.Id,
-                    Method = pathDescriptor.Method,
-                    Name = pathDescriptor.Name,
-                    Path = pathDescriptor.Path,
-                    Index = pathDescriptor.Index
+                    Method = bitmapEndpoint.Method,
+                    Name = bitmapEndpoint.Name,
+                    Path = bitmapEndpoint.Path,
+                    Index = bitmapEndpoint.Index
                 });
             }
-
-            var appResourceDtos = await this._mediator.SendAsync<IEnumerable<AppResourceDto>>(new AppResourceCommand.List
-            {
-                AppId = appFirst.Id
-            });
-
-            this._logging.Info($"app resource:{appResourceDtos.ToJsonString()}");
 
             foreach (var appDto in appDtos)
             {
@@ -343,28 +339,107 @@ namespace SAE.CommonComponent.InitializeData
 
                     this._logging.Info($"output default app:{clientDto.ToJsonString()}");
 
-                    var clientAppResourceCommand = new ClientAppResourceCommand.ReferenceAppResource
-                    {
-                        AppResourceIds = appResourceDtos.Select(s => s.Id).ToArray(),
-                        ClientId = clientDto.Id
-                    };
+                    //var clientAppResourceCommand = new ClientAppResourceCommand.ReferenceAppResource
+                    //{
+                    //    AppResourceIds = appResourceDtos.Select(s => s.Id).ToArray(),
+                    //    ClientId = clientDto.Id
+                    //};
 
-                    await this._mediator.SendAsync(clientAppResourceCommand);
+                    //await this._mediator.SendAsync(clientAppResourceCommand);
 
-                    var appResources = await this._mediator.SendAsync<IEnumerable<AppResourceDto>>(new ClientAppResourceCommand.List
-                    {
-                        ClientId = clientDto.Id
-                    });
+                    //var appResources = await this._mediator.SendAsync<IEnumerable<AppResourceDto>>(new ClientAppResourceCommand.List
+                    //{
+                    //    ClientId = clientDto.Id
+                    //});
 
-                    var authorizeCode = this._bitmapAuthorization.GeneratePermissionCode(appResources.Select(s => s.Index));
-                    this._logging.Info($"app '{clientDto.Id}' authorize code:{authorizeCode}");
+                    //var authorizeCode = this._bitmapAuthorization.GeneratePermissionCode(appResources.Select(s => s.Index));
+                    //this._logging.Info($"app '{clientDto.Id}' authorize code:{authorizeCode}");
                 }
             }
         }
 
         public virtual async Task AuthorizeAsync()
         {
+            var appResourceDtos = await this._mediator.SendAsync<IEnumerable<AppResourceDto>>(new AppResourceCommand.List
+            {
+                AppId = this._systemOptions.Id
+            });
 
+            this._logging.Info($"app resource:{appResourceDtos.ToJsonString()}");
+
+            var roleCommand = new RoleCommand.Create
+            {
+                AppId = this._systemOptions.Id,
+                Description = "Default admin role",
+                Name = Constants.Authorize.AdminRoleName
+            };
+
+            var roleId = await this._mediator.SendAsync<string>(roleCommand);
+
+            var permissionIds = new string[appResourceDtos.Count()];
+
+            for (int i = 0; i < appResourceDtos.Count(); i++)
+            {
+                var appResource = appResourceDtos.ElementAt(i);
+                var path = string.Format(Constants.Authorize.PermissionFormat, appResource.Method, appResource.Path);
+                var permissionCommand = new PermissionCommand.Create
+                {
+                    AppId = roleCommand.AppId,
+                    Description = appResource.Name,
+                    Name = path,
+                    Path = path
+                };
+                permissionIds[i] = await this._mediator.SendAsync<string>(permissionCommand);
+            }
+
+            var referencePermissionCommand = new RoleCommand.ReferencePermission
+            {
+                Id = roleId,
+                PermissionIds = permissionIds
+            };
+
+            await this._mediator.SendAsync(referencePermissionCommand);
+
+            var clientDtos = await this._mediator.SendAsync<IPagedList<ClientDto>>(new ClientCommand.Query
+            {
+                PageSize = int.MaxValue
+            });
+
+            foreach (var client in clientDtos)
+            {
+                await this._mediator.SendAsync(new ClientRoleCommand.ReferenceRole
+                {
+                    ClientId = client.Id,
+                    RoleIds = new[] { roleId }
+                });
+                var clientCodes = await this._mediator.SendAsync<Dictionary<string, string>>(new ClientRoleCommand.QueryClientAuthorizeCode
+                {
+                    ClientId = client.Id
+                });
+
+                this._logging.Info($"Client '{client.Id}' Codes:{clientCodes.ToJsonString()}");
+            }
+
+            var userDtos = await this._mediator.SendAsync<IPagedList<UserDto>>(new UserCommand.Query
+            {
+                PageSize = int.MaxValue
+            });
+
+            foreach (var user in userDtos)
+            {
+                await this._mediator.SendAsync(new UserRoleCommand.ReferenceRole
+                {
+                    UserId = user.Id,
+                    RoleIds = new[] { roleId }
+                });
+
+                var userCodes = await this._mediator.SendAsync<Dictionary<string, string>>(new UserRoleCommand.QueryUserAuthorizeCode
+                {
+                    UserId = user.Id
+                });
+
+                this._logging.Info($"User '{user.Id}' Codes:{userCodes.ToJsonString()}");
+            }
         }
 
         public virtual async Task ConfigServerAsync()
