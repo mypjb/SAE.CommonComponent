@@ -2,7 +2,7 @@ const ENV = process.env.UMI_ENV;
 
 const callBackUrlKey = "saeCallbackUrl";
 
-let configUrl = "http://api.sae.com/app/config?appid=localhost.test";
+let configUrl = "http://api.sae.com/appdata/public?env=Production&appid=localhost.test.app";
 
 export const appConfig = {
     callBackUrlKey,
