@@ -70,10 +70,10 @@ namespace SAE.CommonComponent.Authorize.Handlers
 
             var roles = this._storage.AsQueryable<RoleDto>()
                                      .Where(s => roleIds.Contains(s.Id))
-                                     .AsEnumerable();
+                                     .ToArray();
 
 
-            await this._director.Build(roles);
+            await this._director.Build<IEnumerable<RoleDto>>(roles);
 
             return roles;
         }

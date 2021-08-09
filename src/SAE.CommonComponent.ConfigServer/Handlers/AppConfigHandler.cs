@@ -58,9 +58,9 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
 
             var appConfigs = this._storage.AsQueryable<Config>()
                                          .Where(s => command.ConfigIds.Contains(s.Id))
+                                         .AsEnumerable()
                                          .Select(s => new AppConfig(appDto.Id, s))
                                          .ToArray();
-
 
             appConfigs.ForEach(pc =>
             {

@@ -48,6 +48,10 @@ namespace SAE.CommonComponent.ConfigServer.Handles
             var appData = this._storage.AsQueryable<AppConfigData>()
                                            .FirstOrDefault(s => s.AppId == command.AppId &&
                                                                 s.EnvironmentId == env.Id);
+
+            Assert.Build(appData)
+                  .NotNull($"app '{command.AppId}' not exist!");
+
             app.Version = appData.Version;
             if (appData != null && appData.Version != command.Version)
             {
