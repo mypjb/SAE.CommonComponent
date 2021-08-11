@@ -8,8 +8,8 @@ namespace SAE.CommonComponent.Application.Commands
     {
         public class Query : Paging
         {
+            public string AppId { get; set; }
             public string Name { get; set; }
-            public string Url { get; set; }
         }
         public class Create : Change
         {

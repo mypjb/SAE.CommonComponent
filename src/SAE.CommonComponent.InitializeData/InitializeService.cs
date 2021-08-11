@@ -278,7 +278,7 @@ namespace SAE.CommonComponent.InitializeData
                 {
                     AppId = appFirst.Id,
                     Method = bitmapEndpoint.Method,
-                    Name = bitmapEndpoint.Name,
+                    Name = $"{bitmapEndpoint.Path}:{bitmapEndpoint.Method}",
                     Path = bitmapEndpoint.Path,
                     Index = bitmapEndpoint.Index
                 });

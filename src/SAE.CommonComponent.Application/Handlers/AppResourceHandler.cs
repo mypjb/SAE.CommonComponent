@@ -37,15 +37,20 @@ namespace SAE.CommonComponent.Application.Abstract.Handlers
         }
 
 
-        public Task HandleAsync(AppResourceCommand.Change command)
+        public async Task HandleAsync(AppResourceCommand.Change command)
         {
-            return this.UpdateAsync<AppResource>(command.Id, app => app.Change(command));
+            var appResource = await this._documentStore.FindAsync<AppResource>(command.Id);
+            await appResource.NameExistAsync(this.FindAppResourceAsync);
+            appResource.Change(command);
+            await this._documentStore.SaveAsync(appResource);
         }
 
         public async Task<string> HandleAsync(AppResourceCommand.Create command)
         {
-            var app = await this.AddAsync(new AppResource(command));
-            return app.Id;
+            var appResource = new AppResource(command);
+            await appResource.NameExistAsync(this.FindAppResourceAsync);
+            await this.AddAsync(appResource);
+            return appResource.Id;
         }
 
 
@@ -78,6 +83,15 @@ namespace SAE.CommonComponent.Application.Abstract.Handlers
                  .Where(s => s.AppId == command.AppId)
                  .ToArray()
                  .AsEnumerable());
+        }
+
+        private Task<AppResource> FindAppResourceAsync(AppResource appResource)
+        {
+            var oldAppResource = this._storage.AsQueryable<AppResource>()
+                                   .FirstOrDefault(s => s.Name == appResource.Name &&
+                                                        s.AppId == appResource.AppId &&
+                                                        s.Id != appResource.Id);
+            return Task.FromResult(oldAppResource);
         }
     }
 }

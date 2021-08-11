@@ -36,15 +36,20 @@ namespace SAE.CommonComponent.Application.Abstract.Handlers
         }
 
 
-        public Task HandleAsync(AppClusterCommand.Change command)
+        public async Task HandleAsync(AppClusterCommand.Change command)
         {
-            return this.UpdateAsync<AppCluster>(command.Id, app => app.Change(command));
+            var appCluster = await this._documentStore.FindAsync<AppCluster>(command.Id);
+            await appCluster.NameExistAsync(this.FindClusterAsync);
+            appCluster.Change(command);
+            await this._documentStore.SaveAsync(appCluster);
         }
 
         public async Task<string> HandleAsync(AppClusterCommand.Create command)
         {
-            var app = await this.AddAsync(new AppCluster(command));
-            return app.Id;
+            var appCluster = new AppCluster(command);
+            await appCluster.NameExistAsync(this.FindClusterAsync);
+            await this.AddAsync(appCluster);
+            return appCluster.Id;
         }
 
         public Task HandleAsync(AppClusterCommand.ChangeStatus command)
@@ -74,6 +79,14 @@ namespace SAE.CommonComponent.Application.Abstract.Handlers
         public async Task HandleAsync(Command.Delete<AppCluster> command)
         {
             await this.DeleteAsync<AppCluster>(command.Id);
+        }
+
+        private Task<AppCluster> FindClusterAsync(AppCluster cluster)
+        {
+            var oldAppCluster = this._storage.AsQueryable<AppCluster>()
+                                   .FirstOrDefault(s => s.Name == cluster.Name
+                                                        && s.Id != cluster.Id);
+            return Task.FromResult(oldAppCluster);
         }
     }
 }

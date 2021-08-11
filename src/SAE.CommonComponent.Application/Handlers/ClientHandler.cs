@@ -75,7 +75,9 @@ namespace SAE.CommonComponent.Application.Abstract.Handlers
 
         public Task<IPagedList<ClientDto>> HandleAsync(ClientCommand.Query command)
         {
-            var query = this._storage.AsQueryable<ClientDto>();
+            var query = this._storage.AsQueryable<ClientDto>()
+                                     .Where(s => s.AppId == command.AppId);
+
             if (!command.Name.IsNullOrWhiteSpace())
             {
                 query = query.Where(s => s.Name.Contains(command.Name));

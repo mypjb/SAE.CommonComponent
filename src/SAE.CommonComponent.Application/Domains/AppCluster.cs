@@ -52,5 +52,15 @@ namespace SAE.CommonComponent.Application.Domains
         {
             this.Apply<AppClusterEvent.ChangeStatus>(command);
         }
+
+        public async Task NameExistAsync(Func<AppCluster, Task<AppCluster>> provider)
+        {
+            var cluster = await provider.Invoke(this);
+            if (cluster == null)
+            {
+                return;
+            }
+            throw new SAEException(StatusCodes.ResourcesExist, $"{nameof(AppCluster)} name exist");
+        }
     }
 }

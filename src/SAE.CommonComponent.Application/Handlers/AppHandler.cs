@@ -1,4 +1,4 @@
- using SAE.CommonComponent.Application.Domains;
+using SAE.CommonComponent.Application.Domains;
 using SAE.CommonComponent.Application.Dtos;
 using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.Abstract.Model;
@@ -18,7 +18,7 @@ namespace SAE.CommonComponent.Application.Abstract.Handlers
                               ICommandHandler<Command.Delete<App>>,
                               ICommandHandler<AppCommand.ChangeStatus>,
                               ICommandHandler<AppCommand.Query, IPagedList<AppDto>>,
-                              ICommandHandler<Command.Find<AppDto>, AppDto>                              
+                              ICommandHandler<Command.Find<AppDto>, AppDto>
     {
         private readonly IStorage _storage;
         private readonly IMediator _mediator;
@@ -34,14 +34,19 @@ namespace SAE.CommonComponent.Application.Abstract.Handlers
         }
 
 
-        public Task HandleAsync(AppCommand.Change command)
+        public async Task HandleAsync(AppCommand.Change command)
         {
-            return this.UpdateAsync<App>(command.Id, app => app.Change(command));
+            var app = await this._documentStore.FindAsync<App>(command.Id);
+            await app.NameExistAsync(this.FindAppAsync);
+            app.Change(command);
+            await this._documentStore.SaveAsync(app);
         }
 
         public async Task<string> HandleAsync(AppCommand.Create command)
         {
-            var app = await this.AddAsync(new App(command));
+            var app = new App(command);
+            await app.NameExistAsync(this.FindAppAsync);
+            await this.AddAsync(app);
             return app.Id;
         }
 
@@ -68,10 +73,19 @@ namespace SAE.CommonComponent.Application.Abstract.Handlers
 
             return Task.FromResult(PagedList.Build(query, command));
         }
-       
+
         public async Task HandleAsync(Command.Delete<App> command)
         {
             await this.DeleteAsync<App>(command.Id);
+        }
+
+        private Task<App> FindAppAsync(App app)
+        {
+            var oldApp = this._storage.AsQueryable<App>()
+                                   .FirstOrDefault(s => s.Name == app.Name &&
+                                                        s.ClusterId == app.ClusterId &&
+                                                        s.Id != app.Id);
+            return Task.FromResult(oldApp);
         }
     }
 }

@@ -60,5 +60,15 @@ namespace SAE.CommonComponent.Application.Domains
         {
             this.Apply<AppEvent.ChangeStatus>(command);
         }
+
+        public async Task NameExistAsync(Func<App, Task<App>> provider)
+        {
+            var app = await provider.Invoke(this);
+            if (app == null)
+            {
+                return;
+            }
+            throw new SAEException(StatusCodes.ResourcesExist, $"{nameof(App)} name exist");
+        }
     }
 }
