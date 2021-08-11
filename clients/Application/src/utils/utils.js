@@ -3,12 +3,18 @@ import { Modal, Switch } from "antd";
 import { useModel } from 'umi';
 import moment from "moment";
 
+export const regex = {
+  id: (path) => {
+    return RegExp("^"+path.replace('/', '\\/') + '([\\w-\\.]+)$');
+  }
+}
+
 export const Format = {
   status: (status, props) => {
     return (<Switch checkedChildren="Enable" unCheckedChildren="Disable" checked={status == 1} {...props} />);
   },
-  date: (date, props) => {
-    return moment(date).format('YYYY-MM-DD hh:mm:ss');
+  date: (date, props) => {
+    return moment(date).format('YYYY-MM-DD hh:mm:ss');
   },
   scope: (data, props) => {
     const { scope } = useModel('scope', model => ({ scope: model.state, load: model.load }));

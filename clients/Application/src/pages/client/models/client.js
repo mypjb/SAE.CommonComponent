@@ -1,5 +1,5 @@
 import request from "../service";
-import { defaultModel, parsingPayload } from '@/utils/utils'
+import { defaultModel, parsingPayload,regex } from '@/utils/utils'
 
 export default {
   state: {
@@ -9,11 +9,11 @@ export default {
     ...defaultModel.reducers
   },
   effects: {
-    ...defaultModel.effects({ request, name: "app" }),
+    ...defaultModel.effects({ request, name: "client" }),
     *refreshSecret({ payload }, { call, put }) {
 
       const { callback, data } = parsingPayload(payload);
-
+      debugger;
       const stream = yield call(request.refreshSecret, data);
       const blob = new Blob([stream]);
       const objectURL = URL.createObjectURL(blob);
@@ -28,10 +28,14 @@ export default {
   },
   subscriptions: {
     setup({ dispatch, history }) {
+      const idRegex = regex.id('/client/');
       history.listen(({ pathname }) => {
-        if (pathname === '/') {
+        if (idRegex.test(pathname)) {
           dispatch({
-            type: 'paging',
+            type: 'search',
+            payload:{
+              appId:idRegex.exec(pathname)[1]
+            }
           });
         }
       });

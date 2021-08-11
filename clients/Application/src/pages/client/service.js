@@ -1,10 +1,10 @@
 import { request } from "umi";
 import service from "@/utils/service";
 
-const httpClient = service('app');
+const httpClient = service('client');
 
 httpClient.refreshSecret = async function (data) {
-    return request('/app/refresh/' + data, {
+    return request('/client/refresh/' + data, {
         method: "put"
     });
 }
