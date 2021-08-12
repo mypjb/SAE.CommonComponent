@@ -12,12 +12,24 @@ export default defineConfig({
             component: 'cluster'
         },
         {
-            path: "/cluster/:id",
+            path: "/cluster/app/:id",
             component: "app"
         },
         {
-            path: "/client/:id",
+            path: "/cluster/app/client/:id",
             component: "client"
+        },
+        {
+            path: "/cluster/config/:id",
+            component: "config"
+        },
+        {
+            path:"/cluster/app/config/:id",
+            component:"appConfig"
+        },
+        {
+            path: "/template",
+            component: "template"
         }
     ]
 });

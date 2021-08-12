@@ -83,7 +83,7 @@ export default connect(({ cluster }) => (
           <span>
             <Button type='link' onClick={handleEdit.bind(null, row)} style={{ marginRight: 16 }}>Edit</Button>
             <Button type='link' onClick={handleDelete.bind(null, row)}>Delete</Button>
-            <Link to={`/cluster/${row.id}`} >
+            <Link to={`/cluster/app/${row.id}`} >
               <Button type='link'>App Manage</Button>
             </Link>
             <Link to={`/cluster/config/${row.id}`} >

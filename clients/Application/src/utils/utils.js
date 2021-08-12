@@ -3,9 +3,10 @@ import { Modal, Switch } from "antd";
 import { useModel } from 'umi';
 import moment from "moment";
 
+
 export const regex = {
   id: (path) => {
-    return RegExp("^"+path.replace('/', '\\/') + '([\\w-\\.]+)$');
+    return RegExp("^" + path.replace('/', '\\/') + '([\\w-\\.]+)$');
   }
 }
 
@@ -24,6 +25,7 @@ export const Format = {
     return first ? first.name : data;
   }
 }
+
 const S4 = () => {
   return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
 

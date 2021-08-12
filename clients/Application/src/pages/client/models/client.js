@@ -11,9 +11,7 @@ export default {
   effects: {
     ...defaultModel.effects({ request, name: "client" }),
     *refreshSecret({ payload }, { call, put }) {
-
       const { callback, data } = parsingPayload(payload);
-      debugger;
       const stream = yield call(request.refreshSecret, data);
       const blob = new Blob([stream]);
       const objectURL = URL.createObjectURL(blob);
@@ -28,7 +26,7 @@ export default {
   },
   subscriptions: {
     setup({ dispatch, history }) {
-      const idRegex = regex.id('/client/');
+      const idRegex = regex.id('/cluster/app/client/');
       history.listen(({ pathname }) => {
         if (idRegex.test(pathname)) {
           dispatch({

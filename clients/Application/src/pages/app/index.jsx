@@ -116,10 +116,10 @@ export default connect(({ app }) => (
             <Button type='link' onClick={handlePublish.bind(row, row)}>Publish</Button>
             <Button type='link' onClick={handleEdit.bind(row, row)} style={{ marginRight: 16 }}>Edit</Button>
             <Button type='link' onClick={handleDelete.bind(row, row)}>Delete</Button>
-            <Link to={`/client/${row.id}`} >
+            <Link to={`/cluster/app/client/${row.id}`} >
               <Button type='link'>Client Manage</Button>
             </Link>
-            <Link to={`/client/${row.id}`} >
+            <Link to={`/cluster/app/config/${row.id}`} >
               <Button type='link'>Config Manage</Button>
             </Link>
           </span>
