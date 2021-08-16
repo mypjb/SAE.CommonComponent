@@ -64,7 +64,7 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
 
             appConfigs.ForEach(pc =>
             {
-                if(this._storage.AsQueryable<AppConfigDto>()
+                if (this._storage.AsQueryable<AppConfigDto>()
                             .Where(s => s.AppId == pc.AppId &&
                                         s.EnvironmentId == pc.EnvironmentId &&
                                         s.Alias == pc.Alias)
@@ -148,13 +148,13 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
         {
             var tuple = await this.CombinationConfigAsync(command);
 
-            var projectData = this._storage.AsQueryable<AppConfigData>()
+            var appConfigData = this._storage.AsQueryable<AppConfigData>()
                                            .FirstOrDefault(s => s.AppId == command.Id &&
                                                            s.EnvironmentId == command.EnvironmentId);
 
-            if (projectData == null)
+            if (appConfigData == null)
             {
-                projectData = new AppConfigData(new AppConfigDataEvent.Create
+                appConfigData = new AppConfigData(new AppConfigDataEvent.Create
                 {
                     AppId = command.Id,
                     EnvironmentId = command.EnvironmentId,
@@ -164,24 +164,59 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
             }
             else
             {
-                projectData = await this._documentStore.FindAsync<AppConfigData>(projectData.Id);
-                projectData.Change(new AppConfigDataEvent.Publish
+                appConfigData = await this._documentStore.FindAsync<AppConfigData>(appConfigData.Id);
+                appConfigData.Change(new AppConfigDataEvent.Publish
                 {
                     Data = tuple.Item2.ToJsonString(),
                     PublicData = tuple.Item1.ToJsonString()
                 });
             }
 
-            await this._documentStore.SaveAsync(projectData);
+            await this._documentStore.SaveAsync(appConfigData);
         }
 
         public async Task<AppConfigDataPreviewDto> HandleAsync(AppConfigCommand.Preview command)
         {
-            var tuple = await this.CombinationConfigAsync(command);
+            var appConfigs = this._storage.AsQueryable<AppConfigDto>()
+                                          .Where(s => s.AppId == command.Id &&
+                                                 s.EnvironmentId == command.EnvironmentId)
+                                          .ToArray();
+
+            var configIds = appConfigs.Select(p => p.ConfigId).ToArray();
+
+            var configs = this._storage.AsQueryable<ConfigDto>()
+                                       .Where(s => configIds.Contains(s.Id))
+                                       .ToArray();
+
+            var data = new Dictionary<string, object>();
+
+            foreach (var appConfig in appConfigs.Where(s => configs.Any(c => c.Id == s.ConfigId))
+                                                                .ToArray())
+            {
+                var config = configs.FirstOrDefault(s => s.Id == appConfig.ConfigId);
+
+                var key = appConfig.Alias;
+
+                if (data.ContainsKey(key))
+                {
+
+                    key += "_";
+                    data[key] = config?.Content.ToObject<object>();
+                }
+                else
+                {
+                    data[key] = config?.Content.ToObject<object>();
+                }
+            }
+
+            var appData = this._storage.AsQueryable<AppConfigData>()
+                                           .FirstOrDefault(s => s.AppId == command.Id &&
+                                                                s.EnvironmentId == command.EnvironmentId);
+
             return new AppConfigDataPreviewDto
             {
-                Public = tuple.Item1,
-                Private = tuple.Item2
+                Preview = data,
+                Current = appData.Data
             };
         }
 
@@ -189,14 +224,13 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
 
         private async Task<Tuple<IDictionary<string, object>, IDictionary<string, object>>> CombinationConfigAsync(AppConfigCommand.Publish command)
         {
-            var project = await this.FindAsync(command.Id);
 
-            var projectConfigs = this._storage.AsQueryable<AppConfigDto>()
+            var appConfigs = this._storage.AsQueryable<AppConfigDto>()
                                           .Where(s => s.AppId == command.Id &&
                                                  s.EnvironmentId == command.EnvironmentId)
                                           .ToArray();
 
-            var configIds = projectConfigs.Select(p => p.ConfigId).ToArray();
+            var configIds = appConfigs.Select(p => p.ConfigId).ToArray();
 
             var configs = this._storage.AsQueryable<ConfigDto>()
                                        .Where(s => configIds.Contains(s.Id))
@@ -206,12 +240,12 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
 
             var publicData = new Dictionary<string, object>();
 
-            foreach (var projectConfig in projectConfigs.Where(s => configs.Any(c => c.Id == s.ConfigId))
+            foreach (var appConfig in appConfigs.Where(s => configs.Any(c => c.Id == s.ConfigId))
                                                                 .ToArray())
             {
-                var config = configs.FirstOrDefault(s => s.Id == projectConfig.ConfigId);
+                var config = configs.FirstOrDefault(s => s.Id == appConfig.ConfigId);
 
-                var key = projectConfig.Alias;
+                var key = appConfig.Alias;
 
                 if (privateData.ContainsKey(key))
                 {
@@ -223,7 +257,7 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
                     privateData[key] = config?.Content.ToObject<object>();
                 }
 
-                if (!projectConfig.Private)
+                if (!appConfig.Private)
                 {
                     publicData[key] = privateData[key];
                 }

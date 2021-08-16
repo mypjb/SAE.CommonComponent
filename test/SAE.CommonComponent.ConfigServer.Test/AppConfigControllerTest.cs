@@ -52,6 +52,11 @@ namespace SAE.CommonComponent.ConfigServer.Test
                 {
                     return this._appControllerTest.ServiceProvider.GetServices<ICommandHandler<Command.Find<AppDto>, AppDto>>();
                 });
+
+                services.AddSingleton(p =>
+                {
+                    return this._appControllerTest.ServiceProvider.GetServices<ICommandHandler<Command.Find<AppDto>, AppDto>>();
+                });
             });
         }
 
@@ -161,13 +166,9 @@ namespace SAE.CommonComponent.ConfigServer.Test
             var responseMessage = await this.HttpClient.SendAsync(requestMessage);
 
             var projectPreview = await responseMessage.AsAsync<AppConfigDataPreviewDto>();
-            this.WriteLine(new
-            {
-                Source = new { Public = publicConfig, Private = config },
-                New = projectPreview
-            });
-            Assert.Contains(config.Content, projectPreview.Private.ToJsonString());
-            Assert.Contains(publicConfig.Content, projectPreview.Public.ToJsonString());
+            this.WriteLine(projectPreview);
+            Assert.Contains(config.Content, projectPreview.Current.ToJsonString());
+            Assert.Contains(publicConfig.Content, projectPreview.Current.ToJsonString());
         }
 
     }

@@ -79,7 +79,7 @@ namespace SAE.CommonComponent.InitializeData
                 Id = appDto.Id,
                 EnvironmentId = envId
             });
-            var appConfig = appPreviewDto.Private as IDictionary<string, object>;
+            var appConfig = appPreviewDto.Current as IDictionary<string, object>;
             IEnumerable<KeyValuePair<string, object>> siteConfigDatas = appConfig.Where(s => s.Key.Equals(SiteConfig.Option, StringComparison.OrdinalIgnoreCase));
             if (siteConfigDatas.Any())
             {

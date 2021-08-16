@@ -70,13 +70,13 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
             return data;
         }
 
-        [HttpGet("paging")]
+        [HttpGet("{action}")]
         public async Task<object> Paging([FromQuery] AppConfigCommand.Query command)
         {
             return await this._mediator.SendAsync<IPagedList<AppConfigDto>>(command);
         }
 
-        [HttpGet("reference/{action}")]
+        [HttpGet("reference/paging")]
         public async Task<object> ConfigPaging([FromQuery] AppConfigCommand.Query command)
         {
             return await this._mediator.SendAsync<IPagedList<ConfigDto>>(command);
