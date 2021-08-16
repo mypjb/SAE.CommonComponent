@@ -8,22 +8,35 @@ const { Option } = Select;
 
 export default (props) => {
 
-    const { model } = props;
-
+    const { appId } = props;
     const { scope } = useModel('scope', model => ({ scope: model.state, load: model.load }));
 
     const [form] = Form.useForm();
 
-    const [handleSave] = defaultFormBuild({ ...props, form, dispatchType: "app/edit" });
+    const [handleSave] = defaultFormBuild({ ...props, form, dispatchType: "client/add" });
 
     const scopeOptions = scope.map((val) => {
         return (<Option value={val.id}>{val.name}</Option>);
     });
 
-    form.setFieldsValue(model);
+    const defaultModel = {
+        id: guid(),
+        secret: guid(),
+        appId: appId,
+        endpoint: {
+            redirectUris: [""],
+            postLogoutRedirectUris: [""]
+        }
+    };
 
-    return (<Form form={form} onFinish={handleSave} size='middl' >
-        <Form.Item name="id" label="id" rules={[{ required: true }]} hidden>
+    return (<Form form={form} onFinish={handleSave} size='middl' initialValues={defaultModel}>
+        <Form.Item name='appId' label="appId" rules={[{ required: true }]} hidden>
+            <Input />
+        </Form.Item>
+        <Form.Item name="id" label="id" rules={[{ required: true }]}>
+            <Input />
+        </Form.Item>
+        <Form.Item name="secret" label="secret" rules={[{ required: true }]}>
             <Input />
         </Form.Item>
         <Form.Item name="name" label="name" rules={[{ required: true }]}>
