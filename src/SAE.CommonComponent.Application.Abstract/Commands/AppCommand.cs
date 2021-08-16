@@ -19,7 +19,6 @@ namespace SAE.CommonComponent.Application.Commands
         }
         public class Change: Create
         {
-            public string Id { get; set; }
         }
 
         public class ChangeStatus
