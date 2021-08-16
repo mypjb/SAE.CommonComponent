@@ -6,7 +6,7 @@ import AddForm from './components/AddForm';
 import EditForm from './components/EditForm';
 import { defaultOperation, defaultDispatchType } from '@/utils/utils';
 import PagingTable from '@/components/PagingTable';
-      // import Preview from '../components/Preview';
+import Preview from './components/Preview';
 
 const { Search } = Input;
 export default connect(({ app }) => (
@@ -20,13 +20,6 @@ export default connect(({ app }) => (
     const environments = useModel("environment", model => (model.state));
 
     const [modal, contextHolder] = Modal.useModal();
-
-    useEffect(() => {
-      props.dispatch({
-        type: dispatchType.search,
-        payload: props.match.params
-      });
-    }, []);
 
     const handleDelete = (row) => {
       const id = row.id;
@@ -75,13 +68,13 @@ export default connect(({ app }) => (
     }
 
     const handlePreview = (row) => {
-      // modal.confirm({
-      //   title: "Cat app config data",
-      //   icon: (<></>),
-      //   width:"80%",
-      //   closable: false,
-      //   content: (<Preview id={row.id} dispatch={dispatch}></Preview>)
-      // });
+      modal.confirm({
+        title: "Cat app config data",
+        icon: (<></>),
+        width:"80%",
+        closable: false,
+        content: (<Preview id={row.id} dispatch={dispatch}></Preview>)
+      });
     }
 
 

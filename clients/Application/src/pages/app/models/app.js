@@ -38,7 +38,7 @@ export default {
           dispatch({
             type: 'search',
             payload: {
-              appId: idRegex.exec(pathname)[1]
+              clusterId: idRegex.exec(pathname)[1]
             }
           });
         }

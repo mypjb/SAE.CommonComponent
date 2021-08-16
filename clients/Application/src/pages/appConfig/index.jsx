@@ -6,6 +6,7 @@ import ReferenceTable from './components/ReferenceTable';
 import EditConfig from './components/EditConfig';
 import PagingTable from '@/components/PagingTable';
 import { defaultOperation, defaultDispatchType } from '@/utils/utils';
+import { useState } from 'react';
 
 const { Search } = Input;
 
@@ -17,27 +18,25 @@ export default connect(({ appConfig }) => (
 
     const { dispatch, appConfig, match } = props;
 
+    const appId = match.params.id;
+
     const [modal, contextHolder] = Modal.useModal();
 
     const { environmentData } = useModel("environment", model => ({ environmentData: model.state }));
 
     const environmentOptions = environmentData.map(data => <Option value={data.id} data={data}>{data.name}</Option>);
 
-    const defaultEnvId = environmentData.length ? environmentData[0].id : "";
+    const environmentId = environmentData.length ? environmentData[0].id : "";
 
     const dispatchType = defaultDispatchType("appConfig");
 
+    const [state, setState] = useState({ environmentId, appId });
+
     useEffect(() => {
-      if (defaultEnvId) {
-        dispatch({
-          type: dispatchType.search,
-          payload: {
-            appId: match.params.id,
-            environmentId: defaultEnvId
-          }
-        });
+      if (environmentId) {
+        handleSearch({ envId: environmentId });
       }
-    }, [defaultEnvId]);
+    }, [appId, environmentId]);
 
 
     let ids = [];
@@ -55,18 +54,32 @@ export default connect(({ appConfig }) => (
     }
 
     const handleReference = () => {
-      defaultOperation.add({ dispatch, element: ReferenceTable, ...match.params, modalProps: { width: "80%" } }, modal);
+      defaultOperation.add({
+        dispatch,
+        element: ReferenceTable,
+        appId,
+        modalProps: { width: "80%" }
+      }, modal);
     };
 
 
     const handleEdit = (row) => {
-      defaultOperation.edit({ dispatch, type: dispatchType.find, data: row.id, element: EditConfig });
+      defaultOperation.edit({
+        dispatch,
+        type: dispatchType.find,
+        data: row.id,
+        element: EditConfig
+      });
     }
 
-    const handleSearch = (keys) => {
+    const handleSearch = ({ envId }) => {
+      setState({
+        ...state,
+        environmentId: envId
+      });
       dispatch({
         type: dispatchType.search,
-        payload: { ...keys, ...match.params },
+        payload: { ...state, environmentId: envId },
       });
     }
 
@@ -109,7 +122,7 @@ export default connect(({ appConfig }) => (
               <Button type="primary" onClick={handleDelete}>Delete</Button>
             </Col>
             <Col span={2}>
-              <Select style={{ width: '100%' }} defaultValue={defaultEnvId} onChange={(environmentId) => handleSearch({ environmentId })}>
+              <Select style={{ width: '100%' }} value={state.environmentId} onChange={(envId) => handleSearch({ envId })}>
                 {environmentOptions}
               </Select>
             </Col>
@@ -121,7 +134,7 @@ export default connect(({ appConfig }) => (
             {...appConfig}
             dispatchType={dispatchType.paging}
             type='appConfig/paging'
-            rowKey={columns[0].key}
+            rowKey='id'
             columns={columns}
             rowSelection={rowSelectOption} />
         </div>

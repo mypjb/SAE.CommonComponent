@@ -5,14 +5,14 @@ import { request } from "umi";
 const httpClient = service('cluster/app');
 
 httpClient.publish = async function (data) {
-    return request(`/cluster/app/publish`, {
+    return request(`/app/config/publish`, {
         method: "post",
         data
     });
 }
 
 httpClient.preview = async function (params) {
-    return request(`/cluster/app/preview`, {
+    return request(`/app/config/preview`, {
         method: "get",
         params
     });
