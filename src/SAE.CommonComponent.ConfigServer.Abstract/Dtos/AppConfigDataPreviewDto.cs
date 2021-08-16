@@ -11,10 +11,10 @@ namespace SAE.CommonComponent.ConfigServer.Dtos
         /// <summary>
         /// Public data
         /// </summary>
-        public object Public { get; set; }
+        public object Preview { get; set; }
         /// <summary>
         /// Private data
         /// </summary>
-        public object Private { get; set; }
+        public object Current { get; set; }
     }
 }
