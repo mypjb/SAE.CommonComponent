@@ -29,7 +29,6 @@ export default (props) => {
         pageSize,
         ...state.params,
         callback: (data) => {
-          console.log({ state, data });
           setState({ ...data, params: state.params });
         }
       }
@@ -100,6 +99,7 @@ export default (props) => {
         {...state}
         handleSkipPage={handleSkipPage}
         columns={columns}
-        rowSelection={rowSelectionOption} />
+        rowSelection={rowSelectionOption}
+        rowKey='id' />
     </div>);
 };
