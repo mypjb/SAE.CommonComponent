@@ -24,9 +24,7 @@ export default {
 
       const previewData = yield call(request.preview, data);
 
-      const appData = yield call(request.appConfig, data);
-
-      callback({ preview: previewData, current: appData });
+      callback(previewData);
     }
   },
   subscriptions: {
