@@ -1,6 +1,5 @@
 ﻿using SAE.CommonComponent.ConfigServer.Commands;
-using SAE.CommonComponent.ConfigServer.Events;
-using SAE.CommonComponent.ConfigServer.Models;
+using SAE.CommonComponent.ConfigServer.Dtos;
 using SAE.CommonComponent.ConfigServer.Test.Models;
 using SAE.CommonLibrary;
 using SAE.CommonLibrary.Extension;
@@ -19,11 +18,14 @@ namespace SAE.CommonComponent.ConfigServer.Test
         {
         }
 
+        internal TemplateControllerTest(ITestOutputHelper output, HttpClient httpClient) : base(output, httpClient)
+        {
+        }
 
         [Fact]
-        public async Task<Template> Add()
+        public async Task<TemplateDto> Add()
         {
-            var command = new TemplateCreateCommand
+            var command = new TemplateCommand.Create
             {
                 Name = this.GetRandom(),
                 Format = this.GetConfig()
@@ -31,7 +33,7 @@ namespace SAE.CommonComponent.ConfigServer.Test
             var message = new HttpRequestMessage(HttpMethod.Post, API);
             message.AddJsonContent(command);
             var responseMessage = await this.HttpClient.SendAsync(message);
-            var id = await responseMessage.AsResult<string>();
+            var id = await responseMessage.AsAsync<string>();
             var template = await this.Get(id);
             Assert.Equal(command.Name, template.Name);
             Assert.Equal(command.Format, template.Format);
@@ -44,7 +46,7 @@ namespace SAE.CommonComponent.ConfigServer.Test
         {
             var template=await this.Add();
             var message = new HttpRequestMessage(HttpMethod.Put, API);
-            var command = new TemplateChangeCommand
+            var command = new TemplateCommand.Change
             {
                 Id = template.Id,
                 Format = this.GetConfig(),
@@ -52,7 +54,7 @@ namespace SAE.CommonComponent.ConfigServer.Test
             };
             message.AddJsonContent(command);
             var responseMessage= await this.HttpClient.SendAsync(message);
-            await responseMessage.AsResult();
+            responseMessage.EnsureSuccessStatusCode();
             var newTemplate= await this.Get(template.Id);
             Assert.NotEqual(command.Name, template.Name);
             Assert.NotEqual(command.Format, template.Format);
@@ -66,16 +68,18 @@ namespace SAE.CommonComponent.ConfigServer.Test
             var template = await this.Add();
             var message = new HttpRequestMessage(HttpMethod.Delete, $"{API}/{template.Id}");
             var responseMessage = await this.HttpClient.SendAsync(message);
-            await responseMessage.AsResult();
-            var exception= await Assert.ThrowsAsync<SaeException>(()=> this.Get(template.Id));
-            Assert.Equal(StatusCode.ResourcesNotExist, exception.Code);
+            responseMessage.EnsureSuccessStatusCode();
+            var exception= await Assert.ThrowsAsync<SAEException>(()=> this.Get(template.Id));
+            Assert.Equal((int)StatusCodes.ResourcesNotExist, exception.Code);
         }
 
-        private async Task<Template> Get(string id)
+        private async Task<TemplateDto> Get(string id)
         {
             var message = new HttpRequestMessage(HttpMethod.Get, $"{API}/{id}");
             var responseMessage = await this.HttpClient.SendAsync(message);
-            return await responseMessage.AsResult<Template>();
+
+            return await responseMessage.AsAsync<TemplateDto>();
+
         }
 
         private string GetConfig()

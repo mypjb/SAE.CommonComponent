@@ -1,0 +1,26 @@
+﻿{
+  "siteConfig": {
+    "oauth": {
+      "appId": "localhost.dev",
+      "scope": "api",
+      "authority": "http://localhost:8080",
+      "redirectUris": [ "http://localhost:8000/oauth/signin-oidc" ],
+      "postLogoutRedirectUris": [ "http://localhost:8000/oauth/signout-callback-oidc" ]
+    },
+    "basicInfo": {
+      "name": "master.dev"
+    },
+    "url": {
+      "host": "client.dev.com",
+      "signIn": "http://master.client.dev.com/identity/login",
+      "oauth": "http://master.client.dev.com/oauth"
+    },
+    "api": {
+      "host": "http://localhost:8080",
+      "menu": "http://localhost:8080/menu/tree",
+      "app": "http://localhost:8080/plugin/list",
+      "config": "http://localhost:8080/app/config?appid=localhost.dev&env=Development",
+      "login": "http://localhost:8080/account/login"
+    }
+  }
+}

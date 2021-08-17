@@ -1,0 +1,13 @@
+FROM mypjb/dotnet-core-aspnet:5.0
+
+ARG MAIN_PROGRAM
+
+ENV PROGRAM=${MAIN_PROGRAM}
+
+WORKDIR /app
+
+COPY . .
+
+EXPOSE 80
+
+CMD dotnet $PROGRAM

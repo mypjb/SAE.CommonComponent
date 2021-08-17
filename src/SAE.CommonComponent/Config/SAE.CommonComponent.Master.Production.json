@@ -1,0 +1,63 @@
+{
+  "siteConfig": {
+    "oauth": {
+      "appId": "localhost.test",
+      "scope": "api",
+      "authority": "http://oauth.sae.com",
+      "redirectUris": [ "http://master.client.sae.com/oauth/signin-oidc" ],
+      "postLogoutRedirectUris": [ "http://master.client.sae.com/oauth/signout-callback-oidc" ]
+    },
+    "basicInfo": {
+      "name": "master.test"
+    },
+    "url": {
+      "host": "client.sae.com",
+      "signIn": "http://master.client.sae.com/identity/login",
+      "oauth": "http://master.client.sae.com/oauth"
+    },
+    "api": {
+      "host": "http://api.sae.com",
+      "menu": "http://api.sae.com/menu/tree",
+      "app": "http://api.sae.com/plugin/list",
+      "config": "http://api.sae.com/app/config?appid=localhost.test&env=Production",
+      "login": "http://oauth.sae.com/account/login"
+    }
+  },
+  "database": [
+    {
+      "Name": "default",
+      "Provider": "mysql",
+      "ConnectionString": "Data Source=mysql.db.lass.net;Database=SAE;User ID=root;Password=Aa123456;pooling=true;port=3306;sslmode=none;CharSet=utf8;allowPublicKeyRetrieval=true"
+    }
+  ],
+  "Nlog": {
+    "autoReload": "true",
+    "internalLogLevel": "Warn",
+    "internalLogFile": "logs/internal-nlog.log",
+    "targets": {
+      "FileTarget": {
+        "type": "File",
+        "fileName": "logs/${shortdate}.log",
+        "layout": "${level}: ${logger}[${threadid}] ${longdate}${newline}        ${message} ${exception:message,stacktrace}",
+        "MaxArchiveFiles": "10"
+      }
+    },
+    "rules": [
+      {
+        "logger": "*",
+        "minlevel": "Trace",
+        "writeTo": "FileTarget"
+      }
+    ]
+  },
+  "redis": {
+    "connection": "redis.cache.lass.net:6379,allowadmin=true,syncTimeout=5000,password=Aa123456",
+    "db": 1
+  },
+  //"plugin": { "path": "../../../../../plugin" },
+  "plugin": { "path": "" },
+  "mongodb": {
+    "connection": "mongodb://root:Aa123456@mongo.db.lass.net:27017/",
+    "db": "sae"
+  }
+}

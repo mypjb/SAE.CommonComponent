@@ -1,0 +1,64 @@
+{
+  "siteConfig": {
+    "oauth": {
+      "appId": "localhost.dev",
+      "scope": "api",
+      "authority": "http://localhost:8080",
+      "redirectUris": [ "http://localhost:8000/oauth/signin-oidc" ],
+      "postLogoutRedirectUris": [ "http://localhost:8000/oauth/signout-callback-oidc" ]
+    },
+    "basicInfo": {
+      "name": "master.dev"
+    },
+    "url": {
+      "host": "client.dev.com",
+      "signIn": "http://master.client.sae.com/identity/login",
+      "oauth": "http://master.client.sae.com/oauth"
+    },
+    "api": {
+      "host": "http://localhost:8080",
+      "menu": "http://localhost:8080/menu/tree",
+      "app": "http://localhost:8080/plugin/list",
+      "config": "http://localhost:8080/app/config?appid=localhost.dev&env=Development",
+      "login": "http://localhost:8080/account/login"
+    }
+  },
+  "Nlog": {
+    "autoReload": "true",
+    "internalLogLevel": "Warn",
+    "internalLogFile": "logs/internal-nlog.log",
+    "targets": {
+      "FileTarget": {
+        "type": "File",
+        "fileName": "logs/${shortdate}.log",
+        "layout": "${level}: ${logger}[${threadid}] ${longdate}${newline}        ${message} ${exception:message,stacktrace}",
+        "MaxArchiveFiles": "10"
+      }
+    },
+    "rules": [
+      {
+        "logger": "*",
+        "minlevel": "Trace",
+        "writeTo": "FileTarget"
+      }
+    ]
+  },
+  "database": [
+    {
+      "Name": "default",
+      "Provider": "mysql",
+      "ConnectionString": "Data Source=mysql.db.lass.net;Database=SAE_DEV;User ID=root;Password=Aa123456;pooling=true;port=3306;sslmode=none;CharSet=utf8;allowPublicKeyRetrieval=true"
+    }
+  ],
+  "mongodb": {
+    "connection": "mongodb://root:Aa123456@mongo.db.lass.net:27017/",
+    "db": "sae.dev"
+  },
+  "plugin": {
+    "path": "../../../../../plugin"
+  },
+  "redis": {
+    "connection": "redis.cache.lass.net:6379,allowadmin=true,syncTimeout=5000,password=Aa123456",
+    "db": 2
+  }
+}

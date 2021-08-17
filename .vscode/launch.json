@@ -1,0 +1,76 @@
+{
+    // 使用 IntelliSense 了解相关属性。 
+    // 悬停以查看现有属性的描述。
+    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Master",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "masterBuild",
+            "program": "${workspaceFolder}/src/SAE.CommonComponent.Master/bin/Debug/netcoreapp3.1/SAE.CommonComponent.Master.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/src/SAE.CommonComponent.Master",
+            "stopAtEntry": false,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "^\\s*Now listening on:\\s+(https?://\\S+)"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            }
+        },
+        {
+            "name": "ConfigServer",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/src/SAE.CommonComponent.ConfigServer/bin/Debug/netcoreapp3.1/SAE.CommonComponent.ConfigServer.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/src/SAE.CommonComponent.ConfigServer",
+            "stopAtEntry": false,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "^\\s*Now listening on:\\s+(https?://\\S+)"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            }
+        },
+        {
+            "name": "Identity",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/src/SAE.CommonComponent.Identity/bin/Debug/netcoreapp3.1/SAE.CommonComponent.Identity.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/src/SAE.CommonComponent.Identity",
+            "stopAtEntry": false,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "^\\s*Now listening on:\\s+(https?://\\S+)"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            }
+        },
+        {
+            "name": "Routing",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/src/SAE.CommonComponent.Routing/bin/Debug/netcoreapp3.1/SAE.CommonComponent.Routing.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/src/SAE.CommonComponent.Routing",
+            "stopAtEntry": false,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "^\\s*Now listening on:\\s+(https?://\\S+)"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            }
+        }
+    ]
+}

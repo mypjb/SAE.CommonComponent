@@ -1,0 +1,8 @@
+﻿{
+  "database": [{
+      "Name": "default",
+      "Provider": "mysql",
+      "ConnectionString": "Data Source=mysql.db.lass.net;Database=SAE;User ID=root;Password=Aa123456;pooling=true;port=3306;sslmode=none;CharSet=utf8;allowPublicKeyRetrieval=true"
+    }
+  ]
+}

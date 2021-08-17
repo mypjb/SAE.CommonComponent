@@ -22,6 +22,6 @@ namespace SAE.CommonComponent.ConfigServer
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                }).UseAutofacProviderFactory();
+                }).ConfigureDefault();
     }
 }

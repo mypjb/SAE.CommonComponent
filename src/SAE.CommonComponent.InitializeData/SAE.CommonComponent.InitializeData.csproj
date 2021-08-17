@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <Version>1.0.0.0</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Properties\**" />
+    <EmbeddedResource Remove="Properties\**" />
+    <None Remove="Properties\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="siteMap.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="siteMap.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SAE.CommonLibrary.EventStore.Document" Version="2.0.4.4" />
+    <PackageReference Include="SAE.CommonLibrary.Plugin.AspNetCore" Version="2.0.4.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SAE.CommonComponent.Application.Abstract\SAE.CommonComponent.Application.Abstract.csproj" />
+    <ProjectReference Include="..\SAE.CommonComponent.Authorize.Abstract\SAE.CommonComponent.Authorize.Abstract.csproj" />
+    <ProjectReference Include="..\SAE.CommonComponent.BasicData.Abstract\SAE.CommonComponent.BasicData.Abstract.csproj" />
+    <ProjectReference Include="..\SAE.CommonComponent.ConfigServer.Abstract\SAE.CommonComponent.ConfigServer.Abstract.csproj" />
+    <ProjectReference Include="..\SAE.CommonComponent.Identity\SAE.CommonComponent.Identity.csproj" />
+    <ProjectReference Include="..\SAE.CommonComponent.PluginManagement.Abstract\SAE.CommonComponent.PluginManagement.Abstract.csproj" />
+    <ProjectReference Include="..\SAE.CommonComponent.Routing.Abstract\SAE.CommonComponent.Routing.Abstract.csproj" />
+    <ProjectReference Include="..\SAE.CommonComponent.User.Abstract\SAE.CommonComponent.User.Abstract.csproj" />
+  </ItemGroup>
+
+</Project>

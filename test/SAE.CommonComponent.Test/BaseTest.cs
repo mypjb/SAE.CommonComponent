@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using SAE.CommonLibrary;
 using SAE.CommonLibrary.Extension;
+using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using Xunit.Abstractions;
 
@@ -12,6 +14,7 @@ namespace SAE.CommonComponent.Test
     public abstract class BaseTest
     {
         protected readonly ITestOutputHelper _output;
+        public IServiceProvider ServiceProvider { get; private set; }
         protected HttpClient HttpClient
         {
             get; private set;
@@ -20,17 +23,42 @@ namespace SAE.CommonComponent.Test
         {
             _output = output;
             var host = new HostBuilder()
-                   .UseAutofacProviderFactory()
+                   .ConfigureAppConfiguration(build =>
+                   {
+                       var dict = new Dictionary<string, string>
+                        {
+                           {"SAE:CONFIG:URL", "http://localhost:8080/app/config?id=0dbbcfdf123f44baad50ac830106c87b&env=Development"},
+                           {HostDefaults.ApplicationKey,"SAE.CommonComponent.Master" }
+                        };
+                       build.AddInMemoryCollection(dict);
+                   })
                    .ConfigureWebHost(webBuilder =>
                    {
+                       webBuilder.UseEnvironment(Environments.Development);
                        this.UseStartup(webBuilder.UseTestServer());
-                   }).Start();
+                   }).ConfigureDefault()
+                   .Start();
 
-            this.UseClient(host.GetTestClient());
+            this.ServiceProvider = host.Services;
+
+            this.UseClient(host.GetTestClient().UseExceptionHandler(async response =>
+            {
+                if (response.StatusCode != System.Net.HttpStatusCode.Found)
+                {
+                    var json = await response.Content.ReadAsStringAsync();
+                    if (json.IsNullOrWhiteSpace())
+                    {
+                        throw new SAEException((int)response.StatusCode, json);
+                    }
+                    var output = json.ToObject<ErrorOutput>();
+                    throw new SAEException(output);
+                }
+            }));
         }
 
-        public BaseTest(ITestOutputHelper output, HttpClient httpClient) : this(output)
+        public BaseTest(ITestOutputHelper output, HttpClient httpClient)
         {
+            this._output = output;
             this.HttpClient = httpClient;
         }
 
@@ -53,7 +81,8 @@ namespace SAE.CommonComponent.Test
         /// <returns></returns>
         protected string GetRandom()
         {
-            return Utils.GenerateId().ToMd5(true);
+            return Utils.GenerateId().ToMd5(true).Replace("-", string.Empty);
         }
+
     }
 }

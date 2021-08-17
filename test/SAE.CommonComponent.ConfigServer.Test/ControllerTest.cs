@@ -15,6 +15,9 @@ namespace SAE.CommonComponent.ConfigServer.Test
 
         }
 
+        public ControllerTest(ITestOutputHelper output, HttpClient httpClient) : base(output, httpClient)
+        {
+        }
 
         protected override IWebHostBuilder UseStartup(IWebHostBuilder builder)
         {
