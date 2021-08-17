@@ -216,7 +216,7 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
             return new AppConfigDataPreviewDto
             {
                 Preview = data,
-                Current = appData?.Data
+                Current = appData.Data.ToObject<object>()
             };
         }
 
