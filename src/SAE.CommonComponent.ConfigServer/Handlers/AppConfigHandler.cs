@@ -194,7 +194,7 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
                                                                 .ToArray())
             {
                 var config = configs.FirstOrDefault(s => s.Id == appConfig.ConfigId);
-
+                
                 var key = appConfig.Alias;
 
                 if (data.ContainsKey(key))
@@ -216,7 +216,7 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
             return new AppConfigDataPreviewDto
             {
                 Preview = data,
-                Current = appData.Data
+                Current = appData?.Data
             };
         }
 
