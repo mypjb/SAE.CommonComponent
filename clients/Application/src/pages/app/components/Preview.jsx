@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useEffect } from 'react';
 import ReactJson from 'react-json-view';
 import { useModel } from 'umi';
+import { CloudUploadOutlined } from '@ant-design/icons'
 
 const { Option } = Select;
 
@@ -23,7 +24,7 @@ export default (props) => {
     }, []);
 
     const handlerSelect = (environmentId) => {
-        
+
         dispatch({
             type: "app/preview",
             payload: {
@@ -66,7 +67,9 @@ export default (props) => {
                     <Select value={state.environmentId} style={{ width: 200 }} onSelect={handlerSelect}>
                         {options}
                     </Select>
-                    <Button onClick={handlerPublish}>Publish</Button>
+                    <Button type="primary" onClick={handlerPublish}>
+                        <CloudUploadOutlined></CloudUploadOutlined>
+                    </Button>
                 </Col>
                 <Col span={12}>
 

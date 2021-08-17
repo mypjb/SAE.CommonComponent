@@ -65,8 +65,8 @@ export default (props) => {
       }
     },
     {
-      title: 'descriptor',
-      dataIndex: 'descriptor'
+      title: 'description',
+      dataIndex: 'description'
     },
     {
       title: 'createTime',
