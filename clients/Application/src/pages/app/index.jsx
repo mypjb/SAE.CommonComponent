@@ -17,8 +17,6 @@ export default connect(({ app }) => (
 
     const dispatchType = defaultDispatchType("app");
 
-    const environments = useModel("environment", model => (model.state));
-
     const [modal, contextHolder] = Modal.useModal();
 
     const handleDelete = (row) => {
@@ -43,36 +41,17 @@ export default connect(({ app }) => (
     }
 
     const handlePublish = (row) => {
-      let currentEnvId = environments.length ? environments[0].id : null;
-      // Modal.confirm({
-      //   title: "Please select an environment ",
-      //   destroyOnClose: true,
-      //   width: 350,
-      //   closable: false,
-      //   content: (<Select style={{ width: "100%" }} defaultValue={currentEnvId} onSelect={(id) => { currentEnvId = id }}>
-      //     {environments.map(data => <Option value={data.id} data={data}>{data.name}</Option>)}
-      //   </Select>),
-      //   onOk: (close) => {
-      //     props.dispatch({
-      //       type: "app/publish",
-      //       payload: {
-      //         data: {
-      //           id: row.id,
-      //           environmentId: currentEnvId
-      //         },
-      //         callback: close
-      //       }
-      //     });
-      //   }
-      // });
-    }
-
-    const handlePreview = (row) => {
-      modal.confirm({
-        title: "Cat app config data",
+      modal.info({
+        title: "Publish App Config",
         icon: (<></>),
-        width:"80%",
-        closable: false,
+        width: "80%",
+        closable: true,
+        cancelButtonProps: {
+          hidden: true
+        },
+        okButtonProps: {
+          hidden: true
+        },
         content: (<Preview id={row.id} dispatch={dispatch}></Preview>)
       });
     }
@@ -105,7 +84,6 @@ export default connect(({ app }) => (
         title: 'action',
         render: (text, row) => (
           <span>
-            <Button type='link' onClick={handlePreview.bind(row, row)}>Preview</Button>
             <Button type='link' onClick={handlePublish.bind(row, row)}>Publish</Button>
             <Button type='link' onClick={handleEdit.bind(row, row)} style={{ marginRight: 16 }}>Edit</Button>
             <Button type='link' onClick={handleDelete.bind(row, row)}>Delete</Button>
