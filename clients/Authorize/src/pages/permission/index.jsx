@@ -60,8 +60,8 @@ export default connect(({ permission }) => (
                 title: 'name',
                 dataIndex: 'name'
             }, {
-                title: 'flag',
-                dataIndex: 'flag'
+                title: 'path',
+                dataIndex: 'path'
             }
             , {
                 title: 'status',
@@ -71,8 +71,8 @@ export default connect(({ permission }) => (
                 }
             },
             {
-                title: 'descriptor',
-                dataIndex: 'descriptor'
+                title: 'description',
+                dataIndex: 'description'
             }, {
                 title: 'createTime',
                 dataIndex: 'createTime',

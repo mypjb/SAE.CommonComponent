@@ -20,10 +20,10 @@ export default (props) => {
             <Form.Item name="name" label="name" rules={[{ required: true }]}>
                 <Input />
             </Form.Item>
-            <Form.Item name="flag" label="flag" rules={[{ required: true }]}>
+            <Form.Item name="path" label="path" rules={[{ required: true }]}>
                 <Input />
             </Form.Item>
-            <Form.Item name="descriptor" label="descriptor" rules={[{ required: true }]}>
+            <Form.Item name="description" label="description" rules={[{ required: true }]}>
                 <Input />
             </Form.Item>
         </Form>

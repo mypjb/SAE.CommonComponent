@@ -102,8 +102,8 @@ export default connect(({ role }) => (
                 }
             },
             {
-                title: 'descriptor',
-                dataIndex: 'descriptor'
+                title: 'description',
+                dataIndex: 'description'
             }, {
                 title: 'createTime',
                 dataIndex: 'createTime',
