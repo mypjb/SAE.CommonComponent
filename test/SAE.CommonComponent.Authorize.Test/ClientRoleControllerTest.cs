@@ -16,12 +16,12 @@ using Assert = Xunit.Assert;
 
 namespace SAE.CommonComponent.Authorize.Test
 {
-    public class AppRoleControllerTest : BaseTest
+    public class ClientRoleControllerTest : BaseTest
     {
-        public const string API = "/App/Role";
+        public const string API = "/client/role";
         private readonly RoleControllerTest _roleController;
 
-        public AppRoleControllerTest(ITestOutputHelper output) : base(output)
+        public ClientRoleControllerTest(ITestOutputHelper output) : base(output)
         {
             this._roleController = new RoleControllerTest(output, this.HttpClient);
         }
@@ -33,11 +33,11 @@ namespace SAE.CommonComponent.Authorize.Test
 
         [Theory]
         [InlineData(null)]
-        public async Task<string> Reference(string appId = null)
+        public async Task<string> Reference(string clientId = null)
         {
             var command = new ClientRoleCommand.ReferenceRole()
             {
-                ClientId = appId.IsNullOrWhiteSpace() ? Guid.NewGuid().ToString("N") : appId
+                ClientId = clientId.IsNullOrWhiteSpace() ? Guid.NewGuid().ToString("N") : clientId
             };
 
             var roleDtos = new List<RoleDto>();
@@ -66,12 +66,12 @@ namespace SAE.CommonComponent.Authorize.Test
         [Fact]
         public async Task DeleteRole()
         {
-            var appId = await this.Reference();
-            var appRoles = await this.Get(appId);
+            var clientId = await this.Reference();
+            var clientRoles = await this.Get(clientId);
             var command = new ClientRoleCommand.DeleteRole
             {
-                ClientId = appId,
-                RoleIds = new[] { appRoles.First().Id }
+                ClientId = clientId,
+                RoleIds = new[] { clientRoles.First().Id }
             };
 
             var request = new HttpRequestMessage(HttpMethod.Delete, $"{API}");
@@ -83,13 +83,15 @@ namespace SAE.CommonComponent.Authorize.Test
             var roles = await this.Get(command.ClientId);
 
             Assert.True(!roles.Any(s => command.RoleIds.Contains(s.Id)));
+
+            Assert.Contains(roles, s => clientRoles.Any(cr => cr.Id == s.Id));
         }
 
 
 
         private async Task<IEnumerable<RoleDto>> Get(string id, bool referenced = true)
         {
-            var message = new HttpRequestMessage(HttpMethod.Get, $"{API}/paging?AppId={id}&referenced={referenced}&pagesize={int.MaxValue}");
+            var message = new HttpRequestMessage(HttpMethod.Get, $"{API}/paging?clientId={id}&referenced={referenced}&pagesize={int.MaxValue}");
             var responseMessage = await this.HttpClient.SendAsync(message);
             return await responseMessage.AsAsync<PagedList<RoleDto>>();
         }

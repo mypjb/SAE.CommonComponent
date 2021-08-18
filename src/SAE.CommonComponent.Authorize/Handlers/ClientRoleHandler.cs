@@ -128,7 +128,6 @@ namespace SAE.CommonComponent.Authorize.Handlers
                 return PagedList.Build(this._storage.AsQueryable<RoleDto>()
                                                     .Where(s => ids.Contains(s.Id))
                                                     .ToList(), paging);
-
             }
             else
             {

@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace SAE.CommonComponent.Authorize.Controllers
 {
     [ApiController]
-    [Route("app/role")]
+    [Route("client/role")]
     public class ClientRoleController : Controller
     {
         private readonly IMediator _mediator;
@@ -23,21 +23,21 @@ namespace SAE.CommonComponent.Authorize.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Reference(UserRoleCommand.ReferenceRole command)
+        public async Task<IActionResult> Reference(ClientRoleCommand.ReferenceRole command)
         {
             await this._mediator.SendAsync(command);
             return this.Ok();
         }
 
         [HttpDelete]
-        public async Task<IActionResult> DeleteReference(UserRoleCommand.DeleteRole command)
+        public async Task<IActionResult> DeleteReference(ClientRoleCommand.DeleteRole command)
         {
             await this._mediator.SendAsync(command);
             return this.Ok();
         }
 
         [HttpGet("{action}")]
-        public async Task<IPagedList<RoleDto>> Paging([FromQuery]UserRoleCommand.Query command)
+        public async Task<IPagedList<RoleDto>> Paging([FromQuery] ClientRoleCommand.Query command)
         {
             return await this._mediator.SendAsync<IPagedList<RoleDto>>(command);
         }

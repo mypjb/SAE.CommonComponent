@@ -46,7 +46,8 @@ namespace SAE.CommonComponent.Authorize.Test
             var command = new RoleCommand.Create
             {
                 Name = $"test_{this.GetRandom()}",
-                Description = "add Role"
+                Description = "add Role",
+                AppId=Guid.Empty.ToString("N")
             };
             var request = new HttpRequestMessage(HttpMethod.Post, $"{API}");
             request.AddJsonContent(command);

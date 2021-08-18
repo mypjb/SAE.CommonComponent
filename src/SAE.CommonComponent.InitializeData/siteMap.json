@@ -12,25 +12,19 @@
     "hidden": false
   },
   {
-    "name": "app",
-    "path": "/app",
+    "name": "application",
+    "path": "/application",
     "plugin": "Application",
-    "hidden": false
-  },
-  {
-    "name": "config",
-    "path": "/config",
     "hidden": false,
-    "plugin": "configServer",
     "items": [
       {
         "name": "template",
-        "path": "/config/template",
+        "path": "/application/template",
         "hidden": false
       },
       {
-        "name": "solution",
-        "path": "/config/solution",
+        "name": "cluster",
+        "path": "/application/cluster",
         "hidden": false
       }
     ]
@@ -45,22 +39,22 @@
     "name": "user",
     "path": "/user",
     "plugin": "user",
-    "hidden": true
+    "hidden": false
   },
   {
-    "name": "auth",
-    "path": "/auth",
+    "name": "authorize",
+    "path": "/authorize",
     "plugin": "authorize",
     "hidden": false,
     "items": [
       {
         "name": "role",
-        "path": "/auth/role",
+        "path": "/authorize/role",
         "hidden": false
       },
       {
         "name": "permission",
-        "path": "/auth/permission",
+        "path": "/authorize/permission",
         "hidden": false
       }
     ]
