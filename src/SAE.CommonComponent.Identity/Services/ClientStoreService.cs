@@ -6,6 +6,7 @@ using SAE.CommonComponent.BasicData.Commands;
 using SAE.CommonComponent.BasicData.Dtos;
 using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.EventStore.Document;
+using SAE.CommonLibrary.Extension;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +27,9 @@ namespace SAE.CommonComponent.Identity.Services
         public async Task<Client> FindClientByIdAsync(string clientId)
         {
             var client = await this._mediator.SendAsync<ClientDto>(new Command.Find<ClientDto> { Id = clientId });
+
+            Assert.Build(client)
+                  .NotNull();
 
             var dicts = await this._mediator.SendAsync<IEnumerable<DictDto>>(new DictCommand.List
             {
