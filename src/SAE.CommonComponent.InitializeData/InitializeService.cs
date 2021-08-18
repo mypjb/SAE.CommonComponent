@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json.Linq;
@@ -79,7 +81,7 @@ namespace SAE.CommonComponent.InitializeData
                 Id = appDto.Id,
                 EnvironmentId = envId
             });
-            var appConfig = appPreviewDto.Current as IDictionary<string, object>;
+            var appConfig = appPreviewDto.Current.ToJsonString().ToObject<Dictionary<string, object>>();
             IEnumerable<KeyValuePair<string, object>> siteConfigDatas = appConfig.Where(s => s.Key.Equals(SiteConfig.Option, StringComparison.OrdinalIgnoreCase));
             if (siteConfigDatas.Any())
             {
@@ -155,10 +157,11 @@ namespace SAE.CommonComponent.InitializeData
             return (token.SelectToken(first.Path) as JArray).Values<T>();
         }
 
-        public virtual async Task InitialAsync()
+        public virtual async Task InitialAsync(IApplicationBuilder app)
         {
             try
             {
+
                 var templates = await this._mediator.SendAsync<IEnumerable<TemplateDto>>(new Command.List<TemplateDto>());
                 if (templates.Any()) return;
 
@@ -218,10 +221,11 @@ namespace SAE.CommonComponent.InitializeData
             }
             catch (Exception ex)
             {
-                this._logging.Error(ex.Message, ex);
-                throw ex;
+                app.Run(async (ctx) =>
+                {
+                    await ctx.Response.WriteAsync($"Initial fail '{ex.Message}'.Please contact the administrator", Encoding.UTF8);
+                });
             }
-
         }
 
         public virtual async Task BasicDataAsync()

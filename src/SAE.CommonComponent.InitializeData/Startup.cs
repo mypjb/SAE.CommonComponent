@@ -23,7 +23,7 @@ namespace SAE.CommonComponent.InitializeData
         private const string KeyPath = "keys";
         public override void PluginConfigure(IApplicationBuilder app)
         {
-            
+
             //if (File.Exists(KeyPath))
             //{
             //    return;
@@ -37,21 +37,13 @@ namespace SAE.CommonComponent.InitializeData
 
             if (hostEnvironment.IsDevelopment())
             {
-                initializeService= new DevelopmentInitializeService(provider);
+                initializeService = new DevelopmentInitializeService(provider);
             }
             else
             {
-                initializeService= new InitializeService(provider);
+                initializeService = new InitializeService(provider);
             }
-            try
-            {
-                initializeService.InitialAsync();
-            }catch(Exception ex)
-            {
-                app.ApplicationServices.GetService<ILogging<IInitializeService>>()
-                                       .Error(ex,"Initial fail");
-                throw ex;
-            }
+            initializeService.InitialAsync(app);
             //var key = Guid.NewGuid().ToString("N");
 
             //File.AppendAllText(KeyPath, key);
@@ -60,7 +52,7 @@ namespace SAE.CommonComponent.InitializeData
 
         public override void PluginConfigureServices(IServiceCollection services)
         {
-            
+
         }
     }
 }

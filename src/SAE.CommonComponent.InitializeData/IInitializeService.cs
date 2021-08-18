@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Builder;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -7,7 +8,7 @@ namespace SAE.CommonComponent.InitializeData
 {
     public interface IInitializeService
     {
-        Task InitialAsync();
+        Task InitialAsync(IApplicationBuilder app);
         Task BasicDataAsync();
         Task ApplicationAsync();
         Task AuthorizeAsync();
