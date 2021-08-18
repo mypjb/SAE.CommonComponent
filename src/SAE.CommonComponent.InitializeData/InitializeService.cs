@@ -221,9 +221,10 @@ namespace SAE.CommonComponent.InitializeData
             }
             catch (Exception ex)
             {
+                this._logging.Error(ex, "Initial fail ");
                 app.Run(async (ctx) =>
                 {
-                    await ctx.Response.WriteAsync($"Initial fail '{ex.Message}'.Please contact the administrator", Encoding.UTF8);
+                    await ctx.Response.WriteAsync($"Initial fail '{ex.Message}'. Please contact the administrator", Encoding.UTF8);
                 });
             }
         }
@@ -406,6 +407,7 @@ namespace SAE.CommonComponent.InitializeData
 
             var clientDtos = await this._mediator.SendAsync<IPagedList<ClientDto>>(new ClientCommand.Query
             {
+                AppId= this._systemOptions.Id,
                 PageSize = int.MaxValue
             });
 
