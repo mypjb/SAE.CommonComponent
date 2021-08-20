@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "cross-env UMI_ENV=dev umi dev",
-    "build": "cross-env UMI_ENV=prod umi build",
+    "build": "umi build",
     "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'",
     "test": "umi-test",
     "test:coverage": "umi-test --coverage"
