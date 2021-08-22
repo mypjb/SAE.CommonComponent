@@ -16,6 +16,7 @@ using SAE.CommonLibrary.Extension;
 using SAE.CommonLibrary.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading.Tasks;
@@ -32,17 +33,20 @@ namespace SAE.CommonComponent.Identity.Controllers
         private readonly ILogging _logging;
         private readonly IHostEnvironment _environment;
         private readonly CookieAuthenticationOptions _cookieAuthenticationOptions;
+        private readonly IIdentityServerInteractionService _interactionService;
         public AccountController(IMediator mediator,
                                  IIdentityServerInteractionService interaction,
                                  ILogging<AccountController> logging,
                                  IHostEnvironment environment,
-                                IOptionsSnapshot<CookieAuthenticationOptions> optionsSnapshot)
+                                 IOptionsSnapshot<CookieAuthenticationOptions> optionsSnapshot,
+                                 IIdentityServerInteractionService interactionService)
         {
             this._mediator = mediator;
             this._interaction = interaction;
             this._logging = logging;
             this._environment = environment;
             this._cookieAuthenticationOptions = optionsSnapshot.Value;
+            this._interactionService = interactionService;
         }
         [Route("~/home/error")]
         [AllowAnonymous]
@@ -111,11 +115,36 @@ namespace SAE.CommonComponent.Identity.Controllers
             return await this._mediator.SendAsync<string>(command);
         }
 
-        [HttpGet, HttpPost]
-        public IActionResult Logout()
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> Logout([FromQuery]string logoutId)
         {
-            return this.SignOut();
+
+            string redirectUrl = string.Empty;
+            if (!string.IsNullOrWhiteSpace(logoutId))
+            {
+                var context = await this._interactionService.GetLogoutContextAsync(logoutId);
+                if (context.ClientIds != null && context.ClientIds.Any())
+                {
+                    var client = await this._mediator.SendAsync<ClientDto>(new Command.Find<ClientDto> { Id = context.ClientIds.First() });
+                    redirectUrl = client.Endpoint.PostLogoutRedirectUris?.FirstOrDefault();
+                }
+                else
+                {
+                    redirectUrl = context.PostLogoutRedirectUri;
+                }
+            }
+
+            if (string.IsNullOrWhiteSpace(redirectUrl))
+            {
+                redirectUrl = "/";
+            }
+
+            await this.HttpContext.SignOutAsync();
+
+            return this.Redirect(redirectUrl);
         }
+
 
         private IDictionary<string, string> NameCollection(string query)
         {

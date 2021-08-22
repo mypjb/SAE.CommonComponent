@@ -161,9 +161,11 @@ namespace SAE.CommonComponent.InitializeData
         {
             try
             {
-
-                var templates = await this._mediator.SendAsync<IEnumerable<TemplateDto>>(new Command.List<TemplateDto>());
-                if (templates.Any()) return;
+                var dicts = await this._mediator.SendAsync<IEnumerable<DictDto>>(new DictCommand.List
+                {
+                    Type = (int)DictType.Scope
+                });
+                if (dicts.Any()) return;
 
                 var totalTime = 0d;
                 var stopwatch = new Stopwatch();
@@ -407,7 +409,7 @@ namespace SAE.CommonComponent.InitializeData
 
             var clientDtos = await this._mediator.SendAsync<IPagedList<ClientDto>>(new ClientCommand.Query
             {
-                AppId= this._systemOptions.Id,
+                AppId = this._systemOptions.Id,
                 PageSize = int.MaxValue
             });
 

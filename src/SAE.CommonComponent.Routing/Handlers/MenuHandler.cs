@@ -134,19 +134,21 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
 
             if (command.Referenced)
             {
-                var pIds = PagedList.Build(menu.PermissionIds.AsQueryable(), command);
+                var paging = PagedList.Build(menu.PermissionIds.AsQueryable(), command);
                 var permissionDtos = await this.mediator.SendAsync<IEnumerable<PermissionDto>>(new PermissionCommand.Finds
                 {
-                    Ids = pIds.ToArray()
+                    Ids = paging.ToArray()
                 });
 
-                return PagedList.Build(permissionDtos, pIds);
+                return PagedList.Build(permissionDtos, paging);
             }
             else
             {
                 return await this.mediator.SendAsync<IPagedList<PermissionDto>>(new PermissionCommand.Query
                 {
-                    IgnoreIds = menu.PermissionIds
+                    IgnoreIds = menu.PermissionIds,
+                    PageIndex = command.PageIndex,
+                    PageSize = command.PageSize
                 });
             }
         }
