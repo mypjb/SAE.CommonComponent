@@ -7,6 +7,7 @@ import AddForm from './components/AddForm';
 import EditForm from './components/EditForm';
 import PagingTable from '@/components/PagingTable';
 import { defaultDispatchType, defaultHandler, defaultOperation, Format } from '@/utils/utils';
+import RoleManage from './components/RoleManage';
 
 const { Search } = Input;
 
@@ -65,6 +66,18 @@ export default connect(({ client }) => (
             })
         }
 
+        const handleRoleManage = (client) => {
+            defaultOperation.add({
+                dispatch,
+                modalProps: {
+                    title: "Role Manage",
+                    width: "75%"
+                },
+                element: RoleManage,
+                client
+            });
+        }
+
         const columns = [
             {
                 title: 'serial number',
@@ -102,6 +115,7 @@ export default connect(({ client }) => (
                 title: 'action',
                 render: (text, row) => (
                     <span>
+                        <Button type='link' onClick={handleRoleManage.bind(row, row)}>Role Manage</Button>
                         <Button type='link' onClick={handleRefreshSecret.bind(row, row)}>Refresh Secret</Button>
                         <Button type='link' value={row.id} onClick={handleEdit.bind(row, row)} style={{ marginRight: 16 }}>Edit</Button>
                         <Button type='link' onClick={handleDelete.bind(row, { id: row.id })}>Delete</Button>
