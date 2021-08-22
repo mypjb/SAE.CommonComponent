@@ -152,14 +152,29 @@ export function useQiankunStateForSlave() {
 }
 
 export const layout = () => {
-    return {
+
+    const layoutOptions = {
         name: globalConfig.siteConfig.basicInfo.name,
         locale: true,
-        layout: 'side'
+        layout: 'side',
+
     };
+
+    if (globalConfig?.user) {
+        layoutOptions.logout = function () {
+            history.push(globalConfig.siteConfig.url.logout || "/oauth/logout");
+        }
+    }
+    return layoutOptions;
 };
 
 export const getInitialState = async () => {
-    return globalConfig;
+    const userInfo = {
+        ...(globalConfig?.user?.profile || {})
+    };
+    return {
+        ...globalConfig,
+        ...userInfo
+    };
 }
 
