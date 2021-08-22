@@ -1,29 +1,16 @@
 import FormModal from "@/components/FormModal";
-import { Modal } from "antd";
-//validator json
-export const validatorJson = (rule, value) => {
-  if (value) {
-    try {
-      eval(`(${value})`);
-    } catch (e) {
-      console.error(e);
-      return Promise.reject('this is json invalid');
-    }
+import { Modal, Switch } from "antd";
+
+
+export const Format = {
+  status: (status, props) => {
+    return (<Switch checkedChildren="Enable" unCheckedChildren="Disable" checked={status == 1} {...props} />);
+  },
+  date: (date, props) => {
+    return new Date(+new Date(new Date(date).toJSON()) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '');
   }
-  return Promise.resolve();
-};
-//handle json format
-export const handleFormat = function ({ form, fieldName }, e) {
-  const value = e.target.value;
-  if (value) {
-    try {
-      const json = eval('(' + value + ')');
-      const data = {};
-      data[fieldName] = JSON.stringify(json, null, 4);
-      form.setFieldsValue(data);
-    } catch { }
-  }
-};
+}
+
 //default state
 export const defaultState = {
   paging: {
@@ -98,12 +85,19 @@ export const defaultModel = {
         yield put({ type: "paging", payload: {} });
       },
       *delete({ payload }, { call, put }) {
-        yield call(request.delete, payload);
-        yield put({ type: 'paging' });
+        const { callback, data } = parsingPayload(payload);
+        yield call(request.delete, data);
+        yield put({ type: 'paging', payload: { callback } });
       },
       *edit({ payload }, { call, put }) {
         const { callback, data } = parsingPayload(payload);
         yield call(request.edit, data);
+        yield put({ type: "paging", payload: {} });
+        callback();
+      },
+      *status({ payload }, { call, put }) {
+        const { callback, data } = parsingPayload(payload);
+        yield call(request.status, data);
         yield put({ type: "paging", payload: {} });
         callback();
       },
@@ -128,8 +122,9 @@ export const defaultModel = {
         callback(state);
       },
       *search({ payload }, { put }) {
-        yield put({ type: "setParams", payload });
-        yield put({ type: "paging", payload: {} });
+        const { callback, data } = parsingPayload(payload);
+        yield put({ type: "setParams", payload: data });
+        yield put({ type: "paging", payload: { callback: callback } });
       },
     };
   }
@@ -188,7 +183,7 @@ export const defaultOperation = {
   add: (props, proxyModal) => {
     const { dispatch, title, element, icon, modalProps } = props;
     FormModal.confirm({
-      title: title || "Add",
+      title: "Add",
       destroyOnClose: true,
       icon: icon || (<></>),
       closable: false,

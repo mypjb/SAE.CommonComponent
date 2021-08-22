@@ -1,4 +1,4 @@
-import request from "../permissionService";
+import request from "../menuPermissionService";
 import { defaultModel } from '@/utils/utils'
 
 export default {
@@ -9,6 +9,6 @@ export default {
     ...defaultModel.reducers
   },
   effects: {
-    ...defaultModel.effects({ request, name: "permission" })
+    ...defaultModel.effects({ request, name: "menuPermission" }),
   }
 };
