@@ -29,5 +29,4 @@ export const load = async () => {
     console.log({ type: "initial", globalConfig });
     return globalConfig;
 };
-console.log({ ENV, appConfig });
 

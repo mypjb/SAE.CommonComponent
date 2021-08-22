@@ -10,7 +10,6 @@ export default ({ location }) => {
 
     const signinCallbackUrl = window.location.origin + window.location.pathname + (location.search || ('?' + location.hash.substr(1)));
 
-    console.log(signinCallbackUrl);
     const { masterState, setMasterState, masterPush } = useModel('@@initialState').initialState?.masterProps;
     const { callbackUrl } = masterState;
     const mgr = new oidc.UserManager(oidcConfig);
