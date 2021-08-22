@@ -15,7 +15,7 @@ export default (props) => {
   const [state, setState] = useState({
     ...defaultState,
     params: {
-      id: user.id,
+      userId: user.id,
       referenced: true
     },
     roleIds: []
@@ -83,7 +83,7 @@ export default (props) => {
       type: state.params.referenced ? dispatchType.delete : dispatchType.add,
       payload: {
         roleIds: state.roleIds,
-        id: user.id,
+        userId: user.id,
         callback: function () {
           handleSkipPage();
         }
