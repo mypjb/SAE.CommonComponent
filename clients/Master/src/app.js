@@ -143,21 +143,23 @@ export function useQiankunStateForSlave() {
     };
 }
 
-export const layout = () => {
+export const layout = ({ initialState }) => {
     const layoutOptions = {
-        name: globalConfig.siteConfig.basicInfo.name,
+        name: initialState.siteConfig.basicInfo.name,
         locale: true,
         layout: 'side',
 
     };
 
-    if (globalConfig?.user) {
+    if (initialState?.user) {
         layoutOptions.logout = function () {
-            history.push(globalConfig.siteConfig.url.logout || "/oauth/logout");
+            history.push(initialState.siteConfig.url.logout || "/oauth/logout");
         }
     }
     return layoutOptions;
 };
+
+
 
 const formatGlobalConfig = (data) => {
     const userInfo = {
