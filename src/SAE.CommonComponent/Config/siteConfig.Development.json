@@ -11,9 +11,10 @@
       "name": "master.dev"
     },
     "url": {
-      "host": "client.dev.com",
-      "signIn": "http://master.client.dev.com/identity/login",
-      "oauth": "http://master.client.dev.com/oauth"
+      "host": "localhost:8000",
+      "signIn": "//localhost:8000/identity/login",
+      "oauth": "//localhost:8000/oauth",
+      "signOut": "//localhost:8000/oauth/logout"
     },
     "api": {
       "host": "http://localhost:8080",
