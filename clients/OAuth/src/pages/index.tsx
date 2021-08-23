@@ -4,7 +4,10 @@ import { useModel } from 'umi';
 
 export default (props) => {
 
-  const { siteConfig } = useModel('@@initialState').initialState?.masterProps.masterState;
+  const initialState = useModel('@@initialState').initialState;
+  
+  const { siteConfig } = initialState.masterProps.masterState;
+
   const { authority, appId, redirectUris, postLogoutRedirectUris, scope } = siteConfig.oauth;
 
   const oidcConfig = {

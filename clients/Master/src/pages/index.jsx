@@ -8,8 +8,6 @@ export default ({ match }) => {
   const { apps } = initialState;
   const app = apps.find(s => (s.path == path || path.startsWith((s.path + '/'))));
 
-  console.log({ path, app, initialState });
-
   if (app) {
     return (<MicroApp name={app.name} base={app.path} autoSetLoading />)
   } else {

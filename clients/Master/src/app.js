@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { history } from 'umi';
+import { history, useModel } from 'umi';
 import { load } from '../config/appConfig'
 import indexPage from './pages/index';
 
@@ -24,7 +24,6 @@ const processingMenuData = function (menus) {
         data.routes = processingMenuData(element.items);
         list.push(data);
     }
-    console.log({ list });
     return list;
 }
 
@@ -58,20 +57,12 @@ export const qiankun = async function () {
 
     globalConfig.routes = routes;
 
-    console.log(globalConfig);
-
     return {
         // 注册子应用信息
         apps,
         routes,
-        // layout: {
-        //     name: globalConfig.siteConfig.appName,
-        //     locale: true,
-        //     layout: 'side'
-        // },
         lifeCycles: {
             afterMount: props => {
-                console.log(props);
             },
         },
         addGlobalUncaughtErrorHandler: e => console.log(e)
@@ -79,10 +70,6 @@ export const qiankun = async function () {
 
 };
 
-
-// fetch(appConfig.api.app).then(async (response) => {
-
-// });
 
 const checkLogin = (user) => {
     if (user) {
@@ -94,6 +81,8 @@ const checkLogin = (user) => {
     return false;
 }
 export function useQiankunStateForSlave() {
+
+    const { setInitialState } = useModel('@@initialState');
     const [masterState, setMasterState] = useState(globalConfig);
     const initial = (requestConfig) => {
         requestConfig.prefix = globalConfig.siteConfig.api.host;
@@ -106,7 +95,7 @@ export function useQiankunStateForSlave() {
 
             if (!checkLogin(masterState?.user)) {
                 window.sessionStorage.setItem(globalConfig.callBackUrlKey, window.location.pathname + window.location.search);
-                if (url.signIn.startsWith('http')) {
+                if (url.signIn.startsWith('http') || url.signIn.startsWith('//')) {
                     window.location.href = url.oauth;
                 } else {
                     history.push(url.oauth);
@@ -123,7 +112,6 @@ export function useQiankunStateForSlave() {
             }
             await next();
         }];
-
         requestConfig.errorConfig = {
             adaptor: function (resData, context) {
                 if (resData === context.res) {
@@ -144,7 +132,11 @@ export function useQiankunStateForSlave() {
     return {
         initial,
         masterState,
-        setMasterState,
+        setMasterState: (data) => {
+            setMasterState(data);
+            const initialData = formatGlobalConfig(data);
+            setInitialState(initialData);
+        },
         masterPush: (url) => {
             history.push(url);
         }
@@ -152,7 +144,6 @@ export function useQiankunStateForSlave() {
 }
 
 export const layout = () => {
-
     const layoutOptions = {
         name: globalConfig.siteConfig.basicInfo.name,
         locale: true,
@@ -168,13 +159,20 @@ export const layout = () => {
     return layoutOptions;
 };
 
-export const getInitialState = async () => {
+const formatGlobalConfig = (data) => {
     const userInfo = {
-        ...(globalConfig?.user?.profile || {})
+        ...(data?.user?.profile || {})
     };
     return {
-        ...globalConfig,
+        ...data,
         ...userInfo
+    };
+}
+
+export const getInitialState = async () => {
+    const data = formatGlobalConfig(globalConfig);
+    return {
+        ...data
     };
 }
 

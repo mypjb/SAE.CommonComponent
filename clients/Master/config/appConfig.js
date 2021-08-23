@@ -2,7 +2,7 @@ const ENV = process.env.UMI_ENV;
 
 const callBackUrlKey = "saeCallbackUrl";
 
-let configUrl = "http://api.sae.com/appdata/public?env=Production&appid=localhost.test.app";
+let configUrl = "http://api.sae.com/appdata/public?appid=localhost.test.app&env=Production";
 
 export const appConfig = {
     callBackUrlKey,
@@ -13,10 +13,8 @@ export const appConfig = {
     }
 };
 
-if (ENV == "prod") {
-    configUrl += "&env=Production";
-} else {
-    configUrl += "&env=Development";
+if (ENV == "dev") {
+    configUrl = "http://localhost:8080/appdata/public?appid=localhost.dev.app&env=Development";
 }
 
 export const load = async () => {
@@ -25,8 +23,7 @@ export const load = async () => {
         ...appConfig,
         ...configData
     };
-    globalConfig
-    console.log({ type: "initial", globalConfig });
+
     return globalConfig;
 };
 
