@@ -13,10 +13,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="siteMap.Development.json" />
     <None Remove="siteMap.json" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="siteMap.Development.json" />
     <EmbeddedResource Include="siteMap.json" />
   </ItemGroup>
 

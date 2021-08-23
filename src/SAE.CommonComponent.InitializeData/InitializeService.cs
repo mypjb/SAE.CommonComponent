@@ -44,6 +44,7 @@ namespace SAE.CommonComponent.InitializeData
     public class InitializeService : IInitializeService
     {
         protected const string SiteMapPath = "siteMap.json";
+        protected const string SiteMapDevelopmentPath = "siteMap.Development.json";
         protected readonly IMediator _mediator;
         protected readonly ILogging _logging;
         private readonly IServiceProvider _serviceProvider;
@@ -53,6 +54,7 @@ namespace SAE.CommonComponent.InitializeData
         private readonly IPathDescriptorProvider _pathDescriptorProvider;
         private readonly IBitmapAuthorization _bitmapAuthorization;
         private readonly SystemOptions _systemOptions;
+        private readonly IHostEnvironment _hostEnvironment;
 
         public InitializeService(IServiceProvider serviceProvider)
         {
@@ -66,7 +68,8 @@ namespace SAE.CommonComponent.InitializeData
             this._pathDescriptorProvider = serviceProvider.GetService<IPathDescriptorProvider>();
             this._bitmapAuthorization = serviceProvider.GetService<IBitmapAuthorization>();
             this._systemOptions = _configuration.GetSection(SystemOptions.Option)
-                                               .Get<SystemOptions>();
+                                                .Get<SystemOptions>();
+            this._hostEnvironment = serviceProvider.GetService<IHostEnvironment>();
         }
         /// <summary>
         /// Find app config
@@ -108,7 +111,18 @@ namespace SAE.CommonComponent.InitializeData
         {
             var assembly = Assembly.GetExecutingAssembly();
 
-            var resourceName = assembly.GetManifestResourceNames().FirstOrDefault(s => s.EndsWith(SiteMapPath));
+            var sitePath = string.Empty;
+
+            if (this._hostEnvironment.IsDevelopment())
+            {
+                sitePath = SiteMapDevelopmentPath;
+            }
+            else
+            {
+                sitePath = SiteMapPath;
+            }
+
+            var resourceName = assembly.GetManifestResourceNames().FirstOrDefault(s => s.EndsWith(sitePath));
 
             if (!resourceName.IsNullOrWhiteSpace())
             {
@@ -129,7 +143,7 @@ namespace SAE.CommonComponent.InitializeData
                 }
             }
 
-            this._logging.Error($"The assembly resource listing not find '{SiteMapPath}'");
+            this._logging.Error($"The assembly resource listing not find '{sitePath}'");
 
             return Enumerable.Empty<SiteMap>();
         }
@@ -674,7 +688,14 @@ namespace SAE.CommonComponent.InitializeData
                 if (siteMap != null)
                 {
                     command.Path = siteMap.Path;
-                    command.Entry = $"//{plugin.Name}.{baseUrl}".ToLower();
+                    if (siteMap.Entry.IsNullOrWhiteSpace())
+                    {
+                        command.Entry = $"//{plugin.Name}.{baseUrl}".ToLower();
+                    }
+                    else
+                    {
+                        command.Entry = siteMap.Entry;
+                    }
                 }
                 await this._mediator.SendAsync<string>(command);
             }

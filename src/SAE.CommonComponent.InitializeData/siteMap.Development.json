@@ -1,0 +1,82 @@
+[
+  {
+    "name": "basicData",
+    "plugin": "BasicData",
+    "path": "/basicdata",
+    "hidden": false,
+    "entry": "//localhost:8001"
+  },
+  {
+    "name": "plugin",
+    "path": "/plugin",
+    "plugin": "PluginManagement",
+    "hidden": false,
+    "entry": "//localhost:8002"
+  },
+  {
+    "name": "application",
+    "path": "/application",
+    "plugin": "Application",
+    "hidden": false,
+    "entry": "//localhost:8003",
+    "items": [
+      {
+        "name": "template",
+        "path": "/application/template",
+        "hidden": false
+      },
+      {
+        "name": "cluster",
+        "path": "/application/cluster",
+        "hidden": false
+      }
+    ]
+  },
+  {
+    "name": "routing",
+    "plugin": "routing",
+    "path": "/routing",
+    "hidden": false,
+    "entry": "//localhost:8004"
+  },
+  {
+    "name": "user",
+    "path": "/user",
+    "plugin": "user",
+    "hidden": false,
+    "entry": "//localhost:8005"
+  },
+  {
+    "name": "authorize",
+    "path": "/authorize",
+    "plugin": "authorize",
+    "hidden": false,
+    "entry": "//localhost:8006",
+    "items": [
+      {
+        "name": "role",
+        "path": "/authorize/role",
+        "hidden": false
+      },
+      {
+        "name": "permission",
+        "path": "/authorize/permission",
+        "hidden": false
+      }
+    ]
+  },
+  {
+    "name": "identity",
+    "path": "/identity",
+    "plugin": "identity",
+    "hidden": true,
+    "entry": "//localhost:8007"
+  },
+  {
+    "name": "oauth",
+    "path": "/oauth",
+    "plugin": "oauth",
+    "hidden": true,
+    "entry": "//localhost:8008"
+  }
+]

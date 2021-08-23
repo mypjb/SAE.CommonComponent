@@ -9,6 +9,7 @@ namespace SAE.CommonComponent.InitializeData
 {
     public class SiteMap:MenuItemDto
     {
+        public string Entry { get; set; }
         public string Plugin { get; set; }
     }
 }
