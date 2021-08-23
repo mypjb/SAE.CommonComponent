@@ -1,6 +1,7 @@
 import { useModel } from 'umi'
 export default () => {
-    const { masterState, setMasterState, masterPush } = useModel('@@initialState').initialState?.masterProps;
-    masterPush("/");
+    // const { masterState, setMasterState, masterPush } = useModel('@@initialState').initialState?.masterProps;
+    // masterPush("/");
+    location.href = "/";
     return (<></>);
 }
