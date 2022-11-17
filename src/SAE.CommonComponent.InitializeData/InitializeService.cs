@@ -466,7 +466,7 @@ namespace SAE.CommonComponent.InitializeData
 
         public virtual async Task ConfigServerAsync()
         {
-            var configPath = this._configuration.GetValue<string>(SAE.CommonLibrary.Configuration.Constants.Config.RootDirectoryKey);
+            var configPath = this._configuration.GetValue<string>(SAE.CommonLibrary.Configuration.Constant.Config.RootDirectoryKey);
 
             var environmentName = this._configuration.GetValue<string>(HostDefaults.EnvironmentKey);
 

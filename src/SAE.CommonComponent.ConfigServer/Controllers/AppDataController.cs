@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using SAE.CommonComponent.ConfigServer.Commands;
 using SAE.CommonComponent.ConfigServer.Dtos;
 using SAE.CommonLibrary.Abstract.Mediator;
@@ -21,16 +22,21 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
     {
         private readonly IMediator _mediator;
         private readonly IBitmapEndpointStorage _bitmapEndpointStorage;
+        private readonly IOptions<SAEOptions> _options;
 
-        public AppDataController(IMediator mediator, IBitmapEndpointStorage bitmapEndpointStorage)
+        public AppDataController(IMediator mediator,
+                                 IBitmapEndpointStorage bitmapEndpointStorage,
+                                 IOptions<SAEOptions> options)
         {
+
             this._mediator = mediator;
             this._bitmapEndpointStorage = bitmapEndpointStorage;
+            this._options = options;
         }
 
         private async Task<IActionResult> FindAsync(AppDataCommand.Find command)
         {
-            
+
             var appConfig = await this._mediator.SendAsync<AppDataDto>(command);
 
             if (command.Version == appConfig.Version)
@@ -53,7 +59,7 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
 
                 var nextUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.Path}{query.ToUriComponent()}";
 
-                this.HttpContext.Response.Headers.Add(SAEConfigurationProvider.ConfigUrl, nextUrl);
+                this.HttpContext.Response.Headers.Add(this._options.Value.NextRequestHeaderName, nextUrl);
 
                 return this.Json(appConfig.Data);
             }

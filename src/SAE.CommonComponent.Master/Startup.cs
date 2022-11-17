@@ -33,7 +33,6 @@ namespace SAE.CommonComponent.Master
 
             services.AddRoutingScanning()
                     .AddServiceFacade()
-                    .AddNlogLogger()
                     .AddSAECors();
 
             services.AddOptions<SiteConfig>(SiteConfig.Option)
