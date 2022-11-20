@@ -134,7 +134,7 @@ namespace SAE.CommonComponent.Authorize.Handlers
                     }
                 }
 
-                var code = this._bitmapAuthorization.GeneratePermissionCode(permissionBits);
+                var code = this._bitmapAuthorization.GenerateCode(permissionBits);
                 dic[group.Key] = code;
             }
             return dic;

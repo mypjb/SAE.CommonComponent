@@ -52,7 +52,7 @@ namespace SAE.CommonComponent.Identity.Handlers
                 foreach (var kv in userCodes)
                 {
                     identity.AddClaim(new Claim(CommonLibrary.AspNetCore.Constants.BitmapAuthorize.Claim,
-                                             string.Format(CommonLibrary.AspNetCore.Constants.BitmapAuthorize.Format,
+                                             string.Format(CommonLibrary.AspNetCore.Constants.BitmapAuthorize.GroupFormat,
                                                            kv.Key,
                                                            kv.Value)));
                 }

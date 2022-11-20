@@ -1,4 +1,13 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,15 +37,6 @@ using SAE.CommonLibrary.EventStore.Document;
 using SAE.CommonLibrary.Extension;
 using SAE.CommonLibrary.Logging;
 using SAE.CommonLibrary.Plugin;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using ClientCommand = SAE.CommonComponent.Application.Commands.ClientCommand;
 
 namespace SAE.CommonComponent.InitializeData
@@ -53,7 +53,6 @@ namespace SAE.CommonComponent.InitializeData
         private readonly IBitmapEndpointProvider _bitmapEndpointProvider;
         private readonly IPathDescriptorProvider _pathDescriptorProvider;
         private readonly IBitmapAuthorization _bitmapAuthorization;
-        private readonly SystemOptions _systemOptions;
         private readonly IHostEnvironment _hostEnvironment;
 
         public InitializeService(IServiceProvider serviceProvider)
@@ -67,8 +66,7 @@ namespace SAE.CommonComponent.InitializeData
             this._bitmapEndpointProvider = serviceProvider.GetService<IBitmapEndpointProvider>();
             this._pathDescriptorProvider = serviceProvider.GetService<IPathDescriptorProvider>();
             this._bitmapAuthorization = serviceProvider.GetService<IBitmapAuthorization>();
-            this._systemOptions = _configuration.GetSection(SystemOptions.Option)
-                                                .Get<SystemOptions>();
+
             this._hostEnvironment = serviceProvider.GetService<IHostEnvironment>();
         }
         /// <summary>
@@ -289,7 +287,7 @@ namespace SAE.CommonComponent.InitializeData
                 Type = (int)DictType.Scope
             });
 
-            var bitmapEndpoints = await this._bitmapEndpointProvider.FindsAsync(this._pathDescriptorProvider.GetDescriptors());
+            var bitmapEndpoints = await this._bitmapEndpointProvider.ListAsync();
 
             var appFirst = appDtos.First();
 
@@ -381,16 +379,17 @@ namespace SAE.CommonComponent.InitializeData
 
         public virtual async Task AuthorizeAsync()
         {
+            var appId = Guid.NewGuid().ToString("N");
             var appResourceDtos = await this._mediator.SendAsync<IEnumerable<AppResourceDto>>(new AppResourceCommand.List
             {
-                AppId = this._systemOptions.Id
+                AppId = appId
             });
 
             this._logging.Info($"app resource:{appResourceDtos.ToJsonString()}");
 
             var roleCommand = new RoleCommand.Create
             {
-                AppId = this._systemOptions.Id,
+                AppId = appId,
                 Description = "Default admin role",
                 Name = Constants.Authorize.AdminRoleName
             };
@@ -423,7 +422,7 @@ namespace SAE.CommonComponent.InitializeData
 
             var clientDtos = await this._mediator.SendAsync<IPagedList<ClientDto>>(new ClientCommand.Query
             {
-                AppId = this._systemOptions.Id,
+                AppId = appId,
                 PageSize = int.MaxValue
             });
 
@@ -487,14 +486,16 @@ namespace SAE.CommonComponent.InitializeData
 
             var appName = SiteConfig.Get(Constants.Config.BasicInfo.Name);
 
+            var appId = Guid.NewGuid().ToString("N");
+
             var appCommand = new AppCommand.Create
             {
-                Id = _systemOptions.Id,
+                Id = appId,
                 Name = appName,
                 ClusterId = clusterId
             };
 
-            var appId = await this._mediator.SendAsync<string>(appCommand);
+            appId = await this._mediator.SendAsync<string>(appCommand);
 
             this._logging.Info($"Create app '{appName}'-'{appId}'");
 
