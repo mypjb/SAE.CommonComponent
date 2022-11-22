@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SAE.CommonComponent.Authorize.Dtos;
 using SAE.CommonComponent.Routing.Commands;
 using SAE.CommonComponent.Routing.Domains;
 using SAE.CommonComponent.Routing.Dtos;
@@ -54,26 +53,6 @@ namespace SAE.CommonComponent.Routing.Controllers
         public async Task<object> Tree()
         {
             return await this._mediator.SendAsync<IEnumerable<MenuItemDto>>(new MenuCommand.Tree());
-        }
-
-        [HttpGet("permission/{action}")]
-        public async Task<IEnumerable<PermissionDto>> Paging([FromQuery]MenuCommand.PermissionQuery command)
-        {
-            return await this._mediator.SendAsync<IPagedList<PermissionDto>>(command);
-        }
-
-        [HttpPost("permission")]
-        public async Task<IActionResult> Reference(MenuCommand.ReferencePermission command)
-        {
-            await this._mediator.SendAsync(command);
-            return this.Ok();
-        }
-
-        [HttpDelete("permission")]
-        public async Task<IActionResult> DeletePermission(MenuCommand.DeletePermission command)
-        {
-            await this._mediator.SendAsync(command);
-            return this.Ok();
         }
     }
 }

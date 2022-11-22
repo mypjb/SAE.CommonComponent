@@ -6,6 +6,10 @@ using System.Globalization;
 
 namespace SAE.CommonComponent.Application.Converts
 {
+    /// <summary>
+    /// <see cref="Client"/> 转换器
+    /// </summary>
+    /// <inheritdoc/>
     public class ClientConvert : TypeConverter
     {
         public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
@@ -24,7 +28,7 @@ namespace SAE.CommonComponent.Application.Converts
                 Name = client.Name,
                 Status = client.Status,
                 CreateTime = client.CreateTime,
-                Endpoint = new Dtos.EndpointDto
+                Endpoint = new ClientEndpointDto
                 {
                     PostLogoutRedirectUris = client.Endpoint.PostLogoutRedirectUris,
                     RedirectUris = client.Endpoint.RedirectUris,

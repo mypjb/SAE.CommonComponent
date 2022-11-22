@@ -41,7 +41,7 @@ namespace SAE.CommonComponent.Application.Test
                 AppId = (await this._appControllerTest.Add()).Id,
                 Name = this.GetRandom(),
                 Scopes = new string[] { this.GetRandom(), this.GetRandom() },
-                Endpoint = new Dtos.EndpointDto
+                Endpoint = new Dtos.ClientEndpointDto
                 {
                     PostLogoutRedirectUris = new[] { this.GetRandom() },
                     RedirectUris = new[] { this.GetRandom() },
@@ -74,7 +74,7 @@ namespace SAE.CommonComponent.Application.Test
                 Id = client.Id,
                 Name = this.GetRandom(),
                 Scopes = new string[] { this.GetRandom(), this.GetRandom() },
-                Endpoint = new Dtos.EndpointDto
+                Endpoint = new Dtos.ClientEndpointDto
                 {
                     PostLogoutRedirectUris = new[] { this.GetRandom() },
                     RedirectUris = new[] { this.GetRandom() },

@@ -1,35 +1,34 @@
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using SAE.CommonComponent.Application.Commands;
 using SAE.CommonComponent.Application.Domains;
 using SAE.CommonComponent.Application.Dtos;
-using SAE.CommonComponent.ConfigServer.Commands;
-using SAE.CommonComponent.ConfigServer.Dtos;
 using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.Abstract.Model;
 using SAE.CommonLibrary.Data;
 using SAE.CommonLibrary.EventStore.Document;
 using SAE.CommonLibrary.Extension;
 using SAE.CommonLibrary.Logging;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SAE.CommonComponent.Application.Abstract.Handlers
 {
+
     public class AppResourceHandler : AbstractHandler,
-                              ICommandHandler<AppResourceCommand.Create, string>,
-                              ICommandHandler<AppResourceCommand.Change>,
-                              ICommandHandler<Command.Delete<AppResource>>,
-                              ICommandHandler<AppResourceCommand.Query, IPagedList<AppResourceDto>>,
-                              ICommandHandler<Command.Find<AppResourceDto>, AppResourceDto>,
-                              ICommandHandler<AppResourceCommand.List, IEnumerable<AppResourceDto>>
+                                      ICommandHandler<AppResourceCommand.Create, string>,
+                                      ICommandHandler<AppResourceCommand.Change>,
+                                      ICommandHandler<Command.Delete<AppResource>>,
+                                      ICommandHandler<AppResourceCommand.Query, IPagedList<AppResourceDto>>,
+                                      ICommandHandler<Command.Find<AppResourceDto>, AppResourceDto>,
+                                      ICommandHandler<AppResourceCommand.List, IEnumerable<AppResourceDto>>
     {
         private readonly IStorage _storage;
         private readonly IMediator _mediator;
-        private readonly ILogging<AppHandler> _logging;
+        private readonly ILogging _logging;
         public AppResourceHandler(IDocumentStore documentStore,
-                          IStorage storage,
-                          IMediator mediator,
-                          ILogging<AppHandler> logging) : base(documentStore)
+                                  IStorage storage,
+                                  IMediator mediator,
+                                  ILogging<AppHandler> logging) : base(documentStore)
         {
             this._storage = storage;
             this._mediator = mediator;

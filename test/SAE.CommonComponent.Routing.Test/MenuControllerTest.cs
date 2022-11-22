@@ -27,7 +27,6 @@ namespace SAE.CommonComponent.Routing.Test
     public class MenuControllerTest : BaseTest
     {
         public const string API = "menu";
-        private RoleControllerTest roleControllerTest;
         public MenuControllerTest(ITestOutputHelper output) : base(output)
         {
 
@@ -35,14 +34,7 @@ namespace SAE.CommonComponent.Routing.Test
 
         protected override IWebHostBuilder UseStartup(IWebHostBuilder builder)
         {
-            roleControllerTest = new RoleControllerTest(this._output);
-            return builder.UseStartup<Startup>()
-                          .ConfigureServices(services =>
-                          {
-                              var handlers = roleControllerTest.ServiceProvider.GetServices<ICommandHandler<PermissionCommand.Finds, IEnumerable<PermissionDto>>>();
-
-                              services.AddSingleton(handlers);
-                          });
+            return builder.UseStartup<Startup>();
         }
 
         [Theory]
@@ -125,101 +117,6 @@ namespace SAE.CommonComponent.Routing.Test
             this.WriteLine(menus);
         }
 
-        [Fact]
-        public async Task ReferencePermission()
-        {
-
-            var url = $"/{API}/permission";
-
-            var roleDto = await roleControllerTest.ReferencePermission();
-
-            var menu = await this.Add();
-            var command = new MenuCommand.ReferencePermission
-            {
-                Id = menu.Id,
-                PermissionIds = roleDto.PermissionIds.Take(10).ToList().ToArray()
-            };
-
-            var req = new HttpRequestMessage(HttpMethod.Post, url);
-
-            req.AddJsonContent(command);
-
-            var rep = await this.HttpClient.SendAsync(req);
-
-            rep.EnsureSuccessStatusCode();
-
-            var permissionQuery = new MenuCommand.PermissionQuery
-            {
-                Referenced = true,
-                Id = menu.Id
-            };
-
-            var queryReq = new HttpRequestMessage(HttpMethod.Get, $"{url}/paging?{nameof(MenuCommand.PermissionQuery.Id)}={permissionQuery.Id}&{nameof(MenuCommand.PermissionQuery.Referenced)}={permissionQuery.Referenced}");
-
-            var queryRep = await this.HttpClient.SendAsync(queryReq);
-
-            var permissions = await queryRep.AsAsync<PagedList<PermissionDto>>();
-
-            foreach (var permissionId in command.PermissionIds)
-            {
-                Assert.Contains(permissions, s => s.Id.Equals(permissionId));
-            }
-
-            var deleteCount = (Math.Abs(this.GetRandom().GetHashCode()) % (permissionQuery.PageSize - 1));
-
-            deleteCount = deleteCount > 0 ? deleteCount : 1;
-
-            var deleteCommand = new MenuCommand.DeletePermission
-            {
-                Id = menu.Id,
-                PermissionIds = command.PermissionIds.Take(deleteCount).ToArray()
-            };
-
-            var deleteReq = new HttpRequestMessage(HttpMethod.Delete, url);
-
-            deleteReq.AddJsonContent(deleteCommand);
-
-            var deleteRep = await this.HttpClient.SendAsync(deleteReq);
-
-            deleteRep.EnsureSuccessStatusCode();
-
-            queryReq = queryReq.Clone();
-
-            queryRep = await this.HttpClient.SendAsync(queryReq);
-
-            permissions = await queryRep.AsAsync<PagedList<PermissionDto>>();
-
-            foreach (var permissionId in command.PermissionIds.Take(deleteCount))
-            {
-                Assert.DoesNotContain(permissions, s => s.Id == permissionId);
-            }
-
-            foreach (var permissionId in command.PermissionIds.Skip(deleteCount))
-            {
-                Assert.Contains(permissions, s => s.Id == permissionId);
-            }
-
-        }
-
-        [Fact]
-        public async Task<RoleDto> RoleReferenceMenu()
-        {
-            var menus = new List<MenuDto>();
-            await Enumerable.Range(0, 10)
-                       .ForEachAsync(async s =>
-                       {
-                           menus.Add(await this.Add());
-                       });
-
-            return await this.roleControllerTest.ReferenceMenu(menus.Select(s => s.Id).ToArray());
-        }
-
-        [Fact]
-        public async Task RoleDeleteMenu()
-        {
-            var roleDto=await this.RoleReferenceMenu();
-            await this.roleControllerTest.DeleteMenu(roleDto.MenuIds);
-        }
 
 
         private async Task<MenuDto> Get(string id)

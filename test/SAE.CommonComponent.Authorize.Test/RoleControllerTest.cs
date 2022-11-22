@@ -171,50 +171,5 @@ namespace SAE.CommonComponent.Authorize.Test
             return await responseMessage.AsAsync<RoleDto>();
         }
 
-        public async Task DeleteMenu(string[] menuIds)
-        {
-            var roleDto = await this.ReferenceMenu(menuIds);
-
-            var command = new RoleCommand.DeleteMenu
-            {
-                Id = roleDto.Id,
-                MenuIds = roleDto.MenuIds.Skip(new Random().Next(1, menuIds.Length)).ToArray()
-            };
-
-            var request = new HttpRequestMessage(HttpMethod.Delete, $"{API}/menu");
-            request.AddJsonContent(command);
-            var httpResponse = await this.HttpClient.SendAsync(request);
-
-            httpResponse.EnsureSuccessStatusCode();
-
-            var role = await this.Get(roleDto.Id);
-
-            Assert.True(!role.MenuIds.Any(s => command.MenuIds.Contains(s)));
-        }
-
-        public async Task<RoleDto> ReferenceMenu(string[] menuIds)
-        {
-            var roleDto = await this.Add();
-
-            var command = new RoleCommand.ReferenceMenu
-            {
-                Id = roleDto.Id,
-                MenuIds = menuIds,
-            };
-
-            var request = new HttpRequestMessage(HttpMethod.Post, $"{API}/menu");
-
-            request.AddJsonContent(command);
-
-            var httpResponse = await this.HttpClient.SendAsync(request);
-
-            httpResponse.EnsureSuccessStatusCode();
-
-            var role = await this.Get(roleDto.Id);
-
-            Assert.True(role.MenuIds.All(s => command.MenuIds.Contains(s)));
-
-            return role;
-        }
     }
 }

@@ -46,8 +46,7 @@ namespace SAE.CommonComponent.Application.Test
                 AppId = appId,
                 Name = this.GetRandom(),
                 Method = this.GetRandom(),
-                Path = this.GetRandom(),
-                Index = Math.Abs(this.GetRandom().GetHashCode() % 100)
+                Path = this.GetRandom()
             };
             var message = new HttpRequestMessage(HttpMethod.Post, API);
             message.AddJsonContent(command);
@@ -57,7 +56,6 @@ namespace SAE.CommonComponent.Application.Test
             this.WriteLine(appResource);
             Assert.Equal(command.Name, appResource.Name);
             Assert.Equal(command.Method, appResource.Method);
-            Assert.Equal(command.Index, appResource.Index);
             Assert.Equal(command.Path, appResource.Path);
             return appResource;
         }

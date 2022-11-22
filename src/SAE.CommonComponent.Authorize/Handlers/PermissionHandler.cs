@@ -23,7 +23,6 @@ namespace SAE.CommonComponent.Authorize.Handlers
                                     ICommandHandler<Command.Find<PermissionDto>, PermissionDto>,
                                     ICommandHandler<PermissionCommand.Query, IPagedList<PermissionDto>>,
                                     ICommandHandler<Command.List<PermissionDto>, IEnumerable<PermissionDto>>,
-                                    ICommandHandler<IEnumerable<PermissionCommand.Create>, IEnumerable<BitmapEndpoint>>,
                                     ICommandHandler<PermissionCommand.Finds, IEnumerable<PermissionDto>>
     {
         private readonly IStorage _storage;
@@ -83,11 +82,6 @@ namespace SAE.CommonComponent.Authorize.Handlers
             if (!command.Name.IsNullOrWhiteSpace())
                 query = query.Where(s => s.Name.Contains(command.Name));
 
-            if (command.IgnoreIds?.Any() ?? false)
-            {
-                query = query.Where(s => !command.IgnoreIds.Contains(s.Id));
-            }
-
             return Task.FromResult(PagedList.Build(query, command));
         }
 
@@ -103,46 +97,6 @@ namespace SAE.CommonComponent.Authorize.Handlers
             return dto;
         }
 
-        public async Task<IEnumerable<BitmapEndpoint>> HandleAsync(IEnumerable<PermissionCommand.Create> commands)
-        {
-            var endpoints = new List<BitmapEndpoint>();
-
-            var dtos = (await this._mediator.SendAsync<IEnumerable<PermissionDto>>(new Command.List<PermissionDto>()))
-                                .ToList();
-
-            var permissionCreateCommands = commands.Where(c => !dtos.Any(s => s.Path.Equals(c.Path, StringComparison.OrdinalIgnoreCase)))
-                                                   .ToArray();
-
-            if (permissionCreateCommands.Any())//不存在
-            {
-
-                var tasks = permissionCreateCommands.Select(async command =>
-                 {
-                     var permission = new Permission(command);
-                     await permission.NameExist(this.FindPermission);
-                     return permission;
-                 });
-
-                var permissions = await Task.WhenAll(tasks);
-
-                await this._documentStore.SaveAsync(permissions);
-
-                dtos = (await this._mediator.SendAsync<IEnumerable<PermissionDto>>(new Command.List<PermissionDto>()))
-                                    .ToList();
-            }
-
-            foreach (var command in commands)
-            {
-                endpoints.Add(new BitmapEndpoint
-                {
-                    Name = command.Name,
-                    Index = dtos.FindIndex(s => s.Path.Equals(command.Path, StringComparison.OrdinalIgnoreCase)),
-                    Path = command.Path,
-                });
-            }
-
-            return endpoints;
-        }
 
         private IQueryable<PermissionDto> GetStorage()
         {

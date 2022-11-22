@@ -1,68 +1,94 @@
+using System;
+using System.Linq;
 using SAE.CommonComponent.Application.Commands;
 using SAE.CommonComponent.Application.Events;
 using SAE.CommonLibrary;
 using SAE.CommonLibrary.EventStore.Document;
-using System;
-using System.Linq;
 
 namespace SAE.CommonComponent.Application.Abstract.Domains
 {
+    /// <summary>
+    /// 客户端认证凭据
+    /// </summary>
     public class Client : Document
     {
+        /// <summary>
+        /// 创建一个新对象
+        /// </summary>
         public Client()
         {
             this.Scopes = Enumerable.Empty<string>().ToArray();
         }
+        /// <summary>
+        /// 创建一个新对象
+        /// </summary>
+        /// <param name="command"></param>
         public Client(ClientCommand.Create command) : this()
         {
             this.Apply<ClientEvent.Create>(command, e =>
             {
-                e.Id = command.Id ?? Utils.GenerateId();
+                e.Id = Utils.GenerateId();
                 e.CreateTime = DateTime.UtcNow;
-                e.Secret = command.Secret ?? Utils.GenerateId();
+                e.Secret = Utils.GenerateId();
             });
         }
 
         /// <summary>
-        /// client id
+        /// 标识，也是唯一公钥
         /// </summary>
         /// <value></value>
         public string Id { get; set; }
         /// <summary>
-        /// app id
+        /// 应用标识
         /// </summary>
         public string AppId { get; set; }
         /// <summary>
-        /// app name
+        /// 应用名称
         /// </summary>
         /// <value></value>
         public string Name { get; set; }
+
         /// <summary>
-        /// app secret
+        /// 描述
+        /// </summary>
+        /// <value></value>
+        public string Description { get; set; }
+        /// <summary>
+        /// 私钥
         /// </summary>
         /// <value></value>
         public string Secret { get; set; }
-        public Endpoint Endpoint { get; set; }
         /// <summary>
-        /// auth scope
+        /// 端点
+        /// </summary>
+        /// <value></value>
+        public ClientEndpoint Endpoint { get; set; }
+        /// <summary>
+        /// 授权域
         /// </summary>
         /// <value></value>
         public string[] Scopes { get; set; }
 
         /// <summary>
-        /// create time
+        /// 创建时间
         /// </summary>
         public DateTime CreateTime { get; set; }
         /// <summary>
-        /// app status
+        /// client 状态
         /// </summary>
         /// <value></value>
         public Status Status { get; set; }
+        /// <summary>
+        /// 更改
+        /// </summary>
+        /// <param name="command"></param>
         public void Change(ClientCommand.Change command)
         {
             this.Apply<ClientEvent.Change>(command);
         }
-
+        /// <summary>
+        /// 重新生成私钥
+        /// </summary>
         public void RefreshSecret()
         {
             this.Apply(new ClientEvent.RefreshSecret
@@ -70,12 +96,17 @@ namespace SAE.CommonComponent.Application.Abstract.Domains
                 Secret = Utils.GenerateId()
             });
         }
-        
+        /// <summary>
+        /// 更改状态
+        /// </summary>
+        /// <param name="command"></param>
         public void ChangeStatus(ClientCommand.ChangeStatus command)
         {
             this.Apply<ClientEvent.ChangeStatus>(command);
         }
-
+        /// <summary>
+        /// 删除
+        /// </summary>
         public void Delete()
         {
             this.ChangeStatus(new ClientCommand.ChangeStatus
@@ -84,6 +115,5 @@ namespace SAE.CommonComponent.Application.Abstract.Domains
                 Status = Status.Delete
             });
         }
-
     }
 }

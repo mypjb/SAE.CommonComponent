@@ -17,7 +17,6 @@ namespace SAE.CommonComponent.Routing.Domains
         public Menu()
         {
             this.ParentId = Constants.Menu.RootId;
-            this.PermissionIds = Enumerable.Empty<string>().ToArray();
         }
 
         public Menu(MenuCommand.Create command)
@@ -57,11 +56,6 @@ namespace SAE.CommonComponent.Routing.Domains
         /// </summary>
         public DateTime CreateTime { get; set; }
 
-        /// <summary>
-        /// menu permission ids
-        /// </summary>
-        public string[] PermissionIds { get; set; }
-
         public async Task Change(MenuCommand.Change command, Func<string, Task<Menu>> parentProvider, Func<Menu, Task<bool>> menuProvider)
         {
             if (command.ParentId.IsNullOrWhiteSpace())
@@ -96,39 +90,5 @@ namespace SAE.CommonComponent.Routing.Domains
             return this.ParentId == Constants.Menu.RootId;
         }
 
-        /// <summary>
-        /// Reference permission
-        /// </summary>
-        /// <param name="command"></param>
-        public void ReferencePermission(MenuCommand.ReferencePermission command)
-        {
-            var permissionIds = (this.PermissionIds ?? new string[0] { }).Concat(command.PermissionIds)
-                                                   .Distinct()
-                                                   .ToArray();
-
-            this.Apply(new MenuEvent.ReferencePermission
-            {
-                PermissionIds = permissionIds
-            });
-        }
-
-        /// <summary>
-        /// delete permission
-        /// </summary>
-        /// <param name="command"></param>
-        public void DeletePermission(MenuCommand.DeletePermission command)
-        {
-
-            if (!command?.PermissionIds.Any() ?? false) return;
-
-            var permissionIds = this.PermissionIds.ToList();
-
-            permissionIds.RemoveAll(s => command.PermissionIds.Contains(s));
-
-            this.Apply(new MenuEvent.ReferencePermission
-            {
-                PermissionIds = permissionIds.ToArray()
-            });
-        }
     }
 }

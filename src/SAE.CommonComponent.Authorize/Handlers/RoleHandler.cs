@@ -26,10 +26,7 @@ namespace SAE.CommonComponent.Authorize.Handlers
                               ICommandHandler<Command.BatchDelete<Role>>,
                               ICommandHandler<Command.Find<RoleDto>,RoleDto>,
                               ICommandHandler<RoleCommand.Query, IPagedList<RoleDto>>,
-                              ICommandHandler<RoleCommand.PermissionQuery, IPagedList<PermissionDto>>,
-                              ICommandHandler<RoleCommand.ReferenceMenu>,
-                              ICommandHandler<RoleCommand.DeleteMenu>
-
+                              ICommandHandler<RoleCommand.PermissionQuery, IPagedList<PermissionDto>>
     {
         private readonly IStorage _storage;
         private readonly IDirector _director;
@@ -154,29 +151,11 @@ namespace SAE.CommonComponent.Authorize.Handlers
             }
             else
             {
-                return await this._mediator.SendAsync<IPagedList<PermissionDto>>(new PermissionCommand.Query
-                {
-                    IgnoreIds = role.PermissionIds
-                });
+                return await this._mediator.SendAsync<IPagedList<PermissionDto>>(new PermissionCommand.Query());
             }
         }
 
-        public async Task HandleAsync(RoleCommand.ReferenceMenu command)
-        {                                          
-            var role = await this._documentStore.FindAsync<Role>(command.Id);
-            role.ReferenceMenu(command);
-            await this._documentStore.SaveAsync(role);
-        }
-
-        public async Task HandleAsync(RoleCommand.DeleteMenu command)
-        {
-            var role = await this._documentStore.FindAsync<Role>(command.Id);
-            role.DeleteMenu(command);
-            await this._documentStore.SaveAsync(role);
-        }
-
         
-
         private Task<Role> FindRole(Role role)
         {
             var oldRole = this._storage.AsQueryable<Role>()

@@ -12,9 +12,6 @@ using SAE.CommonLibrary.Extension;
 using SAE.CommonComponent.Routing.Domains;
 using SAE.CommonComponent.Routing.Commands;
 using SAE.CommonComponent.Routing.Dtos;
-using SAE.CommonLibrary;
-using SAE.CommonComponent.Authorize.Dtos;
-using SAE.CommonComponent.Authorize.Commands;
 
 namespace SAE.CommonComponent.ConfigServer.Handlers
 {
@@ -24,10 +21,7 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
                                  ICommandHandler<Command.BatchDelete<Menu>>,
                                  ICommandHandler<Command.Find<MenuDto>, MenuDto>,
                                  ICommandHandler<MenuCommand.Query, IPagedList<MenuDto>>,
-                                 ICommandHandler<MenuCommand.Tree, IEnumerable<MenuItemDto>>,
-                                 ICommandHandler<MenuCommand.ReferencePermission>,
-                                 ICommandHandler<MenuCommand.DeletePermission>,
-                                 ICommandHandler<MenuCommand.PermissionQuery, IPagedList<PermissionDto>>
+                                 ICommandHandler<MenuCommand.Tree, IEnumerable<MenuItemDto>>
 
     {
         private readonly IStorage _storage;
@@ -112,45 +106,6 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
         public Task HandleAsync(Command.BatchDelete<Menu> command)
         {
             return this._documentStore.DeleteAsync<Menu>(command.Ids);
-        }
-
-        public async Task HandleAsync(MenuCommand.ReferencePermission command)
-        {
-            var menu = await this._documentStore.FindAsync<Menu>(command.Id);
-            menu.ReferencePermission(command);
-            await this._documentStore.SaveAsync(menu);
-        }
-
-        public async Task HandleAsync(MenuCommand.DeletePermission command)
-        {
-            var menu = await this._documentStore.FindAsync<Menu>(command.Id);
-            menu.DeletePermission(command);
-            await this._documentStore.SaveAsync(menu);
-        }
-
-        public async Task<IPagedList<PermissionDto>> HandleAsync(MenuCommand.PermissionQuery command)
-        {
-            var menu = await this._documentStore.FindAsync<Menu>(command.Id);
-
-            if (command.Referenced)
-            {
-                var paging = PagedList.Build(menu.PermissionIds.AsQueryable(), command);
-                var permissionDtos = await this.mediator.SendAsync<IEnumerable<PermissionDto>>(new PermissionCommand.Finds
-                {
-                    Ids = paging.ToArray()
-                });
-
-                return PagedList.Build(permissionDtos, paging);
-            }
-            else
-            {
-                return await this.mediator.SendAsync<IPagedList<PermissionDto>>(new PermissionCommand.Query
-                {
-                    IgnoreIds = menu.PermissionIds,
-                    PageIndex = command.PageIndex,
-                    PageSize = command.PageSize
-                });
-            }
         }
 
     }

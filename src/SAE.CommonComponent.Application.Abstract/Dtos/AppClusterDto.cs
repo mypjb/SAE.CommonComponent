@@ -6,22 +6,30 @@ using System.Threading.Tasks;
 
 namespace SAE.CommonComponent.Application.Dtos
 {
+    /// <summary>
+    /// 应用集群
+    /// </summary>
     public class AppClusterDto
     {
         /// <summary>
-        /// id
+        /// 标识
         /// </summary>
         public string Id { get; set; }
         /// <summary>
-        /// name
+        /// 集群名称
         /// </summary>
         public string Name { get; set; }
         /// <summary>
-        /// create time
+        /// 描述
+        /// </summary>
+        /// <value></value>
+        public string Description { get; set; }
+        /// <summary>
+        /// 创建时间
         /// </summary>
         public DateTime CreateTime { get; set; }
         /// <summary>
-        /// status
+        /// 状态
         /// </summary>
         /// <value></value>
         public Status Status { get; set; }

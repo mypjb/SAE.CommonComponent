@@ -1,22 +1,31 @@
-﻿using SAE.CommonLibrary;
-using SAE.CommonLibrary.Extension;
-using SAE.CommonLibrary.EventStore.Document;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SAE.CommonComponent.Authorize.Commands;
 using SAE.CommonComponent.Authorize.Events;
+using SAE.CommonLibrary;
+using SAE.CommonLibrary.EventStore.Document;
+using SAE.CommonLibrary.Extension;
 
 namespace SAE.CommonComponent.Authorize.Domains
 {
+    /// <summary>
+    /// 角色
+    /// </summary>
     public class Role : Document
     {
+        /// <summary>
+        /// 创建一个新的对象
+        /// </summary>
         public Role()
         {
             this.PermissionIds = Enumerable.Empty<string>().ToArray();
-            this.MenuIds = Enumerable.Empty<string>().ToArray();
         }
+        /// <summary>
+        /// 创建一个新的对象
+        /// </summary>
+        /// <param name="command"></param>
         public Role(RoleCommand.Create command) : this()
         {
             this.Apply<RoleEvent.Create>(command, @event =>
@@ -26,64 +35,53 @@ namespace SAE.CommonComponent.Authorize.Domains
                  @event.Status = Status.Enable;
              });
         }
+        /// <summary>
+        /// 标识
+        /// </summary>
+        /// <value></value>
         public string Id { get; set; }
 
         /// <summary>
-        /// app id
+        /// 系统标识
         /// </summary>
         public string AppId { get; set; }
         /// <summary>
-        /// role permission ids
+        /// 角色引用的权限集合
         /// </summary>
         public string[] PermissionIds { get; set; }
         /// <summary>
-        /// role menu ids
-        /// </summary>
-        public string[] MenuIds { get; set; }
-        /// <summary>
-        /// role name
+        /// 名称
         /// </summary>
         public string Name { get; set; }
         /// <summary>
-        /// role descriptor
+        /// 描述
         /// </summary>
         public string Description { get; set; }
         /// <summary>
-        /// role createtime
+        /// 创建时间
         /// </summary>
         public DateTime CreateTime { get; set; }
         /// <summary>
-        /// role status
+        /// 状态
         /// </summary>
         public Status Status { get; set; }
 
         /// <summary>
-        /// role name is exist? exist trigger <seealso cref="SaeException"/><seealso cref="StatusCodes.ResourcesExist"/>
-        /// </summary>
-        /// <param name="provider"></param>
-        /// <returns></returns>
-        public async Task NameExist(Func<Role, Task<Role>> provider)
-        {
-            var role = await provider.Invoke(this);
-            if (role == null || this.Id.Equals(role.Id, StringComparison.OrdinalIgnoreCase))
-            {
-                return;
-            }
-            throw new SAEException(StatusCodes.ResourcesExist, $"{nameof(Role)} name exist");
-        }
-        /// <summary>
-        /// change role base info
+        /// 更改角色信息
         /// </summary>
         /// <param name="command"></param>
         public void Change(RoleCommand.Change command) =>
             this.Apply<RoleEvent.Change>(command);
         /// <summary>
-        /// change role status 
+        /// 更改状态
         /// </summary>
         /// <param name="command"></param>
         public void ChangeStatus(RoleCommand.ChangeStatus command) =>
             this.Apply<RoleEvent.ChangeStatus>(command);
-
+        /// <summary>
+        /// 引用权限
+        /// </summary>
+        /// <param name="command"></param>
 
         public void ReferencePermission(RoleCommand.ReferencePermission command)
         {
@@ -96,7 +94,10 @@ namespace SAE.CommonComponent.Authorize.Domains
                 PermissionIds = permissionIds
             });
         }
-
+        /// <summary>
+        /// 删除权限
+        /// </summary>
+        /// <param name="command"></param>
         public void DeletePermission(RoleCommand.DeletePermission command)
         {
 
@@ -112,30 +113,21 @@ namespace SAE.CommonComponent.Authorize.Domains
             });
         }
 
-        internal void ReferenceMenu(RoleCommand.ReferenceMenu command)
+        /// <summary>
+        /// 角色是否存在，如果存在则处罚异常。
+        /// </summary>
+        /// <exception cref="SAEException"/>
+        /// <param name="provider">提供一个可以用来查询的委托</param>
+        /// <returns></returns>
+        public async Task NameExist(Func<Role, Task<Role>> provider)
         {
-            var menuIds = this.MenuIds.Concat(command.MenuIds)
-                                                 .Distinct()
-                                                 .ToArray();
-
-            this.Apply(new RoleEvent.ReferenceMenu
+            var role = await provider.Invoke(this);
+            if (role == null || this.Id.Equals(role.Id, StringComparison.OrdinalIgnoreCase))
             {
-                MenuIds = menuIds
-            });
+                return;
+            }
+            throw new SAEException(StatusCodes.ResourcesExist, $"{nameof(Role)} name exist");
         }
 
-        internal void DeleteMenu(RoleCommand.DeleteMenu command)
-        {
-            if (!command?.MenuIds.Any() ?? false) return;
-
-            var menuIds = this.MenuIds.ToList();
-
-            menuIds.RemoveAll(s => command.MenuIds.Contains(s));
-
-            this.Apply(new RoleEvent.ReferenceMenu
-            {
-                MenuIds = menuIds.ToArray()
-            });
-        }
     }
 }

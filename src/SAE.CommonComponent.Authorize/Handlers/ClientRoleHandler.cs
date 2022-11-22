@@ -1,4 +1,8 @@
-﻿using SAE.CommonComponent.Application.Commands;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using SAE.CommonComponent.Application.Commands;
 using SAE.CommonComponent.Application.Dtos;
 using SAE.CommonComponent.Authorize.Commands;
 using SAE.CommonComponent.Authorize.Domains;
@@ -10,10 +14,6 @@ using SAE.CommonLibrary.AspNetCore.Authorization;
 using SAE.CommonLibrary.Data;
 using SAE.CommonLibrary.EventStore.Document;
 using SAE.CommonLibrary.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SAE.CommonComponent.Authorize.Handlers
 {
@@ -86,31 +86,8 @@ namespace SAE.CommonComponent.Authorize.Handlers
             var dic = new Dictionary<string, string>();
             foreach (var group in roles.GroupBy(s => s.AppId))
             {
-                var endpoints = (await this._mediator.SendAsync<IEnumerable<AppResourceDto>>(new AppResourceCommand.List
-                {
-                    AppId = group.Key
-                }));
-
-                var permissionBits = new List<int>();
-
-                foreach (var role in group)
-                {
-                    foreach (var permission in role.Permissions)
-                    {
-                        var appResource = endpoints.FirstOrDefault(s => string.Format(Constants.Authorize.PermissionFormat, s.Method, s.Path) == permission.Path);
-
-                        if (appResource == null)
-                        {
-                            this._logging.Warn($"not find '{permission.Path}' permission index");
-                        }
-                        else
-                        {
-                            permissionBits.Add(appResource.Index);
-                        }
-                    }
-                }
-                var code = this._bitmapAuthorization.GenerateCode(permissionBits);
-                dic.Add(group.Key, code);
+#warning 此处计算Code
+                //dic.Add(group.Key, code);
             }
 
             return dic;

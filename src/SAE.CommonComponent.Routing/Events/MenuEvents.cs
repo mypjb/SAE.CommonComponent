@@ -20,10 +20,5 @@ namespace SAE.CommonComponent.Routing.Events
 
             public bool Hidden { get; set; }
         }
-
-        public class ReferencePermission : IEvent
-        {
-            public string[] PermissionIds { get; set; }
-        }
     }
 }

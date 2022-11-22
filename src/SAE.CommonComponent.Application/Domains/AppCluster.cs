@@ -1,20 +1,30 @@
-﻿using SAE.CommonComponent.Application.Commands;
-using SAE.CommonComponent.Application.Events;
-using SAE.CommonLibrary;
-using SAE.CommonLibrary.EventStore.Document;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using SAE.CommonComponent.Application.Commands;
+using SAE.CommonComponent.Application.Events;
+using SAE.CommonLibrary;
+using SAE.CommonLibrary.EventStore.Document;
 
 namespace SAE.CommonComponent.Application.Domains
 {
-    public class AppCluster:Document
+    /// <summary>
+    /// 应用集群
+    /// </summary>
+    public class AppCluster : Document
     {
+        /// <summary>
+        /// 创建一个新的对象
+        /// </summary>
         public AppCluster()
         {
 
         }
+        /// <summary>
+        /// 创建一个新的对象
+        /// </summary>
+        /// <param name="command"></param>
         public AppCluster(AppClusterCommand.Create command)
         {
             this.Apply<AppClusterEvent.Create>(command, e =>
@@ -25,34 +35,49 @@ namespace SAE.CommonComponent.Application.Domains
         }
 
         /// <summary>
-        /// id
+        /// 标识
         /// </summary>
         public string Id { get; set; }
         /// <summary>
-        /// name
+        /// 集群名称
         /// </summary>
         public string Name { get; set; }
+
         /// <summary>
-        /// create time
+        /// 描述
+        /// </summary>
+        /// <value></value>
+        public string Description { get; set; }
+        /// <summary>
+        /// 创建时间
         /// </summary>
         public DateTime CreateTime { get; set; }
 
         /// <summary>
-        /// app status
+        /// 状态
         /// </summary>
         /// <value></value>
         public Status Status { get; set; }
-
+        /// <summary>
+        /// 更改
+        /// </summary>
+        /// <param name="command"></param>
         public void Change(AppClusterCommand.Change command)
         {
             this.Apply<AppClusterEvent.Change>(command);
         }
-
+        /// <summary>
+        /// 更改状态
+        /// </summary>
+        /// <param name="command"></param>
         public void ChangeStatus(AppClusterCommand.ChangeStatus command)
         {
             this.Apply<AppClusterEvent.ChangeStatus>(command);
         }
-
+        /// <summary>
+        /// 是否存在重名集群
+        /// </summary>
+        /// <param name="provider"></param>
         public async Task NameExistAsync(Func<AppCluster, Task<AppCluster>> provider)
         {
             var cluster = await provider.Invoke(this);

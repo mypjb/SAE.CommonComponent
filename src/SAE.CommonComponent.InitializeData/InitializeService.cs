@@ -298,8 +298,7 @@ namespace SAE.CommonComponent.InitializeData
                     AppId = appFirst.Id,
                     Method = bitmapEndpoint.Method,
                     Name = $"{bitmapEndpoint.Path}:{bitmapEndpoint.Method}",
-                    Path = bitmapEndpoint.Path,
-                    Index = bitmapEndpoint.Index
+                    Path = bitmapEndpoint.Path
                 });
             }
 
@@ -322,39 +321,37 @@ namespace SAE.CommonComponent.InitializeData
 
                     var clientCommand = new ClientCommand.Create
                     {
-                        Id = this.GetJTokenValue<string>(oauthJToken, nameof(Constants.Config.OAuth.AppId)),
-                        Secret = this.GetJTokenValue<string>(oauthJToken, nameof(Constants.Config.OAuth.AppId)),
                         AppId = appDto.Id,
                         Name = this.GetJTokenValue<string>(basicInfoJToken, nameof(Constants.Config.BasicInfo.Name)),
                         Scopes = scopes.Where(s => scopeNames.Contains(s.Name, StringComparer.OrdinalIgnoreCase))
                                        .Select(s => s.Id)
                                        .ToArray(),
-                        Endpoint = new EndpointDto
+                        Endpoint = new ClientEndpointDto
                         {
-                            RedirectUris = this.GetJTokenValues<string>(oauthJToken, nameof(EndpointDto.RedirectUris)).ToArray(),
-                            PostLogoutRedirectUris = this.GetJTokenValues<string>(oauthJToken, nameof(EndpointDto.PostLogoutRedirectUris)).ToArray(),
-                            SignIn = this.GetJTokenValue<string>(urlJToken, nameof(EndpointDto.SignIn))
+                            RedirectUris = this.GetJTokenValues<string>(oauthJToken, nameof(ClientEndpointDto.RedirectUris)).ToArray(),
+                            PostLogoutRedirectUris = this.GetJTokenValues<string>(oauthJToken, nameof(ClientEndpointDto.PostLogoutRedirectUris)).ToArray(),
+                            SignIn = this.GetJTokenValue<string>(urlJToken, nameof(ClientEndpointDto.SignIn))
                         }
                     };
 
-                    await this._mediator.SendAsync<string>(clientCommand);
+                    var clientId = await this._mediator.SendAsync<string>(clientCommand);
 
-                    clientCommand.Secret = "************";
+                    // clientCommand.Secret = "************";
 
                     this._logging.Info($"Add default client:{clientCommand.ToJsonString()}");
 
                     await this._mediator.SendAsync(new ClientCommand.ChangeStatus
                     {
-                        Id = clientCommand.Id,
+                        Id = clientId,
                         Status = Status.Enable
                     });
 
                     var clientDto = await this._mediator.SendAsync<ClientDto>(new Command.Find<ClientDto>
                     {
-                        Id = clientCommand.Id
+                        Id = clientId
                     });
 
-                    clientDto.Secret = clientCommand.Secret;
+                    clientDto.Secret = "************";;
 
                     this._logging.Info($"output default app:{clientDto.ToJsonString()}");
 
@@ -406,8 +403,7 @@ namespace SAE.CommonComponent.InitializeData
                 {
                     AppId = roleCommand.AppId,
                     Description = appResource.Name,
-                    Name = path,
-                    Path = path
+                    Name = path
                 };
                 permissionIds[i] = await this._mediator.SendAsync<string>(permissionCommand);
             }
@@ -486,16 +482,14 @@ namespace SAE.CommonComponent.InitializeData
 
             var appName = SiteConfig.Get(Constants.Config.BasicInfo.Name);
 
-            var appId = Guid.NewGuid().ToString("N");
 
             var appCommand = new AppCommand.Create
             {
-                Id = appId,
                 Name = appName,
                 ClusterId = clusterId
             };
 
-            appId = await this._mediator.SendAsync<string>(appCommand);
+            var appId = await this._mediator.SendAsync<string>(appCommand);
 
             this._logging.Info($"Create app '{appName}'-'{appId}'");
 

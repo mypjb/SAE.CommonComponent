@@ -42,7 +42,6 @@ namespace SAE.CommonComponent.Application.Test
             }
             var command = new AppCommand.Create
             {
-                Id=this.GetRandom(),
                 Name = this.GetRandom(),
                 ClusterId= clusterId
             };
@@ -51,7 +50,7 @@ namespace SAE.CommonComponent.Application.Test
             var responseMessage = await this.HttpClient.SendAsync(message);
             var id = await responseMessage.AsAsync<string>();
             var app = await this.Get(id);
-            Assert.Equal(command.Id, app.Id);
+            Assert.Equal(id, app.Id);
             Assert.Equal(command.ClusterId, app.ClusterId);
             Assert.Equal(command.Name, app.Name);
             return app;

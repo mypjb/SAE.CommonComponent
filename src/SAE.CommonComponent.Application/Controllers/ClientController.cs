@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using System.Text;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SAE.CommonComponent.Application.Commands;
@@ -6,63 +9,89 @@ using SAE.CommonComponent.ConfigServer.Dtos;
 using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.Abstract.Model;
 using SAE.CommonLibrary.EventStore.Document;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SAE.CommonComponent.Application.Controllers
 {
+    /// <summary>
+    /// 第三方认证管理
+    /// </summary>
     [ApiController]
     [Route("{controller}")]
     public class ClientController : Controller
     {
         private readonly IMediator _mediator;
+        /// <summary>
+        /// 创建一个新的对象
+        /// </summary>
+        /// <param name="mediator"></param>
         public ClientController(IMediator mediator)
         {
             this._mediator = mediator;
         }
-
+        /// <summary>
+        /// 查询单个对象
+        /// </summary>
+        /// <param name="command"></param>
         [HttpGet("{id}")]
-        public async Task<object> Get([FromRoute]Command.Find<ClientDto> command)
+        public async Task<object> Get([FromRoute] Command.Find<ClientDto> command)
         {
             return await this._mediator.SendAsync<ClientDto>(command);
         }
-
+        /// <summary>
+        /// 添加
+        /// </summary>
+        /// <param name="command"></param>
         [HttpPost]
         public async Task<object> Add(ClientCommand.Create command)
         {
             return await this._mediator.SendAsync<string>(command);
         }
-
+        /// <summary>
+        /// 修改
+        /// </summary>
+        /// <param name="command"></param>
         [HttpPut]
         public async Task<object> Edit(ClientCommand.Change command)
         {
             await this._mediator.SendAsync(command);
             return this.Ok();
         }
+        /// <summary>
+        /// 重新生成secret
+        /// </summary>
+        /// <param name="command"></param>
         [HttpPut("{action}/{id}")]
-        public async Task<object> Refresh([FromRoute]ClientCommand.RefreshSecret command)
+        public async Task<object> Refresh([FromRoute] ClientCommand.RefreshSecret command)
         {
             var secret = await this._mediator.SendAsync<string>(command);
-            return this.File(Encoding.ASCII.GetBytes(secret), "application/octet-stream",Constants.App.AppSecretFileName);
+            return this.File(Encoding.ASCII.GetBytes(secret), "application/octet-stream", Constants.App.AppSecretFileName);
         }
-
+        /// <summary>
+        /// 更改状态
+        /// </summary>
+        /// <param name="command"></param>
         [HttpPut("{action}")]
         public async Task<object> Status(ClientCommand.ChangeStatus command)
         {
             await this._mediator.SendAsync(command);
             return this.Ok();
         }
-
+        /// <summary>
+        /// 删除
+        /// </summary>
+        /// <param name="command"></param>
         [HttpDelete("{id}")]
         public async Task<object> Delete([FromRoute] Command.Delete<ClientDto> command)
         {
             await this._mediator.SendAsync(command);
             return this.Ok();
         }
-
+        /// <summary>
+        /// 分页查询
+        /// </summary>
+        /// <param name="command"></param>
         [HttpGet("{action}")]
-        public async Task<object> Paging([FromQuery]ClientCommand.Query command)
+        public async Task<object> Paging([FromQuery] ClientCommand.Query command)
         {
             return await this._mediator.SendAsync<IPagedList<ClientDto>>(command);
         }
