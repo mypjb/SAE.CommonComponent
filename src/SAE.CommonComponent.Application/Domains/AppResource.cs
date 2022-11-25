@@ -76,18 +76,14 @@ namespace SAE.CommonComponent.Application.Domains
         {
             this.Apply<AppResourceEvent.Change>(command);
         }
+     
         /// <summary>
-        /// 查询系统下是否存在同名资源
+        /// 设置资源索引
         /// </summary>
-        /// <param name="provider"></param>
-        public async Task NameExistAsync(Func<AppResource, Task<AppResource>> provider)
+        /// <param name="command"></param>
+        public void SetIndex(AppResourceCommand.SetIndex command)
         {
-            var appResource = await provider.Invoke(this);
-            if (appResource == null)
-            {
-                return;
-            }
-            throw new SAEException(StatusCodes.ResourcesExist, $"{nameof(AppResource)} name exist");
+            this.Apply<AppResourceEvent.SetIndex>(command);
         }
     }
 }

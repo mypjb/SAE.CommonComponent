@@ -52,8 +52,9 @@ namespace SAE.CommonComponent.PluginManagement
                     ;
 
             services.AddMemoryDocument()
+                    .AddDataPersistenceService(assemblies)
                     .AddMemoryMessageQueue()
-                    .AddDataPersistenceService(assemblies);
+                    .AddHandler();
         }
 
         public override void PluginConfigure(IApplicationBuilder app)

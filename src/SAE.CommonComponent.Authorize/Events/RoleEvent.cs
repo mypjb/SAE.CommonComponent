@@ -38,6 +38,17 @@ namespace SAE.CommonComponent.Authorize.Events
             public Status Status { get; set; }
         }
         /// <summary>
+        /// 设置索引
+        /// </summary>
+        public class SetIndex : IEvent
+        {
+            /// <summary>
+            /// 索引
+            /// </summary>
+            /// <value></value>
+            public int Index { get; set; }
+        }
+        /// <summary>
         /// 更改
         /// </summary>
         public class Change : IEvent

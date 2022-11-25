@@ -1,12 +1,12 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using SAE.CommonLibrary;
 using SAE.CommonLibrary.Extension;
-using System;
-using System.Collections.Generic;
-using System.Net.Http;
 using Xunit.Abstractions;
 
 namespace SAE.CommonComponent.Test
@@ -46,11 +46,13 @@ namespace SAE.CommonComponent.Test
                 if (response.StatusCode != System.Net.HttpStatusCode.Found)
                 {
                     var json = await response.Content.ReadAsStringAsync();
+                    this.WriteLine(new { Error = json, url = response.RequestMessage.RequestUri });
                     if (json.IsNullOrWhiteSpace())
                     {
                         throw new SAEException((int)response.StatusCode, json);
                     }
                     var output = json.ToObject<ErrorOutput>();
+
                     throw new SAEException(output);
                 }
             }));

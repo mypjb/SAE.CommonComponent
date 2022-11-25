@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using System;
+using System.Collections;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using SAE.CommonComponent.Application.Dtos;
 using SAE.CommonComponent.Test;
 using SAE.CommonLibrary.Extension;
-using System;
-using System.Net.Http;
-using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 using AppResourceCommand = SAE.CommonComponent.Application.Commands.AppResourceCommand;
@@ -69,8 +71,8 @@ namespace SAE.CommonComponent.Application.Test
             {
                 Id = appResource.Id,
                 Name = this.GetRandom(),
-                Method=this.GetRandom(),
-                Path=this.GetRandom()
+                Method = this.GetRandom(),
+                Path = this.GetRandom()
             };
             message.AddJsonContent(command);
             var responseMessage = await this.HttpClient.SendAsync(message);
@@ -79,6 +81,31 @@ namespace SAE.CommonComponent.Application.Test
             Assert.Equal(command.Name, newAppResource.Name);
             Assert.Equal(command.Method, newAppResource.Method);
             Assert.Equal(command.Path, newAppResource.Path);
+        }
+        [Fact]
+        public async Task BatchAdd()
+        {
+            var range = new Random().Next(100, 500);
+            var appDto = await this._appControllerTest.Add();
+            Enumerable.Range(0, range)
+                      .AsParallel()
+                      .ForAll(s =>
+                      {
+                          this.Add(appDto.Id).GetAwaiter().GetResult();
+                      });
+            var message = new HttpRequestMessage(HttpMethod.Get, $"{API}/list?AppId={appDto.Id}");
+
+            var responseMessage = await this.HttpClient.SendAsync(message);
+            var resources = await responseMessage.AsAsync<AppResourceDto[]>();
+
+            Assert.NotEmpty(resources);
+            Assert.Equal(range, resources.Length);
+            foreach (var resource in resources)
+            {
+                Assert.NotEqual(0, resource.Index);
+                Assert.Equal(1, resources.Count(s => s.Index == resource.Index));
+            }
+
         }
 
         private async Task<AppResourceDto> Get(string id)

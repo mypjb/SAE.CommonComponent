@@ -5,7 +5,7 @@ cd $(dirname $0)
 base_dir=$(pwd)
 
 # running Unit test
-#dotnet test -v n
+dotnet test -v q -l "console;verbosity=detailed"
 
 release_dir=$(echo $1 | sed 's/%2F/\//g')
 

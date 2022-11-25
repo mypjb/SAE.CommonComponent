@@ -45,5 +45,10 @@ namespace SAE.CommonComponent.Authorize.Dtos
         /// </summary>
         /// <value></value>
         public PermissionDto[] Permissions { get; set; }
+        /// <summary>
+        /// 索引
+        /// </summary>
+        /// <value></value>
+        public int Index { get; set; }
     }
 }

@@ -47,8 +47,9 @@ namespace SAE.CommonComponent.User
                     ;
 
             services.AddMemoryDocument()
+                    .AddDataPersistenceService(assemblies)
                     .AddMemoryMessageQueue()
-                    .AddDataPersistenceService(assemblies);
+                    .AddHandler();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

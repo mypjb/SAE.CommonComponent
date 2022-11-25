@@ -1,7 +1,7 @@
-using SAE.CommonComponent.Application.Abstract.Domains;
-using SAE.CommonLibrary.EventStore;
 using System;
 using System.Collections.Generic;
+using SAE.CommonComponent.Application.Abstract.Domains;
+using SAE.CommonLibrary.EventStore;
 
 namespace SAE.CommonComponent.Application.Events
 {
@@ -20,10 +20,6 @@ namespace SAE.CommonComponent.Application.Events
             /// </summary>
             /// <value></value>
             public string Id { get; set; }
-            /// <summary>
-            /// 索引,具有唯一性，不可更改
-            /// </summary>
-            public int Index { get; set; }
             /// <summary>
             /// 系统标识
             /// </summary>
@@ -57,6 +53,18 @@ namespace SAE.CommonComponent.Application.Events
             /// 资源访问谓词 (get、post、put...)
             /// </summary>
             public string Method { get; set; }
+        }
+
+        /// <summary>
+        /// 设置索引
+        /// </summary>
+        public class SetIndex : IEvent
+        {
+            /// <summary>
+            /// 索引
+            /// </summary>
+            /// <value></value>
+            public int Index { get; set; }
         }
 
     }

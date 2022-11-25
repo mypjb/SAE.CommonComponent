@@ -10,13 +10,15 @@ using SAE.CommonLibrary.Data;
 using SAE.CommonLibrary.EventStore.Document;
 using SAE.CommonLibrary.Extension;
 using SAE.CommonLibrary.Logging;
+using SAE.CommonLibrary.MessageQueue;
 
 namespace SAE.CommonComponent.Application.Abstract.Handlers
 {
 
-    public class AppResourceHandler : AbstractHandler,
+    public class AppResourceHandler : AbstractHandler<AppResource>,
                                       ICommandHandler<AppResourceCommand.Create, string>,
                                       ICommandHandler<AppResourceCommand.Change>,
+                                      ICommandHandler<AppResourceCommand.SetIndex>,
                                       ICommandHandler<Command.Delete<AppResource>>,
                                       ICommandHandler<AppResourceCommand.Query, IPagedList<AppResourceDto>>,
                                       ICommandHandler<Command.Find<AppResourceDto>, AppResourceDto>,
@@ -25,21 +27,24 @@ namespace SAE.CommonComponent.Application.Abstract.Handlers
         private readonly IStorage _storage;
         private readonly IMediator _mediator;
         private readonly ILogging _logging;
+        private readonly IMessageQueue _messageQueue;
+
         public AppResourceHandler(IDocumentStore documentStore,
                                   IStorage storage,
                                   IMediator mediator,
-                                  ILogging<AppHandler> logging) : base(documentStore)
+                                  ILogging<AppHandler> logging,
+                                  IMessageQueue messageQueue) : base(documentStore)
         {
             this._storage = storage;
             this._mediator = mediator;
             this._logging = logging;
+            this._messageQueue = messageQueue;
         }
 
 
         public async Task HandleAsync(AppResourceCommand.Change command)
         {
             var appResource = await this._documentStore.FindAsync<AppResource>(command.Id);
-            await appResource.NameExistAsync(this.FindAppResourceAsync);
             appResource.Change(command);
             await this._documentStore.SaveAsync(appResource);
         }
@@ -47,8 +52,8 @@ namespace SAE.CommonComponent.Application.Abstract.Handlers
         public async Task<string> HandleAsync(AppResourceCommand.Create command)
         {
             var appResource = new AppResource(command);
-            await appResource.NameExistAsync(this.FindAppResourceAsync);
             await this.AddAsync(appResource);
+            await this._messageQueue.PublishAsync(command);
             return appResource.Id;
         }
 
@@ -73,7 +78,7 @@ namespace SAE.CommonComponent.Application.Abstract.Handlers
 
         public async Task HandleAsync(Command.Delete<AppResource> command)
         {
-            await this.DeleteAsync<AppResource>(command.Id);
+            await this.DeleteAsync(command.Id);
         }
 
         public Task<IEnumerable<AppResourceDto>> HandleAsync(AppResourceCommand.List command)
@@ -84,13 +89,14 @@ namespace SAE.CommonComponent.Application.Abstract.Handlers
                  .AsEnumerable());
         }
 
-        private Task<AppResource> FindAppResourceAsync(AppResource appResource)
+        public async Task HandleAsync(AppResourceCommand.SetIndex command)
         {
-            var oldAppResource = this._storage.AsQueryable<AppResource>()
-                                   .FirstOrDefault(s => s.Name == appResource.Name &&
-                                                        s.AppId == appResource.AppId &&
-                                                        s.Id != appResource.Id);
-            return Task.FromResult(oldAppResource);
+            var resource = await this.FindAsync(command.Id);
+            Assert.Build(resource)
+                  .NotNull("资源不存在，或被删除！");
+            resource.SetIndex(command);
+            await this._documentStore.SaveAsync(resource);
         }
+
     }
 }

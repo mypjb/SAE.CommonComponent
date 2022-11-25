@@ -14,6 +14,7 @@ using SAE.CommonLibrary.Abstract.Model;
 using SAE.CommonLibrary.AspNetCore.Authorization;
 using SAE.CommonLibrary.Data;
 using SAE.CommonLibrary.EventStore.Document;
+using SAE.CommonLibrary.Extension;
 using SAE.CommonLibrary.Logging;
 
 namespace SAE.CommonComponent.Authorize.Handlers
@@ -111,35 +112,27 @@ namespace SAE.CommonComponent.Authorize.Handlers
             var dic = new Dictionary<string, string>();
             foreach (var group in roles.GroupBy(s => s.AppId))
             {
-#warning 此处计算Code
+                var indexs = group.Select(s => s.Index).ToArray();
+                var code = this._bitmapAuthorization.GenerateCode(indexs);
+                if (code.IsNullOrWhiteSpace())
+                {
+                    this._logging.Warn($"系统({group.Key})下的用户({command.UserId})分配的角色，尚未分配任何权限，或权限索引皆为0。");
+                    continue;
+                }
+                dic.Add(group.Key, code);
             }
             return dic;
         }
 
         public async Task<IPagedList<RoleDto>> HandleAsync(UserRoleCommand.Query command)
         {
-            if (command.Referenced)
-            {
-                var paging = PagedList.Build(this._storage.AsQueryable<UserRole>()
-                                   .Where(s => s.UserId == command.UserId), command);
+            var ids = this._storage.AsQueryable<UserRole>()
+                                   .Where(s => s.UserId == command.UserId)
+                                   .Select(s => s.RoleId)
+                                   .ToArray();
 
-                var ids = paging.Select(ur => ur.RoleId).ToArray();
-
-                return PagedList.Build(this._storage.AsQueryable<RoleDto>()
-                                                    .Where(s => ids.Contains(s.Id))
-                                                    .ToList(), paging);
-
-            }
-            else
-            {
-                var ids = this._storage.AsQueryable<UserRole>()
-                                       .Where(s => s.UserId == command.UserId)
-                                       .Select(s => s.RoleId)
-                                       .ToArray();
-
-                return PagedList.Build(this._storage.AsQueryable<RoleDto>()
-                                           .Where(s => !ids.Contains(s.Id)), command);
-            }
+            return PagedList.Build(this._storage.AsQueryable<RoleDto>()
+                            .Where(s => !ids.Contains(s.Id)), command);
         }
 
         public Task HandleAsync(Command.BatchDelete<UserRole> command)

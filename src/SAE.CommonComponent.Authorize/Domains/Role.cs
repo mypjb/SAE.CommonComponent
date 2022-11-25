@@ -46,6 +46,10 @@ namespace SAE.CommonComponent.Authorize.Domains
         /// </summary>
         public string AppId { get; set; }
         /// <summary>
+        /// 角色索引
+        /// </summary>
+        public string Index { get; set; }
+        /// <summary>
         /// 角色引用的权限集合
         /// </summary>
         public string[] PermissionIds { get; set; }
@@ -128,6 +132,13 @@ namespace SAE.CommonComponent.Authorize.Domains
             }
             throw new SAEException(StatusCodes.ResourcesExist, $"{nameof(Role)} name exist");
         }
-
+        /// <summary>
+        /// 设置索引
+        /// </summary>
+        /// <param name="command"></param>
+        public void SetIndex(RoleCommand.SetIndex command)
+        {
+            this.Apply<RoleEvent.SetIndex>(command);
+        }
     }
 }

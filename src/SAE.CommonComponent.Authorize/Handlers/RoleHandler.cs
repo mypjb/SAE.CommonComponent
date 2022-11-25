@@ -1,4 +1,8 @@
-﻿using SAE.CommonComponent.Authorize.Commands;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using SAE.CommonComponent.Authorize.Commands;
 using SAE.CommonComponent.Authorize.Domains;
 using SAE.CommonComponent.Authorize.Dtos;
 using SAE.CommonComponent.Routing.Commands;
@@ -10,36 +14,39 @@ using SAE.CommonLibrary.Abstract.Model;
 using SAE.CommonLibrary.Data;
 using SAE.CommonLibrary.EventStore.Document;
 using SAE.CommonLibrary.Extension;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using SAE.CommonLibrary.MessageQueue;
 
 namespace SAE.CommonComponent.Authorize.Handlers
 {
     public class RoleHandler : AbstractHandler<Role>,
                               ICommandHandler<RoleCommand.Create, string>,
+                              ICommandHandler<RoleCommand.SetIndex>,
                               ICommandHandler<RoleCommand.Change>,
                               ICommandHandler<RoleCommand.ChangeStatus>,
                               ICommandHandler<RoleCommand.ReferencePermission>,
                               ICommandHandler<RoleCommand.DeletePermission>,
                               ICommandHandler<Command.BatchDelete<Role>>,
-                              ICommandHandler<Command.Find<RoleDto>,RoleDto>,
+                              ICommandHandler<Command.Find<RoleDto>, RoleDto>,
                               ICommandHandler<RoleCommand.Query, IPagedList<RoleDto>>,
-                              ICommandHandler<RoleCommand.PermissionQuery, IPagedList<PermissionDto>>
+                              ICommandHandler<RoleCommand.List, IEnumerable<RoleDto>>,
+                              ICommandHandler<RoleCommand.PermissionList, IEnumerable<PermissionDto>>
+
     {
         private readonly IStorage _storage;
         private readonly IDirector _director;
         private readonly IMediator _mediator;
+        private readonly IMessageQueue _messageQueue;
 
-        public RoleHandler(IDocumentStore documentStore, 
+        public RoleHandler(IDocumentStore documentStore,
                           IStorage storage,
                           IDirector director,
-                          IMediator mediator) : base(documentStore)
+                          IMediator mediator,
+                          IMessageQueue messageQueue) : base(documentStore)
         {
             this._storage = storage;
             this._director = director;
             this._mediator = mediator;
+            this._messageQueue = messageQueue;
         }
 
         public async Task<string> HandleAsync(RoleCommand.Create command)
@@ -47,12 +54,13 @@ namespace SAE.CommonComponent.Authorize.Handlers
             var role = new Role(command);
             await role.NameExist(this.FindRole);
             await this.AddAsync(role);
+            await this._messageQueue.PublishAsync(command);
             return role.Id;
         }
 
         public async Task HandleAsync(RoleCommand.Change command)
         {
-            await this.UpdateAsync(command.Id,async role =>
+            await this.UpdateAsync(command.Id, async role =>
             {
                 role.Change(command);
                 await role.NameExist(this.FindRole);
@@ -72,7 +80,7 @@ namespace SAE.CommonComponent.Authorize.Handlers
             await command.Ids.ForEachAsync(async id =>
             {
                 var userRoles = this._storage.AsQueryable<UserRole>()
-                                             .Where(s => s.RoleId==id);
+                                             .Where(s => s.RoleId == id);
                 await this._mediator.SendAsync(new Command.BatchDelete<UserRole>
                 {
                     Ids = userRoles.Select(s => s.Id)
@@ -106,14 +114,14 @@ namespace SAE.CommonComponent.Authorize.Handlers
 
         public async Task<RoleDto> HandleAsync(Command.Find<RoleDto> command)
         {
-            var dto= this._storage.AsQueryable<RoleDto>()
-                                  .FirstOrDefault(s => s.Id == command.Id);
+            var dto = this._storage.AsQueryable<RoleDto>()
+                                   .FirstOrDefault(s => s.Id == command.Id);
             return dto;
         }
 
         public async Task HandleAsync(RoleCommand.ReferencePermission command)
         {
-            var role =await this.FindAsync(command.Id);
+            var role = await this.FindAsync(command.Id);
 
             Assert.Build(role)
                   .IsNotNull();
@@ -135,33 +143,42 @@ namespace SAE.CommonComponent.Authorize.Handlers
             await this._documentStore.SaveAsync(role);
         }
 
-        public async Task<IPagedList<PermissionDto>> HandleAsync(RoleCommand.PermissionQuery command)
+        public async Task<IEnumerable<PermissionDto>> HandleAsync(RoleCommand.PermissionList command)
         {
-            var role = await this._documentStore.FindAsync<Role>(command.Id);
+            var roleDtos = this._storage.AsQueryable<RoleDto>()
+                                        .FirstOrDefault(s => s.Id == command.Id);
+            await this._director.Build(roleDtos);
 
-            if (command.Referenced)
-            {
-                var pIds = PagedList.Build(role.PermissionIds.AsQueryable(), command);
-                var permissionDtos = await this._mediator.SendAsync<IEnumerable<PermissionDto>>(new PermissionCommand.Finds
-                {
-                    Ids = pIds.ToArray()
-                });
-
-                return PagedList.Build(permissionDtos, pIds);
-            }
-            else
-            {
-                return await this._mediator.SendAsync<IPagedList<PermissionDto>>(new PermissionCommand.Query());
-            }
+            return roleDtos?.Permissions ?? Enumerable.Empty<PermissionDto>();
         }
 
-        
+        public async Task<IEnumerable<RoleDto>> HandleAsync(RoleCommand.List command)
+        {
+            var query = this._storage.AsQueryable<RoleDto>();
+            if (!command.AppId.IsNullOrWhiteSpace())
+            {
+                query = query.Where(s => s.AppId == command.AppId);
+            }
+            return query.ToArray();
+        }
+
+        public async Task HandleAsync(RoleCommand.SetIndex command)
+        {
+            var role = await this.FindAsync(command.Id);
+            Assert.Build(role)
+                  .NotNull("角色不存在，或被删除！")
+                  .Then(s => s.Status == Status.Delete)
+                  .False("角色不存在，或被删除！");
+            role.SetIndex(command);
+            await this._documentStore.SaveAsync(role);
+        }
+
         private Task<Role> FindRole(Role role)
         {
             var oldRole = this._storage.AsQueryable<Role>()
-                                   .FirstOrDefault(s => s.AppId == role.AppId
-                                                        && s.Name == role.Name
-                                                        && s.Id != role.Id);
+                                       .FirstOrDefault(s => s.AppId == role.AppId
+                                                       && s.Name == role.Name
+                                                       && s.Id != role.Id);
             return Task.FromResult(oldRole);
         }
     }

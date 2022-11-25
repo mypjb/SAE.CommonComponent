@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 using SAE.CommonLibrary.Abstract.Model;
 
 namespace SAE.CommonComponent.Authorize.Commands
@@ -83,6 +84,17 @@ namespace SAE.CommonComponent.Authorize.Commands
             /// </summary>
             /// <value></value>
             public string[] Ids { get; set; }
+        }
+        /// <summary>
+        /// 列出所有权限
+        /// </summary>
+        public class List
+        {
+            /// <summary>
+            /// 系统标识
+            /// </summary>
+            /// <value></value>
+            public string AppId { get; set; }
         }
 
     }

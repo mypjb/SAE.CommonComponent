@@ -58,8 +58,9 @@ namespace SAE.CommonComponent.Routing
                     .AddMediator();
 
             services.AddMemoryDocument()
+                    .AddDataPersistenceService(assemblys)
                     .AddMemoryMessageQueue()
-                    .AddDataPersistenceService(assemblys);
+                    .AddHandler();
         }
     }
 }

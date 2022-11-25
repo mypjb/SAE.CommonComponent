@@ -112,10 +112,9 @@ namespace SAE.CommonComponent.Authorize.Controllers
         /// </summary>
         /// <param name="command"></param>
         [HttpGet("permission/{action}")]
-        public async Task<IPagedList<PermissionDto>> Paging([FromQuery] RoleCommand.PermissionQuery command)
+        public async Task<IEnumerable<PermissionDto>> Paging([FromQuery] RoleCommand.PermissionList command)
         {
-            var paging = await this._mediator.SendAsync<IPagedList<PermissionDto>>(command);
-            return paging;
+            return await this._mediator.SendAsync<IEnumerable<PermissionDto>>(command);
         }
 
 

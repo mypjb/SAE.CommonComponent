@@ -4,6 +4,9 @@ base_dir=$(cd $(dirname $0) && pwd)
 
 release_dir=${1:-"plugin"}
 
+#runtime xunit test
+dotnet test -v q -l "console;verbosity=detailed"
+
 mkdir -p $release_dir
 
 project_array=( BasicData Application Authorize Identity OAuth Routing User InitializeData ConfigServer PluginManagement)

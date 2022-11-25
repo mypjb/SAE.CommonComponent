@@ -30,6 +30,24 @@ namespace SAE.CommonComponent.Authorize.Commands
             /// <value></value>
             public string Description { get; set; }
         }
+
+        /// <summary>
+        /// 设置索引
+        /// </summary>
+        public class SetIndex
+        {
+            /// <summary>
+            /// 标识
+            /// </summary>
+            /// <value></value>
+            public string Id { get; set; }
+            /// <summary>
+            /// 索引
+            /// </summary>
+            /// <value></value>
+            public int Index { get; set; }
+        }
+
         /// <summary>
         /// 更改基本信息
         /// </summary>
@@ -91,19 +109,28 @@ namespace SAE.CommonComponent.Authorize.Commands
             public string Name { get; set; }
         }
         /// <summary>
-        /// 查询角色权限
+        /// 列出角色集合
         /// </summary>
 
-        public class PermissionQuery : Paging
+        public class List
+        {
+            /// <summary>
+            /// 系统标识
+            /// </summary>
+            /// <value></value>
+            public string AppId { get; set; }
+        }
+        /// <summary>
+        /// 列出权限集合
+        /// </summary>
+
+        public class PermissionList
         {
             /// <summary>
             /// 角色标识
             /// </summary>
+            /// <value></value>
             public string Id { get; set; }
-            /// <summary>
-            /// 是否引用
-            /// </summary>
-            public bool Referenced { get; set; }
         }
     }
 }

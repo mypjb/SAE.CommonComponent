@@ -52,9 +52,10 @@ namespace SAE.CommonComponent.BasicData
             services.AddServiceFacade()
                     .AddMediator();
             services.AddMemoryDocument()
-                    .AddMemoryMessageQueue()
                     .AddDataPersistenceService(assemblys)
-                    .AddBuilder(assemblys);
+                    .AddBuilder(assemblys)
+                    .AddMemoryMessageQueue()
+                    .AddHandler();
         }
 
         public override void PluginConfigure(IApplicationBuilder app)

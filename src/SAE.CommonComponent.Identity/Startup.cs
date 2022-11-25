@@ -74,9 +74,10 @@ namespace SAE.CommonComponent.Identity
                     ;
 
             services.AddMemoryDocument()
-                    .AddMemoryMessageQueue()
                     .AddSaeMemoryDistributedCache()
-                    .AddDataPersistenceService(assemblys);
+                    .AddDataPersistenceService(assemblys)
+                    .AddMemoryMessageQueue()
+                    .AddHandler();
         }
 
         public override void PluginConfigure(IApplicationBuilder app)

@@ -13,17 +13,18 @@ using SAE.CommonLibrary.Abstract.Model;
 using SAE.CommonLibrary.AspNetCore.Authorization;
 using SAE.CommonLibrary.Data;
 using SAE.CommonLibrary.EventStore.Document;
+using SAE.CommonLibrary.Extension;
 using SAE.CommonLibrary.Logging;
 
 namespace SAE.CommonComponent.Authorize.Handlers
 {
     public class ClientRoleHandler : AbstractHandler<ClientRole>,
-                                  ICommandHandler<ClientRoleCommand.ReferenceRole>,
-                                  ICommandHandler<ClientRoleCommand.DeleteRole>,
-                                  ICommandHandler<ClientRoleCommand.QueryClientAuthorizeCode, Dictionary<string, string>>,
-                                  ICommandHandler<ClientRoleCommand.Query, IPagedList<RoleDto>>,
-                                  ICommandHandler<Command.Find<ClientRoleDto>, IEnumerable<RoleDto>>,
-                                  ICommandHandler<Command.BatchDelete<ClientRole>>
+                                     ICommandHandler<ClientRoleCommand.ReferenceRole>,
+                                     ICommandHandler<ClientRoleCommand.DeleteRole>,
+                                     ICommandHandler<ClientRoleCommand.QueryClientAuthorizeCode, Dictionary<string, string>>,
+                                     ICommandHandler<ClientRoleCommand.Query, IPagedList<RoleDto>>,
+                                     ICommandHandler<Command.Find<ClientRoleDto>, IEnumerable<RoleDto>>,
+                                     ICommandHandler<Command.BatchDelete<ClientRole>>
     {
         private readonly IStorage _storage;
         private readonly IMediator _mediator;
@@ -32,11 +33,11 @@ namespace SAE.CommonComponent.Authorize.Handlers
         private readonly ILogging _logging;
 
         public ClientRoleHandler(IDocumentStore documentStore,
-                              IStorage storage,
-                              IMediator mediator,
-                              IDirector director,
-                              IBitmapAuthorization bitmapAuthorization,
-                              ILogging<ClientRoleHandler> logging) : base(documentStore)
+                                 IStorage storage,
+                                 IMediator mediator,
+                                 IDirector director,
+                                 IBitmapAuthorization bitmapAuthorization,
+                                 ILogging<ClientRoleHandler> logging) : base(documentStore)
         {
             this._storage = storage;
             this._mediator = mediator;
@@ -86,8 +87,16 @@ namespace SAE.CommonComponent.Authorize.Handlers
             var dic = new Dictionary<string, string>();
             foreach (var group in roles.GroupBy(s => s.AppId))
             {
-#warning 此处计算Code
-                //dic.Add(group.Key, code);
+                var indexs = group.Select(s => s.Index).ToArray();
+
+                var code = this._bitmapAuthorization.GenerateCode(indexs);
+
+                if (code.IsNullOrWhiteSpace())
+                {
+                    this._logging.Warn($"系统({group.Key})下的客户端凭证({command.ClientId})分配的角色，尚未分配任何权限，或权限索引皆为0。");
+                    continue;
+                }
+                dic.Add(group.Key, code);
             }
 
             return dic;
@@ -95,27 +104,13 @@ namespace SAE.CommonComponent.Authorize.Handlers
 
         public async Task<IPagedList<RoleDto>> HandleAsync(ClientRoleCommand.Query command)
         {
-            if (command.Referenced)
-            {
-                var paging = PagedList.Build(this._storage.AsQueryable<ClientRole>()
-                                   .Where(s => s.ClientId == command.ClientId), command);
+            var ids = this._storage.AsQueryable<ClientRole>()
+                                   .Where(s => s.ClientId == command.ClientId)
+                                   .Select(s => s.RoleId)
+                                   .ToArray();
 
-                var ids = paging.Select(ur => ur.RoleId).ToArray();
-
-                return PagedList.Build(this._storage.AsQueryable<RoleDto>()
-                                                    .Where(s => ids.Contains(s.Id))
-                                                    .ToList(), paging);
-            }
-            else
-            {
-                var ids = this._storage.AsQueryable<ClientRole>()
-                                       .Where(s => s.ClientId == command.ClientId)
-                                       .Select(s => s.RoleId)
-                                       .ToArray();
-
-                return PagedList.Build(this._storage.AsQueryable<RoleDto>()
-                                           .Where(s => !ids.Contains(s.Id)), command);
-            }
+            return PagedList.Build(this._storage.AsQueryable<RoleDto>()
+                            .Where(s => !ids.Contains(s.Id)), command);
         }
 
         public Task HandleAsync(Command.BatchDelete<ClientRole> command)

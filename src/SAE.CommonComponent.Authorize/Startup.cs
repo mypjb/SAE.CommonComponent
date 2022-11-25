@@ -1,3 +1,7 @@
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Reflection;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -7,17 +11,15 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Primitives;
 using Microsoft.IdentityModel.Tokens;
+using SAE.CommonComponent.Authorize.Commands;
 using SAE.CommonComponent.Authorize.Dtos;
 using SAE.CommonLibrary;
 using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.AspNetCore.Authorization;
 using SAE.CommonLibrary.AspNetCore.Routing;
 using SAE.CommonLibrary.EventStore.Document;
+using SAE.CommonLibrary.MessageQueue;
 using SAE.CommonLibrary.Plugin.AspNetCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Reflection;
 
 namespace SAE.CommonComponent.Authorize
 {
@@ -61,8 +63,9 @@ namespace SAE.CommonComponent.Authorize
 
             services.AddBuilder()
                     .AddMemoryDocument()
+                    .AddDataPersistenceService(assemblys)
                     .AddMemoryMessageQueue()
-                    .AddDataPersistenceService(assemblys);
+                    .AddHandler();
 
             services.AddBitmapAuthorization()
                     .AddLocalBitmapEndpointProvider();
@@ -103,6 +106,8 @@ namespace SAE.CommonComponent.Authorize
             //app.UseMediatorOrleansSilo();
             app.UseServiceFacade()
                .UseBitmapAuthorization();
+            var messageQueue = app.ApplicationServices.GetService<IMessageQueue>();
+            messageQueue.Subscibe<RoleCommand.Create>();
         }
     }
 }

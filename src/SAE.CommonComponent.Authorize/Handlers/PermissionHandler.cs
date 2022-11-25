@@ -1,4 +1,8 @@
-﻿using SAE.CommonComponent.Authorize.Commands;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using SAE.CommonComponent.Authorize.Commands;
 using SAE.CommonComponent.Authorize.Domains;
 using SAE.CommonComponent.Authorize.Dtos;
 using SAE.CommonLibrary.Abstract.Mediator;
@@ -8,10 +12,6 @@ using SAE.CommonLibrary.AspNetCore.Routing;
 using SAE.CommonLibrary.Data;
 using SAE.CommonLibrary.EventStore.Document;
 using SAE.CommonLibrary.Extension;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SAE.CommonComponent.Authorize.Handlers
 {
@@ -22,7 +22,7 @@ namespace SAE.CommonComponent.Authorize.Handlers
                                     ICommandHandler<Command.BatchDelete<Permission>>,
                                     ICommandHandler<Command.Find<PermissionDto>, PermissionDto>,
                                     ICommandHandler<PermissionCommand.Query, IPagedList<PermissionDto>>,
-                                    ICommandHandler<Command.List<PermissionDto>, IEnumerable<PermissionDto>>,
+                                    ICommandHandler<PermissionCommand.List, IEnumerable<PermissionDto>>,
                                     ICommandHandler<PermissionCommand.Finds, IEnumerable<PermissionDto>>
     {
         private readonly IStorage _storage;
@@ -85,9 +85,14 @@ namespace SAE.CommonComponent.Authorize.Handlers
             return Task.FromResult(PagedList.Build(query, command));
         }
 
-        public async Task<IEnumerable<PermissionDto>> HandleAsync(Command.List<PermissionDto> command)
+        public async Task<IEnumerable<PermissionDto>> HandleAsync(PermissionCommand.List command)
         {
-            return this.GetStorage().ToArray();
+            var query = this.GetStorage();
+            if (!command.AppId.IsNullOrWhiteSpace())
+            {
+                query = query.Where(s => s.AppId == command.AppId);
+            }
+            return query.ToArray();
         }
 
         public async Task<PermissionDto> HandleAsync(Command.Find<PermissionDto> command)

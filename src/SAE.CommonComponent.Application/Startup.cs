@@ -1,19 +1,20 @@
-using System.Text;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SAE.CommonComponent.Application.Abstract.Domains;
+using SAE.CommonComponent.Application.Commands;
+using SAE.CommonComponent.Application.Converts;
 using SAE.CommonComponent.Application.Dtos;
 using SAE.CommonLibrary.Abstract.Mediator;
+using SAE.CommonLibrary.MessageQueue;
 using SAE.CommonLibrary.Plugin.AspNetCore;
-using System.Reflection;
-using Microsoft.AspNetCore.Http;
-using SAE.CommonComponent.Application.Commands;
-using System.ComponentModel;
-using SAE.CommonComponent.Application.Converts;
-using SAE.CommonComponent.Application.Abstract.Domains;
 
 namespace SAE.CommonComponent.Application
 {
@@ -57,9 +58,11 @@ namespace SAE.CommonComponent.Application
                     //.AddMediatorOrleansClient()
                     ;
             services.AddMemoryDocument()
-                    .AddMemoryMessageQueue()
                     .AddSaeMemoryDistributedCache()
-                    .AddDataPersistenceService(assemblys);
+                    .AddDataPersistenceService(assemblys)
+                    .AddMemoryMessageQueue()
+                    .AddHandler();
+
         }
 
         public override void PluginConfigure(IApplicationBuilder app)
@@ -78,6 +81,8 @@ namespace SAE.CommonComponent.Application
                 });
             }
             app.UseServiceFacade();
+            var messageQueue = app.ApplicationServices.GetService<IMessageQueue>();
+            messageQueue.Subscibe<AppResourceCommand.Create>();
             //app.UseMediatorOrleansSilo();
         }
     }

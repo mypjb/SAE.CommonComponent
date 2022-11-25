@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -68,7 +69,7 @@ namespace SAE.CommonComponent.Application.Controllers
         /// 分页查询
         /// </summary>
         /// <param name="command"></param>
-        [HttpGet("{action}")]
+        [HttpGet("[action]")]
         public async Task<object> Paging([FromQuery] AppResourceCommand.Query command)
         {
             return await this._mediator.SendAsync<IPagedList<AppResourceDto>>(command);
@@ -77,7 +78,7 @@ namespace SAE.CommonComponent.Application.Controllers
         /// 列出所有
         /// </summary>
         /// <param name="command"></param>
-        [HttpGet("{action}")]
+        [HttpGet("[action]")]
         public async Task<object> List([FromQuery] AppResourceCommand.List command)
         {
             return await this._mediator.SendAsync<IEnumerable<AppResourceDto>>(command);

@@ -50,11 +50,6 @@ namespace SAE.CommonComponent.Authorize.Commands
             /// </summary>
             /// <value></value>
             public string ClientId { get; set; }
-            /// <summary>
-            /// 是否引用
-            /// </summary>
-            /// <value></value>
-            public bool Referenced { get; set; }
         }
     }
 }
