@@ -89,9 +89,9 @@ namespace SAE.CommonComponent.Authorize.Test
 
 
 
-        private async Task<IEnumerable<RoleDto>> Get(string id, bool referenced = true)
+        private async Task<IEnumerable<RoleDto>> Get(string id)
         {
-            var message = new HttpRequestMessage(HttpMethod.Get, $"{API}/paging?clientId={id}&referenced={referenced}&pagesize={int.MaxValue}");
+            var message = new HttpRequestMessage(HttpMethod.Get, $"{API}/paging?clientId={id}&pagesize={int.MaxValue}");
             var responseMessage = await this.HttpClient.SendAsync(message);
             return await responseMessage.AsAsync<PagedList<RoleDto>>();
         }

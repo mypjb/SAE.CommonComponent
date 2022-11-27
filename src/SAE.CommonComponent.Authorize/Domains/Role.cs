@@ -50,6 +50,11 @@ namespace SAE.CommonComponent.Authorize.Domains
         /// </summary>
         public string Index { get; set; }
         /// <summary>
+        /// 权限码
+        /// </summary>
+        /// <value></value>
+        public string PermissionCode { get; set; }
+        /// <summary>
         /// 角色引用的权限集合
         /// </summary>
         public string[] PermissionIds { get; set; }
@@ -90,8 +95,8 @@ namespace SAE.CommonComponent.Authorize.Domains
         public void ReferencePermission(RoleCommand.ReferencePermission command)
         {
             var permissionIds = this.PermissionIds.Concat(command.PermissionIds)
-                                                 .Distinct()
-                                                 .ToArray();
+                                                  .Distinct()
+                                                  .ToArray();
 
             this.Apply(new RoleEvent.ReferencePermission
             {
@@ -118,7 +123,7 @@ namespace SAE.CommonComponent.Authorize.Domains
         }
 
         /// <summary>
-        /// 角色是否存在，如果存在则处罚异常。
+        /// 角色是否存在，如果存在则触发异常。
         /// </summary>
         /// <exception cref="SAEException"/>
         /// <param name="provider">提供一个可以用来查询的委托</param>
@@ -139,6 +144,14 @@ namespace SAE.CommonComponent.Authorize.Domains
         public void SetIndex(RoleCommand.SetIndex command)
         {
             this.Apply<RoleEvent.SetIndex>(command);
+        }
+        /// <summary>
+        /// 更改权限码
+        /// </summary>
+        /// <param name="command"></param>
+        public void ChangePermissionCode(RoleCommand.ChangePermissionCode command)
+        {
+            this.Apply<RoleEvent.ChangePermissionCode>(command);
         }
     }
 }

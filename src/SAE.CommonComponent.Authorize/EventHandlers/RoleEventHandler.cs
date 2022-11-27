@@ -2,11 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using SAE.CommonComponent.Application.Commands;
+using SAE.CommonComponent.Application.Dtos;
 using SAE.CommonComponent.Authorize.Commands;
 using SAE.CommonComponent.Authorize.Domains;
 using SAE.CommonComponent.Authorize.Dtos;
 using SAE.CommonComponent.Authorize.Events;
 using SAE.CommonLibrary.Abstract.Mediator;
+using SAE.CommonLibrary.AspNetCore.Authorization;
 using SAE.CommonLibrary.EventStore.Document;
 using SAE.CommonLibrary.Logging;
 using SAE.CommonLibrary.MessageQueue;
@@ -17,11 +20,13 @@ namespace SAE.CommonComponent.Authorize.EventHandlers
     /// 角色事件处理程序
     /// </summary>
     /// <inheritdoc/>
-    public class RoleEventHandler : IHandler<RoleCommand.Create>
+    public class RoleEventHandler : IHandler<RoleCommand.Create>,
+                                    IHandler<RoleCommand.PermissionChange>
     {
         private readonly IDocumentStore _documentStore;
         private readonly IMediator _mediator;
         private readonly ILogging _logging;
+        private readonly IBitmapAuthorization _bitmapAuthorization;
 
         /// <summary>
         /// 创建一个新的对象
@@ -29,13 +34,16 @@ namespace SAE.CommonComponent.Authorize.EventHandlers
         /// <param name="documentStore"></param>
         /// <param name="mediator"></param>
         /// <param name="logging"></param>
+        /// <param name="bitmapAuthorization"></param>
         public RoleEventHandler(IDocumentStore documentStore,
                                 IMediator mediator,
-                                ILogging<RoleEventHandler> logging)
+                                ILogging<RoleEventHandler> logging,
+                                IBitmapAuthorization bitmapAuthorization)
         {
             this._documentStore = documentStore;
             this._mediator = mediator;
             this._logging = logging;
+            this._bitmapAuthorization = bitmapAuthorization;
         }
 
         public async Task HandleAsync(RoleCommand.Create command)
@@ -77,6 +85,50 @@ namespace SAE.CommonComponent.Authorize.EventHandlers
                 await this._mediator.SendAsync(indexCommand);
             }
             this._logging.Info($"角色'{command.Name}'添加完成。");
+        }
+
+        public async Task HandleAsync(RoleCommand.PermissionChange message)
+        {
+            var findCommand = new Command.Find<RoleDto>
+            {
+                Id = message.Id
+            };
+
+            var role = await this._mediator.SendAsync<RoleDto>(findCommand);
+
+            var bits = new List<int>();
+
+            if (role.Permissions.Any())
+            {
+                var appResourceIds = role.Permissions.Select(s => s.AppResourceId)
+                                                     .ToArray();
+
+                var appResourceListCommand = new AppResourceCommand.List
+                {
+                    AppId = role.AppId
+                };
+
+                var resourceDtos = await this._mediator.SendAsync<IEnumerable<AppResourceDto>>(appResourceListCommand);
+
+                foreach (var resourceDto in resourceDtos)
+                {
+                    if (appResourceIds.Contains(resourceDto.Id))
+                    {
+                        bits.Add(resourceDto.Index);
+                    }
+                }
+            }
+
+            var permissionCode = this._bitmapAuthorization.GenerateCode(bits);
+
+            var changePermissionCodeCommand = new RoleCommand.ChangePermissionCode
+            {
+                Id = role.Id,
+                PermissionCode = permissionCode
+            };
+
+            await this._mediator.SendAsync(changePermissionCodeCommand);
+
         }
     }
 }

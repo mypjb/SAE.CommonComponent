@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using SAE.CommonComponent.Authorize.Commands;
 using SAE.CommonComponent.Authorize.Events;
 using SAE.CommonLibrary;
+using SAE.CommonLibrary.EventStore;
 using SAE.CommonLibrary.EventStore.Document;
 using SAE.CommonLibrary.Extension;
 
@@ -20,20 +21,6 @@ namespace SAE.CommonComponent.Authorize.Domains
         /// </summary>
         public Permission()
         {
-
-        }
-        /// <summary>
-        /// 创建一个新的对象
-        /// </summary>
-        /// <param name="command"></param>
-        public Permission(PermissionCommand.Create command)
-        {
-            this.Apply<PermissionEvent.Create>(command, @event =>
-             {
-                 @event.Id = Utils.GenerateId();
-                 @event.CreateTime = DateTime.UtcNow;
-                 @event.Status = Status.Enable;
-             });
 
         }
         /// <summary>
@@ -67,12 +54,57 @@ namespace SAE.CommonComponent.Authorize.Domains
         /// 状态
         /// </summary>
         public Status Status { get; set; }
+
+        /// <summary>
+        /// 创建一个新的对象
+        /// </summary>
+        /// <param name="command"></param>
+        public PermissionCommand.AppResource Create(PermissionCommand.Create command)
+        {
+            this.Apply<PermissionEvent.Create>(command, @event =>
+             {
+                 @event.Id = Utils.GenerateId();
+                 @event.CreateTime = DateTime.UtcNow;
+                 @event.Status = Status.Enable;
+             });
+
+            var resourceCommand = new PermissionCommand.AppResource
+            {
+                Id = this.Id,
+                AppResourceId = command.AppResourceId
+            };
+
+            return this.SetAppResource(resourceCommand) ? resourceCommand : null;
+        }
+        /// <summary>
+        /// 设置资源
+        /// </summary>
+        /// <param name="command"></param>
+        public bool SetAppResource(PermissionCommand.AppResource command)
+        {
+            if ((command.AppResourceId.IsNullOrWhiteSpace() && !this.AppResourceId.IsNullOrWhiteSpace()) ||
+                (!command.AppResourceId.IsNullOrWhiteSpace() && this.AppResourceId != command.AppResourceId))
+            {
+                this.Apply<PermissionEvent.AppResource>(command);
+                return true;
+            }
+            return false;
+        }
         /// <summary>
         /// 更改信息
         /// </summary>
         /// <param name="command"></param>
-        public void Change(PermissionCommand.Change command) =>
+        public PermissionCommand.AppResource Change(PermissionCommand.Change command)
+        {
             this.Apply<PermissionEvent.Change>(command);
+            var resourceCommand = new PermissionCommand.AppResource
+            {
+                Id = this.Id,
+                AppResourceId = command.AppResourceId
+            };
+            return this.SetAppResource(resourceCommand) ? resourceCommand : null;
+        }
+
         /// <summary>
         /// 更改状态
         /// </summary>

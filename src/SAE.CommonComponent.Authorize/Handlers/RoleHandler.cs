@@ -23,6 +23,7 @@ namespace SAE.CommonComponent.Authorize.Handlers
                               ICommandHandler<RoleCommand.SetIndex>,
                               ICommandHandler<RoleCommand.Change>,
                               ICommandHandler<RoleCommand.ChangeStatus>,
+                              ICommandHandler<RoleCommand.ChangePermissionCode>,
                               ICommandHandler<RoleCommand.ReferencePermission>,
                               ICommandHandler<RoleCommand.DeletePermission>,
                               ICommandHandler<Command.BatchDelete<Role>>,
@@ -129,6 +130,13 @@ namespace SAE.CommonComponent.Authorize.Handlers
             role.ReferencePermission(command);
 
             await this._documentStore.SaveAsync(role);
+
+            var changePermissionCodeCommand = new RoleCommand.ChangePermissionCode
+            {
+                Id = command.Id
+            };
+
+            await this._messageQueue.PublishAsync(changePermissionCodeCommand);
         }
 
         public async Task HandleAsync(RoleCommand.DeletePermission command)
@@ -141,6 +149,13 @@ namespace SAE.CommonComponent.Authorize.Handlers
             role.DeletePermission(command);
 
             await this._documentStore.SaveAsync(role);
+
+            var changePermissionCodeCommand = new RoleCommand.ChangePermissionCode
+            {
+                Id = command.Id
+            };
+
+            await this._messageQueue.PublishAsync(changePermissionCodeCommand);
         }
 
         public async Task<IEnumerable<PermissionDto>> HandleAsync(RoleCommand.PermissionList command)
@@ -159,6 +174,10 @@ namespace SAE.CommonComponent.Authorize.Handlers
             {
                 query = query.Where(s => s.AppId == command.AppId);
             }
+            if (!command.PermissionId.IsNullOrWhiteSpace())
+            {
+                query = query.Where(s => s.PermissionIds.Contains(command.PermissionId));
+            }
             return query.ToArray();
         }
 
@@ -171,6 +190,14 @@ namespace SAE.CommonComponent.Authorize.Handlers
                   .False("角色不存在，或被删除！");
             role.SetIndex(command);
             await this._documentStore.SaveAsync(role);
+        }
+
+        public async Task HandleAsync(RoleCommand.ChangePermissionCode command)
+        {
+            await this.UpdateAsync(command.Id, role =>
+            {
+                role.ChangePermissionCode(command);
+            });
         }
 
         private Task<Role> FindRole(Role role)

@@ -85,6 +85,23 @@ namespace SAE.CommonComponent.Authorize.Commands
             /// <value></value>
             public Status Status { get; set; }
         }
+
+        /// <summary>
+        /// 更改权限码
+        /// </summary>
+        public class ChangePermissionCode
+        {
+            /// <summary>
+            /// 标识
+            /// </summary>
+            /// <value></value>
+            public string Id { get; set; }
+            /// <summary>
+            /// 权限码
+            /// </summary>
+            /// <value></value>
+            public string PermissionCode { get; set; }
+        }
         /// <summary>
         /// 引用权限
         /// </summary>
@@ -107,6 +124,18 @@ namespace SAE.CommonComponent.Authorize.Commands
         public class DeletePermission : ReferencePermission
         {
         }
+
+        /// <summary>
+        /// 权限变更
+        /// </summary>
+        public class PermissionChange
+        {
+            /// <summary>
+            /// 标识
+            /// </summary>
+            /// <value></value>
+            public string Id { get; set; }
+        }
         /// <summary>
         /// 分页查询
         /// </summary>
@@ -124,6 +153,11 @@ namespace SAE.CommonComponent.Authorize.Commands
 
         public class List
         {
+            /// <summary>
+            /// 权限标识
+            /// </summary>
+            /// <value></value>
+            public string PermissionId { get; set; }
             /// <summary>
             /// 系统标识
             /// </summary>

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using SAE.CommonLibrary.Abstract.Model;
 
 namespace SAE.CommonComponent.Application.Commands
@@ -44,7 +45,7 @@ namespace SAE.CommonComponent.Application.Commands
             /// 描述
             /// </summary>
             /// <value></value>
-            public string Description{get;set;}
+            public string Description { get; set; }
             /// <summary>
             /// 资源访问地址
             /// </summary>
@@ -72,7 +73,7 @@ namespace SAE.CommonComponent.Application.Commands
             /// 描述
             /// </summary>
             /// <value></value>
-            public string Description{get;set;}
+            public string Description { get; set; }
             /// <summary>
             /// 资源访问地址
             /// </summary>

@@ -140,21 +140,16 @@ namespace SAE.CommonComponent.Authorize.Test
 
             var role = await this.Get(roleDto.Id);
 
-            var permissions = await GetPermission(role, true);
+            var permissions = await GetPermission(role);
 
             Assert.True(permissions.All(s => command.PermissionIds.Contains(s.Id)));
             return role;
 
         }
 
-        private async Task<IEnumerable<PermissionDto>> GetPermission(RoleDto role, bool referenced)
+        private async Task<IEnumerable<PermissionDto>> GetPermission(RoleDto role)
         {
-            var rolePermissionRequest = new HttpRequestMessage(HttpMethod.Get, $"{API}/Permission/paging?Referenced={referenced}&id={role.Id}");
-
-            var rolePermissionResponse = await this.HttpClient.SendAsync(rolePermissionRequest);
-
-            var permissions = await rolePermissionResponse.AsAsync<PagedList<PermissionDto>>();
-            return permissions;
+            return role.Permissions;
         }
 
         [Fact]
@@ -174,7 +169,7 @@ namespace SAE.CommonComponent.Authorize.Test
 
             httpResponse.EnsureSuccessStatusCode();
 
-            var permissions = await GetPermission(roleDto, true);
+            var permissions = await GetPermission(roleDto);
 
             Assert.True(!permissions.Any(s => command.PermissionIds.Contains(s.Id)));
         }

@@ -64,6 +64,23 @@ namespace SAE.CommonComponent.Authorize.Commands
             public Status Status { get; set; }
         }
         /// <summary>
+        /// 设置资源
+        /// </summary>
+        public class AppResource
+        {
+            /// <summary>
+            /// 标识
+            /// </summary>
+            /// <value></value>
+            public string Id { get; set; }
+            /// <summary>
+            /// 系统资源标识
+            /// </summary>
+            /// <value></value>
+            public string AppResourceId { get; set; }
+        }
+
+        /// <summary>
         /// 分页查询
         /// </summary>
         public class Query : Paging

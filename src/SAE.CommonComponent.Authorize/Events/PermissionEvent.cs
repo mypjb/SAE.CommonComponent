@@ -36,6 +36,18 @@ namespace SAE.CommonComponent.Authorize.Events
             public Status Status { get; set; }
         }
         /// <summary>
+        /// 系统资源
+        /// </summary>
+        public class AppResource:IEvent
+        {
+
+            /// <summary>
+            /// 系统资源标识
+            /// </summary>
+            /// <value></value>
+            public string AppResourceId { get; set; }
+        }
+        /// <summary>
         /// 更改
         /// </summary>
         public class Change : IEvent
@@ -49,11 +61,6 @@ namespace SAE.CommonComponent.Authorize.Events
             /// </summary>
 
             public string Description { get; set; }
-            /// <summary>
-            /// 系统资源标识
-            /// </summary>
-            /// <value></value>
-            public string AppResourceId { get; set; }
         }
         /// <summary>
         /// 更改状态

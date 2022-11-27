@@ -10,8 +10,10 @@ using SAE.CommonLibrary.Abstract.Model;
 using SAE.CommonLibrary.AspNetCore.Authorization;
 using SAE.CommonLibrary.AspNetCore.Routing;
 using SAE.CommonLibrary.Data;
+using SAE.CommonLibrary.EventStore;
 using SAE.CommonLibrary.EventStore.Document;
 using SAE.CommonLibrary.Extension;
+using SAE.CommonLibrary.MessageQueue;
 
 namespace SAE.CommonComponent.Authorize.Handlers
 {
@@ -27,35 +29,50 @@ namespace SAE.CommonComponent.Authorize.Handlers
     {
         private readonly IStorage _storage;
         private readonly IMediator _mediator;
+        private readonly IMessageQueue _messageQueue;
 
-        public PermissionHandler(IDocumentStore documentStore, IStorage storage, IMediator mediator) : base(documentStore)
+        public PermissionHandler(IDocumentStore documentStore,
+                                 IStorage storage,
+                                 IMediator mediator,
+                                 IMessageQueue messageQueue) : base(documentStore)
         {
             this._storage = storage;
             this._mediator = mediator;
+            this._messageQueue = messageQueue;
         }
 
         public async Task<string> HandleAsync(PermissionCommand.Create command)
         {
-            var Permission = new Permission(command);
-            await Permission.NameExist(this.FindPermission);
-            await this.AddAsync(Permission);
-            return Permission.Id;
+            var permission = new Permission();
+            var resourceCommand = permission.Create(command);
+            await permission.NameExist(this.FindPermission);
+            await this.AddAsync(permission);
+            if (resourceCommand != null)
+            {
+                await this._messageQueue.PublishAsync(resourceCommand);
+            }
+            return permission.Id;
         }
 
         public async Task HandleAsync(PermissionCommand.Change command)
         {
-            await this.UpdateAsync(command.Id, async Permission =>
+            PermissionCommand.AppResource resourceCommand = null;
+            await this.UpdateAsync(command.Id, async permission =>
              {
-                 Permission.Change(command);
-                 await Permission.NameExist(this.FindPermission);
+                 resourceCommand = permission.Change(command);
+                 await permission.NameExist(this.FindPermission);
              });
+            if (resourceCommand != null)
+            {
+                await this._messageQueue.PublishAsync(resourceCommand);
+            }
         }
 
         public async Task HandleAsync(PermissionCommand.ChangeStatus command)
         {
-            await this.UpdateAsync(command.Id, Permission =>
+            await this.UpdateAsync(command.Id, permission =>
             {
-                Permission.ChangeStatus(command);
+                permission.ChangeStatus(command);
             });
         }
 

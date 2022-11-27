@@ -86,5 +86,16 @@ namespace SAE.CommonComponent.Authorize.Events
             /// <value></value>
             public string[] PermissionIds { get; set; }
         }
+        /// <summary>
+        /// 更改权限码
+        /// </summary>
+        public class ChangePermissionCode : IEvent
+        {
+            /// <summary>
+            /// 权限码
+            /// </summary>
+            /// <value></value>
+            public string PermissionCode { get; set; }
+        }
     }
 }
