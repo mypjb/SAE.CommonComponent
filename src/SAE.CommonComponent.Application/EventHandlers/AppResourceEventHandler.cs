@@ -72,30 +72,13 @@ namespace SAE.CommonComponent.Authorize.EventHandlers
                 };
 
                 this._logging.Info($"{message}->'{indexCommand.Index}',发送设置索引命令。");
-
-#if DEBUG
-                await this.SendIndexAsync(indexCommand);
-
-#endif
-#if !DEBUG
+                
                 await this._mediator.SendAsync(indexCommand);
-#endif
 
             }
             this._logging.Info($"系统资源'{command.Name}'添加完成。");
         }
 
-        private async Task SendIndexAsync(AppResourceCommand.SetIndex command)
-        {
-            try
-            {
-                await this._mediator.SendAsync(command);
-            }
-            catch (Exception ex)
-            {
-                await this.SendIndexAsync(command);
-            }
 
-        }
     }
 }

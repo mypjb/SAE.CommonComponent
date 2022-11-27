@@ -51,13 +51,23 @@ namespace SAE.CommonComponent.Authorize.Commands
         /// <summary>
         /// 更改基本信息
         /// </summary>
-        public class Change : Create
+        public class Change
         {
             /// <summary>
             /// 标识
             /// </summary>
             /// <value></value>
             public string Id { get; set; }
+            /// <summary>
+            /// 名称
+            /// </summary>
+            /// <value></value>
+            public string Name { get; set; }
+            /// <summary>
+            /// 描述
+            /// </summary>
+            /// <value></value>
+            public string Description { get; set; }
         }
         /// <summary>
         /// 更改状态

@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using SAE.CommonComponent.Application.Dtos;
 using SAE.CommonComponent.Test;
+using SAE.CommonLibrary.Abstract.Mediator.Behavior;
 using SAE.CommonLibrary.Extension;
 using Xunit;
 using Xunit.Abstractions;
@@ -31,7 +35,19 @@ namespace SAE.CommonComponent.Application.Test
 
         protected override IWebHostBuilder UseStartup(IWebHostBuilder builder)
         {
-            return builder.UseStartup<Startup>();
+            return builder.UseStartup<Startup>()
+                          .ConfigureAppConfiguration(c =>
+                          {
+                              c.AddInMemoryCollection(new Dictionary<string, string>()
+                                                     {
+                                                        {$"{RetryPipelineBehaviorOptions.Option}:{nameof(RetryPipelineBehaviorOptions.Num)}","10"}
+                                                     });
+                          })
+                          .ConfigureServices(s =>
+                          {
+                              s.AddMediatorBehavior()
+                               .AddRetry<AppResourceCommand.SetIndex>();
+                          });
         }
 
         [Theory]

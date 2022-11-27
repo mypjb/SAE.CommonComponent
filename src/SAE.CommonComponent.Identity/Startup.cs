@@ -74,7 +74,7 @@ namespace SAE.CommonComponent.Identity
                     ;
 
             services.AddMemoryDocument()
-                    .AddSaeMemoryDistributedCache()
+                    .AddSAEMemoryDistributedCache()
                     .AddDataPersistenceService(assemblys)
                     .AddMemoryMessageQueue()
                     .AddHandler();

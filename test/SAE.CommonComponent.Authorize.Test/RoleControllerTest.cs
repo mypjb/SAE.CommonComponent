@@ -1,19 +1,22 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using SAE.CommonComponent.Authorize.Commands;
-using SAE.CommonComponent.Authorize.Domains;
-using SAE.CommonComponent.Authorize.Dtos;
-using SAE.CommonComponent.Test;
-using SAE.CommonLibrary;
-using SAE.CommonLibrary.Abstract.Model;
-using SAE.CommonLibrary.AspNetCore.Authorization;
-using SAE.CommonLibrary.EventStore.Document;
-using SAE.CommonLibrary.Extension;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using SAE.CommonComponent.Authorize.Commands;
+using SAE.CommonComponent.Authorize.Domains;
+using SAE.CommonComponent.Authorize.Dtos;
+using SAE.CommonComponent.Test;
+using SAE.CommonLibrary;
+using SAE.CommonLibrary.Abstract.Mediator.Behavior;
+using SAE.CommonLibrary.Abstract.Model;
+using SAE.CommonLibrary.AspNetCore.Authorization;
+using SAE.CommonLibrary.EventStore.Document;
+using SAE.CommonLibrary.Extension;
 using Xunit;
 using Xunit.Abstractions;
 using Assert = Xunit.Assert;
@@ -37,17 +40,29 @@ namespace SAE.CommonComponent.Authorize.Test
 
         protected override IWebHostBuilder UseStartup(IWebHostBuilder builder)
         {
-            return builder.UseStartup<Startup>();
+            return builder.UseStartup<Startup>().ConfigureAppConfiguration(c =>
+                          {
+                              c.AddInMemoryCollection(new Dictionary<string, string>()
+                                                     {
+                                                        {$"{RetryPipelineBehaviorOptions.Option}:{nameof(RetryPipelineBehaviorOptions.Num)}","10"}
+                                                     });
+                          })
+                          .ConfigureServices(s =>
+                          {
+                              s.AddMediatorBehavior()
+                               .AddRetry<RoleCommand.SetIndex>();
+                          }); ;
         }
 
-        [Fact]
-        public async Task<RoleDto> Add()
+        [Theory]
+        [InlineData("")]
+        public async Task<RoleDto> Add(string appId = null)
         {
             var command = new RoleCommand.Create
             {
                 Name = $"test_{this.GetRandom()}",
                 Description = "add Role",
-                AppId=Guid.Empty.ToString("N")
+                AppId = appId.IsNullOrWhiteSpace() ? Guid.Empty.ToString("N") : appId
             };
             var request = new HttpRequestMessage(HttpMethod.Post, $"{API}");
             request.AddJsonContent(command);
@@ -68,7 +83,7 @@ namespace SAE.CommonComponent.Authorize.Test
             {
                 Id = dto.Id,
                 Name = dto.Name,
-                Description = "edit Role",
+                Description = "edit Role"
             };
             var request = new HttpRequestMessage(HttpMethod.Put, $"{API}");
             request.AddJsonContent(command);
@@ -94,7 +109,7 @@ namespace SAE.CommonComponent.Authorize.Test
             var httpResponse = await this.HttpClient.SendAsync(request);
             var exception = await Assert.ThrowsAnyAsync<SAEException>(() => this.Get(dto.Id));
 
-            Assert.Equal(exception.Code, (int)StatusCodes.ResourcesNotExist);
+            Assert.Equal((int)StatusCodes.ResourcesNotExist, exception.Code);
 
         }
 
@@ -162,6 +177,30 @@ namespace SAE.CommonComponent.Authorize.Test
             var permissions = await GetPermission(roleDto, true);
 
             Assert.True(!permissions.Any(s => command.PermissionIds.Contains(s.Id)));
+        }
+        [Fact]
+        public async Task BatchAdd()
+        {
+            var appId = this.GetRandom();
+            var range = new Random().Next(100, 500);
+            Enumerable.Range(0, range)
+                      .AsParallel()
+                      .ForAll(s =>
+                      {
+                          this.Add(appId).GetAwaiter().GetResult();
+                      });
+            var message = new HttpRequestMessage(HttpMethod.Get, $"{API}/list?AppId={appId}");
+
+            var responseMessage = await this.HttpClient.SendAsync(message);
+            var resources = await responseMessage.AsAsync<RoleDto[]>();
+
+            Assert.NotEmpty(resources);
+            Assert.Equal(range, resources.Length);
+            foreach (var resource in resources)
+            {
+                Assert.NotEqual(0, resource.Index);
+                Assert.Equal(1, resources.Count(s => s.Index == resource.Index));
+            }
         }
 
         private async Task<RoleDto> Get(string id)
