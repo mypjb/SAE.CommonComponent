@@ -1,4 +1,11 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
+using SAE.CommonComponent.Application.Test;
 using SAE.CommonComponent.Authorize.Commands;
 using SAE.CommonComponent.Authorize.Domains;
 using SAE.CommonComponent.Authorize.Dtos;
@@ -7,12 +14,6 @@ using SAE.CommonLibrary;
 using SAE.CommonLibrary.AspNetCore.Authorization;
 using SAE.CommonLibrary.EventStore.Document;
 using SAE.CommonLibrary.Extension;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 using Assert = Xunit.Assert;
@@ -24,6 +25,7 @@ namespace SAE.CommonComponent.Authorize.Test
         public const string API = "permission";
         public PermissionControllerTest(ITestOutputHelper output) : base(output)
         {
+
         }
 
         internal PermissionControllerTest(ITestOutputHelper output, HttpClient httpClient) : base(output, httpClient)
@@ -35,13 +37,16 @@ namespace SAE.CommonComponent.Authorize.Test
             return builder.UseStartup<Startup>();
         }
 
-        [Fact]
-        public async Task<PermissionDto> Add()
+        [Theory]
+        [InlineData("", "")]
+        public async Task<PermissionDto> Add(string appId = null, string appResourceId = null)
         {
             var command = new PermissionCommand.Create
             {
                 Name = $"test_{this.GetRandom()}",
-                Description = "add permission"
+                Description = "add permission",
+                AppId = appId.IsNullOrWhiteSpace() ? this.GetRandom() : appId,
+                AppResourceId = appResourceId.IsNullOrWhiteSpace() ? this.GetRandom() : appResourceId
             };
             var request = new HttpRequestMessage(HttpMethod.Post, $"{API}");
             request.AddJsonContent(command);
@@ -71,7 +76,7 @@ namespace SAE.CommonComponent.Authorize.Test
 
             Assert.Equal(permission.Name, command.Name);
             Assert.Equal(permission.Description, command.Description);
-            
+
             this.WriteLine(permission);
         }
 
@@ -113,7 +118,7 @@ namespace SAE.CommonComponent.Authorize.Test
 
             foreach (var command in commands)
             {
-                
+
             }
             this.WriteLine(endpoints);
         }

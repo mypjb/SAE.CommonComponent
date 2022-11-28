@@ -12,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Primitives;
 using Microsoft.IdentityModel.Tokens;
 using SAE.CommonComponent.Authorize.Commands;
+using SAE.CommonComponent.Authorize.Domains;
 using SAE.CommonComponent.Authorize.Dtos;
 using SAE.CommonLibrary;
 using SAE.CommonLibrary.Abstract.Mediator;
@@ -108,6 +109,10 @@ namespace SAE.CommonComponent.Authorize
                .UseBitmapAuthorization();
             var messageQueue = app.ApplicationServices.GetService<IMessageQueue>();
             messageQueue.Subscibe<RoleCommand.Create>();
+            messageQueue.Subscibe<RoleCommand.PermissionChange>();
+            messageQueue.Subscibe<PermissionCommand.AppResource>();
+            messageQueue.Subscibe<PermissionCommand.ChangeStatus>();
+            messageQueue.Subscibe<Command.BatchDelete<Permission>>();
         }
     }
 }

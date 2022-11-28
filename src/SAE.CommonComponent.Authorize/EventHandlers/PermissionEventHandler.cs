@@ -9,6 +9,7 @@ using SAE.CommonComponent.Authorize.Events;
 using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.Data;
 using SAE.CommonLibrary.EventStore.Document;
+using SAE.CommonLibrary.Extension;
 using SAE.CommonLibrary.Logging;
 using SAE.CommonLibrary.MessageQueue;
 
@@ -18,7 +19,9 @@ namespace SAE.CommonComponent.Authorize.EventHandlers
     /// 角色事件处理程序
     /// </summary>
     /// <inheritdoc/>
-    public class PermissionEventHandler : IHandler<PermissionCommand.AppResource>
+    public class PermissionEventHandler : IHandler<PermissionCommand.AppResource>,
+                                          IHandler<PermissionCommand.ChangeStatus>,
+                                          ICommandHandler<Command.BatchDelete<Permission>>
     {
         private readonly IDocumentStore _documentStore;
         private readonly IMediator _mediator;
@@ -49,12 +52,27 @@ namespace SAE.CommonComponent.Authorize.EventHandlers
 
         public async Task HandleAsync(PermissionCommand.AppResource command)
         {
+            await this.PermissionChangeHandleCoreAsync(command.Id);
+        }
+
+        public async Task HandleAsync(PermissionCommand.ChangeStatus command)
+        {
+            await this.PermissionChangeHandleCoreAsync(command.Id);
+        }
+
+        public async Task HandleAsync(Command.BatchDelete<Permission> command)
+        {
+            await command.Ids.ForEachAsync(this.PermissionChangeHandleCoreAsync);
+        }
+
+        private async Task PermissionChangeHandleCoreAsync(string permissionId)
+        {
             var listCommand = new RoleCommand.List
             {
-                PermissionId = command.Id
+                PermissionId = permissionId
             };
 
-            var roles = await this._mediator.SendAsync<RoleDto[]>(listCommand);
+            var roles = await this._mediator.SendAsync<IEnumerable<RoleDto>>(listCommand);
 
             foreach (var role in roles)
             {

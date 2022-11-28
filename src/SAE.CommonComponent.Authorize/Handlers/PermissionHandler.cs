@@ -74,6 +74,8 @@ namespace SAE.CommonComponent.Authorize.Handlers
             {
                 permission.ChangeStatus(command);
             });
+
+            await this._messageQueue.PublishAsync(command);
         }
 
         public async Task HandleAsync(Command.BatchDelete<Permission> command)
@@ -89,6 +91,8 @@ namespace SAE.CommonComponent.Authorize.Handlers
                 }
                 await this._storage.DeleteAsync<Permission>(id);
             });
+
+            await this._messageQueue.PublishAsync(command);
 
         }
 

@@ -48,7 +48,7 @@ namespace SAE.CommonComponent.Authorize.Domains
         /// <summary>
         /// 角色索引
         /// </summary>
-        public string Index { get; set; }
+        public int Index { get; set; }
         /// <summary>
         /// 权限码
         /// </summary>

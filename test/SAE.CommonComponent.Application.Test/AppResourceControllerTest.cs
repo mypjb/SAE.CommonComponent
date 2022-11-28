@@ -28,7 +28,7 @@ namespace SAE.CommonComponent.Application.Test
             this._appControllerTest = new AppControllerTest(this._output, this.HttpClient);
         }
 
-        internal AppResourceControllerTest(ITestOutputHelper output, HttpClient httpClient) : base(output, httpClient)
+        public AppResourceControllerTest(ITestOutputHelper output, HttpClient httpClient) : base(output, httpClient)
         {
             this._appControllerTest = new AppControllerTest(this._output, this.HttpClient);
         }

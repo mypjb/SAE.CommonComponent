@@ -11,7 +11,7 @@ using Xunit.Abstractions;
 
 namespace SAE.CommonComponent.Test
 {
-    public abstract class BaseTest
+    public abstract class BaseTest : MarshalByRefObject
     {
         protected readonly ITestOutputHelper _output;
         public IServiceProvider ServiceProvider { get; private set; }
@@ -65,6 +65,11 @@ namespace SAE.CommonComponent.Test
         }
 
         protected abstract IWebHostBuilder UseStartup(IWebHostBuilder builder);
+
+        protected void SwitchContext(IServiceProvider serviceProvider)
+        {
+            new ServiceFacade(serviceProvider);
+        }
         public virtual void UseClient(HttpClient httpClient)
         {
             this.HttpClient = httpClient;

@@ -23,7 +23,6 @@ namespace SAE.CommonComponent.Authorize.EventHandlers
     public class RoleEventHandler : IHandler<RoleCommand.Create>,
                                     IHandler<RoleCommand.PermissionChange>
     {
-        private readonly IDocumentStore _documentStore;
         private readonly IMediator _mediator;
         private readonly ILogging _logging;
         private readonly IBitmapAuthorization _bitmapAuthorization;
@@ -31,16 +30,13 @@ namespace SAE.CommonComponent.Authorize.EventHandlers
         /// <summary>
         /// 创建一个新的对象
         /// </summary>
-        /// <param name="documentStore"></param>
         /// <param name="mediator"></param>
         /// <param name="logging"></param>
         /// <param name="bitmapAuthorization"></param>
-        public RoleEventHandler(IDocumentStore documentStore,
-                                IMediator mediator,
+        public RoleEventHandler(IMediator mediator,
                                 ILogging<RoleEventHandler> logging,
                                 IBitmapAuthorization bitmapAuthorization)
         {
-            this._documentStore = documentStore;
             this._mediator = mediator;
             this._logging = logging;
             this._bitmapAuthorization = bitmapAuthorization;
@@ -54,6 +50,8 @@ namespace SAE.CommonComponent.Authorize.EventHandlers
             {
                 AppId = command.AppId
             });
+
+            if (!roleDtos.Any()) return;
 
             var index = roleDtos.Max(s => s.Index);
 

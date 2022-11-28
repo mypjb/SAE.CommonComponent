@@ -7,11 +7,15 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SAE.CommonComponent.Application.Commands;
+using SAE.CommonComponent.Application.Dtos;
+using SAE.CommonComponent.Application.Test;
 using SAE.CommonComponent.Authorize.Commands;
 using SAE.CommonComponent.Authorize.Domains;
 using SAE.CommonComponent.Authorize.Dtos;
 using SAE.CommonComponent.Test;
 using SAE.CommonLibrary;
+using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.Abstract.Mediator.Behavior;
 using SAE.CommonLibrary.Abstract.Model;
 using SAE.CommonLibrary.AspNetCore.Authorization;
@@ -19,6 +23,7 @@ using SAE.CommonLibrary.EventStore.Document;
 using SAE.CommonLibrary.Extension;
 using Xunit;
 using Xunit.Abstractions;
+using Xunit.Sdk;
 using Assert = Xunit.Assert;
 
 namespace SAE.CommonComponent.Authorize.Test
@@ -27,15 +32,23 @@ namespace SAE.CommonComponent.Authorize.Test
     {
         public const string API = "Role";
         private readonly PermissionControllerTest _permissionController;
+        protected readonly AppResourceControllerTest _appResourceController;
+        private readonly IBitmapAuthorization _bitmapAuthorization;
 
         public RoleControllerTest(ITestOutputHelper output) : base(output)
         {
             this._permissionController = new PermissionControllerTest(output, this.HttpClient);
+            this._appResourceController = new AppResourceControllerTest(output);
+            this._bitmapAuthorization = this.ServiceProvider.GetService<IBitmapAuthorization>();
+            this.SwitchContext(this.ServiceProvider);
         }
 
         internal RoleControllerTest(ITestOutputHelper output, HttpClient httpClient) : base(output, httpClient)
         {
             this._permissionController = new PermissionControllerTest(output, this.HttpClient);
+            this._appResourceController = new AppResourceControllerTest(output);
+            this._bitmapAuthorization = this.ServiceProvider.GetService<IBitmapAuthorization>();
+            this.SwitchContext(this.ServiceProvider);
         }
 
         protected override IWebHostBuilder UseStartup(IWebHostBuilder builder)
@@ -51,6 +64,7 @@ namespace SAE.CommonComponent.Authorize.Test
                           {
                               s.AddMediatorBehavior()
                                .AddRetry<RoleCommand.SetIndex>();
+                              s.AddSingleton(p => this._appResourceController.ServiceProvider.GetService<ICommandHandler<AppResourceCommand.List, IEnumerable<AppResourceDto>>>());
                           }); ;
         }
 
@@ -62,7 +76,7 @@ namespace SAE.CommonComponent.Authorize.Test
             {
                 Name = $"test_{this.GetRandom()}",
                 Description = "add Role",
-                AppId = appId.IsNullOrWhiteSpace() ? Guid.Empty.ToString("N") : appId
+                AppId = appId.IsNullOrWhiteSpace() ? this.GetRandom() : appId
             };
             var request = new HttpRequestMessage(HttpMethod.Post, $"{API}");
             request.AddJsonContent(command);
@@ -121,7 +135,10 @@ namespace SAE.CommonComponent.Authorize.Test
             await Enumerable.Range(0, 10)
                        .ForEachAsync(async s =>
                        {
-                           permissionDtos.Add(await this._permissionController.Add());
+                           this.SwitchContext(this._appResourceController.ServiceProvider);
+                           var appResourceDto = await this._appResourceController.Add(roleDto.AppId);
+                           this.SwitchContext(this.ServiceProvider);
+                           permissionDtos.Add(await this._permissionController.Add(roleDto.AppId, appResourceDto.Id));
                        });
 
             var command = new RoleCommand.ReferencePermission
@@ -143,6 +160,21 @@ namespace SAE.CommonComponent.Authorize.Test
             var permissions = await GetPermission(role);
 
             Assert.True(permissions.All(s => command.PermissionIds.Contains(s.Id)));
+            
+            var appResourceListCommand = new AppResourceCommand.List
+            {
+                AppId = role.AppId
+            };
+
+            var mediator = this._appResourceController.ServiceProvider.GetService<IMediator>();
+
+            var appResources = await mediator.SendAsync<IEnumerable<AppResourceDto>>(appResourceListCommand);
+
+            foreach (var resource in appResources)
+            {
+                Assert.True(this._bitmapAuthorization.Authorize(role.PermissionCode, resource.Index));
+            }
+
             return role;
 
         }

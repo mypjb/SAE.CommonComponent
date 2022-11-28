@@ -55,6 +55,7 @@ namespace SAE.CommonComponent.Authorize.Handlers
             var role = new Role(command);
             await role.NameExist(this.FindRole);
             await this.AddAsync(role);
+            // var handler = ServiceFacade.GetService<IHandler<RoleCommand.Create>>();
             await this._messageQueue.PublishAsync(command);
             return role.Id;
         }
@@ -117,6 +118,7 @@ namespace SAE.CommonComponent.Authorize.Handlers
         {
             var dto = this._storage.AsQueryable<RoleDto>()
                                    .FirstOrDefault(s => s.Id == command.Id);
+            await this._director.Build(dto);
             return dto;
         }
 
@@ -131,12 +133,12 @@ namespace SAE.CommonComponent.Authorize.Handlers
 
             await this._documentStore.SaveAsync(role);
 
-            var changePermissionCodeCommand = new RoleCommand.ChangePermissionCode
+            var permissionChangeCommand = new RoleCommand.PermissionChange
             {
                 Id = command.Id
             };
 
-            await this._messageQueue.PublishAsync(changePermissionCodeCommand);
+            await this._messageQueue.PublishAsync(permissionChangeCommand);
         }
 
         public async Task HandleAsync(RoleCommand.DeletePermission command)
@@ -150,12 +152,12 @@ namespace SAE.CommonComponent.Authorize.Handlers
 
             await this._documentStore.SaveAsync(role);
 
-            var changePermissionCodeCommand = new RoleCommand.ChangePermissionCode
+            var permissionChangeCommand = new RoleCommand.PermissionChange
             {
                 Id = command.Id
             };
 
-            await this._messageQueue.PublishAsync(changePermissionCodeCommand);
+            await this._messageQueue.PublishAsync(permissionChangeCommand);
         }
 
         public async Task<IEnumerable<PermissionDto>> HandleAsync(RoleCommand.PermissionList command)
