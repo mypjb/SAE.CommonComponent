@@ -51,5 +51,16 @@ namespace SAE.CommonComponent.Authorize.Commands
             /// <value></value>
             public string ClientId { get; set; }
         }
+        /// <summary>
+        /// 列表查询
+        /// </summary>
+        public class List
+        {
+            /// <summary>
+            /// 客户端标识
+            /// </summary>
+            /// <value></value>
+            public string ClientId { get; set; }
+        }
     }
 }

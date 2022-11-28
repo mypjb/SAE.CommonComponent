@@ -2,8 +2,11 @@
 using SAE.CommonComponent.Authorize.Commands;
 using SAE.CommonComponent.Authorize.Dtos;
 using SAE.CommonComponent.Test;
+using SAE.CommonLibrary.Abstract.Mediator.Behavior;
 using SAE.CommonLibrary.Abstract.Model;
 using SAE.CommonLibrary.Extension;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +16,9 @@ using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 using Assert = Xunit.Assert;
+using SAE.CommonLibrary.Abstract.Mediator;
+using SAE.CommonComponent.Application.Commands;
+using SAE.CommonComponent.Application.Dtos;
 
 namespace SAE.CommonComponent.Authorize.Test
 {
@@ -30,7 +36,19 @@ namespace SAE.CommonComponent.Authorize.Test
 
         protected override IWebHostBuilder UseStartup(IWebHostBuilder builder)
         {
-            return builder.UseStartup<Startup>();
+            return builder.UseStartup<Startup>().ConfigureAppConfiguration(c =>
+                          {
+                              c.AddInMemoryCollection(new Dictionary<string, string>()
+                                                     {
+                                                        {$"{RetryPipelineBehaviorOptions.Option}:{nameof(RetryPipelineBehaviorOptions.Num)}","10"}
+                                                     });
+                          })
+                          .ConfigureServices(s =>
+                          {
+                              s.AddMediatorBehavior()
+                               .AddRetry<RoleCommand.SetIndex>();
+                              s.AddSingleton(p => this._roleController._appResourceController.ServiceProvider.GetService<ICommandHandler<AppResourceCommand.List, IEnumerable<AppResourceDto>>>());
+                          });
         }
 
         [Theory]
@@ -39,7 +57,7 @@ namespace SAE.CommonComponent.Authorize.Test
         {
             var command = new UserRoleCommand.ReferenceRole()
             {
-                UserId = userId.IsNullOrWhiteSpace() ? Guid.NewGuid().ToString("N") : userId
+                UserId = userId.IsNullOrWhiteSpace() ? this.GetRandom() : userId
             };
 
             var roleDtos = new List<RoleDto>();
@@ -89,11 +107,11 @@ namespace SAE.CommonComponent.Authorize.Test
 
 
 
-        private async Task<IEnumerable<RoleDto>> Get(string id, bool referenced = true)
+        private async Task<IEnumerable<RoleDto>> Get(string id)
         {
-            var message = new HttpRequestMessage(HttpMethod.Get, $"{API}/paging?UserId={id}&referenced={referenced}&pagesize={int.MaxValue}");
+            var message = new HttpRequestMessage(HttpMethod.Get, $"{API}/list?UserId={id}");
             var responseMessage = await this.HttpClient.SendAsync(message);
-            return await responseMessage.AsAsync<PagedList<RoleDto>>();
+            return await responseMessage.AsAsync<RoleDto[]>();
         }
     }
 }

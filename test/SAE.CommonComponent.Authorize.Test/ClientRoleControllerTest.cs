@@ -1,15 +1,21 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using SAE.CommonComponent.Authorize.Commands;
-using SAE.CommonComponent.Authorize.Dtos;
-using SAE.CommonComponent.Test;
-using SAE.CommonLibrary.Abstract.Model;
-using SAE.CommonLibrary.Extension;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using SAE.CommonComponent.Application.Commands;
+using SAE.CommonComponent.Application.Dtos;
+using SAE.CommonComponent.Authorize.Commands;
+using SAE.CommonComponent.Authorize.Dtos;
+using SAE.CommonComponent.Test;
+using SAE.CommonLibrary.Abstract.Mediator;
+using SAE.CommonLibrary.Abstract.Mediator.Behavior;
+using SAE.CommonLibrary.Abstract.Model;
+using SAE.CommonLibrary.Extension;
 using Xunit;
 using Xunit.Abstractions;
 using Assert = Xunit.Assert;
@@ -28,7 +34,19 @@ namespace SAE.CommonComponent.Authorize.Test
 
         protected override IWebHostBuilder UseStartup(IWebHostBuilder builder)
         {
-            return builder.UseStartup<Startup>();
+            return builder.UseStartup<Startup>().ConfigureAppConfiguration(c =>
+                          {
+                              c.AddInMemoryCollection(new Dictionary<string, string>()
+                                                     {
+                                                        {$"{RetryPipelineBehaviorOptions.Option}:{nameof(RetryPipelineBehaviorOptions.Num)}","10"}
+                                                     });
+                          })
+                          .ConfigureServices(s =>
+                          {
+                              s.AddMediatorBehavior()
+                               .AddRetry<RoleCommand.SetIndex>();
+                              s.AddSingleton(p => this._roleController._appResourceController.ServiceProvider.GetService<ICommandHandler<AppResourceCommand.List, IEnumerable<AppResourceDto>>>());
+                          });
         }
 
         [Theory]
@@ -37,7 +55,7 @@ namespace SAE.CommonComponent.Authorize.Test
         {
             var command = new ClientRoleCommand.ReferenceRole()
             {
-                ClientId = clientId.IsNullOrWhiteSpace() ? Guid.NewGuid().ToString("N") : clientId
+                ClientId = clientId.IsNullOrWhiteSpace() ? this.GetRandom() : clientId
             };
 
             var roleDtos = new List<RoleDto>();
@@ -91,9 +109,9 @@ namespace SAE.CommonComponent.Authorize.Test
 
         private async Task<IEnumerable<RoleDto>> Get(string id)
         {
-            var message = new HttpRequestMessage(HttpMethod.Get, $"{API}/paging?clientId={id}&pagesize={int.MaxValue}");
+            var message = new HttpRequestMessage(HttpMethod.Get, $"{API}/list?clientId={id}");
             var responseMessage = await this.HttpClient.SendAsync(message);
-            return await responseMessage.AsAsync<PagedList<RoleDto>>();
+            return await responseMessage.AsAsync<RoleDto[]>();
         }
     }
 }

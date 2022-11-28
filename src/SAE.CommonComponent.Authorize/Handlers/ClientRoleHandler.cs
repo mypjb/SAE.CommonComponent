@@ -23,7 +23,7 @@ namespace SAE.CommonComponent.Authorize.Handlers
                                      ICommandHandler<ClientRoleCommand.DeleteRole>,
                                      ICommandHandler<ClientRoleCommand.QueryClientAuthorizeCode, Dictionary<string, string>>,
                                      ICommandHandler<ClientRoleCommand.Query, IPagedList<RoleDto>>,
-                                     ICommandHandler<Command.Find<ClientRoleDto>, IEnumerable<RoleDto>>,
+                                     ICommandHandler<ClientRoleCommand.List, IEnumerable<RoleDto>>,
                                      ICommandHandler<Command.BatchDelete<ClientRole>>
     {
         private readonly IStorage _storage;
@@ -60,15 +60,15 @@ namespace SAE.CommonComponent.Authorize.Handlers
         }
 
 
-        public async Task<IEnumerable<RoleDto>> HandleAsync(Command.Find<ClientRoleDto> command)
+        public async Task<IEnumerable<RoleDto>> HandleAsync(ClientRoleCommand.List command)
         {
-            var clientIds = this._storage.AsQueryable<ClientRoleDto>()
-                                       .Where(s => s.ClientId == command.Id)
+            var roleIds = this._storage.AsQueryable<ClientRoleDto>()
+                                       .Where(s => s.ClientId == command.ClientId)
                                        .Select(s => s.RoleId)
                                        .ToArray();
 
             var roles = this._storage.AsQueryable<RoleDto>()
-                                     .Where(s => clientIds.Contains(s.Id))
+                                     .Where(s => roleIds.Contains(s.Id))
                                      .ToArray();
 
 

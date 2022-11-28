@@ -98,32 +98,6 @@ namespace SAE.CommonComponent.Authorize.Test
 
         }
 
-        [Fact]
-        public async Task Location()
-        {
-            var commands = Enumerable.Range(0, 1000)
-                      .Select(s => new PermissionCommand.Create
-                      {
-                          Name = $"localtion_{s}",
-                          Description = $"location {s}"
-                      });
-
-            var request = new HttpRequestMessage(HttpMethod.Post, $"{API}/{nameof(Location)}");
-
-            request.AddJsonContent(commands);
-
-            var httpResponse = await this.HttpClient.SendAsync(request);
-
-            var endpoints = await httpResponse.AsAsync<IEnumerable<BitmapEndpoint>>();
-
-            foreach (var command in commands)
-            {
-
-            }
-            this.WriteLine(endpoints);
-        }
-
-
         private async Task<PermissionDto> Get(string id)
         {
             var message = new HttpRequestMessage(HttpMethod.Get, $"{API}/{id}");

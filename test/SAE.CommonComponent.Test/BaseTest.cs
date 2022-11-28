@@ -62,6 +62,7 @@ namespace SAE.CommonComponent.Test
         {
             this._output = output;
             this.HttpClient = httpClient;
+            this.ServiceProvider = ServiceFacade.ServiceProvider;
         }
 
         protected abstract IWebHostBuilder UseStartup(IWebHostBuilder builder);

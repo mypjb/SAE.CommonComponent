@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SAE.CommonComponent.Authorize.Commands;
 using SAE.CommonComponent.Authorize.Domains;
@@ -48,10 +50,19 @@ namespace SAE.CommonComponent.Authorize.Controllers
         /// 分页查询引用的角色
         /// </summary>
         /// <param name="command"></param>
-        [HttpGet("{action}")]
+        [HttpGet("[action]")]
         public async Task<IPagedList<RoleDto>> Paging([FromQuery] ClientRoleCommand.Query command)
         {
             return await this._mediator.SendAsync<IPagedList<RoleDto>>(command);
+        }
+        /// <summary>
+        /// 列出引用的角色
+        /// </summary>
+        /// <param name="command"></param>
+        [HttpGet("[action]")]
+        public async Task<IEnumerable<RoleDto>> List([FromQuery] ClientRoleCommand.List command)
+        {
+            return await this._mediator.SendAsync<IEnumerable<RoleDto>>(command);
         }
 
     }

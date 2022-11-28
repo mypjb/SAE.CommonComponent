@@ -24,8 +24,7 @@ namespace SAE.CommonComponent.Authorize.Handlers
                                   ICommandHandler<UserRoleCommand.DeleteRole>,
                                   ICommandHandler<UserRoleCommand.QueryUserAuthorizeCode, Dictionary<string, string>>,
                                   ICommandHandler<UserRoleCommand.Query, IPagedList<RoleDto>>,
-                                  ICommandHandler<Command.Find<UserRoleDto>, IEnumerable<RoleDto>>,
-                                  //ICommandHandler<Command.List<BitmapEndpoint>, IEnumerable<BitmapEndpoint>>,
+                                  ICommandHandler<UserRoleCommand.List, IEnumerable<RoleDto>>,
                                   ICommandHandler<Command.BatchDelete<UserRole>>
     {
         private readonly IStorage _storage;
@@ -62,10 +61,10 @@ namespace SAE.CommonComponent.Authorize.Handlers
         }
 
 
-        public async Task<IEnumerable<RoleDto>> HandleAsync(Command.Find<UserRoleDto> command)
+        public async Task<IEnumerable<RoleDto>> HandleAsync(UserRoleCommand.List command)
         {
             var roleIds = this._storage.AsQueryable<UserRoleDto>()
-                                       .Where(s => s.UserId == command.Id)
+                                       .Where(s => s.UserId == command.UserId)
                                        .Select(s => s.RoleId)
                                        .ToArray();
 
@@ -78,30 +77,7 @@ namespace SAE.CommonComponent.Authorize.Handlers
 
             return roles;
         }
-
-        //public async Task<IEnumerable<BitmapEndpoint>> HandleAsync(Command.List<BitmapEndpoint> command)
-        //{
-
-        //    var dtos = this._storage.AsQueryable<PermissionDto>()
-        //                            .OrderBy(s => s.CreateTime)
-        //                            .ToArray();
-
-        //    var endpoints = new List<BitmapEndpoint>(dtos.Count());
-
-        //    for (int i = 0; i < dtos.Length; i++)
-        //    {
-        //        var dto = dtos[i];
-        //        endpoints.Add(new BitmapEndpoint
-        //        {
-        //            Index = i + 1,
-        //            Path = dto.Path,
-        //            Name = dto.Name
-        //        });
-        //    }
-
-        //    return endpoints;
-        //}
-
+        
         public async Task<Dictionary<string, string>> HandleAsync(UserRoleCommand.QueryUserAuthorizeCode command)
         {
             var roles = await this._mediator.SendAsync<IEnumerable<RoleDto>>(new Command.Find<UserRoleDto>

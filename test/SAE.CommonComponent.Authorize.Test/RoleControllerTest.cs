@@ -32,7 +32,7 @@ namespace SAE.CommonComponent.Authorize.Test
     {
         public const string API = "Role";
         private readonly PermissionControllerTest _permissionController;
-        protected readonly AppResourceControllerTest _appResourceController;
+        internal readonly AppResourceControllerTest _appResourceController;
         private readonly IBitmapAuthorization _bitmapAuthorization;
 
         public RoleControllerTest(ITestOutputHelper output) : base(output)
@@ -65,7 +65,7 @@ namespace SAE.CommonComponent.Authorize.Test
                               s.AddMediatorBehavior()
                                .AddRetry<RoleCommand.SetIndex>();
                               s.AddSingleton(p => this._appResourceController.ServiceProvider.GetService<ICommandHandler<AppResourceCommand.List, IEnumerable<AppResourceDto>>>());
-                          }); ;
+                          });
         }
 
         [Theory]
@@ -130,9 +130,10 @@ namespace SAE.CommonComponent.Authorize.Test
         [Fact]
         public async Task<RoleDto> ReferencePermission()
         {
+            var range = new Random().Next(50, 100);
             var roleDto = await this.Add();
             var permissionDtos = new List<PermissionDto>();
-            await Enumerable.Range(0, 10)
+            await Enumerable.Range(0, range)
                        .ForEachAsync(async s =>
                        {
                            this.SwitchContext(this._appResourceController.ServiceProvider);
@@ -160,7 +161,7 @@ namespace SAE.CommonComponent.Authorize.Test
             var permissions = await GetPermission(role);
 
             Assert.True(permissions.All(s => command.PermissionIds.Contains(s.Id)));
-            
+
             var appResourceListCommand = new AppResourceCommand.List
             {
                 AppId = role.AppId
@@ -181,7 +182,8 @@ namespace SAE.CommonComponent.Authorize.Test
 
         private async Task<IEnumerable<PermissionDto>> GetPermission(RoleDto role)
         {
-            return role.Permissions;
+            var roleDto = await this.Get(role.Id);
+            return roleDto.Permissions;
         }
 
         [Fact]
@@ -203,7 +205,7 @@ namespace SAE.CommonComponent.Authorize.Test
 
             var permissions = await GetPermission(roleDto);
 
-            Assert.True(!permissions.Any(s => command.PermissionIds.Contains(s.Id)));
+            Assert.Null(permissions);
         }
         [Fact]
         public async Task BatchAdd()

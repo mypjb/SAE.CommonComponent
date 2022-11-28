@@ -21,7 +21,7 @@ namespace SAE.CommonComponent.Authorize.EventHandlers
     /// <inheritdoc/>
     public class PermissionEventHandler : IHandler<PermissionCommand.AppResource>,
                                           IHandler<PermissionCommand.ChangeStatus>,
-                                          ICommandHandler<Command.BatchDelete<Permission>>
+                                          IHandler<Command.BatchDelete<Permission>>
     {
         private readonly IDocumentStore _documentStore;
         private readonly IMediator _mediator;

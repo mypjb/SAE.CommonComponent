@@ -96,7 +96,7 @@ namespace SAE.CommonComponent.Authorize.EventHandlers
 
             var bits = new List<int>();
 
-            if (role.Permissions.Any())
+            if (role.Permissions?.Any() ?? false)
             {
                 var appResourceIds = role.Permissions.Select(s => s.AppResourceId)
                                                      .ToArray();

@@ -56,6 +56,14 @@ namespace SAE.CommonComponent.Authorize.Controllers
         {
             return await this._mediator.SendAsync<IPagedList<RoleDto>>(command);
         }
-
+        /// <summary>
+        /// 列出引用的角色
+        /// </summary>
+        /// <param name="command"></param>
+        [HttpGet("[action]")]
+        public async Task<IEnumerable<RoleDto>> List([FromQuery] UserRoleCommand.List command)
+        {
+            return await this._mediator.SendAsync<IEnumerable<RoleDto>>(command);
+        }
     }
 }
