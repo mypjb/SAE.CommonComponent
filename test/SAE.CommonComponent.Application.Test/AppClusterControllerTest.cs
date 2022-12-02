@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using System.Net.Http;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using SAE.CommonComponent.Application.Dtos;
 using SAE.CommonComponent.Test;
 using SAE.CommonLibrary.Extension;
-using System.Net.Http;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 using AppClusterCommand = SAE.CommonComponent.Application.Commands.AppClusterCommand;
@@ -21,7 +21,7 @@ namespace SAE.CommonComponent.Application.Test
         {
         }
 
-        internal AppClusterControllerTest(ITestOutputHelper output, HttpClient httpClient) : base(output, httpClient)
+        public AppClusterControllerTest(ITestOutputHelper output, HttpClient httpClient) : base(output, httpClient)
         {
         }
 
@@ -35,7 +35,9 @@ namespace SAE.CommonComponent.Application.Test
         {
             var command = new AppClusterCommand.Create
             {
-                Name = this.GetRandom()
+                Name = this.GetRandom(),
+                Description = this.GetRandom(),
+                Type = this.GetRandom()
             };
             var message = new HttpRequestMessage(HttpMethod.Post, API);
             message.AddJsonContent(command);
@@ -44,6 +46,8 @@ namespace SAE.CommonComponent.Application.Test
             var app = await this.Get(id);
             this.WriteLine(app);
             Assert.Equal(command.Name, app.Name);
+            Assert.Equal(command.Description, app.Description);
+            Assert.Equal(command.Type, app.Type);
             return app;
         }
 
@@ -90,7 +94,7 @@ namespace SAE.CommonComponent.Application.Test
 
         private async Task<AppClusterDto> Get(string id)
         {
-            var message = new HttpRequestMessage(HttpMethod.Get, $"{API}/{id}");
+            var message = new HttpRequestMessage(HttpMethod.Get, $"{API}?id={id}");
             var responseMessage = await this.HttpClient.SendAsync(message);
             var app = await responseMessage.AsAsync<AppClusterDto>();
             this.WriteLine(app);

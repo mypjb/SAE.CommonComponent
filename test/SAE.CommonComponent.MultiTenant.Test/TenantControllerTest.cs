@@ -4,11 +4,18 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using SAE.CommonComponent.Application.Commands;
+using SAE.CommonComponent.Application.Dtos;
+using SAE.CommonComponent.Application.Test;
 using SAE.CommonComponent.MultiTenant.Commands;
 using SAE.CommonComponent.MultiTenant.Domains;
 using SAE.CommonComponent.MultiTenant.Dtos;
 using SAE.CommonComponent.Test;
 using SAE.CommonLibrary;
+using SAE.CommonLibrary.Abstract.Mediator;
+using SAE.CommonLibrary.Abstract.Model;
+using SAE.CommonLibrary.Data;
 using SAE.CommonLibrary.EventStore.Document;
 using SAE.CommonLibrary.Extension;
 using Xunit;
@@ -20,14 +27,21 @@ namespace SAE.CommonComponent.MultiTenant.Test
     public class TenantControllerTest : BaseTest
     {
         public const string API = "/Tenant";
+        private readonly AppClusterControllerTest _appClusterController;
 
         public TenantControllerTest(ITestOutputHelper output) : base(output)
         {
+            this._appClusterController = new AppClusterControllerTest(this._output);
         }
 
         protected override IWebHostBuilder UseStartup(IWebHostBuilder builder)
         {
-            return builder.UseStartup<Startup>();
+            return builder.UseStartup<Startup>()
+                          .ConfigureServices(s =>
+                          {
+                              s.AddSingleton(p => this._appClusterController.ServiceProvider.GetService<ICommandHandler<AppClusterCommand.Find, AppClusterDto>>());
+                              s.AddSingleton(p => this._appClusterController.ServiceProvider.GetService<ICommandHandler<AppCommand.Create, string>>());
+                          });
         }
 
         [Theory]
@@ -53,6 +67,31 @@ namespace SAE.CommonComponent.MultiTenant.Test
             Assert.Equal(command.Domain, tenant.Domain);
             Assert.Equal(command.Type, tenant.Type);
             return tenant;
+        }
+        [Fact]
+        public async Task AppCreate()
+        {
+            var clusterDto = await this._appClusterController.Add();
+            var tenant = await this.Add();
+
+            var command = new TenantCommand.App.Create
+            {
+                Name = this.GetRandom(),
+                Description = this.GetRandom(),
+                Domain = this.GetRandom(),
+                Type = clusterDto.Type
+            };
+            var message = new HttpRequestMessage(HttpMethod.Post, $"{API}/app");
+            message.AddJsonContent(command);
+            var responseMessage = await this.HttpClient.SendAsync(message);
+            var appId = await responseMessage.AsAsync<string>();
+            var pagingReq = new HttpRequestMessage(HttpMethod.Get, $"{API}/app/paging?tenantId={tenant.Id}");
+            var pagingRep = await this.HttpClient.SendAsync(pagingReq);
+            var json = await pagingRep.Content.ReadAsStringAsync();
+            this.WriteLine(json);
+            // var appDtos = await responseMessage.AsAsync<PagedList<AppDto>>();
+            // Assert.NotEmpty(appDtos);
+            // Assert.True(appDtos.Count(s => s.Id == appId) == 1);
         }
 
         [Fact]

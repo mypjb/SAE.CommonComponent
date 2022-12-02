@@ -15,6 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\SAE.CommonComponent.Test\SAE.CommonComponent.Test.csproj" />
     <ProjectReference Include="..\..\src\SAE.CommonComponent.MultiTenant\SAE.CommonComponent.MultiTenant.csproj" />
+    <ProjectReference Include="..\SAE.CommonComponent.Application.Test\SAE.CommonComponent.Application.Test.csproj" />
   </ItemGroup>
 
 </Project>

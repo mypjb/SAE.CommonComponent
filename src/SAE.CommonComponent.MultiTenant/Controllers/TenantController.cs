@@ -76,8 +76,8 @@ namespace SAE.CommonComponent.MultiTenant.Controllers
             return await this._mediator.SendAsync<string>(command);
         }
 
-        [HttpPost("app/[action]")]
-        public async Task<object> Paging(TenantCommand.App.Query command)
+        [HttpGet("app/[action]")]
+        public async Task<object> Paging([FromQuery]TenantCommand.App.Query command)
         {
             return await this._mediator.SendAsync<IPagedList<AppDto>>(command);
         }

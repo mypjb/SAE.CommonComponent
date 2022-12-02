@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using System.Text;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SAE.CommonComponent.Application.Commands;
@@ -7,9 +10,6 @@ using SAE.CommonComponent.ConfigServer.Dtos;
 using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.Abstract.Model;
 using SAE.CommonLibrary.EventStore.Document;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SAE.CommonComponent.Application.Controllers
 {
@@ -33,8 +33,8 @@ namespace SAE.CommonComponent.Application.Controllers
         /// 查询单个对象
         /// </summary>
         /// <param name="command"></param>
-        [HttpGet("{id}")]
-        public async Task<object> Get([FromRoute]Command.Find<AppClusterDto> command)
+        [HttpGet]
+        public async Task<object> Get([FromQuery] AppClusterCommand.Find command)
         {
             return await this._mediator.SendAsync<AppClusterDto>(command);
         }
@@ -82,7 +82,7 @@ namespace SAE.CommonComponent.Application.Controllers
         /// </summary>
         /// <param name="command"></param>
         [HttpGet("{action}")]
-        public async Task<object> Paging([FromQuery]AppClusterCommand.Query command)
+        public async Task<object> Paging([FromQuery] AppClusterCommand.Query command)
         {
             return await this._mediator.SendAsync<IPagedList<AppClusterDto>>(command);
         }
