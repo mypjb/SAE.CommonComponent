@@ -44,5 +44,10 @@ namespace SAE.CommonComponent.MultiTenant.Dtos
         /// 创建时间
         /// </summary>
         public DateTime CreateTime { get; set; }
+        /// <summary>
+        /// 状态
+        /// </summary>
+        /// <value></value>
+        public Status Status { get; set; }
     }
 }

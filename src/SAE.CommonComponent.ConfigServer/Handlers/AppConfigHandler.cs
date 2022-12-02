@@ -261,9 +261,7 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
                 {
                     publicData[key] = privateData[key];
                 }
-
             }
-
             return new Tuple<IDictionary<string, object>, IDictionary<string, object>>(publicData, privateData);
         }
     }

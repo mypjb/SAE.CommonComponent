@@ -55,5 +55,17 @@ namespace SAE.CommonComponent.MultiTenant.Events
             /// <value></value>
             public string Domain { get; set; }
         }
+
+        /// <summary>
+        /// 更改状态
+        /// </summary>
+        public class ChangeStatus : IEvent
+        {
+            /// <summary>
+            /// 状态
+            /// </summary>
+            /// <value></value>
+            public Status Status { get; set; }
+        }
     }
 }

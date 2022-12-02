@@ -1,11 +1,11 @@
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 using SAE.CommonComponent.MultiTenant.Commands;
 using SAE.CommonComponent.MultiTenant.Events;
 using SAE.CommonLibrary;
 using SAE.CommonLibrary.EventStore.Document;
 using SAE.CommonLibrary.Extension;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SAE.CommonComponent.MultiTenant.Domains
 {
@@ -13,13 +13,13 @@ namespace SAE.CommonComponent.MultiTenant.Domains
     /// 租户
     /// </summary>
     public class Tenant : Document
-    {   
+    {
         /// <summary>
         /// 创建一个新的对象
         /// </summary>
         public Tenant()
         {
-            
+
         }
         /// <summary>
         /// 创建一个新的对象
@@ -67,6 +67,11 @@ namespace SAE.CommonComponent.MultiTenant.Domains
         /// </summary>
         public DateTime CreateTime { get; set; }
         /// <summary>
+        /// 状态
+        /// </summary>
+        /// <value></value>
+        public Status Status { get; set; }
+        /// <summary>
         /// 更改
         /// </summary>
         /// <param name="command"></param>
@@ -95,6 +100,15 @@ namespace SAE.CommonComponent.MultiTenant.Domains
         {
             Assert.Build(await TenantProvider.Invoke(this))
                   .False("租户已存在!");
+        }
+
+        /// <summary>
+        /// 更改状态
+        /// </summary>
+        /// <param name="command"></param>
+        public void ChangeStatus(TenantCommand.ChangeStatus command)
+        {
+            this.Apply<TenantEvent.ChangeStatus>(command);
         }
 
         /// <summary>

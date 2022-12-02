@@ -20,6 +20,7 @@ namespace SAE.CommonComponent.MultiTenant.Handlers
     public class ConfigHandler : AbstractHandler<Tenant>,
                                  ICommandHandler<TenantCommand.Create, string>,
                                  ICommandHandler<TenantCommand.Change>,
+                                 ICommandHandler<TenantCommand.ChangeStatus>,
                                  ICommandHandler<Command.Delete<Tenant>>,
                                  ICommandHandler<Command.Find<TenantDto>, TenantDto>,
                                  ICommandHandler<TenantCommand.Query, IPagedList<TenantDto>>,
@@ -127,7 +128,7 @@ namespace SAE.CommonComponent.MultiTenant.Handlers
 
             var roots = await this._mediator.SendAsync<IEnumerable<TenantItemDto>>(new TenantCommand.Tree
             {
-                Id = tenant.Id,
+                ParentId = tenant.Id,
                 Type = tenant.Type
             });
 
@@ -145,14 +146,13 @@ namespace SAE.CommonComponent.MultiTenant.Handlers
 
             var query = this._storage.AsQueryable<TenantDto>();
 
-            if (command.Id.IsNullOrWhiteSpace() || Constants.Tenant.RootId.Equals(command.Id))
+            if (command.ParentId.IsNullOrWhiteSpace())
             {
-                command.Id = Constants.Tenant.RootId;
+                command.ParentId = Constants.Tenant.RootId;
             }
-            else
+
+            if (!command.Type.IsNullOrWhiteSpace())
             {
-                var tenant = this._storage.AsQueryable<TenantDto>().FirstOrDefault(s => s.Id == command.Id);
-                command.Type = tenant.Type;
                 query = query.Where(s => s.Type == command.Type);
             }
 
@@ -161,10 +161,12 @@ namespace SAE.CommonComponent.MultiTenant.Handlers
                 Id = s.Id,
                 Name = s.Name,
                 ParentId = s.ParentId,
+                Description = s.Description,
+                CreateTime = s.CreateTime,
                 Type = s.Type
             }).ToArray();
 
-            var rootTenants = tenants.Where(s => s.ParentId == command.Id).ToArray();
+            var rootTenants = tenants.Where(s => s.ParentId == command.ParentId).ToArray();
 
             await rootTenants.ForEachAsync(async t => await this.PermutationAsync(t, tenants));
 
@@ -190,12 +192,12 @@ namespace SAE.CommonComponent.MultiTenant.Handlers
 
         public async Task<string> HandleAsync(TenantCommand.App.Create command)
         {
-            var culsterFindCommand = new AppClusterCommand.Find
+            var clusterFindCommand = new AppClusterCommand.Find
             {
                 Type = command.Type
             };
 
-            var appClusterDto = await this._mediator.SendAsync<AppClusterDto>(culsterFindCommand);
+            var appClusterDto = await this._mediator.SendAsync<AppClusterDto>(clusterFindCommand);
 
             Assert.Build(appClusterDto)
                   .NotNull("集群尚未创建，请先联系管理员创建集群！");
@@ -237,6 +239,11 @@ namespace SAE.CommonComponent.MultiTenant.Handlers
             }
 
             return PagedList.Build(query, command);
+        }
+
+        public async Task HandleAsync(TenantCommand.ChangeStatus command)
+        {
+            await this.UpdateAsync(command.Id, app => app.ChangeStatus(command));
         }
     }
 }

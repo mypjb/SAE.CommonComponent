@@ -38,6 +38,17 @@ namespace SAE.CommonComponent.MultiTenant.Controllers
             await this._mediator.SendAsync(command);
             return this.Ok();
         }
+
+        /// <summary>
+        /// 更改状态
+        /// </summary>
+        /// <param name="command"></param>
+        [HttpPut("{action}")]
+        public async Task<object> Status(TenantCommand.ChangeStatus command)
+        {
+            await this._mediator.SendAsync(command);
+            return this.Ok();
+        }
         [HttpGet("{id}")]
         public async Task<object> Get([FromRoute] Command.Find<TenantDto> command)
         {

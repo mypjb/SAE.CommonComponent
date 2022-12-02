@@ -80,6 +80,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAE.CommonComponent.MultiTe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAE.CommonComponent.MultiTenant", "src\SAE.CommonComponent.MultiTenant\SAE.CommonComponent.MultiTenant.csproj", "{EF8E5266-37E6-4B97-A671-A08C6F88B51E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAE.CommonComponent.MultiTenant.Test", "test\SAE.CommonComponent.MultiTenant.Test\SAE.CommonComponent.MultiTenant.Test.csproj", "{EAE7F0FC-C52F-4CE3-A889-93BBF0DF11FB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -206,6 +208,10 @@ Global
 		{EF8E5266-37E6-4B97-A671-A08C6F88B51E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EF8E5266-37E6-4B97-A671-A08C6F88B51E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EF8E5266-37E6-4B97-A671-A08C6F88B51E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EAE7F0FC-C52F-4CE3-A889-93BBF0DF11FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EAE7F0FC-C52F-4CE3-A889-93BBF0DF11FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EAE7F0FC-C52F-4CE3-A889-93BBF0DF11FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EAE7F0FC-C52F-4CE3-A889-93BBF0DF11FB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -241,6 +247,7 @@ Global
 		{4327A029-C317-4FD4-B9C1-1036DCFDE3CD} = {81E9D704-8CD3-4A8D-9AB0-62C63829990A}
 		{4B451B90-4EB6-4476-BAB4-64D29B8A3AE4} = {6D4B2D09-B108-452D-B80A-C66817BE846D}
 		{EF8E5266-37E6-4B97-A671-A08C6F88B51E} = {6D4B2D09-B108-452D-B80A-C66817BE846D}
+		{EAE7F0FC-C52F-4CE3-A889-93BBF0DF11FB} = {81E9D704-8CD3-4A8D-9AB0-62C63829990A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E3F15B03-989E-49CA-AC48-4DA76E675671}

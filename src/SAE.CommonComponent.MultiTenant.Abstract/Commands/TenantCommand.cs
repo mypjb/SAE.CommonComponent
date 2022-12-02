@@ -1,5 +1,5 @@
-using System.ComponentModel;
 using SAE.CommonLibrary.Abstract.Model;
+using SAE.CommonComponent;
 
 namespace SAE.CommonComponent.MultiTenant.Commands
 {
@@ -109,11 +109,6 @@ namespace SAE.CommonComponent.MultiTenant.Commands
         public class Tree
         {
             /// <summary>
-            /// 标识（标识和父级只会应用一个，标识具有更高优先级）
-            /// </summary>
-            /// <value></value>
-            public string Id { get; set; }
-            /// <summary>
             /// 父级
             /// </summary>
             /// <value></value>
@@ -181,6 +176,22 @@ namespace SAE.CommonComponent.MultiTenant.Commands
                 /// <value></value>
                 public string Key { get; set; }
             }
+        }
+        /// <summary>
+        /// 更改状态
+        /// </summary>
+        public class ChangeStatus
+        {
+            /// <summary>
+            /// 标识
+            /// </summary>
+            /// <value></value>
+            public string Id { get; set; }
+            /// <summary>
+            /// 状态
+            /// </summary>
+            /// <value></value>
+            public Status Status { get; set; }
         }
     }
 }
