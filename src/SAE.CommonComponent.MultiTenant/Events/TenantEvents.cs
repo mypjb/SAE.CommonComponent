@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using SAE.CommonComponent.Application.Abstract.Domains;
 using SAE.CommonLibrary.EventStore;
 
-namespace SAE.CommonComponent.Application.Events
+namespace SAE.CommonComponent.MultiTenant.Events
 {
     /// <summary>
-    /// 系统事件
+    /// 租户事件
     /// </summary>
-    public partial class AppEvent
+    public class TenantEvent
     {
         /// <summary>
         /// 创建
@@ -16,24 +15,19 @@ namespace SAE.CommonComponent.Application.Events
         public class Create : Change
         {
             /// <summary>
-            /// 集群标识
+            /// 标识
             /// </summary>
-            public string ClusterId { get; set; }
-            /// <summary>
-            /// 系统标识
-            /// </summary>
-            /// <value></value>
             public string Id { get; set; }
+            /// <summary>
+            /// 父级
+            /// </summary>
+            public string ParentId { get; set; }
+
             /// <summary>
             /// 创建时间
             /// </summary>
-            /// <value></value>
             public DateTime CreateTime { get; set; }
-            /// <summary>
-            /// 状态
-            /// </summary>
-            /// <value></value>
-            public Status Status { get; set; }
+
         }
         /// <summary>
         /// 更改
@@ -45,7 +39,11 @@ namespace SAE.CommonComponent.Application.Events
             /// </summary>
             /// <value></value>
             public string Name { get; set; }
-
+            /// <summary>
+            /// 租户类型
+            /// </summary>
+            /// <value></value>
+            public string Type { get; set; }
             /// <summary>
             /// 描述
             /// </summary>
@@ -56,17 +54,6 @@ namespace SAE.CommonComponent.Application.Events
             /// </summary>
             /// <value></value>
             public string Domain { get; set; }
-        }
-        /// <summary>
-        /// 更改状态
-        /// </summary>
-        public class ChangeStatus : IEvent
-        {
-            /// <summary>
-            /// 状态
-            /// </summary>
-            /// <value></value>
-            public Status Status { get; set; }
         }
     }
 }

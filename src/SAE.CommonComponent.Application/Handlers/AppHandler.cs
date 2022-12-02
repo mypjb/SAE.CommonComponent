@@ -1,3 +1,5 @@
+using System.Linq;
+using System.Threading.Tasks;
 using SAE.CommonComponent.Application.Domains;
 using SAE.CommonComponent.Application.Dtos;
 using SAE.CommonLibrary.Abstract.Mediator;
@@ -6,8 +8,6 @@ using SAE.CommonLibrary.Data;
 using SAE.CommonLibrary.EventStore.Document;
 using SAE.CommonLibrary.Extension;
 using SAE.CommonLibrary.Logging;
-using System.Linq;
-using System.Threading.Tasks;
 using AppCommand = SAE.CommonComponent.Application.Commands.AppCommand;
 
 namespace SAE.CommonComponent.Application.Abstract.Handlers
@@ -68,9 +68,11 @@ namespace SAE.CommonComponent.Application.Abstract.Handlers
             var query = this._storage.AsQueryable<AppDto>()
                                      .Where(s => s.ClusterId == command.ClusterId);
 
-            if (!command.Name.IsNullOrWhiteSpace())
+            if (!command.Key.IsNullOrWhiteSpace())
             {
-                query = query.Where(s => s.Name.Contains(command.Name));
+                query = query.Where(s => s.Name.Contains(command.Key) ||
+                s.Description.Contains(command.Key) ||
+                s.Domain.Contains(command.Key));
             }
 
             return Task.FromResult(PagedList.Build(query, command));

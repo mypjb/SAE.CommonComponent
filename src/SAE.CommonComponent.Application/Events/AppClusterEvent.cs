@@ -1,7 +1,7 @@
-using SAE.CommonComponent.Application.Abstract.Domains;
-using SAE.CommonLibrary.EventStore;
 using System;
 using System.Collections.Generic;
+using SAE.CommonComponent.Application.Abstract.Domains;
+using SAE.CommonLibrary.EventStore;
 
 namespace SAE.CommonComponent.Application.Events
 {
@@ -25,6 +25,16 @@ namespace SAE.CommonComponent.Application.Events
             /// </summary>
             /// <value></value>
             public DateTime CreateTime { get; set; }
+            /// <summary>
+            /// 集群类型。（集群下的资源属于多租户时，应该设置该值，该值对应字典标识，一旦设置不可更改!)
+            /// </summary>
+            /// <value></value>
+            public string Type { get; set; }
+            /// <summary>
+            /// 状态
+            /// </summary>
+            /// <value></value>
+            public Status Status { get; set; }
         }
         /// <summary>
         /// 更改
@@ -41,7 +51,7 @@ namespace SAE.CommonComponent.Application.Events
             /// 描述
             /// </summary>
             /// <value></value>
-            public string Description{get;set;}
+            public string Description { get; set; }
         }
         /// <summary>
         /// 更改状态

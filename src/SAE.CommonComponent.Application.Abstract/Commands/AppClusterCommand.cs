@@ -1,6 +1,6 @@
+using System.Collections.Generic;
 using SAE.CommonComponent.Application.Dtos;
 using SAE.CommonLibrary.Abstract.Model;
-using System.Collections.Generic;
 
 namespace SAE.CommonComponent.Application.Commands
 {
@@ -10,6 +10,23 @@ namespace SAE.CommonComponent.Application.Commands
     public class AppClusterCommand
     {
         /// <summary>
+        /// 查找单个对象，<see cref="Id"/>和<see cref="Type"/>
+        /// 只会应用一个，<c>Id</c>优先级更高
+        /// </summary>
+        public class Find
+        {
+            /// <summary>
+            /// 标识
+            /// </summary>
+            /// <value></value>
+            public string Id { get; set; }
+            /// <summary>
+            /// 类型
+            /// </summary>
+            /// <value></value>
+            public string Type { get; set; }
+        }
+        /// <summary>
         /// 分页查询
         /// </summary>
         public class Query : Paging
@@ -18,7 +35,12 @@ namespace SAE.CommonComponent.Application.Commands
             /// 集群名称
             /// </summary>
             /// <value></value>
-            public string Name { get; set; }
+            public string Key { get; set; }
+            /// <summary>
+            /// 集群类型。（集群下的资源属于多租户时，应该设置该值，该值对应字典标识，一旦设置不可更改!)
+            /// </summary>
+            /// <value></value>
+            public string Type { get; set; }
         }
         /// <summary>
         /// 创建
@@ -34,12 +56,17 @@ namespace SAE.CommonComponent.Application.Commands
             /// 描述
             /// </summary>
             /// <value></value>
-            public string Description{get;set;}
+            public string Description { get; set; }
+            /// <summary>
+            /// 集群类型。（集群下的资源属于多租户时，应该设置该值，该值对应字典标识，一旦设置不可更改!)
+            /// </summary>
+            /// <value></value>
+            public string Type { get; set; }
         }
         /// <summary>
         /// 更改
         /// </summary>
-        public class Change: Create
+        public class Change : Create
         {
             /// <summary>
             /// 标识

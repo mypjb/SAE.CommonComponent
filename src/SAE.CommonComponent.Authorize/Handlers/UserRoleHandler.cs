@@ -63,26 +63,24 @@ namespace SAE.CommonComponent.Authorize.Handlers
 
         public async Task<IEnumerable<RoleDto>> HandleAsync(UserRoleCommand.List command)
         {
-            var roleIds = this._storage.AsQueryable<UserRoleDto>()
-                                       .Where(s => s.UserId == command.UserId)
-                                       .Select(s => s.RoleId)
-                                       .ToArray();
+            var query = from role in this._storage.AsQueryable<RoleDto>()
+                        join ur in this._storage.AsQueryable<UserRoleDto>()
+                        on role.Id equals ur.RoleId
+                        where ur.UserId == command.UserId
+                        select role;
 
-            var roles = this._storage.AsQueryable<RoleDto>()
-                                     .Where(s => roleIds.Contains(s.Id))
-                                     .ToArray();
-
+            var roles = query.ToArray();
 
             await this._director.Build<IEnumerable<RoleDto>>(roles);
 
             return roles;
         }
-        
+
         public async Task<Dictionary<string, string>> HandleAsync(UserRoleCommand.QueryUserAuthorizeCode command)
         {
-            var roles = await this._mediator.SendAsync<IEnumerable<RoleDto>>(new Command.Find<UserRoleDto>
+            var roles = await this._mediator.SendAsync<IEnumerable<RoleDto>>(new UserRoleCommand.List
             {
-                Id = command.UserId
+                UserId = command.UserId
             });
 
             var dic = new Dictionary<string, string>();
@@ -102,13 +100,13 @@ namespace SAE.CommonComponent.Authorize.Handlers
 
         public async Task<IPagedList<RoleDto>> HandleAsync(UserRoleCommand.Query command)
         {
-            var ids = this._storage.AsQueryable<UserRole>()
-                                   .Where(s => s.UserId == command.UserId)
-                                   .Select(s => s.RoleId)
-                                   .ToArray();
+            var query = from role in this._storage.AsQueryable<RoleDto>()
+                        join ur in this._storage.AsQueryable<UserRoleDto>()
+                        on role.Id equals ur.RoleId
+                        where ur.UserId == command.UserId
+                        select role;
 
-            return PagedList.Build(this._storage.AsQueryable<RoleDto>()
-                            .Where(s => !ids.Contains(s.Id)), command);
+            return PagedList.Build(query, command);
         }
 
         public Task HandleAsync(Command.BatchDelete<UserRole> command)

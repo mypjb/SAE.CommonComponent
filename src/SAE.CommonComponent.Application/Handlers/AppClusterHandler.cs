@@ -1,3 +1,5 @@
+using System.Linq;
+using System.Threading.Tasks;
 using SAE.CommonComponent.Application.Domains;
 using SAE.CommonComponent.Application.Dtos;
 using SAE.CommonComponent.ConfigServer.Commands;
@@ -8,8 +10,6 @@ using SAE.CommonLibrary.Data;
 using SAE.CommonLibrary.EventStore.Document;
 using SAE.CommonLibrary.Extension;
 using SAE.CommonLibrary.Logging;
-using System.Linq;
-using System.Threading.Tasks;
 using AppClusterCommand = SAE.CommonComponent.Application.Commands.AppClusterCommand;
 
 namespace SAE.CommonComponent.Application.Abstract.Handlers
@@ -20,7 +20,7 @@ namespace SAE.CommonComponent.Application.Abstract.Handlers
                               ICommandHandler<Command.Delete<AppCluster>>,
                               ICommandHandler<AppClusterCommand.ChangeStatus>,
                               ICommandHandler<AppClusterCommand.Query, IPagedList<AppClusterDto>>,
-                              ICommandHandler<Command.Find<AppClusterDto>, AppClusterDto>                              
+                              ICommandHandler<AppClusterCommand.Find, AppClusterDto>
     {
         private readonly IStorage _storage;
         private readonly IMediator _mediator;
@@ -39,7 +39,7 @@ namespace SAE.CommonComponent.Application.Abstract.Handlers
         public async Task HandleAsync(AppClusterCommand.Change command)
         {
             var appCluster = await this._documentStore.FindAsync<AppCluster>(command.Id);
-            await appCluster.NameExistAsync(this.FindClusterAsync);
+            await appCluster.ExistAsync(this.FindClusterAsync);
             appCluster.Change(command);
             await this._documentStore.SaveAsync(appCluster);
         }
@@ -47,7 +47,7 @@ namespace SAE.CommonComponent.Application.Abstract.Handlers
         public async Task<string> HandleAsync(AppClusterCommand.Create command)
         {
             var appCluster = new AppCluster(command);
-            await appCluster.NameExistAsync(this.FindClusterAsync);
+            await appCluster.ExistAsync(this.FindClusterAsync);
             await this.AddAsync(appCluster);
             return appCluster.Id;
         }
@@ -58,24 +58,36 @@ namespace SAE.CommonComponent.Application.Abstract.Handlers
         }
 
 
-        public async Task<AppClusterDto> HandleAsync(Command.Find<AppClusterDto> command)
+        public async Task<AppClusterDto> HandleAsync(AppClusterCommand.Find command)
         {
-            var dto = this._storage.AsQueryable<AppClusterDto>()
-                          .FirstOrDefault(s => s.Id == command.Id);
-            return dto;
+            if (!command.Id.IsNullOrWhiteSpace())
+            {
+                return this._storage.AsQueryable<AppClusterDto>()
+                                    .FirstOrDefault(s => s.Id == command.Id);
+            }
+            else if (!command.Type.IsNullOrWhiteSpace())
+            {
+                return this._storage.AsQueryable<AppClusterDto>()
+                                    .FirstOrDefault(s => s.Type == command.Type);
+            }
+            return null;
         }
 
         public Task<IPagedList<AppClusterDto>> HandleAsync(AppClusterCommand.Query command)
         {
             var query = this._storage.AsQueryable<AppClusterDto>();
-            if (!command.Name.IsNullOrWhiteSpace())
+            if (!command.Key.IsNullOrWhiteSpace())
             {
-                query = query.Where(s => s.Name.Contains(command.Name));
+                query = query.Where(s => s.Name.Contains(command.Key) || s.Description.Contains(command.Key));
+            }
+            if (!command.Type.IsNullOrWhiteSpace())
+            {
+                query = query.Where(s => s.Type == command.Type);
             }
 
             return Task.FromResult(PagedList.Build(query, command));
         }
-       
+
         public async Task HandleAsync(Command.Delete<AppCluster> command)
         {
             await this.DeleteAsync<AppCluster>(command.Id);
@@ -83,9 +95,19 @@ namespace SAE.CommonComponent.Application.Abstract.Handlers
 
         private Task<AppCluster> FindClusterAsync(AppCluster cluster)
         {
-            var oldAppCluster = this._storage.AsQueryable<AppCluster>()
-                                   .FirstOrDefault(s => s.Name == cluster.Name
-                                                        && s.Id != cluster.Id);
+            AppCluster oldAppCluster;
+            if (cluster.Type.IsNullOrWhiteSpace())
+            {
+                oldAppCluster = this._storage.AsQueryable<AppCluster>()
+                                             .FirstOrDefault(s => s.Name == cluster.Name &&
+                                                                  s.Id != cluster.Id);
+            }
+            else
+            {
+                oldAppCluster = this._storage.AsQueryable<AppCluster>()
+                                         .FirstOrDefault(s => (s.Name == cluster.Name || s.Type == cluster.Type) &&
+                                                         s.Id != cluster.Id);
+            }
             return Task.FromResult(oldAppCluster);
         }
     }

@@ -1,6 +1,6 @@
+using System.Collections.Generic;
 using SAE.CommonComponent.Application.Dtos;
 using SAE.CommonLibrary.Abstract.Model;
-using System.Collections.Generic;
 
 namespace SAE.CommonComponent.Application.Commands
 {
@@ -23,7 +23,7 @@ namespace SAE.CommonComponent.Application.Commands
             /// 名称
             /// </summary>
             /// <value></value>
-            public string Name { get; set; }
+            public string Key { get; set; }
         }
         /// <summary>
         /// 创建
@@ -44,12 +44,17 @@ namespace SAE.CommonComponent.Application.Commands
             /// 描述
             /// </summary>
             /// <value></value>
-            public string Description{get;set;}
+            public string Description { get; set; }
+            /// <summary>
+            /// 域名
+            /// </summary>
+            /// <value></value>
+            public string Domain { get; set; }
         }
         /// <summary>
         /// 更改
         /// </summary>
-        public class Change: Create
+        public class Change : Create
         {
             /// <summary>
             /// 标识

@@ -31,6 +31,7 @@ namespace SAE.CommonComponent.Application.Domains
             {
                 e.Id = Utils.GenerateId();
                 e.CreateTime = DateTime.UtcNow;
+                e.Status = Status.Enable;
             });
         }
 
@@ -42,6 +43,11 @@ namespace SAE.CommonComponent.Application.Domains
         /// 集群名称
         /// </summary>
         public string Name { get; set; }
+        /// <summary>
+        /// 集群类型。（集群下的资源属于多租户时，应该设置该值，该值对应字典标识，一旦设置不可更改!)
+        /// </summary>
+        /// <value></value>
+        public string Type { get; set; }
 
         /// <summary>
         /// 描述
@@ -78,14 +84,14 @@ namespace SAE.CommonComponent.Application.Domains
         /// 是否存在重名集群
         /// </summary>
         /// <param name="provider"></param>
-        public async Task NameExistAsync(Func<AppCluster, Task<AppCluster>> provider)
+        public async Task ExistAsync(Func<AppCluster, Task<AppCluster>> provider)
         {
             var cluster = await provider.Invoke(this);
             if (cluster == null)
             {
                 return;
             }
-            throw new SAEException(StatusCodes.ResourcesExist, $"{nameof(AppCluster)} name exist");
+            throw new SAEException(StatusCodes.ResourcesExist, $"{nameof(AppCluster)} exist");
         }
     }
 }

@@ -30,7 +30,7 @@ namespace SAE.CommonComponent.Authorize.Domains
         {
             this.ClientId = clientId;
             this.RoleId = roleId;
-            this.Id = $"{this.ClientId}_{this.RoleId}".ToMd5();
+            this.Id = $"{this.ClientId}{this.RoleId}".ToMd5();
             this.Apply(this);
         }
         /// <summary>

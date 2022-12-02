@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SAE.CommonComponent.ConfigServer.Handlers
+namespace SAE.CommonComponent.BasicData.Handlers
 {
     public class ConfigHandler : AbstractHandler<Dict>,
                                  ICommandHandler<DictCommand.Create, string>,

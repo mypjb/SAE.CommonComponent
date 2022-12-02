@@ -36,6 +36,7 @@ namespace SAE.CommonComponent.Application.Domains
                 }
 
                 e.CreateTime = DateTime.UtcNow;
+                e.Status = Status.Enable;
             });
         }
         /// <summary>
@@ -56,6 +57,11 @@ namespace SAE.CommonComponent.Application.Domains
         /// </summary>
         /// <value></value>
         public string Description { get; set; }
+        /// <summary>
+        /// 域名
+        /// </summary>
+        /// <value></value>
+        public string Domain { get; set; }
         /// <summary>
         /// 创建时间
         /// </summary>
