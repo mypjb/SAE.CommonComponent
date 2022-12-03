@@ -66,7 +66,6 @@ namespace SAE.CommonComponent.InitializeData
             this._bitmapEndpointProvider = serviceProvider.GetService<IBitmapEndpointProvider>();
             this._pathDescriptorProvider = serviceProvider.GetService<IPathDescriptorProvider>();
             this._bitmapAuthorization = serviceProvider.GetService<IBitmapAuthorization>();
-
             this._hostEnvironment = serviceProvider.GetService<IHostEnvironment>();
         }
         /// <summary>
@@ -177,59 +176,29 @@ namespace SAE.CommonComponent.InitializeData
                 {
                     Type = (int)DictType.Scope
                 });
-                if (dicts.Any()) return;
+                if (dicts.Any())
+                {
+                    this._logging.Warn("系统已初始化过，如需重新初始化，请清理数据后重新启动！");
+                    return;
+                }
 
                 var totalTime = 0d;
-                var stopwatch = new Stopwatch();
 
-                stopwatch.Start();
-                this._logging.Info($"start initial {nameof(BasicDataAsync)}");
-                await this.BasicDataAsync();
-                this._logging.Info($"end initial {nameof(BasicDataAsync)} elapsed time {stopwatch.ElapsedMilliseconds}");
-                stopwatch.Stop();
-                totalTime += stopwatch.ElapsedMilliseconds;
-                stopwatch.Restart();
+                totalTime += await this.ExecuteCoreAsync($"{nameof(BasicDataAsync)}", this.BasicDataAsync);
 
-                this._logging.Info($"start initial {nameof(ConfigServerAsync)}");
-                await this.ConfigServerAsync();
-                this._logging.Info($"end initial {nameof(ConfigServerAsync)} elapsed time {stopwatch.ElapsedMilliseconds}");
-                stopwatch.Stop();
-                totalTime += stopwatch.ElapsedMilliseconds;
-                stopwatch.Restart();
+                totalTime += await this.ExecuteCoreAsync($"{nameof(ConfigServerAsync)}", this.ConfigServerAsync);
 
-                this._logging.Info($"start initial {nameof(ApplicationAsync)}");
-                await this.ApplicationAsync();
-                this._logging.Info($"end initial {nameof(ApplicationAsync)} elapsed time {stopwatch.ElapsedMilliseconds}");
-                stopwatch.Stop();
-                totalTime += stopwatch.ElapsedMilliseconds;
-                stopwatch.Restart();
+                totalTime += await this.ExecuteCoreAsync($"{nameof(ApplicationAsync)}", this.ApplicationAsync);
 
-                this._logging.Info($"start initial {nameof(UserAsync)}");
-                await this.UserAsync();
-                this._logging.Info($"end initial {nameof(UserAsync)} elapsed time {stopwatch.ElapsedMilliseconds}");
-                stopwatch.Stop();
-                totalTime += stopwatch.ElapsedMilliseconds;
-                stopwatch.Restart();
+                totalTime += await this.ExecuteCoreAsync($"{nameof(MultiTenantAsync)}", this.MultiTenantAsync);
 
-                this._logging.Info($"start initial {nameof(AuthorizeAsync)}");
-                await this.AuthorizeAsync();
-                this._logging.Info($"end initial {nameof(AuthorizeAsync)} elapsed time {stopwatch.ElapsedMilliseconds}");
-                stopwatch.Stop();
-                totalTime += stopwatch.ElapsedMilliseconds;
-                stopwatch.Restart();
+                totalTime += await this.ExecuteCoreAsync($"{nameof(UserAsync)}", this.UserAsync);
 
-                this._logging.Info($"start initial {nameof(RoutingAsync)}");
-                await this.RoutingAsync();
-                this._logging.Info($"end initial {nameof(RoutingAsync)} elapsed time {stopwatch.ElapsedMilliseconds}");
-                stopwatch.Stop();
-                totalTime += stopwatch.ElapsedMilliseconds;
-                stopwatch.Restart();
+                totalTime += await this.ExecuteCoreAsync($"{nameof(AuthorizeAsync)}", this.AuthorizeAsync);
 
-                this._logging.Info($"start initial {nameof(PluginAsync)}");
-                await this.PluginAsync();
-                this._logging.Info($"end initial {nameof(PluginAsync)} elapsed time {stopwatch.ElapsedMilliseconds}");
-                stopwatch.Stop();
-                totalTime += stopwatch.ElapsedMilliseconds; ;
+                totalTime += await this.ExecuteCoreAsync($"{nameof(RoutingAsync)}", this.RoutingAsync);
+
+                totalTime += await this.ExecuteCoreAsync($"{nameof(PluginAsync)}", this.PluginAsync);
 
                 this._logging.Info($"total {totalTime}");
             }
@@ -241,6 +210,18 @@ namespace SAE.CommonComponent.InitializeData
                     await ctx.Response.WriteAsync($"Initial fail '{ex.Message}'. Please contact the administrator", Encoding.UTF8);
                 });
             }
+        }
+
+        protected async Task<long> ExecuteCoreAsync(string name, Func<Task> func)
+        {
+            var stopwatch = new Stopwatch();
+
+            stopwatch.Start();
+            this._logging.Info($"start initial {name}");
+            await func.Invoke();
+            this._logging.Info($"end initial {name} elapsed time {stopwatch.ElapsedMilliseconds}");
+            stopwatch.Stop();
+            return stopwatch.ElapsedMilliseconds;
         }
 
         public virtual async Task BasicDataAsync()
@@ -351,7 +332,7 @@ namespace SAE.CommonComponent.InitializeData
                         Id = clientId
                     });
 
-                    clientDto.Secret = "************";;
+                    clientDto.Secret = "************"; ;
 
                     this._logging.Info($"output default app:{clientDto.ToJsonString()}");
 
@@ -698,5 +679,9 @@ namespace SAE.CommonComponent.InitializeData
             this._logging.Info($"Plugin list:{plugins?.ToJsonString()}");
         }
 
+        public async Task MultiTenantAsync()
+        {
+
+        }
     }
 }

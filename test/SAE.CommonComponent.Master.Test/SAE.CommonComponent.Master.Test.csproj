@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.0" />
+    <PackageReference Include="xunit" Version="2.4.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="coverlet.collector" Version="3.2.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\SAE.CommonComponent.Master\SAE.CommonComponent.Master.csproj" />
+    <ProjectReference Include="..\..\src\SAE.CommonComponent.Application.Abstract\SAE.CommonComponent.Application.Abstract.csproj" />
+    <ProjectReference Include="..\..\src\SAE.CommonComponent.Authorize.Abstract\SAE.CommonComponent.Authorize.Abstract.csproj" />
+    <ProjectReference Include="..\..\src\SAE.CommonComponent.BasicData.Abstract\SAE.CommonComponent.BasicData.Abstract.csproj" />
+    <ProjectReference Include="..\..\src\SAE.CommonComponent.ConfigServer.Abstract\SAE.CommonComponent.ConfigServer.Abstract.csproj" />
+    <ProjectReference Include="..\..\src\SAE.CommonComponent.MultiTenant.Abstract\SAE.CommonComponent.MultiTenant.Abstract.csproj" />
+    <ProjectReference Include="..\..\src\SAE.CommonComponent.PluginManagement.Abstract\SAE.CommonComponent.PluginManagement.Abstract.csproj" />
+    <ProjectReference Include="..\..\src\SAE.CommonComponent.Routing.Abstract\SAE.CommonComponent.Routing.Abstract.csproj" />
+    <ProjectReference Include="..\..\src\SAE.CommonComponent.User.Abstract\SAE.CommonComponent.User.Abstract.csproj" />
+  </ItemGroup>
+
+</Project>

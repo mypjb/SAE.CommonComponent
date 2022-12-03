@@ -14,38 +14,5 @@ namespace SAE.CommonComponent.InitializeData
         public DevelopmentInitializeService(IServiceProvider serviceProvider) : base(serviceProvider)
         {
         }
-
-        public override Task BasicDataAsync()
-        {
-            return base.BasicDataAsync();
-        }
-        public override async Task ApplicationAsync()
-        {
-            await base.ApplicationAsync();
-        }
-
-        public override Task AuthorizeAsync()
-        {
-            return base.AuthorizeAsync();
-        }
-
-        protected override string GenerateAppId()
-        {
-            return Guid.Empty.ToString("N");
-        }
-        public override Task ConfigServerAsync()
-        {
-            return base.ConfigServerAsync();
-        }
-
-        public override Task RoutingAsync()
-        {
-            return base.RoutingAsync();
-        }
-
-        public override Task UserAsync()
-        {
-            return base.UserAsync();
-        }
     }
 }
