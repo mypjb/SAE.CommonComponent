@@ -46,6 +46,12 @@ namespace SAE.CommonComponent.Authorize.EventHandlers
                 AppId = command.AppId
             });
 
+            if (!resources.Any())
+            {
+                this._logging.Warn($"未找到系统({command.AppId})新增的资源!");
+                return;
+            }
+
             var index = resources.Max(s => s.Index);
 
             foreach (var resource in resources.OrderBy(s => s.CreateTime)
@@ -72,7 +78,7 @@ namespace SAE.CommonComponent.Authorize.EventHandlers
                 };
 
                 this._logging.Info($"{message}->'{indexCommand.Index}',发送设置索引命令。");
-                
+
                 await this._mediator.SendAsync(indexCommand);
 
             }

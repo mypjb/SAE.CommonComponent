@@ -21,7 +21,7 @@ namespace SAE.CommonComponent.Application.Test
         {
         }
 
-        public AppClusterControllerTest(ITestOutputHelper output, HttpClient httpClient) : base(output, httpClient)
+        internal AppClusterControllerTest(ITestOutputHelper output, HttpClient httpClient) : base(output, httpClient)
         {
         }
 

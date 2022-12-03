@@ -28,7 +28,7 @@ namespace SAE.CommonComponent.Application.Test
             this._appControllerTest = new AppControllerTest(this._output, this.HttpClient);
         }
 
-        public AppResourceControllerTest(ITestOutputHelper output, HttpClient httpClient) : base(output, httpClient)
+        internal AppResourceControllerTest(ITestOutputHelper output, HttpClient httpClient) : base(output, httpClient)
         {
             this._appControllerTest = new AppControllerTest(this._output, this.HttpClient);
         }
@@ -71,10 +71,11 @@ namespace SAE.CommonComponent.Application.Test
             var responseMessage = await this.HttpClient.SendAsync(message);
             var id = await responseMessage.AsAsync<string>();
             var appResource = await this.Get(id);
-            this.WriteLine(appResource);
+            // this.WriteLine(appResource);
             Assert.Equal(command.Name, appResource.Name);
             Assert.Equal(command.Method, appResource.Method);
             Assert.Equal(command.Path, appResource.Path);
+            Assert.Equal(command.AppId, appResource.AppId);
             return appResource;
         }
 
@@ -106,6 +107,7 @@ namespace SAE.CommonComponent.Application.Test
             Enumerable.Range(0, range)
                       .AsParallel()
                       .ForAll(s =>
+                    //   .ForEach(s =>
                       {
                           this.Add(appDto.Id).GetAwaiter().GetResult();
                       });
@@ -113,7 +115,7 @@ namespace SAE.CommonComponent.Application.Test
 
             var responseMessage = await this.HttpClient.SendAsync(message);
             var resources = await responseMessage.AsAsync<AppResourceDto[]>();
-
+       
             Assert.NotEmpty(resources);
             Assert.Equal(range, resources.Length);
             foreach (var resource in resources)
