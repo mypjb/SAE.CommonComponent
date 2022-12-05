@@ -153,46 +153,14 @@ namespace SAE.CommonComponent
             public const string AppId = "app_id";
         }
         /// <summary>
-        /// 菜单
+        /// 树
         /// </summary>
-        public class Menu
+        public class Tree
         {
             /// <summary>
-            /// 根标识
+            /// 默认树的根标识
             /// </summary>
-            public const string RootId = "menu_0";
-            /// <summary>
-            /// 根名称
-            /// </summary>
-            public const string RootName = "root";
-        }
-        /// <summary>
-        /// 字典
-        /// </summary>
-        public class Dict
-        {
-            /// <summary>
-            /// 根标识
-            /// </summary>
-            public const string RootId = "dict_0";
-            /// <summary>
-            /// 根名称
-            /// </summary>
-            public const string RootName = "root";
-        }
-        /// <summary>
-        /// 租户
-        /// </summary>
-        public class Tenant
-        {
-            /// <summary>
-            /// 根标识
-            /// </summary>
-            public const string RootId = "tenant_0";
-            /// <summary>
-            /// 根名称
-            /// </summary>
-            public const string RootName = "root";
+            public const string RootId="";
         }
     }
 }

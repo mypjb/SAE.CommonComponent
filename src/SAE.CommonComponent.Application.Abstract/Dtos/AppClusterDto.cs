@@ -38,5 +38,10 @@ namespace SAE.CommonComponent.Application.Dtos
         /// </summary>
         /// <value></value>
         public Status Status { get; set; }
+        /// <summary>
+        /// 集群设置(当集群类型存在时，应该设置该对象)
+        /// </summary>
+        /// <value></value>
+        public AppClusterSettingDto Setting { get; set; }
     }
 }

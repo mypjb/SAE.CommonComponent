@@ -78,11 +78,15 @@ namespace SAE.CommonComponent
         /// <summary>
         /// 环境变量
         /// </summary>
-        Environment = 1,
+        Environment,
 
         /// <summary>
         /// 区域
         /// </summary>
-        Scope = 2
+        Scope,
+        /// <summary>
+        /// 租户
+        /// </summary>
+        Tenant,
     }
 }

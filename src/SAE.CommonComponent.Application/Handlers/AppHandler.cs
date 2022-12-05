@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SAE.CommonComponent.Application.Domains;
@@ -18,7 +19,8 @@ namespace SAE.CommonComponent.Application.Abstract.Handlers
                               ICommandHandler<Command.Delete<App>>,
                               ICommandHandler<AppCommand.ChangeStatus>,
                               ICommandHandler<AppCommand.Query, IPagedList<AppDto>>,
-                              ICommandHandler<Command.Find<AppDto>, AppDto>
+                              ICommandHandler<Command.Find<AppDto>, AppDto>,
+                              ICommandHandler<AppCommand.List, IEnumerable<AppDto>>
     {
         private readonly IStorage _storage;
         private readonly IMediator _mediator;
@@ -81,6 +83,13 @@ namespace SAE.CommonComponent.Application.Abstract.Handlers
         public async Task HandleAsync(Command.Delete<App> command)
         {
             await this.DeleteAsync<App>(command.Id);
+        }
+
+        public async Task<IEnumerable<AppDto>> HandleAsync(AppCommand.List command)
+        {
+            return this._storage.AsQueryable<AppDto>()
+                                .Where(s => s.ClusterId == command.ClusterId)
+                                .ToArray();
         }
 
         private Task<App> FindAppAsync(App app)

@@ -55,6 +55,11 @@ namespace SAE.CommonComponent.Application.Domains
         /// <value></value>
         public string Description { get; set; }
         /// <summary>
+        /// 集群设置，集群设置(当集群类型存在时，应该设置该对象)
+        /// </summary>
+        /// <value></value>
+        public AppClusterSetting Setting { get; set; }
+        /// <summary>
         /// 创建时间
         /// </summary>
         public DateTime CreateTime { get; set; }

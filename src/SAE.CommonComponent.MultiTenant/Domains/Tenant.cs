@@ -29,7 +29,7 @@ namespace SAE.CommonComponent.MultiTenant.Domains
         {
             if (command.ParentId.IsNullOrWhiteSpace())
             {
-                command.ParentId = Constants.Tenant.RootId;
+                command.ParentId = Constants.Tree.RootId;
             }
             this.Apply<TenantEvent.Create>(command, e =>
             {
@@ -117,7 +117,7 @@ namespace SAE.CommonComponent.MultiTenant.Domains
         /// <returns></returns>
         public bool IsRoot()
         {
-            return this.ParentId == Constants.Tenant.RootId;
+            return this.ParentId == Constants.Tree.RootId;
         }
 
     }

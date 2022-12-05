@@ -31,47 +31,45 @@ namespace SAE.CommonComponent.BasicData.Test
         }
 
         [Theory]
-        [InlineData(null, 0)]
-        public async Task<DictDto> Add(string parentId = null, int type = 0)
+        [InlineData(null)]
+        public async Task<DictDto> Add(string parentId = null)
         {
             var command = new DictCommand.Create
             {
                 Name = this.GetRandom(),
-                ParentId = parentId,
-                Type = type > 0 ? type : Math.Abs(this.GetRandom().GetHashCode() / 100)
+                ParentId = parentId
             };
 
             if (!parentId.IsNullOrWhiteSpace())
             {
                 var parentDict = await this.Get(parentId);
-                command.Type = parentDict.Type;
             }
 
             var message = new HttpRequestMessage(HttpMethod.Post, API);
             message.AddJsonContent(command);
             var responseMessage = await this.HttpClient.SendAsync(message);
             var id = await responseMessage.AsAsync<string>();
-            var Dict = await this.Get(id);
-            Assert.Equal(command.Name, Dict.Name);
+            var dict = await this.Get(id);
+            Assert.Equal(command.Name, dict.Name);
 
-            return Dict;
+            return dict;
         }
 
         [Fact]
         public async Task Edit()
         {
-            var Dict = await this.Add();
+            var dict = await this.Add();
             var message = new HttpRequestMessage(HttpMethod.Put, API);
             var command = new DictCommand.Change
             {
-                Id = Dict.Id,
+                Id = dict.Id,
                 Name = this.GetRandom()
             };
             message.AddJsonContent(command);
             var responseMessage = await this.HttpClient.SendAsync(message);
             responseMessage.EnsureSuccessStatusCode();
-            var newDict = await this.Get(Dict.Id);
-            Assert.NotEqual(newDict.Name, Dict.Name);
+            var newDict = await this.Get(dict.Id);
+            Assert.NotEqual(newDict.Name, dict.Name);
         }
 
         [Fact]
@@ -110,10 +108,9 @@ namespace SAE.CommonComponent.BasicData.Test
             var childDict = parentDict.Items.First(s => s.Id == child.Id);
             Assert.Equal(parent.Name, parentDict.Name);
             Assert.Equal(parent.ParentId, parentDict.ParentId);
-            Assert.Equal(parent.Type, parentDict.Type);
+            
             Assert.Equal(child.Name, childDict.Name);
             Assert.Equal(child.ParentId, childDict.ParentId);
-            Assert.Equal(child.Type, childDict.Type);
             this.WriteLine(dicts);
 
             return dicts;

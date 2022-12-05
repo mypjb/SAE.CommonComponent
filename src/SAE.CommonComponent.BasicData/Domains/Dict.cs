@@ -1,93 +1,112 @@
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 using SAE.CommonComponent.BasicData.Commands;
 using SAE.CommonComponent.BasicData.Events;
 using SAE.CommonLibrary;
 using SAE.CommonLibrary.EventStore.Document;
 using SAE.CommonLibrary.Extension;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SAE.CommonComponent.BasicData.Domains
 {
+    /// <summary>
+    /// 字典
+    /// </summary>
     public class Dict : Document
     {
+        /// <summary>
+        /// 创建一个新的对象
+        /// </summary>
         public Dict()
         {
-            this.ParentId = Constants.Dict.RootId;
+            this.ParentId = Constants.Tree.RootId;
         }
-
+        /// <summary>
+        /// 创建一个新的对象
+        /// </summary>
+        /// <param name="command"></param>
         public Dict(DictCommand.Create command)
         {
-            if (command.ParentId.IsNullOrWhiteSpace())
-            {
-                command.ParentId = Constants.Dict.RootId;
-            }
             this.Apply<DictEvent.Create>(command, e =>
             {
                 e.Id = Utils.GenerateId();
                 e.CreateTime = DateTime.Now;
+                if (e.ParentId.IsNullOrWhiteSpace())
+                {
+                    e.ParentId = Constants.Tree.RootId;
+                }
             });
-        }
 
+        }
+        /// <summary>
+        /// 标识
+        /// </summary>
+        /// <value></value>
         public string Id { get; set; }
         /// <summary>
-        /// Dict name
+        /// 名称
         /// </summary>
         /// <value></value>
         public string Name { get; set; }
-
         /// <summary>
-        /// dict type
+        /// 排序
         /// </summary>
-        public int Type { get; set; }
+        /// <value></value>
+        public int Sort { get; set; }
 
         /// <summary>
-        /// parent id
+        /// 排序
         /// </summary>
         /// <value></value>
         public string ParentId { get; set; }
 
         /// <summary>
-        /// create time
+        /// 创建时间
         /// </summary>
         public DateTime CreateTime { get; set; }
-
-        public async Task Change(DictCommand.Change command, Func<string, Task<Dict>> parentProvider, Func<Dict, Task<bool>> DictProvider)
+        /// <summary>
+        /// 更改对象
+        /// </summary>
+        /// <param name="command"></param>
+        /// <param name="parentProvider"></param>
+        /// <param name="dictProvider"></param>
+        public async Task Change(DictCommand.Change command, Func<string, Task<Dict>> parentProvider, Func<Dict, Task<bool>> dictProvider)
         {
             if (command.ParentId.IsNullOrWhiteSpace())
             {
-                command.ParentId = Constants.Dict.RootId;
+                command.ParentId = Constants.Tree.RootId;
+
             }
             this.Apply<DictEvent.Change>(command);
+
             await this.ParentExist(parentProvider);
-            await this.NotExist(DictProvider);
+            await this.NotExist(dictProvider);
+
         }
-
-        public async Task ParentExist(Func<string, Task<Dict>> DictProvider)
-        {
-            if (this.IsRoot()) return;
-            var root = await DictProvider.Invoke(this.ParentId);
-            Assert.Build(root)
-                  .NotNull("parent not exist and not root node!");
-
-            Assert.Build(this.Type == root.Type)
-                  .True($"type not equal parent");
-        }
-
-        public async Task NotExist(Func<Dict, Task<bool>> DictProvider)
-        {
-            Assert.Build(await DictProvider.Invoke(this))
-                  .False("Dict is exist!");
-        }
-
         /// <summary>
-        /// is root none
+        /// 父级是否存在
         /// </summary>
-        /// <returns></returns>
-        public bool IsRoot()
+        /// <param name="provider"></param>
+        public async Task ParentExist(Func<string, Task<Dict>> provider)
         {
-            return this.ParentId == Constants.Dict.RootId;
-        }
+            if (this.ParentId == Constants.Tree.RootId)
+            {
+                return;
+            }
 
+            var root = await provider.Invoke(this.ParentId);
+            Assert.Build(root)
+                  .NotNull("不存在父级节点");
+
+        }
+        /// <summary>
+        /// 字典不存在
+        /// </summary>
+        /// <param name="provider"></param>
+        public async Task NotExist(Func<Dict, Task<bool>> provider)
+        {
+            Assert.Build(await provider.Invoke(this))
+                  .False("字典不存在！");
+        }
     }
 }

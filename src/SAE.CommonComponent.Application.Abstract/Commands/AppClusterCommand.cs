@@ -62,6 +62,11 @@ namespace SAE.CommonComponent.Application.Commands
             /// </summary>
             /// <value></value>
             public string Type { get; set; }
+            /// <summary>
+            /// 集群设置(当集群类型存在时，应该设置该对象)
+            /// </summary>
+            /// <value></value>
+            public AppClusterSettingDto Setting { get; set; }
         }
         /// <summary>
         /// 更改

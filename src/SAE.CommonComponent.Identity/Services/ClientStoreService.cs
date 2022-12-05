@@ -33,7 +33,6 @@ namespace SAE.CommonComponent.Identity.Services
 
             var dicts = await this._mediator.SendAsync<IEnumerable<DictDto>>(new DictCommand.List
             {
-                Type = (int)DictType.Scope
             });
 
             var scopes = dicts.Where(d => client.Scopes.Contains(d.Id))

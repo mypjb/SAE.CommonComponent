@@ -1,3 +1,8 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using SAE.CommonComponent.BasicData.Commands;
 using SAE.CommonComponent.BasicData.Domains;
 using SAE.CommonComponent.BasicData.Dtos;
@@ -7,10 +12,6 @@ using SAE.CommonLibrary.Abstract.Model;
 using SAE.CommonLibrary.Data;
 using SAE.CommonLibrary.EventStore.Document;
 using SAE.CommonLibrary.Extension;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SAE.CommonComponent.BasicData.Handlers
 {
@@ -37,11 +38,11 @@ namespace SAE.CommonComponent.BasicData.Handlers
             this._director = director;
         }
 
-        private async Task PermutationAsync(DictItemDto dict, IEnumerable<DictItemDto> DictItems)
+        private async Task PermutationAsync(DictItemDto dict, IEnumerable<DictItemDto> dictItems)
         {
-            var items = DictItems.Where(s => s.ParentId == dict.Id).ToArray();
+            var items = dictItems.Where(s => s.ParentId == dict.Id).ToArray();
             dict.Items = items;
-            await items.ForEachAsync(async item => await this.PermutationAsync(item, DictItems));
+            await items.ForEachAsync(async item => await this.PermutationAsync(item, dictItems));
         }
 
         private async Task ForEachTreeAsync(IEnumerable<DictItemDto> items, Func<DictItemDto, Task> func)
@@ -59,7 +60,6 @@ namespace SAE.CommonComponent.BasicData.Handlers
         {
             return Task.FromResult(this._storage.AsQueryable<DictDto>()
                          .Count(s => s.ParentId == dict.ParentId &&
-                                     s.Type == dict.Type &&
                                      s.Id != dict.Id &&
                                      s.Name == dict.Name) > 0);
         }
@@ -67,7 +67,7 @@ namespace SAE.CommonComponent.BasicData.Handlers
         public async Task<string> HandleAsync(DictCommand.Create command)
         {
             var dict = new Dict(command);
-            await dict.ParentExist(this._documentStore.FindAsync<Dict>);
+            await dict.ParentExist(this.FindAsync);
             await dict.NotExist(this.DictIsExistAsync);
             await this.AddAsync(dict);
             return dict.Id;
@@ -75,8 +75,8 @@ namespace SAE.CommonComponent.BasicData.Handlers
 
         public async Task HandleAsync(DictCommand.Change command)
         {
-            var dict = await this._documentStore.FindAsync<Dict>(command.Id);
-            await dict.Change(command, this._documentStore.FindAsync<Dict>, this.DictIsExistAsync);
+            var dict = await this.FindAsync(command.Id);
+            await dict.Change(command, this.FindAsync, this.DictIsExistAsync);
             await this._documentStore.SaveAsync(dict);
         }
 
@@ -88,29 +88,23 @@ namespace SAE.CommonComponent.BasicData.Handlers
             {
                 await this._director.Build<IEnumerable<DictDto>>(new[] { first });
             }
-            
+
             return first;
         }
 
         public async Task<IPagedList<DictDto>> HandleAsync(DictCommand.Query command)
         {
             var query = this._storage.AsQueryable<DictDto>();
-            if (command.Root)
-            {
-                query = query.Where(s => s.ParentId == Constants.Dict.RootId);
-            }
+
             if (!command.Name.IsNullOrWhiteSpace())
             {
                 query = query.Where(s => s.Name.Contains(command.Name));
             }
 
-            if (command.Type > 0)
-            {
-                query = query.Where(s => s.Type == command.Type);
-            }
             var paging = PagedList.Build(query, command);
 
             await this._director.Build(paging.AsEnumerable());
+
             return paging;
         }
 
@@ -123,8 +117,7 @@ namespace SAE.CommonComponent.BasicData.Handlers
 
             var roots = await this._mediator.SendAsync<IEnumerable<DictItemDto>>(new DictCommand.Tree
             {
-                Id = dict.Id,
-                Type = dict.Type
+                ParentId = dict.Id
             });
 
             await this.ForEachTreeAsync(roots, async d =>
@@ -138,18 +131,11 @@ namespace SAE.CommonComponent.BasicData.Handlers
 
         public async Task<IEnumerable<DictItemDto>> HandleAsync(DictCommand.Tree command)
         {
-
             var query = this._storage.AsQueryable<DictDto>();
 
-            if (command.Id.IsNullOrWhiteSpace() || Constants.Dict.RootId.Equals(command.Id))
+            if (command.ParentId.IsNullOrWhiteSpace())
             {
-                command.Id = Constants.Dict.RootId;
-            }
-            else
-            {
-                var dict = this._storage.AsQueryable<DictDto>().FirstOrDefault(s => s.Id == command.Id);
-                command.Type = dict.Type;
-                query = query.Where(s => s.Type == command.Type);
+                command.ParentId = Constants.Tree.RootId;
             }
 
             var dicts = query.Select(s => new DictItemDto
@@ -157,34 +143,44 @@ namespace SAE.CommonComponent.BasicData.Handlers
                 Id = s.Id,
                 Name = s.Name,
                 ParentId = s.ParentId,
-                Type = s.Type
+                Sort = s.Sort,
+                CreateTime = s.CreateTime
             }).ToArray();
 
-            var rootDicts = dicts.Where(s => s.ParentId == command.Id).ToArray();
+            if (command.Type.IsNullOrWhiteSpace())
+            {
+                var rootDicts = dicts.Where(s => s.ParentId == command.ParentId).ToArray();
 
-            await rootDicts.ForEachAsync(async dict => await this.PermutationAsync(dict, dicts));
+                await rootDicts.ForEachAsync(async dict => await this.PermutationAsync(dict, dicts));
 
-            return rootDicts;
+                return rootDicts;
+            }
+            else
+            {
+                var rootDicts = dicts.Where(s => s.ParentId == Constants.Tree.RootId && s.Name == command.Type).ToArray();
+
+                await rootDicts.ForEachAsync(async dict => await this.PermutationAsync(dict, dicts));
+
+                return rootDicts.FirstOrDefault()?.Items ?? Enumerable.Empty<DictItemDto>();
+            }
+
         }
 
         public async Task<IEnumerable<DictDto>> HandleAsync(DictCommand.List command)
         {
-            if (!command.Id.IsNullOrWhiteSpace())
+            if (command.ParentId.IsNullOrWhiteSpace())
             {
-                return this._storage.AsQueryable<DictDto>()
-                                    .Where(s => s.ParentId == command.Id)
-                                    .ToList();
+                command.ParentId = Constants.Tree.RootId;
             }
-            else if (command.Type > 0)
+
+            var query = this._storage.AsQueryable<DictDto>()
+                                     .Where(s => s.ParentId == command.ParentId);
+
+            if (!command.Name.IsNullOrWhiteSpace())
             {
-                return this._storage.AsQueryable<DictDto>()
-                                    .Where(s => s.Type == command.Type)
-                                    .ToList();
+                query = query.Where(s => s.Name == command.Name);
             }
-            else
-            {
-                return Enumerable.Empty<DictDto>();
-            }
+            return query.ToArray();
         }
     }
 }

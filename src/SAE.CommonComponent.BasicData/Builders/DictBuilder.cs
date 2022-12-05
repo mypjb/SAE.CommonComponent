@@ -15,11 +15,6 @@ namespace SAE.CommonComponent.BasicData.Builders
         public DictBuilder(IStorage storage)
         {
             this._storage = storage;
-            this._root = new DictDto
-            {
-                Id = Constants.Dict.RootId,
-                Name = Constants.Dict.RootName
-            };
         }
         public Task Build(IEnumerable<DictDto> models)
         {
@@ -27,7 +22,6 @@ namespace SAE.CommonComponent.BasicData.Builders
             var parentDtos = this._storage.AsQueryable<DictDto>()
                                          .Where(s => parentIds.Contains(s.Id))
                                          .ToList();
-            parentDtos.Add(this._root);
 
             foreach (var dto in models)
             {

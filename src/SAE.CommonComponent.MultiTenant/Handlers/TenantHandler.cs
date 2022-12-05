@@ -148,7 +148,7 @@ namespace SAE.CommonComponent.MultiTenant.Handlers
 
             if (command.ParentId.IsNullOrWhiteSpace())
             {
-                command.ParentId = Constants.Tenant.RootId;
+                command.ParentId = Constants.Tree.RootId;
             }
 
             if (!command.Type.IsNullOrWhiteSpace())

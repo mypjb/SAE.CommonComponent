@@ -33,7 +33,7 @@ namespace SAE.CommonComponent.Identity.Services
         {
             var scopes = await this._mediator.SendAsync<IEnumerable<DictDto>>(new DictCommand.List
             {
-                Type = (int)DictType.Scope
+                
             });
 
             return scopes;

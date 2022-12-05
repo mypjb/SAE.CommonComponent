@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using SAE.CommonComponent.Application.Abstract.Domains;
+using SAE.CommonComponent.Application.Domains;
 using SAE.CommonLibrary.EventStore;
 
 namespace SAE.CommonComponent.Application.Events
@@ -52,6 +52,11 @@ namespace SAE.CommonComponent.Application.Events
             /// </summary>
             /// <value></value>
             public string Description { get; set; }
+            /// <summary>
+            /// 集群设置(当集群类型存在时，应该设置该对象)
+            /// </summary>
+            /// <value></value>
+            public AppClusterSetting Setting { get; set; }
         }
         /// <summary>
         /// 更改状态

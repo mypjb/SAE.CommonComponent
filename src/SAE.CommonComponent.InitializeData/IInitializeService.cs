@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace SAE.CommonComponent.InitializeData
 {
+    /// <summary>
+    /// 初始化服务
+    /// </summary>
     public interface IInitializeService
     {
         /// <summary>

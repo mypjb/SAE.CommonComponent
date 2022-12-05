@@ -33,7 +33,7 @@ namespace SAE.CommonComponent.ConfigServer.Test
         public AppConfigControllerTest(ITestOutputHelper output) : base(output)
         {
             this._dictControllerTest = new DictControllerTest(this._output);
-            var dictDto = this._dictControllerTest.Add(null, (int)DictType.Environment).GetAwaiter().GetResult();
+            var dictDto = this._dictControllerTest.Add(null).GetAwaiter().GetResult();
             this._environmentId = dictDto.Id;
             this._configController = new ConfigControllerTest(this._output, this.HttpClient, dictDto.Id);
             this._appControllerTest = new AppControllerTest(this._output);

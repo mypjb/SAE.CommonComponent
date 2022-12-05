@@ -78,5 +78,16 @@ namespace SAE.CommonComponent.Application.Commands
             /// <value></value>
             public Status Status { get; set; }
         }
+        /// <summary>
+        /// 列表
+        /// </summary>
+        public class List
+        {
+            /// <summary>
+            /// 集群标识
+            /// </summary>
+            /// <value></value>
+            public string ClusterId { get; set; }
+        }
     }
 }

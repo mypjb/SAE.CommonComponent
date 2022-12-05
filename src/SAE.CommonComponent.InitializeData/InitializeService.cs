@@ -21,6 +21,8 @@ using SAE.CommonComponent.BasicData.Dtos;
 using SAE.CommonComponent.ConfigServer.Commands;
 using SAE.CommonComponent.ConfigServer.Dtos;
 using SAE.CommonComponent.Identity.Commands;
+using SAE.CommonComponent.MultiTenant.Commands;
+using SAE.CommonComponent.MultiTenant.Dtos;
 using SAE.CommonComponent.PluginManagement.Commands;
 using SAE.CommonComponent.PluginManagement.Dtos;
 using SAE.CommonComponent.Routing.Commands;
@@ -41,6 +43,10 @@ using ClientCommand = SAE.CommonComponent.Application.Commands.ClientCommand;
 
 namespace SAE.CommonComponent.InitializeData
 {
+    /// <summary>
+    /// <see cref="IInitializeService"/>默认实现
+    /// </summary>
+    /// <inheritdoc/>
     public class InitializeService : IInitializeService
     {
         protected const string SiteMapPath = "siteMap.json";
@@ -140,7 +146,7 @@ namespace SAE.CommonComponent.InitializeData
                 }
             }
 
-            this._logging.Error($"The assembly resource listing not find '{sitePath}'");
+            this._logging.Error($"没有从程序集资源中找到站点地图'{sitePath}'");
 
             return Enumerable.Empty<SiteMap>();
         }
@@ -172,10 +178,7 @@ namespace SAE.CommonComponent.InitializeData
         {
             try
             {
-                var dicts = await this._mediator.SendAsync<IEnumerable<DictDto>>(new DictCommand.List
-                {
-                    Type = (int)DictType.Scope
-                });
+                var dicts = await this._mediator.SendAsync<IEnumerable<DictDto>>(new DictCommand.List());
                 if (dicts.Any())
                 {
                     this._logging.Warn("系统已初始化过，如需重新初始化，请清理数据后重新启动！");
@@ -186,11 +189,11 @@ namespace SAE.CommonComponent.InitializeData
 
                 totalTime += await this.ExecuteCoreAsync($"{nameof(BasicDataAsync)}", this.BasicDataAsync);
 
+                totalTime += await this.ExecuteCoreAsync($"{nameof(MultiTenantAsync)}", this.MultiTenantAsync);
+
                 totalTime += await this.ExecuteCoreAsync($"{nameof(ConfigServerAsync)}", this.ConfigServerAsync);
 
                 totalTime += await this.ExecuteCoreAsync($"{nameof(ApplicationAsync)}", this.ApplicationAsync);
-
-                totalTime += await this.ExecuteCoreAsync($"{nameof(MultiTenantAsync)}", this.MultiTenantAsync);
 
                 totalTime += await this.ExecuteCoreAsync($"{nameof(UserAsync)}", this.UserAsync);
 
@@ -226,36 +229,49 @@ namespace SAE.CommonComponent.InitializeData
 
         public virtual async Task BasicDataAsync()
         {
+
+            var scopeId = await this._mediator.SendAsync<string>(new DictCommand.Create
+            {
+                Name = nameof(DictType.Scope)
+            });
+
+            await this._mediator.SendAsync<string>(new DictCommand.Create
+            {
+                Name = nameof(DictType.Environment)
+            });
+
+            var tenantId = await this._mediator.SendAsync<string>(new DictCommand.Create
+            {
+                Name = nameof(DictType.Tenant)
+            });
+
             var scopeCommand = new DictCommand.Create
             {
                 Name = Constants.Scope,
-                Type = (int)DictType.Scope
+                ParentId = scopeId
             };
 
-            this._logging.Info($"Add default scope:{scopeCommand.ToJsonString()}");
+            var tenantCommand = new DictCommand.Create
+            {
+                Name = nameof(DictType.Tenant),
+                ParentId = tenantId
+            };
+
+            this._logging.Info($"添加区域、租户字典:{scopeCommand.ToJsonString()}\r\n{tenantCommand.ToJsonString()}");
 
             await this._mediator.SendAsync<string>(scopeCommand);
+
+            await this._mediator.SendAsync<string>(tenantCommand);
         }
         public virtual async Task ApplicationAsync()
         {
-            var appClusters = await this._mediator.SendAsync<IPagedList<AppClusterDto>>(new AppClusterCommand.Query());
+            var (cluster, app) = await this.GetAppClusterAsync();
 
-            if (!appClusters.Any())
-            {
-                return;
-            }
-
-            var appQueryCommand = new AppCommand.Query
-            {
-                ClusterId = appClusters.First().Id,
-                PageSize = int.MaxValue
-            };
-
-            var appDtos = await this._mediator.SendAsync<IPagedList<AppDto>>(appQueryCommand);
+            var environmentDict = await this.GetDictAsync(nameof(DictType.Environment));
 
             var environments = await this._mediator.SendAsync<IEnumerable<DictDto>>(new DictCommand.List
             {
-                Type = (int)DictType.Environment
+                ParentId = environmentDict.Id
             });
             var oauthKey = nameof(Constants.Config.OAuth);
 
@@ -263,112 +279,100 @@ namespace SAE.CommonComponent.InitializeData
 
             var urlKey = nameof(Constants.Config.Url);
 
+            var scopeDict = await this.GetDictAsync(nameof(DictType.Scope));
+
             var scopes = await this._mediator.SendAsync<IEnumerable<DictDto>>(new DictCommand.List
             {
-                Type = (int)DictType.Scope
+                ParentId = scopeDict.Id
             });
 
             var bitmapEndpoints = await this._bitmapEndpointProvider.ListAsync();
 
-            var appFirst = appDtos.First();
+            this._logging.Info($"创建系统资源：{bitmapEndpoints.ToJsonString()}");
 
             foreach (var bitmapEndpoint in bitmapEndpoints)
             {
                 await this._mediator.SendAsync<string>(new AppResourceCommand.Create
                 {
-                    AppId = appFirst.Id,
+                    AppId = app.Id,
                     Method = bitmapEndpoint.Method,
                     Name = $"{bitmapEndpoint.Path}:{bitmapEndpoint.Method}",
                     Path = bitmapEndpoint.Path
                 });
             }
 
-            foreach (var appDto in appDtos)
+            foreach (var env in environments)
             {
-                foreach (var env in environments)
+                var pairs = await FindSiteConfigAsync(app, env.Id);
+
+                if (!pairs.Any() ||
+                    !pairs.ContainsKey(oauthKey) ||
+                    !pairs.ContainsKey(basicInfoKey) ||
+                    !pairs.ContainsKey(urlKey)) continue;
+
+                var oauthJToken = pairs[oauthKey].ToObject<JToken>();
+
+                var basicInfoJToken = pairs[basicInfoKey].ToObject<JToken>();
+
+                var urlJToken = pairs[urlKey].ToObject<JToken>();
+
+                var scopeNames = this.GetJTokenValue<string>(oauthJToken, nameof(Constants.Config.OAuth.Scope)).Split(Constants.Config.OAuth.ScopeSeparator);
+
+                var clientCommand = new ClientCommand.Create
                 {
-                    var pairs = await FindSiteConfigAsync(appDto, env.Id);
-
-                    if (!pairs.Any() ||
-                        !pairs.ContainsKey(oauthKey) ||
-                        !pairs.ContainsKey(basicInfoKey) ||
-                        !pairs.ContainsKey(urlKey)) continue;
-
-                    var oauthJToken = pairs[oauthKey].ToObject<JToken>();
-                    var basicInfoJToken = pairs[basicInfoKey].ToObject<JToken>();
-                    var urlJToken = pairs[urlKey].ToObject<JToken>();
-
-                    var scopeNames = this.GetJTokenValue<string>(oauthJToken, nameof(Constants.Config.OAuth.Scope)).Split(Constants.Config.OAuth.ScopeSeparator);
-
-                    var clientCommand = new ClientCommand.Create
+                    AppId = app.Id,
+                    Name = this.GetJTokenValue<string>(basicInfoJToken, nameof(Constants.Config.BasicInfo.Name)),
+                    Scopes = scopes.Where(s => scopeNames.Contains(s.Name, StringComparer.OrdinalIgnoreCase))
+                                   .Select(s => s.Id)
+                                   .ToArray(),
+                    Endpoint = new ClientEndpointDto
                     {
-                        AppId = appDto.Id,
-                        Name = this.GetJTokenValue<string>(basicInfoJToken, nameof(Constants.Config.BasicInfo.Name)),
-                        Scopes = scopes.Where(s => scopeNames.Contains(s.Name, StringComparer.OrdinalIgnoreCase))
-                                       .Select(s => s.Id)
-                                       .ToArray(),
-                        Endpoint = new ClientEndpointDto
-                        {
-                            RedirectUris = this.GetJTokenValues<string>(oauthJToken, nameof(ClientEndpointDto.RedirectUris)).ToArray(),
-                            PostLogoutRedirectUris = this.GetJTokenValues<string>(oauthJToken, nameof(ClientEndpointDto.PostLogoutRedirectUris)).ToArray(),
-                            SignIn = this.GetJTokenValue<string>(urlJToken, nameof(ClientEndpointDto.SignIn))
-                        }
-                    };
+                        RedirectUris = this.GetJTokenValues<string>(oauthJToken, nameof(ClientEndpointDto.RedirectUris)).ToArray(),
+                        PostLogoutRedirectUris = this.GetJTokenValues<string>(oauthJToken, nameof(ClientEndpointDto.PostLogoutRedirectUris)).ToArray(),
+                        SignIn = this.GetJTokenValue<string>(urlJToken, nameof(ClientEndpointDto.SignIn))
+                    }
+                };
 
-                    var clientId = await this._mediator.SendAsync<string>(clientCommand);
+                var clientId = await this._mediator.SendAsync<string>(clientCommand);
 
-                    // clientCommand.Secret = "************";
+                // clientCommand.Secret = "************";
 
-                    this._logging.Info($"Add default client:{clientCommand.ToJsonString()}");
+                this._logging.Info($"添加默认客户端凭证:{clientCommand.ToJsonString()}");
 
-                    await this._mediator.SendAsync(new ClientCommand.ChangeStatus
-                    {
-                        Id = clientId,
-                        Status = Status.Enable
-                    });
+                await this._mediator.SendAsync(new ClientCommand.ChangeStatus
+                {
+                    Id = clientId,
+                    Status = Status.Enable
+                });
 
-                    var clientDto = await this._mediator.SendAsync<ClientDto>(new Command.Find<ClientDto>
-                    {
-                        Id = clientId
-                    });
+                var clientDto = await this._mediator.SendAsync<ClientDto>(new Command.Find<ClientDto>
+                {
+                    Id = clientId
+                });
 
-                    clientDto.Secret = "************"; ;
+                clientDto.Secret = "************"; ;
 
-                    this._logging.Info($"output default app:{clientDto.ToJsonString()}");
-
-                    //var clientAppResourceCommand = new ClientAppResourceCommand.ReferenceAppResource
-                    //{
-                    //    AppResourceIds = appResourceDtos.Select(s => s.Id).ToArray(),
-                    //    ClientId = clientDto.Id
-                    //};
-
-                    //await this._mediator.SendAsync(clientAppResourceCommand);
-
-                    //var appResources = await this._mediator.SendAsync<IEnumerable<AppResourceDto>>(new ClientAppResourceCommand.List
-                    //{
-                    //    ClientId = clientDto.Id
-                    //});
-
-                    //var authorizeCode = this._bitmapAuthorization.GeneratePermissionCode(appResources.Select(s => s.Index));
-                    //this._logging.Info($"app '{clientDto.Id}' authorize code:{authorizeCode}");
-                }
+                this._logging.Info($"默认客户端凭证添加成功:{clientDto.ToJsonString()}");
             }
         }
 
         public virtual async Task AuthorizeAsync()
         {
-            var appId = Guid.NewGuid().ToString("N");
+            var (cluster, app) = await this.GetAppClusterAsync();
+
+
+
             var appResourceDtos = await this._mediator.SendAsync<IEnumerable<AppResourceDto>>(new AppResourceCommand.List
             {
-                AppId = appId
+                AppId = app.Id
             });
 
-            this._logging.Info($"app resource:{appResourceDtos.ToJsonString()}");
+            this._logging.Info($"系统资源:{appResourceDtos.ToJsonString()}");
 
             var roleCommand = new RoleCommand.Create
             {
-                AppId = appId,
-                Description = "Default admin role",
+                AppId = app.Id,
+                Description = "超级管理员",
                 Name = Constants.Authorize.AdminRoleName
             };
 
@@ -379,13 +383,15 @@ namespace SAE.CommonComponent.InitializeData
             for (int i = 0; i < appResourceDtos.Count(); i++)
             {
                 var appResource = appResourceDtos.ElementAt(i);
-                var path = string.Format(Constants.Authorize.PermissionFormat, appResource.Method, appResource.Path);
+
                 var permissionCommand = new PermissionCommand.Create
                 {
                     AppId = roleCommand.AppId,
                     Description = appResource.Name,
-                    Name = path
+                    Name = appResource.Name,
+                    AppResourceId = appResource.Id
                 };
+
                 permissionIds[i] = await this._mediator.SendAsync<string>(permissionCommand);
             }
 
@@ -399,8 +405,7 @@ namespace SAE.CommonComponent.InitializeData
 
             var clientDtos = await this._mediator.SendAsync<IPagedList<ClientDto>>(new ClientCommand.Query
             {
-                AppId = appId,
-                PageSize = int.MaxValue
+                AppId = app.Id
             });
 
             foreach (var client in clientDtos)
@@ -415,13 +420,10 @@ namespace SAE.CommonComponent.InitializeData
                     ClientId = client.Id
                 });
 
-                this._logging.Info($"Client '{client.Id}' Codes:{clientCodes.ToJsonString()}");
+                this._logging.Info($"客户端'{client.Name}({client.Id})'认证码:'{clientCodes.ToJsonString()}'");
             }
 
-            var userDtos = await this._mediator.SendAsync<IPagedList<UserDto>>(new UserCommand.Query
-            {
-                PageSize = int.MaxValue
-            });
+            var userDtos = await this._mediator.SendAsync<IPagedList<UserDto>>(new UserCommand.Query());
 
             foreach (var user in userDtos)
             {
@@ -436,7 +438,7 @@ namespace SAE.CommonComponent.InitializeData
                     UserId = user.Id
                 });
 
-                this._logging.Info($"User '{user.Id}' Codes:{userCodes.ToJsonString()}");
+                this._logging.Info($"用户'{user.Name}({user.Id})'认证码:{userCodes.ToJsonString()}");
             }
         }
 
@@ -448,37 +450,17 @@ namespace SAE.CommonComponent.InitializeData
 
             if (configPath.IsNullOrWhiteSpace() || !Directory.Exists(configPath))
             {
-                this._logging.Warn($"Not exist config path '{configPath}'");
+                this._logging.Warn($"未找到对应配置文件'{configPath}'");
                 return;
             }
 
-            var clusterCommand = new AppClusterCommand.Create
-            {
-                Name = Constants.ClusterName
-            };
+            var (cluster, app) = await this.GetAppClusterAsync();
 
-            var clusterId = await this._mediator.SendAsync<string>(clusterCommand);
-
-            this._logging.Info($"Create solution '{clusterId}'-'{Constants.ClusterName}'");
-
-            var appName = SiteConfig.Get(Constants.Config.BasicInfo.Name);
-
-
-            var appCommand = new AppCommand.Create
-            {
-                Name = appName,
-                ClusterId = clusterId
-            };
-
-            var appId = await this._mediator.SendAsync<string>(appCommand);
-
-            this._logging.Info($"Create app '{appName}'-'{appId}'");
-
-            Dictionary<string, Dictionary<string, string>> dictionary = new Dictionary<string, Dictionary<string, string>>();
+            var dictionary = new Dictionary<string, Dictionary<string, string>>();
 
             foreach (var fileName in Directory.GetFiles(configPath, $"*{Constants.Config.ConfigExtensionName}"))
             {
-                this._logging.Info($"Load '{fileName}' config file");
+                this._logging.Info($"加载'{fileName}'配置文件");
                 string key = "Production";
                 var matchs = Regex.Matches(fileName, $"\\{Constants.Config.Separator}");
                 if (matchs.Count > 1)
@@ -505,15 +487,17 @@ namespace SAE.CommonComponent.InitializeData
                 }
             }
 
+            var environmentParentId = (await this.GetDictAsync(nameof(DictType.Environment))).Id;
+
             foreach (var kvs in dictionary)
             {
                 var environmentId = await this._mediator.SendAsync<string>(new DictCommand.Create
                 {
                     Name = kvs.Key,
-                    Type = (int)DictType.Environment
+                    ParentId = environmentParentId
                 });
 
-                this._logging.Info($"Create EnvironmentVariable '{kvs.Key}'");
+                this._logging.Info($"创建环境变量'{kvs.Key}'");
 
                 var configIds = new List<string>();
 
@@ -524,17 +508,17 @@ namespace SAE.CommonComponent.InitializeData
 
                     if (!templateDtos.Any(s => s.Name.Equals(kv.Key)))
                     {
-                        this._logging.Info($"Create template '{kv.Key}'");
+                        this._logging.Info($"创建模板'{kv.Key}'");
                         var templateId = await this._mediator.SendAsync<string>(new TemplateCommand.Create
                         {
                             Format = kv.Value,
                             Name = kv.Key
                         });
                     }
-                    this._logging.Info($"Create config {kv.Key}-{kvs.Key}");
+                    this._logging.Info($"创建配置{kv.Key}-{kvs.Key}");
                     var configId = await this._mediator.SendAsync<string>(new ConfigCommand.Create
                     {
-                        ClusterId = clusterId,
+                        ClusterId = cluster.Id,
                         Content = kv.Value,
                         Name = kv.Key,
                         EnvironmentId = environmentId
@@ -546,11 +530,11 @@ namespace SAE.CommonComponent.InitializeData
                     configIds.Add(configId);
                 }
 
-                this._logging.Info($"Reference {configIds.Aggregate((a, b) => $"{a},{b}")}");
+                this._logging.Info($"引用配置{configIds.Aggregate((a, b) => $"{a},{b}")}");
 
                 await this._mediator.SendAsync(new AppConfigCommand.ReferenceConfig
                 {
-                    AppId = appId,
+                    AppId = app.Id,
                     ConfigIds = configIds.ToArray()
                 });
 
@@ -558,7 +542,7 @@ namespace SAE.CommonComponent.InitializeData
                 {
                     var appConfigs = await this._mediator.SendAsync<IPagedList<AppConfigDto>>(new AppConfigCommand.Query
                     {
-                        AppId = appId,
+                        AppId = app.Id,
                         EnvironmentId = environmentId,
                         PageSize = int.MaxValue
                     });
@@ -573,22 +557,22 @@ namespace SAE.CommonComponent.InitializeData
                     });
                 }
 
-                this._logging.Info($"Publish {appName}-{kvs.Key} config");
+                this._logging.Info($"准备发布系统配置'{app.Name}-{kvs.Key}'");
 
                 await this._mediator.SendAsync(new AppConfigCommand.Publish
                 {
-                    Id = appId,
+                    Id = app.Id,
                     EnvironmentId = environmentId
                 });
-                this._logging.Info($"Publish {appName}-{kvs.Key} config");
+                this._logging.Info($"发布系统配置'{app.Name}-{kvs.Key}'完成");
 
                 var appConfig = await this._mediator.SendAsync<object>(new AppConfigCommand.Preview
                 {
-                    Id = appId,
+                    Id = app.Id,
                     EnvironmentId = environmentId
                 });
 
-                this._logging.Info($"Add app config {appName}-{kvs.Key} : {appConfig.ToJsonString()}");
+                this._logging.Info($"系统配置添加完成。{app.Name}-{kvs.Key} : {appConfig.ToJsonString()}");
             }
 
         }
@@ -598,13 +582,13 @@ namespace SAE.CommonComponent.InitializeData
             IEnumerable<MenuItemDto> menus = await this.GetSiteMapsAsync();
             if (menus?.Any() ?? false)
             {
-                this._logging.Info($"local menus : {menus.ToJsonString()}");
+                this._logging.Info($"加载菜单: {menus.ToJsonString()}");
 
                 await this.AddMenusAsync(menus);
 
                 var dtos = await this._mediator.SendAsync<IEnumerable<MenuItemDto>>(new MenuCommand.Tree());
 
-                this._logging.Info($"remote menu : {dtos}");
+                this._logging.Info($"菜单加载完成: {dtos.ToJsonString()}");
             }
         }
 
@@ -636,19 +620,25 @@ namespace SAE.CommonComponent.InitializeData
 
         public virtual async Task UserAsync()
         {
-            await this._mediator.SendAsync<string>(new AccountCommand.Register
+            var command = new AccountCommand.Register
             {
                 Name = Constants.User.Name,
                 Password = Constants.User.Password,
                 ConfirmPassword = Constants.User.Password
-            });
+            };
+            var userId = await this._mediator.SendAsync<string>(command);
+
+            this._logging.Info($"创建默认用户:{command.Name}({userId})");
         }
 
         public async Task PluginAsync()
         {
             var siteMaps = await this.GetSiteMapsAsync();
-            this._logging.Info($"Plugin manage:{this._pluginManage?.Plugins?.ToJsonString()}");
+
+            this._logging.Info($"插件管理:{this._pluginManage?.Plugins?.ToJsonString()}");
+
             var baseUrl = SiteConfig.Get(Constants.Config.Url.Host);
+
             foreach (var plugin in this._pluginManage.Plugins)
             {
                 var siteMap = siteMaps.FirstOrDefault(s => s.Plugin.Equals(plugin.Name, StringComparison.OrdinalIgnoreCase));
@@ -675,13 +665,83 @@ namespace SAE.CommonComponent.InitializeData
                 }
                 await this._mediator.SendAsync<string>(command);
             }
+
             var plugins = await this._mediator.SendAsync<IEnumerable<PluginDto>>(new Command.List<PluginDto>());
-            this._logging.Info($"Plugin list:{plugins?.ToJsonString()}");
+
+            this._logging.Info($"已加载的插件列表:{plugins?.ToJsonString()}");
         }
 
         public async Task MultiTenantAsync()
         {
+            var dict = await this.GetDictAsync(nameof(DictType.Tenant));
 
+            var clusterCommand = new AppClusterCommand.Create
+            {
+                Name = Constants.ClusterName,
+                Description = "租户管理集群",
+                Type = dict.Id
+            };
+
+            var clusterId = await this._mediator.SendAsync<string>(clusterCommand);
+
+            this._logging.Info($"创建集群 '{clusterId}'-'{Constants.ClusterName}'");
+
+            var appName = SiteConfig.Get(Constants.Config.BasicInfo.Name);
+
+            var tenantCreateCommand = new TenantCommand.Create
+            {
+                Name = "默认租户",
+                Description = "由系统自动创建的第一个租户",
+                Domain = SiteConfig.Get(Constants.Config.Url.Host)
+            };
+
+            var tenantId = await this._mediator.SendAsync<string>(tenantCreateCommand);
+
+            var tenantAppCreateCommand = new TenantCommand.App.Create
+            {
+                Name = appName,
+                Description = appName,
+                Type = dict.Id,
+                Domain = tenantCreateCommand.Type,
+                TenantId = tenantId
+            };
+
+            await this._mediator.SendAsync<string>(tenantAppCreateCommand);
+        }
+
+        private async Task<DictItemDto> GetDictAsync(string type)
+        {
+            var trees = await this._mediator.SendAsync<IEnumerable<DictItemDto>>(new DictCommand.Tree
+            {
+                Type = type
+            });
+
+            Assert.Build(trees.Any())
+                  .True($"字典类型'{type}'不存在！");
+
+            return trees.First();
+        }
+        private async Task<Tuple<AppClusterDto, AppDto>> GetAppClusterAsync()
+        {
+            var dict = await this.GetDictAsync(nameof(DictType.Tenant));
+
+            var cluster = await this._mediator.SendAsync<AppClusterDto>(new AppClusterCommand.Find
+            {
+                Type = dict.Id
+            });
+
+            Assert.Build(cluster)
+                  .NotNull($"集群'({dict.Name})'不存在!");
+
+            var apps = await this._mediator.SendAsync<IEnumerable<AppDto>>(new AppCommand.List
+            {
+                ClusterId = cluster.Id
+            });
+
+            Assert.Build(apps.Any())
+                  .True($"集群'{cluster.Name}'内不存在任何系统!");
+
+            return new Tuple<AppClusterDto, AppDto>(cluster, apps.First());
         }
     }
 }

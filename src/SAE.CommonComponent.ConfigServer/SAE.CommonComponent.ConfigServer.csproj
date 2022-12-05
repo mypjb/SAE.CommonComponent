@@ -4,6 +4,7 @@
     <PackageReference Include="SAE.CommonLibrary.AspNetCore" Version="2.0.12.2" />
     <PackageReference Include="SAE.CommonLibrary.EventStore.Document" Version="2.0.12.2" />
     <PackageReference Include="SAE.CommonLibrary.Plugin.AspNetCore" Version="2.0.12.2" />
+    <PackageReference Include="SAE.CommonLibrary.Scope.AspNetCore" Version="2.0.12.2" />
   </ItemGroup>
 
   <ItemGroup>

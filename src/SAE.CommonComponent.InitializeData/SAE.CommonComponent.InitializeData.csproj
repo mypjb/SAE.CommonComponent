@@ -30,6 +30,7 @@
     <ProjectReference Include="..\SAE.CommonComponent.PluginManagement.Abstract\SAE.CommonComponent.PluginManagement.Abstract.csproj" />
     <ProjectReference Include="..\SAE.CommonComponent.Routing.Abstract\SAE.CommonComponent.Routing.Abstract.csproj" />
     <ProjectReference Include="..\SAE.CommonComponent.User.Abstract\SAE.CommonComponent.User.Abstract.csproj" />
+    <ProjectReference Include="..\SAE.CommonComponent.MultiTenant.Abstract\SAE.CommonComponent.MultiTenant.Abstract.csproj" />
   </ItemGroup>
 
 </Project>
