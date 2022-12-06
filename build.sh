@@ -9,13 +9,15 @@ dotnet test -v q -l "console;verbosity=detailed"
 
 release_dir=$(echo $1 | sed 's/%2F/\//g')
 
+base_version=$(grep -Po "<Version>([\d\.a-zA-Z])+</Version>" $props_file | grep -Po "[\d]+[^<>]+")
+
 main_dir=$release_dir/Master
 
 plugin_dir=$main_dir/plugins
 
 mkdir -p $plugin_dir
 
-project_array=(BasicData Application Authorize Identity OAuth Routing User InitializeData ConfigServer PluginManagement Master)
+project_array=(BasicData MultiTenant Application Authorize Identity OAuth Routing User ConfigServer PluginManagement InitializeData Master)
 
 index=0
 
@@ -30,6 +32,11 @@ plugin_setting_file=${output_dir}/package.json
 project_file=src/SAE.CommonComponent.${project}/SAE.CommonComponent.${project}.csproj
 
 version=$(grep -Po "<Version>([\d\.a-zA-Z])+</Version>" $project_file | grep -Po "[\d]+[^<>]+")
+
+if [ "${version}" == '' ]
+then
+version=${base_version}
+fi
 
 echo -e "	output_dir:${output_dir}	\n	project_file:${project_file}	\n	version:${version}"
 

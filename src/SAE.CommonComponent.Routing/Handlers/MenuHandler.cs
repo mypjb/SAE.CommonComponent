@@ -1,17 +1,17 @@
-using System.Globalization;
-using System.Runtime.CompilerServices;
-using SAE.CommonLibrary.Abstract.Mediator;
-using SAE.CommonLibrary.Data;
-using SAE.CommonLibrary.EventStore.Document;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using SAE.CommonLibrary.Abstract.Model;
-using SAE.CommonLibrary.Extension;
-using SAE.CommonComponent.Routing.Domains;
 using SAE.CommonComponent.Routing.Commands;
+using SAE.CommonComponent.Routing.Domains;
 using SAE.CommonComponent.Routing.Dtos;
+using SAE.CommonLibrary.Abstract.Mediator;
+using SAE.CommonLibrary.Abstract.Model;
+using SAE.CommonLibrary.Data;
+using SAE.CommonLibrary.EventStore.Document;
+using SAE.CommonLibrary.Extension;
 
 namespace SAE.CommonComponent.ConfigServer.Handlers
 {
@@ -77,7 +77,8 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
                                          Name = s.Name,
                                          Path = s.Path,
                                          ParentId = s.ParentId,
-                                         Hidden = s.Hidden
+                                         Hidden = s.Hidden,
+                                         AppId = s.AppId
                                      }).ToArray();
             var rootMenus = menus.Where(s => s.ParentId == Constants.Tree.RootId).ToArray();
 

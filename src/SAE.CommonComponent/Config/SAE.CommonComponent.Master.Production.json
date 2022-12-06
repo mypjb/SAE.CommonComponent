@@ -28,7 +28,7 @@
     {
       "Name": "default",
       "Provider": "mysql",
-      "ConnectionString": "Data Source=mysql.db.lass.net;Database=SAE;User ID=root;Password=Aa123456;pooling=true;port=3306;sslmode=none;CharSet=utf8;allowPublicKeyRetrieval=true"
+      "ConnectionString": "Data Source=mysql.db.lass.net;Database=sae_common;User ID=root;Password=Aa123456;pooling=true;port=3306;sslmode=none;CharSet=utf8;allowPublicKeyRetrieval=true"
     }
   ],
   "Nlog": {
@@ -55,10 +55,9 @@
     "connection": "redis.cache.lass.net:6379,allowadmin=true,syncTimeout=5000,password=Aa123456",
     "db": 1
   },
-  //"plugin": { "path": "../../../../../plugin" },
   "plugin": { "path": "" },
   "mongodb": {
     "connection": "mongodb://root:Aa123456@mongo.db.lass.net:27017/",
-    "db": "sae"
+    "db": "sae_common"
   }
 }

@@ -487,7 +487,9 @@ namespace SAE.CommonComponent.InitializeData
                 }
             }
 
-            var environmentParentId = (await this.GetDictAsync(nameof(DictType.Environment))).Id;
+            var dicts = await this._mediator.SendAsync<IEnumerable<DictDto>>(new DictCommand.List());
+
+            var environmentParentId = dicts.First(s => s.Name == nameof(DictType.Environment)).Id;
 
             foreach (var kvs in dictionary)
             {
@@ -594,6 +596,8 @@ namespace SAE.CommonComponent.InitializeData
 
         protected async Task AddMenusAsync(IEnumerable<MenuItemDto> menus)
         {
+            var (cluster, app) = await this.GetAppClusterAsync();
+
             foreach (var item in menus)
             {
                 var command = new MenuCommand.Create
@@ -601,7 +605,8 @@ namespace SAE.CommonComponent.InitializeData
                     Name = item.Name,
                     Path = item.Path,
                     Hidden = item.Hidden,
-                    ParentId = item.ParentId
+                    ParentId = item.ParentId,
+                    AppId = app.Id
                 };
                 var parentId = await this._mediator.SendAsync<string>(command);
 

@@ -1,6 +1,0 @@
-{
-  "redis": {
-    "connection": "redis.cache.lass.net:6379,allowadmin=true,syncTimeout=5000,password=Aa123456",
-    "db": 1
-  }
-}

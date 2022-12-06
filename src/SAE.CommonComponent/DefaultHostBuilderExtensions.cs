@@ -1,7 +1,8 @@
-﻿using Microsoft.Extensions.Hosting;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using SAE.CommonLibrary.Configuration;
 using SAE.CommonLibrary.Extension;
 
@@ -21,6 +22,15 @@ namespace Microsoft.AspNetCore.Hosting
 #endif
             return builder
                           //.ConfigureJsonFileDirectorySource()
+#if DEBUG
+                          .ConfigureHostConfiguration(configure =>
+                          {
+                              configure.AddInMemoryCollection(new Dictionary<string, string>
+                              {
+                                {HostDefaults.ApplicationKey,"SAE.CommonComponent.Master"}
+                              });
+                          })
+#endif
                           .ConfigureRemoteSource()
                           .UseAutofacProviderFactory();
         }

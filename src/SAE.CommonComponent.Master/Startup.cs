@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -7,8 +9,6 @@ using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json.Linq;
 using SAE.CommonLibrary.Plugin;
 using SAE.CommonLibrary.Plugin.AspNetCore;
-using System;
-using System.Collections.Generic;
 
 namespace SAE.CommonComponent.Master
 {
@@ -29,6 +29,8 @@ namespace SAE.CommonComponent.Master
         {
             services.AddControllers();
 
+            services.AddMultiTenant();
+
             services.AddRouting(options => options.LowercaseUrls = true);
 
             services.AddRoutingScanning()
@@ -37,7 +39,7 @@ namespace SAE.CommonComponent.Master
 
             services.AddOptions<SiteConfig>(SiteConfig.Option)
                     .Bind();
-            
+
             if (!this._env.IsDevelopment())
             {
                 services.AddMySqlDocument()
@@ -56,6 +58,7 @@ namespace SAE.CommonComponent.Master
             //app.UseHttpsRedirection();
             app.UseServiceFacade();
             app.UseRouting()
+               .UseMultiTenant()
                .UseSAECors()
                .UseAuthentication()
                .UseAuthorization()

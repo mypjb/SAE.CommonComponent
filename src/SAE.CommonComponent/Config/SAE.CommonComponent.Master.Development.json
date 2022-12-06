@@ -48,15 +48,15 @@
     {
       "Name": "default",
       "Provider": "mysql",
-      "ConnectionString": "Data Source=mysql.db.lass.net;Database=SAE_DEV;User ID=root;Password=Aa123456;pooling=true;port=3306;sslmode=none;CharSet=utf8;allowPublicKeyRetrieval=true"
+      "ConnectionString": "Data Source=mysql.db.lass.net;Database=sae_common_dev;User ID=root;Password=Aa123456;pooling=true;port=3306;sslmode=none;CharSet=utf8;allowPublicKeyRetrieval=true"
     }
   ],
   "mongodb": {
     "connection": "mongodb://root:Aa123456@mongo.db.lass.net:27017/",
-    "db": "sae.dev"
+    "db": "sae_common_dev"
   },
   "plugin": {
-    "path": "../../../../../plugin"
+    "path": "../../../../../plugins"
   },
   "redis": {
     "connection": "redis.cache.lass.net:6379,allowadmin=true,syncTimeout=5000,password=Aa123456",

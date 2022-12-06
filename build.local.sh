@@ -2,14 +2,17 @@
 
 base_dir=$(cd $(dirname $0) && pwd)
 
-release_dir=${1:-"plugin"}
+release_dir=${1:-"plugins"}
 
+props_file=Directory.Build.props
 #runtime xunit test
-dotnet test -v q -l "console;verbosity=detailed"
+#dotnet test -v q -l "console;verbosity=detailed"
 
 mkdir -p $release_dir
 
-project_array=( BasicData Application Authorize Identity OAuth Routing User InitializeData ConfigServer PluginManagement)
+base_version=$(grep -Po "<Version>([\d\.a-zA-Z])+</Version>" $props_file | grep -Po "[\d]+[^<>]+")
+
+project_array=( BasicData MultiTenant Application Authorize Identity OAuth Routing User ConfigServer PluginManagement InitializeData)
 
 if [ x"$2" != x ]; then 
 project_array=($2);
@@ -28,6 +31,11 @@ plugin_setting_file=${output_dir}/package.json
 project_file=src/SAE.CommonComponent.${project}/SAE.CommonComponent.${project}.csproj
 
 version=$(grep -Po "<Version>([\d\.a-zA-Z])+</Version>" $project_file | grep -Po "[\d]+[^<>]+")
+
+if [ "${version}" == '' ]
+then
+version=${base_version}
+fi
 
 echo -e "	output_dir:${output_dir}	\n	project_file:${project_file}	\n	version:${version}"
 
