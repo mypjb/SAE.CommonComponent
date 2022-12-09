@@ -81,7 +81,7 @@ namespace SAE.CommonComponent.User.Domains
                 Account = new Account(command.Name, command.Password),
                 Name = command.Name,
                 Status = Status.Enable,
-                CreateTime = Constant.DefaultTimeZone
+                CreateTime =SAE.CommonLibrary.Constants.DefaultTimeZone
             };
             this.Apply(@event);
         }

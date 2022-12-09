@@ -137,7 +137,7 @@ namespace SAE.CommonComponent.InitializeData
                     {
                         await stream.CopyToAsync(memory);
                         memory.Position = 0;
-                        var json = Constant.Encoding.GetString(memory.ToArray());
+                        var json = SAE.CommonLibrary.Constants.Encoding.GetString(memory.ToArray());
 
                         var siteMaps = json.ToObject<IEnumerable<SiteMap>>();
 
@@ -444,7 +444,7 @@ namespace SAE.CommonComponent.InitializeData
 
         public virtual async Task ConfigServerAsync()
         {
-            var configPath = this._configuration.GetValue<string>(SAE.CommonLibrary.Configuration.Constant.Config.RootDirectoryKey);
+            var configPath = this._configuration.GetValue<string>(SAE.CommonLibrary.Configuration.Constants.Config.RootDirectoryKey);
 
             var environmentName = this._configuration.GetValue<string>(HostDefaults.EnvironmentKey);
 

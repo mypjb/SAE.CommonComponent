@@ -81,7 +81,7 @@ namespace SAE.CommonComponent.ConfigServer.Handles
 
                 var mapping = apps.ToDictionary(s => s.Domain, s => s.Id);
 
-                configData[SAE.CommonLibrary.Constant.Scope] = scope;
+                configData[SAE.CommonLibrary.Constants.Scope] = scope;
 
                 configData[$"{MultiTenantOptions.Option}:{nameof(MultiTenantOptions.Mapper)}"] = mapping;
 
