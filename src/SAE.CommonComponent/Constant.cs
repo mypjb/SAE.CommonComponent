@@ -160,7 +160,35 @@ namespace SAE.CommonComponent
             /// <summary>
             /// 默认树的根标识
             /// </summary>
-            public const string RootId="";
+            public const string RootId = "";
+        }
+
+        /// <summary>
+        /// 缓存
+        /// </summary>
+        public class Caching
+        {
+            /// <summary>
+            /// 角色缓存
+            /// </summary>
+            public class Role
+            {
+                /// <summary>
+                /// 集群应用
+                /// </summary>
+                /// <value></value>
+                public const string BitmapAuthorizationDescriptors = "bitmap_auth_";
+            }
+            /// <summary>
+            /// 应用资源
+            /// </summary>
+            public class AppResource
+            {
+                /// <summary>
+                /// 位图端点
+                /// </summary>
+                public const string BitmapEndpoints="bitmap_endpoint_";
+            }
         }
     }
 }

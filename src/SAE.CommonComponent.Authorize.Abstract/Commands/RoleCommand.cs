@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using SAE.CommonLibrary.Abstract.Model;
+using SAE.CommonLibrary.Extension;
 
 namespace SAE.CommonComponent.Authorize.Commands
 {
@@ -163,6 +164,39 @@ namespace SAE.CommonComponent.Authorize.Commands
             /// </summary>
             /// <value></value>
             public string AppId { get; set; }
+            /// <summary>
+            /// 状态
+            /// </summary>
+            /// <value></value>
+            public Status Status { get; set; }
+        }
+        /// <summary>
+        /// 查询集群或系统的授权位图集合
+        /// </summary>
+        public class BitmapAuthorizationDescriptors
+        {
+            /// <summary>
+            /// 系统标识
+            /// </summary>
+            /// <value></value>
+            public string AppId { get; set; }
+            /// <summary>
+            /// 集群标识
+            /// </summary>
+            /// <value></value>
+            public string ClusterId { get; set; }
+            /// <summary>
+            /// 版本号
+            /// </summary>
+            /// <value></value>
+            public string Version { get; set; }
+            /// <summary>
+            /// 返回缓存key
+            /// </summary>
+            public override string ToString()
+            {
+                return $"{Constants.Caching.Role.BitmapAuthorizationDescriptors}{(this.ClusterId.IsNullOrWhiteSpace() ? this.AppId : this.ClusterId)}{Constants.DefaultSeparator}{Version}";
+            }
         }
         /// <summary>
         /// 列出权限集合

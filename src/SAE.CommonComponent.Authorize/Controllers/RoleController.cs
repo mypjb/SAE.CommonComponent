@@ -1,14 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using SAE.CommonComponent.Authorize.Commands;
 using SAE.CommonComponent.Authorize.Domains;
 using SAE.CommonComponent.Authorize.Dtos;
 using SAE.CommonLibrary;
 using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.Abstract.Model;
+using SAE.CommonLibrary.Configuration;
 using SAE.CommonLibrary.EventStore.Document;
 
 namespace SAE.CommonComponent.Authorize.Controllers
@@ -21,13 +25,17 @@ namespace SAE.CommonComponent.Authorize.Controllers
     public class RoleController : Controller
     {
         private readonly IMediator _mediator;
+        private readonly IOptions<SAEOptions> _options;
+
         /// <summary>
         /// 创建一个新的对象
         /// </summary>
         /// <param name="mediator"></param>
-        public RoleController(IMediator mediator)
+        /// <param name="options"></param>
+        public RoleController(IMediator mediator, IOptions<SAEOptions> options)
         {
             this._mediator = mediator;
+            this._options = options;
         }
         /// <summary>
         /// 添加
@@ -126,6 +134,33 @@ namespace SAE.CommonComponent.Authorize.Controllers
             return await this._mediator.SendAsync<IEnumerable<PermissionDto>>(command);
         }
 
+        [HttpGet("bitmaps")]
+        public async Task<object> ClusterAppList([FromQuery] RoleCommand.BitmapAuthorizationDescriptors command)
+        {
+            var roleClusterAppList = await this._mediator.SendAsync<BitmapAuthorizationDescriptorListDto>(command);
+
+            if (roleClusterAppList.Version == command.Version)
+            {
+                return this.StatusCode((int)HttpStatusCode.NotModified);
+            }
+
+            var query = new QueryString();
+            foreach (var kv in this.Request.Query)
+            {
+                if (!kv.Key.Equals(nameof(command.Version), StringComparison.OrdinalIgnoreCase))
+                {
+                    query = query.Add(kv.Key, kv.Value);
+                }
+            }
+
+            query = query.Add(nameof(command.Version).ToLower(), roleClusterAppList.Version);
+
+            var nextUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.Path}{query.ToUriComponent()}";
+
+            this.HttpContext.Response.Headers.Add(this._options.Value.NextRequestHeaderName, nextUrl);
+
+            return roleClusterAppList.Data;
+        }
 
     }
 }

@@ -18,7 +18,6 @@ namespace SAE.CommonComponent.Authorize.EventHandlers
     /// <inheritdoc/>
     public class AppResourceEventHandler : IHandler<AppResourceCommand.Create>
     {
-        private readonly IDocumentStore _documentStore;
         private readonly IMediator _mediator;
         private readonly ILogging _logging;
 
@@ -28,11 +27,9 @@ namespace SAE.CommonComponent.Authorize.EventHandlers
         /// <param name="documentStore"></param>
         /// <param name="mediator"></param>
         /// <param name="logging"></param>
-        public AppResourceEventHandler(IDocumentStore documentStore,
-                                       IMediator mediator,
+        public AppResourceEventHandler(IMediator mediator,
                                        ILogging<AppResourceEventHandler> logging)
         {
-            this._documentStore = documentStore;
             this._mediator = mediator;
             this._logging = logging;
         }

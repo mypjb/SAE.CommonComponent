@@ -7,18 +7,21 @@ namespace SAE.CommonComponent
     /// </summary>
     public enum Status
     {
-        /// <summary>
-        /// 软删除
-        /// </summary>
+
         Delete = -1,
         /// <summary>
-        /// 禁用
+        /// 返回所有
         /// </summary>
-        Disable = 0,
+        ALL = 0,
         /// <summary>
         /// 启用
         /// </summary>
-        Enable = 1
+        Enable = 1,
+        /// <summary>
+        /// 禁用
+        /// </summary>
+        Disable = 2,
+
     }
     /// <summary>
     /// 访问方式
@@ -38,7 +41,7 @@ namespace SAE.CommonComponent
         /// </summary>
         Delete = 2,
         /// <summary>
-        /// Post
+        /// Post0
         /// </summary>
         Post = 3,
         /// <summary>

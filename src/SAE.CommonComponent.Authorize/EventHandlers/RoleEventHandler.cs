@@ -5,12 +5,13 @@ using System.Threading.Tasks;
 using SAE.CommonComponent.Application.Commands;
 using SAE.CommonComponent.Application.Dtos;
 using SAE.CommonComponent.Authorize.Commands;
-using SAE.CommonComponent.Authorize.Domains;
 using SAE.CommonComponent.Authorize.Dtos;
 using SAE.CommonComponent.Authorize.Events;
 using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.AspNetCore.Authorization;
+using SAE.CommonLibrary.Caching;
 using SAE.CommonLibrary.EventStore.Document;
+using SAE.CommonLibrary.Extension;
 using SAE.CommonLibrary.Logging;
 using SAE.CommonLibrary.MessageQueue;
 
@@ -20,12 +21,14 @@ namespace SAE.CommonComponent.Authorize.EventHandlers
     /// 角色事件处理程序
     /// </summary>
     /// <inheritdoc/>
-    public class RoleEventHandler : IHandler<RoleCommand.Create>,
-                                    IHandler<RoleCommand.PermissionChange>
+    public class RoleEventHandler : IHandler<RoleEvent.Create>,
+                                    IHandler<RoleCommand.PermissionChange>,
+                                    IHandler<RoleCommand.ChangeStatus>
     {
         private readonly IMediator _mediator;
         private readonly ILogging _logging;
         private readonly IBitmapAuthorization _bitmapAuthorization;
+        private readonly IDistributedCache _distributedCache;
 
         /// <summary>
         /// 创建一个新的对象
@@ -33,22 +36,26 @@ namespace SAE.CommonComponent.Authorize.EventHandlers
         /// <param name="mediator"></param>
         /// <param name="logging"></param>
         /// <param name="bitmapAuthorization"></param>
+        /// <param name="distributedCache"></param>
         public RoleEventHandler(IMediator mediator,
                                 ILogging<RoleEventHandler> logging,
-                                IBitmapAuthorization bitmapAuthorization)
+                                IBitmapAuthorization bitmapAuthorization,
+                                IDistributedCache distributedCache)
         {
             this._mediator = mediator;
             this._logging = logging;
             this._bitmapAuthorization = bitmapAuthorization;
+            this._distributedCache = distributedCache;
         }
 
-        public async Task HandleAsync(RoleCommand.Create command)
+        public async Task HandleAsync(RoleEvent.Create command)
         {
             this._logging.Info($"有新的角色'{command.Name}'被添加，准备设置其索引");
 
             var roleDtos = await this._mediator.SendAsync<IEnumerable<RoleDto>>(new RoleCommand.List
             {
-                AppId = command.AppId
+                AppId = command.AppId,
+                Status = Status.ALL
             });
 
             if (!roleDtos.Any()) return;
@@ -83,6 +90,7 @@ namespace SAE.CommonComponent.Authorize.EventHandlers
                 await this._mediator.SendAsync(indexCommand);
             }
             this._logging.Info($"角色'{command.Name}'添加完成。");
+            await this.RoleChangeCoreAsync(command.Id);
         }
 
         public async Task HandleAsync(RoleCommand.PermissionChange message)
@@ -96,10 +104,14 @@ namespace SAE.CommonComponent.Authorize.EventHandlers
 
             var bits = new List<int>();
 
-            if (role.Permissions?.Any() ?? false)
+            var permissions = role.Permissions?.Any() ?? false ?
+                              role.Permissions?.Where(s => s.Status == Status.Enable) :
+                              Enumerable.Empty<PermissionDto>();
+
+            if (permissions.Any())
             {
-                var appResourceIds = role.Permissions.Select(s => s.AppResourceId)
-                                                     .ToArray();
+                var appResourceIds = permissions.Select(s => s.AppResourceId)
+                                                .ToArray();
 
                 var appResourceListCommand = new AppResourceCommand.List
                 {
@@ -126,7 +138,36 @@ namespace SAE.CommonComponent.Authorize.EventHandlers
             };
 
             await this._mediator.SendAsync(changePermissionCodeCommand);
+            await this.RoleChangeCoreAsync(message.Id);
+        }
 
+        public async Task HandleAsync(RoleCommand.ChangeStatus message)
+        {
+            await this.RoleChangeCoreAsync(message.Id);
+        }
+
+        private async Task RoleChangeCoreAsync(string roleId)
+        {
+            var findCommand = new Command.Find<RoleDto>
+            {
+                Id = roleId
+            };
+
+            var role = await this._mediator.SendAsync<RoleDto>(findCommand);
+
+            Assert.Build(role)
+                  .NotNull($"角色'{roleId}'不存在，或被删除！");
+
+            var app = await this._mediator.SendAsync<AppDto>(new Command.Find<AppDto>
+            {
+                Id = role.AppId
+            });
+
+            Assert.Build(app)
+                  .NotNull($"系统'{role.AppId}'不存在！");
+
+            await this._distributedCache.DeletePatternAsync($"^{Constants.Caching.Role.BitmapAuthorizationDescriptors}{app.Id}");
+            await this._distributedCache.DeletePatternAsync($"^{Constants.Caching.Role.BitmapAuthorizationDescriptors}{app.ClusterId}");
         }
     }
 }
