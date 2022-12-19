@@ -35,7 +35,7 @@ namespace SAE.CommonComponent.Identity.Handlers
             var dto = await this._mediator.SendAsync<UserDto>(authenticationCommand);
 
             Assert.Build(dto)
-                  .NotNull("Incorrect user name or password!");
+                  .NotNull("用户名或密码错误!");
 
             var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
 

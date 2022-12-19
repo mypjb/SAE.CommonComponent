@@ -19,6 +19,7 @@ using SAE.CommonLibrary.AspNetCore.Authorization;
 using SAE.CommonLibrary.Data;
 using SAE.CommonLibrary.EventStore.Document;
 using SAE.CommonLibrary.Extension;
+using SAE.CommonLibrary.Logging;
 using SAE.CommonLibrary.MessageQueue;
 
 namespace SAE.CommonComponent.Authorize.Handlers
@@ -43,17 +44,20 @@ namespace SAE.CommonComponent.Authorize.Handlers
         private readonly IDirector _director;
         private readonly IMediator _mediator;
         private readonly IMessageQueue _messageQueue;
+        private readonly ILogging _logging;
 
         public RoleHandler(IDocumentStore documentStore,
                           IStorage storage,
                           IDirector director,
                           IMediator mediator,
-                          IMessageQueue messageQueue) : base(documentStore)
+                          IMessageQueue messageQueue,
+                          ILogging<RoleHandler> logging) : base(documentStore)
         {
             this._storage = storage;
             this._director = director;
             this._mediator = mediator;
             this._messageQueue = messageQueue;
+            this._logging = logging;
         }
 
         public async Task<string> HandleAsync(RoleCommand.Create command)
@@ -249,6 +253,13 @@ namespace SAE.CommonComponent.Authorize.Handlers
                 query = query.Where(s => s.AppId == command.AppId);
             }
 
+            var appResources = await this._mediator.SendAsync<IEnumerable<AppResourceDto>>(new AppResourceCommand.List
+            {
+                Status = Status.Enable,
+                AppId = command.AppId,
+                ClusterId = command.ClusterId
+            });
+
             query = query.Where(s => s.Status == Status.Enable);
 
             var roles = query.ToArray();
@@ -286,6 +297,46 @@ namespace SAE.CommonComponent.Authorize.Handlers
                                         })
                                     }
                                 });
+
+            var appResourceDict = appResources.GroupBy(s => s.AppId)
+                            .ToDictionary(s => s.Key,
+                                s => new Dictionary<string, object>
+                                {
+                                    {
+                                        $"{ConfigurationEndpointOptions.Option}{SAE.CommonLibrary.Configuration.Constants.ConfigSeparator}{nameof(ConfigurationEndpointOptions.BitmapEndpoints)}",
+                                        s.Select(ap=> new BitmapEndpoint
+                                        {
+                                            Index=ap.Index,
+                                            Name=ap.Name,
+                                            Path=ap.Path,
+                                            Method=ap.Method
+                                        })
+                                    }
+                                });
+
+            foreach (var ar in appResourceDict)
+            {
+                if (dict.TryGetValue(ar.Key, out Dictionary<string, object> dictionary))
+                {
+                    foreach (var kv in ar.Value)
+                    {
+                        if (dictionary.ContainsKey(kv.Key))
+                        {
+                            this._logging.Error($"在角色字典'{ar.Key}':'{kv.Key}'当中存在同名属性,正常流程不应该出现这种状况,请进行排查!");
+                        }
+                        else
+                        {
+                            this._logging.Info($"扩充字典属性'{ar.Key}':'{kv.Key}'");
+                            dictionary.Add(kv.Key, kv.Value);
+                        }
+                    }
+                }
+                else
+                {
+                    this._logging.Info($"在角色字典当中不存在应用Key'{ar.Key}',扩充根词典");
+                    dict[ar.Key] = ar.Value;
+                }
+            }
 
             bitmapAuthorizationDescriptorList.Data = dict;
 

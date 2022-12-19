@@ -6,6 +6,7 @@ using SAE.CommonComponent.Application.Commands;
 using SAE.CommonComponent.Application.Dtos;
 using SAE.CommonLibrary;
 using SAE.CommonLibrary.Abstract.Mediator;
+using SAE.CommonLibrary.Caching;
 using SAE.CommonLibrary.EventStore.Document;
 using SAE.CommonLibrary.Logging;
 using SAE.CommonLibrary.MessageQueue;
@@ -20,18 +21,21 @@ namespace SAE.CommonComponent.Authorize.EventHandlers
     {
         private readonly IMediator _mediator;
         private readonly ILogging _logging;
+        private readonly IDistributedCache _distributedCache;
 
         /// <summary>
         /// 创建一个新的对象
         /// </summary>
-        /// <param name="documentStore"></param>
         /// <param name="mediator"></param>
         /// <param name="logging"></param>
+        /// <param name="distributedCache"></param>
         public AppResourceEventHandler(IMediator mediator,
-                                       ILogging<AppResourceEventHandler> logging)
+                                       ILogging<AppResourceEventHandler> logging,
+                                       IDistributedCache distributedCache)
         {
             this._mediator = mediator;
             this._logging = logging;
+            this._distributedCache = distributedCache;
         }
 
         public async Task HandleAsync(AppResourceCommand.Create command)
@@ -79,6 +83,23 @@ namespace SAE.CommonComponent.Authorize.EventHandlers
                 await this._mediator.SendAsync(indexCommand);
 
             }
+
+            var app = await this._mediator.SendAsync<AppDto>(new Command.Find<AppDto>
+            {
+                Id = command.AppId
+            });
+
+            await this._distributedCache.DeletePatternAsync($"^{Constants.Caching.Bitmap.BitmapDescriptors}{app.Id}");
+
+            if (app == null)
+            {
+                this._logging.Error($"系统'{command.AppId}'不存在！");
+            }
+            else
+            {
+                await this._distributedCache.DeletePatternAsync($"^{Constants.Caching.Bitmap.BitmapDescriptors}{app.ClusterId}");
+            }
+
             this._logging.Info($"系统资源'{command.Name}'添加完成。");
         }
 

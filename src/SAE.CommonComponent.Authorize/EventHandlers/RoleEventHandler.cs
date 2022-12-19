@@ -163,11 +163,17 @@ namespace SAE.CommonComponent.Authorize.EventHandlers
                 Id = role.AppId
             });
 
-            Assert.Build(app)
-                  .NotNull($"系统'{role.AppId}'不存在！");
+            await this._distributedCache.DeletePatternAsync($"^{Constants.Caching.Bitmap.BitmapDescriptors}{app.Id}");
 
-            await this._distributedCache.DeletePatternAsync($"^{Constants.Caching.Role.BitmapAuthorizationDescriptors}{app.Id}");
-            await this._distributedCache.DeletePatternAsync($"^{Constants.Caching.Role.BitmapAuthorizationDescriptors}{app.ClusterId}");
+            if (app == null)
+            {
+                this._logging.Error($"系统'{role.AppId}'不存在！");
+            }
+            else
+            {
+                await this._distributedCache.DeletePatternAsync($"^{Constants.Caching.Bitmap.BitmapDescriptors}{app.ClusterId}");
+            }
+
         }
     }
 }

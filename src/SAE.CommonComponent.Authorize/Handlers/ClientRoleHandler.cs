@@ -21,7 +21,7 @@ namespace SAE.CommonComponent.Authorize.Handlers
     public class ClientRoleHandler : AbstractHandler<ClientRole>,
                                      ICommandHandler<ClientRoleCommand.ReferenceRole>,
                                      ICommandHandler<ClientRoleCommand.DeleteRole>,
-                                     ICommandHandler<ClientRoleCommand.QueryClientAuthorizeCode, Dictionary<string, string>>,
+                                     ICommandHandler<ClientRoleCommand.QueryClientAuthorizeCode, AuthorizeCodeDto>,
                                      ICommandHandler<ClientRoleCommand.Query, IPagedList<RoleDto>>,
                                      ICommandHandler<ClientRoleCommand.List, IEnumerable<RoleDto>>,
                                      ICommandHandler<Command.BatchDelete<ClientRole>>
@@ -76,11 +76,16 @@ namespace SAE.CommonComponent.Authorize.Handlers
             return roles;
         }
 
-        public async Task<Dictionary<string, string>> HandleAsync(ClientRoleCommand.QueryClientAuthorizeCode command)
+        public async Task<AuthorizeCodeDto> HandleAsync(ClientRoleCommand.QueryClientAuthorizeCode command)
         {
             var roles = await this._mediator.SendAsync<IEnumerable<RoleDto>>(new ClientRoleCommand.List
             {
                 ClientId = command.ClientId
+            });
+
+            var appIds = await this._mediator.SendAsync<IEnumerable<string>>(new SuperAdminCommand.List
+            {
+                TargetId = command.ClientId
             });
 
             var dic = new Dictionary<string, string>();
@@ -98,7 +103,11 @@ namespace SAE.CommonComponent.Authorize.Handlers
                 dic.Add(group.Key, code);
             }
 
-            return dic;
+            return new AuthorizeCodeDto
+            {
+                Codes = dic,
+                SuperAdmins = appIds
+            };
         }
 
         public async Task<IPagedList<RoleDto>> HandleAsync(ClientRoleCommand.Query command)

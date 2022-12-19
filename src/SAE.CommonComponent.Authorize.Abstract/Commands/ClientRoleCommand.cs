@@ -11,6 +11,7 @@ namespace SAE.CommonComponent.Authorize.Commands
     /// </summary>
     public class ClientRoleCommand
     {
+        
         /// <summary>
         /// 引用角色
         /// </summary>

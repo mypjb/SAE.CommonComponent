@@ -195,7 +195,7 @@ namespace SAE.CommonComponent.Authorize.Commands
             /// </summary>
             public override string ToString()
             {
-                return $"{Constants.Caching.Role.BitmapAuthorizationDescriptors}{(this.ClusterId.IsNullOrWhiteSpace() ? this.AppId : this.ClusterId)}{Constants.DefaultSeparator}{Version}";
+                return $"{Constants.Caching.Bitmap.BitmapDescriptors}{(this.ClusterId.IsNullOrWhiteSpace() ? this.AppId : this.ClusterId)}{Constants.DefaultSeparator}{Version}";
             }
         }
         /// <summary>

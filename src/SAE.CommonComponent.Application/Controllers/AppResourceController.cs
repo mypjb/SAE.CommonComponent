@@ -91,36 +91,5 @@ namespace SAE.CommonComponent.Application.Controllers
         {
             return await this._mediator.SendAsync<IEnumerable<AppResourceDto>>(command);
         }
-        /// <summary>
-        /// 列出集群或系统的资源集合
-        /// </summary>
-        /// <param name="command"></param>
-        [HttpGet("[action]")]
-        public async Task<object> BitmapEndpoints([FromQuery] AppResourceCommand.BitmapEndpoints command)
-        {
-            var bitmapEndpointList = await this._mediator.SendAsync<BitmapEndpointListDto>(command);
-
-            if (bitmapEndpointList.Version == command.Version)
-            {
-                return this.StatusCode((int)HttpStatusCode.NotModified);
-            }
-
-            var query = new QueryString();
-            foreach (var kv in this.Request.Query)
-            {
-                if (!kv.Key.Equals(nameof(command.Version), StringComparison.OrdinalIgnoreCase))
-                {
-                    query = query.Add(kv.Key, kv.Value);
-                }
-            }
-
-            query = query.Add(nameof(command.Version).ToLower(), bitmapEndpointList.Version);
-
-            var nextUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.Path}{query.ToUriComponent()}";
-
-            this.HttpContext.Response.Headers.Add(this._options.Value.NextRequestHeaderName, nextUrl);
-
-            return bitmapEndpointList.Data;
-        }
     }
 }

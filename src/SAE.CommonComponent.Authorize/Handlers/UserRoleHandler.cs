@@ -22,7 +22,7 @@ namespace SAE.CommonComponent.Authorize.Handlers
     public class UserRoleHandler : AbstractHandler<UserRole>,
                                   ICommandHandler<UserRoleCommand.ReferenceRole>,
                                   ICommandHandler<UserRoleCommand.DeleteRole>,
-                                  ICommandHandler<UserRoleCommand.QueryUserAuthorizeCode, Dictionary<string, string>>,
+                                  ICommandHandler<UserRoleCommand.QueryUserAuthorizeCode, AuthorizeCodeDto>,
                                   ICommandHandler<UserRoleCommand.Query, IPagedList<RoleDto>>,
                                   ICommandHandler<UserRoleCommand.List, IEnumerable<RoleDto>>,
                                   ICommandHandler<Command.BatchDelete<UserRole>>
@@ -76,16 +76,26 @@ namespace SAE.CommonComponent.Authorize.Handlers
             return roles;
         }
 
-        public async Task<Dictionary<string, string>> HandleAsync(UserRoleCommand.QueryUserAuthorizeCode command)
+        public async Task<AuthorizeCodeDto> HandleAsync(UserRoleCommand.QueryUserAuthorizeCode command)
         {
             var roles = await this._mediator.SendAsync<IEnumerable<RoleDto>>(new UserRoleCommand.List
             {
                 UserId = command.UserId
             });
 
+            var appIds = await this._mediator.SendAsync<IEnumerable<string>>(new SuperAdminCommand.List
+            {
+                TargetId = command.UserId
+            });
+
             var dic = new Dictionary<string, string>();
             foreach (var group in roles.GroupBy(s => s.AppId))
             {
+                if (appIds.Contains(group.Key))
+                {
+                    this._logging.Info($"用户'{command.UserId}'具有系统'{group.Key}'超管权限，忽略角色引用!");
+                    continue;
+                }
                 var indexs = group.Select(s => s.Index).ToArray();
                 var code = this._bitmapAuthorization.GenerateCode(indexs);
                 if (code.IsNullOrWhiteSpace())
@@ -95,7 +105,12 @@ namespace SAE.CommonComponent.Authorize.Handlers
                 }
                 dic.Add(group.Key, code);
             }
-            return dic;
+
+            return new AuthorizeCodeDto
+            {
+                Codes = dic,
+                SuperAdmins = appIds
+            };
         }
 
         public async Task<IPagedList<RoleDto>> HandleAsync(UserRoleCommand.Query command)

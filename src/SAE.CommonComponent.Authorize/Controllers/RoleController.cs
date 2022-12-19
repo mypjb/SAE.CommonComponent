@@ -134,7 +134,7 @@ namespace SAE.CommonComponent.Authorize.Controllers
             return await this._mediator.SendAsync<IEnumerable<PermissionDto>>(command);
         }
 
-        [HttpGet("bitmaps")]
+        [HttpGet("~/.bitmaps")]
         public async Task<object> ClusterAppList([FromQuery] RoleCommand.BitmapAuthorizationDescriptors command)
         {
             var roleClusterAppList = await this._mediator.SendAsync<BitmapAuthorizationDescriptorListDto>(command);
