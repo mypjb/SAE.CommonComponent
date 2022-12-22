@@ -60,7 +60,7 @@ namespace SAE.CommonComponent.Identity.Handlers
 
                 foreach (var appid in authorizeCode.SuperAdmins)
                 {
-                    identity.AddClaim(new Claim(CommonLibrary.AspNetCore.Constants.BitmapAuthorize.Administrator,appid));
+                    identity.AddClaim(new Claim(CommonLibrary.AspNetCore.Constants.BitmapAuthorize.Administrator, appid));
                 }
             }
 

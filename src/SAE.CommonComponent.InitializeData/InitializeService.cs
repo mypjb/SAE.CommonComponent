@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -35,8 +36,10 @@ using SAE.CommonLibrary.Abstract.Model;
 using SAE.CommonLibrary.AspNetCore;
 using SAE.CommonLibrary.AspNetCore.Authorization;
 using SAE.CommonLibrary.AspNetCore.Routing;
+using SAE.CommonLibrary.Configuration;
 using SAE.CommonLibrary.EventStore.Document;
 using SAE.CommonLibrary.Extension;
+using SAE.CommonLibrary.Extension.Middleware;
 using SAE.CommonLibrary.Logging;
 using SAE.CommonLibrary.Plugin;
 using ClientCommand = SAE.CommonComponent.Application.Commands.ClientCommand;
@@ -50,6 +53,7 @@ namespace SAE.CommonComponent.InitializeData
     public class InitializeService : IInitializeService
     {
         protected const string SiteMapPath = "siteMap.json";
+        protected const string AppSettings = "appsettings.json";
         protected const string SiteMapDevelopmentPath = "siteMap.Development.json";
         protected readonly IMediator _mediator;
         protected readonly ILogging _logging;
@@ -60,6 +64,8 @@ namespace SAE.CommonComponent.InitializeData
         private readonly IPathDescriptorProvider _pathDescriptorProvider;
         private readonly IBitmapAuthorization _bitmapAuthorization;
         private readonly IHostEnvironment _hostEnvironment;
+
+        private readonly SAEOptions _saeOptions;
 
         public InitializeService(IServiceProvider serviceProvider)
         {
@@ -271,7 +277,7 @@ namespace SAE.CommonComponent.InitializeData
 
             var environments = await this._mediator.SendAsync<IEnumerable<DictDto>>(new DictCommand.List
             {
-                ParentId = environmentDict.Id
+                ParentId = environmentDict.ParentId
             });
             var oauthKey = nameof(Constants.Config.OAuth);
 
@@ -300,6 +306,10 @@ namespace SAE.CommonComponent.InitializeData
                     Path = bitmapEndpoint.Path
                 });
             }
+
+            var jsonSeparator = '.';
+
+            var oauthPath = $"{SAE.CommonLibrary.Configuration.Constants.Config.OptionKey.Replace(SAE.CommonLibrary.Configuration.Constants.ConfigSeparator, jsonSeparator)}{jsonSeparator}{oauthKey}";
 
             foreach (var env in environments)
             {
@@ -350,17 +360,61 @@ namespace SAE.CommonComponent.InitializeData
                     Id = clientId
                 });
 
-                clientDto.Secret = "************"; ;
+                var appSettingFileName = $"{Path.GetFileNameWithoutExtension(AppSettings)}.{env.Name}{Path.GetExtension(AppSettings)}";
+
+                var appSettingPath = Path.Combine(AppContext.BaseDirectory, appSettingFileName);
+
+                var appSecret = clientDto.Secret;
+
+                clientDto.Secret = "************";
 
                 this._logging.Info($"默认客户端凭证添加成功:{clientDto.ToJsonString()}");
+
+                if (!File.Exists(appSettingPath))
+                {
+                    if (env.Name.Equals(Environments.Production, StringComparison.OrdinalIgnoreCase))
+                    {
+                        appSettingPath = Path.Combine(AppContext.BaseDirectory, AppSettings);
+                    }
+
+                    if (!File.Exists(appSettingPath))
+                    {
+                        this._logging.Warn($"未找到配置文件'{appSettingPath}'，跳过配置变更操作!");
+                        break;
+                    }
+                }
+
+                var appSettingJsonString = await File.ReadAllTextAsync(appSettingPath);
+
+                var appSettingJson = appSettingJsonString.ToObject<JToken>();
+
+
+                foreach (var jsonPath in oauthPath.Split(jsonSeparator))
+                {
+                    var array = appSettingJson.Children().ToArray();
+                    appSettingJson = (array.First(s =>
+                                                  s.Path.Contains(jsonSeparator) ?
+                                                  s.Path.EndsWith($"{jsonSeparator}{jsonPath}", StringComparison.OrdinalIgnoreCase) :
+                                                  s.Path.Equals(jsonPath, StringComparison.OrdinalIgnoreCase))
+                                      as JProperty).Value;
+                }
+
+                var properties = appSettingJson.Children<JProperty>();
+
+                var jAppId = properties.First(s => s.Name.Equals(nameof(OAuthOptions.AppId), StringComparison.OrdinalIgnoreCase));
+                var jAppSecret = properties.First(s => s.Name.Equals(nameof(OAuthOptions.AppSecret), StringComparison.OrdinalIgnoreCase));
+                var jAuthority = properties.First(s => s.Name.Equals(nameof(OAuthOptions.Authority), StringComparison.OrdinalIgnoreCase));
+                jAppId.Value = new JValue(clientDto.Id);
+                jAppSecret.Value = new JValue(appSecret);
+                jAuthority.Value = new JValue(this.GetJTokenValue<string>(oauthJToken,nameof(OAuthOptions.Authority)));
+                appSettingJsonString = appSettingJson.Root.ToJsonString();
+                await File.WriteAllTextAsync(appSettingPath, appSettingJsonString);
             }
         }
 
         public virtual async Task AuthorizeAsync()
         {
             var (cluster, app) = await this.GetAppClusterAsync();
-
-
 
             var appResourceDtos = await this._mediator.SendAsync<IEnumerable<AppResourceDto>>(new AppResourceCommand.List
             {

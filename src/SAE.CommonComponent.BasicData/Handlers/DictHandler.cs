@@ -145,7 +145,7 @@ namespace SAE.CommonComponent.BasicData.Handlers
                 ParentId = s.ParentId,
                 Sort = s.Sort,
                 CreateTime = s.CreateTime
-            }).ToArray();
+            });
 
             if (command.Type.IsNullOrWhiteSpace())
             {
