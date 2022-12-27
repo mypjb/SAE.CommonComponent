@@ -29,9 +29,9 @@ export default (props) => {
 
 
     const pagination = {
-        current: paging.pageIndex,
-        total: paging.totalCount,
-        pageSize: paging.pageSize,
+        current: paging?.pageIndex,
+        total: paging?.totalCount,
+        pageSize: paging?.pageSize,
         onChange: handleSkipPage,
         hideOnSinglePage:true
     };

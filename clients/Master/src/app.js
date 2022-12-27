@@ -87,8 +87,8 @@ export function useQiankunStateForSlave() {
     const initial = (requestConfig) => {
         requestConfig.prefix = globalConfig.siteConfig.api.host;
         requestConfig.credentials = "include";
+        debugger;
         requestConfig.middlewares = [async (ctx, next) => {
-
             const { url } = masterState.siteConfig;
             const req = ctx.req;
             const options = req.options;

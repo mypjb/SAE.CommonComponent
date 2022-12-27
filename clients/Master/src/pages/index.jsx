@@ -1,15 +1,16 @@
-import { MicroApp, useModel } from 'umi';
+import { MicroApp, useModel, useLocation } from 'umi';
 
-export default ({ match }) => {
+export default () => {
 
   const { initialState } = useModel('@@initialState');
-  const { path } = match;
-
+  const location = useLocation();
+  debugger;
   const { apps } = initialState;
-  const app = apps.find(s => (s.path == path || path.startsWith((s.path + '/'))));
-
+  console.log(apps);
+  const app = apps.find(s => (s.path.toLowerCase() == location.pathname.toLowerCase() || location.pathname.toLowerCase().startsWith((s.path.toLowerCase() + '/'))));
+  return (<MicroApp name='BasicData' basename="/basicdata" />);
   if (app) {
-    return (<MicroApp name={app.name} base={app.path} autoSetLoading />)
+    return (<MicroApp name='BasicData' basename="/basicdata" />)
   } else {
     return (<div>not find app</div>)
   }

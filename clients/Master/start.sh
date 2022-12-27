@@ -4,12 +4,14 @@ cd $(dirname $0);
 
 echo start childs app
 # start childs
-cd ../Identity && tyarn start &
-cd ../OAuth && tyarn start &
-cd ../Routing && tyarn start &
-cd ../ConfigServer && tyarn start &
-cd ../Authorize && tyarn start &
+cd ../BasicData && yarn start &
+# cd ../Identity && yarn start &
+# cd ../OAuth && yarn start &
+# cd ../Routing && yarn start &
+# cd ../Application && yarn start &
+# cd ../Authorize && yarn start &
+# cd ../PluginManagement && yarn start &
 
 echo start master app
 # start master 
-cd ../Master && tyarn start &
+cd ../Master && yarn start &

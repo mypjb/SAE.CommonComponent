@@ -2,7 +2,6 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import React from 'react';
 import { Row, Col, Button, Input } from 'antd';
 import { connect } from 'umi';
-import styles from './index.less';
 import AddForm from './components/AddForm';
 import EditForm from './components/EditForm';
 import PagingTable from '@/components/PagingTable';
@@ -88,14 +87,16 @@ export default connect(({ dict }) => (
         ];
 
         return (
-            <PageHeaderWrapper className={styles.main}>
+            // <PageHeaderWrapper className={styles.main}>
+            <PageHeaderWrapper>
                 <div>
                     <Row>
                         <Col span={18}>
                             <Button type="primary" onClick={handleAdd.bind(null, null)}>Add</Button>
                         </Col>
                         <Col span={6}>
-                            <Search placeholder="input search text" onSearch={(name) => handleSearch({ name })} className={styles.search} enterButton />
+                            {/* <Search placeholder="input search text" onSearch={(name) => handleSearch({ name })} className={styles.search} enterButton /> */}
+                            <Search placeholder="input search text" onSearch={(name) => handleSearch({ name })} enterButton />
                         </Col>
                     </Row>
                     <PagingTable {...props} {...dict} dispatchType={dispatchType.paging} columns={columns} />
