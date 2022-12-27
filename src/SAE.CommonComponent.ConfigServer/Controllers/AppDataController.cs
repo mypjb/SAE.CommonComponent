@@ -36,7 +36,6 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
 
         private async Task<IActionResult> FindAsync(AppDataCommand.Find command)
         {
-
             var appConfig = await this._mediator.SendAsync<AppDataDto>(command);
 
             if (command.Version == appConfig.Version)
@@ -55,7 +54,6 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
                 }
 
                 query = query.Add(nameof(command.Version).ToLower(), appConfig.Version.ToString());
-
 
                 var nextUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.Path}{query.ToUriComponent()}";
 
@@ -84,7 +82,6 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
         [HttpGet("{action}")]
         public async Task<IActionResult> Public([FromQuery] AppDataCommand.Find command)
         {
-            var index = this._bitmapEndpointStorage.GetIndex(this.HttpContext);
             command.Private = false;
 
             Assert.Build(command.AppId)

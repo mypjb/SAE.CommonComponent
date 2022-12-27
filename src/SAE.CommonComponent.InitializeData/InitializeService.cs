@@ -406,7 +406,7 @@ namespace SAE.CommonComponent.InitializeData
                 var jAuthority = properties.First(s => s.Name.Equals(nameof(OAuthOptions.Authority), StringComparison.OrdinalIgnoreCase));
                 jAppId.Value = new JValue(clientDto.Id);
                 jAppSecret.Value = new JValue(appSecret);
-                jAuthority.Value = new JValue(this.GetJTokenValue<string>(oauthJToken,nameof(OAuthOptions.Authority)));
+                jAuthority.Value = new JValue(this.GetJTokenValue<string>(oauthJToken, nameof(OAuthOptions.Authority)));
                 appSettingJsonString = appSettingJson.Root.ToJsonString();
                 await File.WriteAllTextAsync(appSettingPath, appSettingJsonString);
             }
@@ -629,6 +629,26 @@ namespace SAE.CommonComponent.InitializeData
                 });
 
                 this._logging.Info($"系统配置添加完成。{app.Name}-{kvs.Key} : {appConfig.ToJsonString()}");
+
+
+                if (kvs.Key.Equals(Environments.Development) || kvs.Key.Equals(Environments.Production))
+                {
+                    var appConfigPath = "../../../../../clients/Master/config/appConfig.js";
+                    if (File.Exists(appConfigPath))
+                    {
+                        var appConfigContent = await File.ReadAllTextAsync(appConfigPath);
+                        var regex = new Regex($"appid=([^&]*)&env={kvs.Key}", RegexOptions.IgnoreCase);
+                        var match = regex.Match(appConfigContent);
+                        if (match.Success)
+                        {
+                            var group = match.Groups[1];
+                            appConfigContent = appConfigContent.Remove(group.Index, group.Length);
+                            appConfigContent = appConfigContent.Insert(group.Index, app.Id);
+                            await File.WriteAllTextAsync(appConfigPath, appConfigContent);
+                        }
+                    }
+                }
+
             }
 
         }

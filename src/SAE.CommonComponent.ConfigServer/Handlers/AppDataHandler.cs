@@ -36,8 +36,9 @@ namespace SAE.CommonComponent.ConfigServer.Handles
         {
             var app = new AppDataDto();
 
-            var envs = await this._mediator.SendAsync<IEnumerable<DictDto>>(new DictCommand.List
+            var envs = await this._mediator.SendAsync<IEnumerable<DictItemDto>>(new DictCommand.Tree
             {
+                Type=nameof(DictType.Environment)
             });
 
             var env = envs.FirstOrDefault(s => s.Name == command.Env);
