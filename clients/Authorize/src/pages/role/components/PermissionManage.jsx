@@ -1,4 +1,3 @@
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import React, { useState, useEffect } from 'react';
 import { Row, Col, Select } from 'antd';
 import { defaultOperation, defaultDispatchType, defaultState, Format } from '@/utils/utils';
@@ -99,26 +98,24 @@ export default (props) => {
   });
 
   return (
-    <PageHeaderWrapper >
-      <div>
-        <Row>
-          <Col span={18}>
-          </Col>
-          <Col span={6}>
-            <Select onChange={handleChange} defaultValue={state.params.referenced}>
-              <Option value={true}>Reference</Option>
-              <Option value={false}>No Reference</Option>
-            </Select>
-          </Col>
-        </Row>
-        <PagingTable {...props}
-          {...state}
-          handleSkipPage={handleSkipPage}
-          columns={columns}
-          rowKey="id"
-          rowSelection={rowSelectionOption} />
-      </div>
-    </PageHeaderWrapper>
+    <div>
+      <Row>
+        <Col span={18}>
+        </Col>
+        <Col span={6}>
+          <Select onChange={handleChange} defaultValue={state.params.referenced}>
+            <Option value={true}>Reference</Option>
+            <Option value={false}>No Reference</Option>
+          </Select>
+        </Col>
+      </Row>
+      <PagingTable {...props}
+        {...state}
+        handleSkipPage={handleSkipPage}
+        columns={columns}
+        rowKey="id"
+        rowSelection={rowSelectionOption} />
+    </div>
   );
 };
 

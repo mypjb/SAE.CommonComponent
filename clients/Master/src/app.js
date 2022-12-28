@@ -14,11 +14,12 @@ const processingMenuData = function (menus, apps) {
         const element = menus[index];
         let data = {
             ...element,
-            hideInMenu: element.hidden
+            hideInMenu: element.hidden,
+            hideInBreadcrumb: false
         };
 
         const routPath = element.path.toLowerCase();
-        
+
         let appIndex = apps.findIndex(s => {
             const appPath = s.path.toLowerCase();
             if (appPath == routPath) {

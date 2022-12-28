@@ -1,4 +1,3 @@
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import React, { useEffect } from 'react';
 import { Row, Col, Input, Button, Modal, Select } from 'antd';
 import { connect, useModel } from 'umi';
@@ -113,31 +112,29 @@ export default connect(({ appConfig }) => (
 
 
     return (
-      <PageHeaderWrapper>
+      <div>
         {contextHolder}
-        <div>
-          <Row>
-            <Col span={18}>
-              <Button type="primary" onClick={handleReference}>Reference</Button>
-              <Button type="primary" onClick={handleDelete}>Delete</Button>
-            </Col>
-            <Col span={2}>
-              <Select style={{ width: '100%' }} value={state.environmentId} onChange={(envId) => handleSearch({ envId })}>
-                {environmentOptions}
-              </Select>
-            </Col>
-            <Col span={4}>
-              <Search placeholder="input search text" onSearch={(name) => handleSearch({ name })} enterButton />
-            </Col>
-          </Row>
-          <PagingTable {...props}
-            {...appConfig}
-            dispatchType={dispatchType.paging}
-            type='appConfig/paging'
-            rowKey='id'
-            columns={columns}
-            rowSelection={rowSelectOption} />
-        </div>
-      </PageHeaderWrapper>
+        <Row>
+          <Col span={18}>
+            <Button type="primary" onClick={handleReference}>Reference</Button>
+            <Button type="primary" onClick={handleDelete}>Delete</Button>
+          </Col>
+          <Col span={2}>
+            <Select style={{ width: '100%' }} value={state.environmentId} onChange={(envId) => handleSearch({ envId })}>
+              {environmentOptions}
+            </Select>
+          </Col>
+          <Col span={4}>
+            <Search placeholder="input search text" onSearch={(name) => handleSearch({ name })} enterButton />
+          </Col>
+        </Row>
+        <PagingTable {...props}
+          {...appConfig}
+          dispatchType={dispatchType.paging}
+          type='appConfig/paging'
+          rowKey='id'
+          columns={columns}
+          rowSelection={rowSelectOption} />
+      </div>
     );
   });

@@ -1,5 +1,6 @@
 {
   "name": "oauth",
+  "version": "1.0.0",
   "scripts": {
     "dev": "cross-env UMI_ENV=dev max dev",
     "build": "max build",
@@ -7,5 +8,8 @@
     "postinstall": "max setup",
     "setup": "max setup",
     "start": "npm run dev"
+  },
+  "dependencies": {
+    "oidc-client-ts": "^2.2.0"
   }
 }

@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { UserManager } from 'oidc-client';
+import { UserManager } from 'oidc-client-ts';
 import { useModel } from 'umi';
 
 export default () => {
@@ -17,7 +17,7 @@ export default () => {
     };
 
     const mgr = new UserManager(oidcConfig);
-    mgr.createSignoutRequest().then(request => {
+    mgr.signoutRedirect().then(request => {
         window.location.href = request.url;
     }).catch(val => {
         console.error(val);

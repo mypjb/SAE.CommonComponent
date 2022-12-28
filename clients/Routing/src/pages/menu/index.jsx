@@ -1,8 +1,6 @@
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import React from 'react';
 import { Row, Col, Button, Modal, Table } from 'antd';
 import { connect } from 'umi';
-import styles from './index.less';
 import AddForm from './components/AddForm';
 import EditForm from './components/EditForm';
 import PermissionManage from './components/PermissionManage';
@@ -90,16 +88,14 @@ export default connect(({ menu }) => (
     ];
 
     return (
-      <PageHeaderWrapper className={styles.main}>
-        <div>
-          <Row>
-            <Col span={18}>
-              <Button type="primary" onClick={handleAdd}>Add</Button>
-            </Col>
-          </Row>
-          <Table rowKey='id' dataSource={menu.tree} childrenColumnName='items' pagination={{ hideOnSinglePage: true }} columns={columns} />
-        </div>
-      </PageHeaderWrapper>
+      <div>
+        <Row>
+          <Col span={18}>
+            <Button type="primary" onClick={handleAdd}>Add</Button>
+          </Col>
+        </Row>
+        <Table rowKey='id' dataSource={menu.tree} childrenColumnName='items' pagination={{ hideOnSinglePage: true }} columns={columns} />
+      </div>
     );
   });
 

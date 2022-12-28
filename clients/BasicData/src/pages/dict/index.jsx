@@ -1,4 +1,3 @@
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { Row, Col, Button, Input } from 'antd';
 import { connect } from 'umi';
 import AddForm from './components/AddForm';
@@ -12,9 +11,8 @@ export default connect(({ dict }) => (
     {
         dict
     }))((props) => {
-        debugger;
+        
         const { dispatch, dict } = props;
-
         const dispatchType = defaultDispatchType("dict");
 
 
@@ -85,22 +83,16 @@ export default connect(({ dict }) => (
             }
         ];
 
-        return (
-            // <PageHeaderWrapper className={styles.main}>
-            <PageHeaderWrapper>
-                <div>
-                    <Row>
-                        <Col span={18}>
-                            <Button type="primary" onClick={handleAdd.bind(null, null)}>Add</Button>
-                        </Col>
-                        <Col span={6}>
-                            {/* <Search placeholder="input search text" onSearch={(name) => handleSearch({ name })} className={styles.search} enterButton /> */}
-                            <Search placeholder="input search text" onSearch={(name) => handleSearch({ name })} enterButton />
-                        </Col>
-                    </Row>
-                    <PagingTable {...props} {...dict} dispatchType={dispatchType.paging} columns={columns} />
-                </div>
-            </PageHeaderWrapper>
-        );
+        return (<div>
+            <Row>
+                <Col span={18}>
+                    <Button type="primary" onClick={handleAdd.bind(null, null)}>Add</Button>
+                </Col>
+                <Col span={6}>
+                    <Search placeholder="input search text" onSearch={(name) => handleSearch({ name })} enterButton />
+                </Col>
+            </Row>
+            <PagingTable {...props} {...dict} dispatchType={dispatchType.paging} columns={columns} />
+        </div>)
     });
 

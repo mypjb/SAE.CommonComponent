@@ -2,6 +2,7 @@ import request from "../service";
 import { defaultModel } from '@/utils/utils'
 
 export default {
+  namespace: "dict",
   state: {
     ...defaultModel.state
   },

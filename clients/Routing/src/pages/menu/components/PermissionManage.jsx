@@ -1,4 +1,3 @@
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import React, { useState, useEffect } from 'react';
 import { Row, Col, Select } from 'antd';
 import { defaultOperation, defaultDispatchType, defaultState, Format } from '@/utils/utils';
@@ -111,7 +110,6 @@ export default (props) => {
   });
 
   return (
-    <PageHeaderWrapper >
       <div>
         <Row>
           <Col span={18}>
@@ -130,7 +128,6 @@ export default (props) => {
           rowKey="id"
           rowSelection={rowSelectionOption} />
       </div>
-    </PageHeaderWrapper>
   );
 };
 

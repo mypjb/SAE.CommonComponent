@@ -1,4 +1,3 @@
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import React, { useEffect } from 'react';
 import { Row, Col, Input, Table, Button, Modal, Select } from 'antd';
 import { connect, Link, useModel } from 'umi';
@@ -99,19 +98,17 @@ export default connect(({ app }) => (
     ];
 
     return (
-      <PageHeaderWrapper>
+      <div>
         {contextHolder}
-        <div>
-          <Row>
-            <Col span={18}>
-              <Button type="primary" onClick={handleAdd}>Add</Button>
-            </Col>
-            <Col span={6}>
-              <Search placeholder="input search text" onSearch={handleSearch} enterButton />
-            </Col>
-          </Row>
-          <PagingTable columns={columns} {...props} {...app} dispatchType={dispatchType.paging} />
-        </div>
-      </PageHeaderWrapper>
+        <Row>
+          <Col span={18}>
+            <Button type="primary" onClick={handleAdd}>Add</Button>
+          </Col>
+          <Col span={6}>
+            <Search placeholder="input search text" onSearch={handleSearch} enterButton />
+          </Col>
+        </Row>
+        <PagingTable columns={columns} {...props} {...app} dispatchType={dispatchType.paging} />
+      </div>
     );
   });

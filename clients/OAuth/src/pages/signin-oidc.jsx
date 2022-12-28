@@ -1,5 +1,5 @@
 import { useLocation, useModel } from 'umi'
-import oidc from 'oidc-client'
+import oidc from 'oidc-client-ts'
 import { Fragment } from 'react';
 
 export default ({ location }) => {

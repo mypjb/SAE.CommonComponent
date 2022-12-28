@@ -1,8 +1,6 @@
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import React from 'react';
 import { Row, Col, Button, Modal, Table, Input } from 'antd';
 import { connect } from 'umi';
-import styles from './index.less';
 import AddForm from './components/AddForm';
 import EditForm from './components/EditForm';
 import PermissionManage from './components/PermissionManage';
@@ -122,19 +120,17 @@ export default connect(({ role }) => (
         ];
 
         return (
-            <PageHeaderWrapper className={styles.main}>
-                <div>
-                    <Row>
-                        <Col span={18}>
-                            <Button type="primary" onClick={handleAdd}>Add</Button>
-                        </Col>
-                        <Col span={6}>
-                            <Search placeholder="input search text" onSearch={(name) => handleSearch({ name })} className={styles.search} enterButton />
-                        </Col>
-                    </Row>
-                    <PagingTable {...props} {...role} dispatchType={dispatchType.paging} columns={columns} />
-                </div>
-            </PageHeaderWrapper>
+            <div>
+                <Row>
+                    <Col span={18}>
+                        <Button type="primary" onClick={handleAdd}>Add</Button>
+                    </Col>
+                    <Col span={6}>
+                        <Search placeholder="input search text" onSearch={(name) => handleSearch({ name })} enterButton />
+                    </Col>
+                </Row>
+                <PagingTable {...props} {...role} dispatchType={dispatchType.paging} columns={columns} />
+            </div>
         );
     });
 

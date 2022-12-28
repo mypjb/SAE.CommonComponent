@@ -1,5 +1,11 @@
 import { defineConfig } from 'umi';
 
 export default defineConfig({
-    qiankun: { slave: {} }    
+    qiankun: { slave: {} },
+    dva: {},
+    initialState: {},
+    model: {},
+    request: {},
+    antd: {},
+    layout: false 
 });

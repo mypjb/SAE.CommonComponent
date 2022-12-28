@@ -1,4 +1,3 @@
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import React, { useEffect, useState } from 'react';
 import { Row, Col, Input, Table, Button, Modal, Select } from 'antd';
 import { connect, useModel } from 'umi';
@@ -93,10 +92,8 @@ export default connect(({ config }) => (
     ];
 
 
-    return (
-      <PageHeaderWrapper>
-        {contextHolder}
-        <div>
+    return (        
+        <div>{contextHolder}
           <Row>
             <Col span={18}>
               <Button type="primary" onClick={handleAdd}>Add</Button>
@@ -112,6 +109,5 @@ export default connect(({ config }) => (
           </Row>
           <PagingTable {...props} {...config} dispatchType={dispatchType.paging} columns={columns} />
         </div>
-      </PageHeaderWrapper>
     );
   })

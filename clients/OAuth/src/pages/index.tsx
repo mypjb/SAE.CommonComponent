@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { UserManager } from 'oidc-client';
+import { UserManager } from 'oidc-client-ts';
 import { useModel } from 'umi';
 
 export default (props) => {
@@ -22,8 +22,8 @@ export default (props) => {
   console.log(oidcConfig);
 
   const mgr = new UserManager(oidcConfig);
-
-  mgr.createSigninRequest().then(request => {
+  
+  mgr.signinRedirect().then(request => {
     window.location.href = request.url;
   }).catch(val => {
     console.error(val);

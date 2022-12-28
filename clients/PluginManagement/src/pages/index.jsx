@@ -1,8 +1,6 @@
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import React from 'react';
 import { Row, Col, Button, Modal, Table, Input } from 'antd';
 import { connect } from 'umi';
-import styles from './index.less';
 import EditForm from './components/EditForm';
 import PagingTable from '@/components/PagingTable';
 import { defaultDispatchType, defaultHandler, defaultOperation, Format } from '@/utils/utils';
@@ -89,19 +87,17 @@ export default connect(({ plugin }) => (
         ];
 
         return (
-            <PageHeaderWrapper className={styles.main}>
-                <div>
-                    <Row>
-                        <Col span={18}>
-                           
-                        </Col>
-                        <Col span={6}>
-                            <Search placeholder="input search text" onSearch={(name) => handleSearch({ name })} className={styles.search} enterButton />
-                        </Col>
-                    </Row>
-                    <PagingTable {...props} {...plugin} dispatchType={dispatchType.paging} columns={columns} />
-                </div>
-            </PageHeaderWrapper>
+            <div>
+                <Row>
+                    <Col span={18}>
+
+                    </Col>
+                    <Col span={6}>
+                        <Search placeholder="input search text" onSearch={(name) => handleSearch({ name })} enterButton />
+                    </Col>
+                </Row>
+                <PagingTable {...props} {...plugin} dispatchType={dispatchType.paging} columns={columns} />
+            </div>
         );
     });
 

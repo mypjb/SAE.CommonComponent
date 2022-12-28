@@ -1,5 +1,6 @@
 {
   "name": "plugin",
+  "version": "1.0.0",
   "scripts": {
     "dev": "cross-env UMI_ENV=dev max dev",
     "build": "max build",

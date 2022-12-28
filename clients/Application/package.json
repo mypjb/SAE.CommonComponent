@@ -1,5 +1,6 @@
 {
   "name": "application",
+  "version": "1.0.0",
   "scripts": {
     "dev": "cross-env UMI_ENV=dev max dev",
     "build": "max build",
@@ -7,5 +8,8 @@
     "postinstall": "max setup",
     "setup": "max setup",
     "start": "npm run dev"
+  },
+  "dependencies": {
+    "react-json-view": "^1.21.3"
   }
 }
