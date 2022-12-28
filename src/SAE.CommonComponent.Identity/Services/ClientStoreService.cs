@@ -40,7 +40,6 @@ namespace SAE.CommonComponent.Identity.Services
                               .ToList();
             scopes.Add(IdentityServerConstants.StandardScopes.OpenId);
             scopes.Add(IdentityServerConstants.StandardScopes.Profile);
-            
             return new Client
             {
                 ClientId = client.Id,
@@ -53,7 +52,7 @@ namespace SAE.CommonComponent.Identity.Services
                 Enabled = client.Status == Status.Enable,
                 AccessTokenType = AccessTokenType.Jwt,
                 AuthorizationCodeLifetime = this._option.AuthorizationCodeLifetime,
-                AllowedGrantTypes = GrantTypes.ImplicitAndClientCredentials,
+                AllowedGrantTypes = GrantTypes.ImplicitAndClientCredentials.Concat(GrantTypes.CodeAndClientCredentials).ToArray(),
                 AllowRememberConsent = false,
                 AlwaysIncludeUserClaimsInIdToken = true,
                 AllowAccessTokensViaBrowser = true,

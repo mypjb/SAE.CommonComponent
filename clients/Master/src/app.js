@@ -113,11 +113,9 @@ export function useQiankunStateForSlave() {
     const initial = (requestConfig) => {
         requestConfig.prefix = globalConfig.siteConfig.api.host;
         requestConfig.credentials = "include";
-
-        requestConfig.middlewares = [async (ctx, next) => {
+        requestConfig.requestInterceptors = [async (requestPath, ops) => {
+            debugger;
             const { url } = masterState.siteConfig;
-            const req = ctx.req;
-            const options = req.options;
 
             if (!checkLogin(masterState?.user)) {
                 window.sessionStorage.setItem(globalConfig.callBackUrlKey, window.location.pathname + window.location.search);
@@ -129,29 +127,30 @@ export function useQiankunStateForSlave() {
                 return;
             }
             const token = masterState?.user?.access_token;
-
-            req.options = {
-                ...options,
-                headers: {
-                    Authorization: "Bearer " + token
-                }
-            }
-            await next();
+            headers.common.Authorization = "Bearer " + token;
         }];
+        requestConfig.responseInterceptors = [];
+
         requestConfig.errorConfig = {
-            adaptor: function (resData, context) {
-                if (resData === context.res) {
-                    return {
-                        ...resData,
-                        success: true
-                    }
-                }
-                return {
-                    ...resData,
-                    success: false,
-                    errorMessage: resData.message || resData.title || resData.statusText,
-                };
+            errorHandler: (res) => {
+                debugger;
+            },
+            errorThrower: (error, opts) => {
+                debugger;
             }
+            // adaptor: function (resData, context) {
+            //     if (resData === context.res) {
+            //         return {
+            //             ...resData,
+            //             success: true
+            //         }
+            //     }
+            //     return {
+            //         ...resData,
+            //         success: false,
+            //         errorMessage: resData.message || resData.title || resData.statusText,
+            //     };
+            // }
         };
     };
 
