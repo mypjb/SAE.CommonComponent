@@ -7,21 +7,46 @@ let globalConfig = {};
 
 const hideLayoutUrls = ['/identity', '/oauth'];
 
-const processingMenuData = function (menus) {
+const processingMenuData = function (menus, apps) {
+
     const list = [];
     for (let index = 0; index < menus.length; index++) {
         const element = menus[index];
         let data = {
             ...element,
-            hideInMenu: element.hidden,
-            component: indexPage,
+            hideInMenu: element.hidden
         };
+
+        const routPath = element.path.toLowerCase();
+        
+        let appIndex = apps.findIndex(s => {
+            const appPath = s.path.toLowerCase();
+            if (appPath == routPath) {
+                return true;
+            }
+            return false;
+        });
+
+        if (appIndex == -1) {
+            appIndex = apps.findIndex(s => {
+                const appPath = s.path.toLowerCase();
+                if (appPath.startsWith(routPath)) {
+                    return true;
+                }
+                return false;
+            });
+        }
+
+        if (appIndex != -1) {
+            data.microApp = apps[appIndex].name;
+        }
+
         if (hideLayoutUrls.findIndex(s => (s.indexOf(element.path) != -1)) != -1) {
             data.headerRender = false;
             data.menuRender = false;
             data.menuHeaderRender = false;
         }
-        data.routes = processingMenuData(element.items);
+        data.routes = processingMenuData(element.items, apps);
         list.push(data);
     }
     return list;
@@ -51,7 +76,7 @@ export const qiankun = async function () {
 
     const menus = await (await fetch(api.menu)).json();
 
-    const routes = processingMenuData(menus);
+    const routes = processingMenuData(menus, apps);
 
     globalConfig.apps = apps;
 
@@ -87,7 +112,7 @@ export function useQiankunStateForSlave() {
     const initial = (requestConfig) => {
         requestConfig.prefix = globalConfig.siteConfig.api.host;
         requestConfig.credentials = "include";
-        debugger;
+
         requestConfig.middlewares = [async (ctx, next) => {
             const { url } = masterState.siteConfig;
             const req = ctx.req;
@@ -148,7 +173,6 @@ export const layout = ({ initialState }) => {
         name: initialState.siteConfig.basicInfo.name,
         locale: true,
         layout: 'side',
-
     };
 
     if (initialState?.user) {

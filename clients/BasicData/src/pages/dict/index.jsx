@@ -1,5 +1,4 @@
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import React from 'react';
 import { Row, Col, Button, Input } from 'antd';
 import { connect } from 'umi';
 import AddForm from './components/AddForm';
@@ -13,7 +12,7 @@ export default connect(({ dict }) => (
     {
         dict
     }))((props) => {
-
+        debugger;
         const { dispatch, dict } = props;
 
         const dispatchType = defaultDispatchType("dict");
