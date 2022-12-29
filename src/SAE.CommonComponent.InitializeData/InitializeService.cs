@@ -349,6 +349,49 @@ namespace SAE.CommonComponent.InitializeData
 
                 this._logging.Info($"添加默认客户端凭证:{clientCommand.ToJsonString()}");
 
+                var configs = await this._mediator.SendAsync<IPagedList<ConfigDto>>(new ConfigCommand.Query
+                {
+                    ClusterId = cluster.Id,
+                    EnvironmentId = env.Id,
+                    Name = "siteConfig"
+                });
+
+                if (configs.Any())
+                {
+                    var config = configs.First();
+                    var configJTokens = config.Content.ToObject<JToken>();
+                    var configOAuthJToken = configJTokens.First(s => s.Path.Equals("oauth", StringComparison.OrdinalIgnoreCase))
+                                                         .Children()
+                                                         .First()
+                                                         .Children()
+                                                         .ToArray();
+                    var appIdName = nameof(OAuthOptions.AppId);
+                    var appIdProperty = (configOAuthJToken.First(s =>
+                                                  s.Path.Contains(jsonSeparator) ?
+                                                  s.Path.EndsWith($"{jsonSeparator}{appIdName}", StringComparison.OrdinalIgnoreCase) :
+                                                  s.Path.Equals(appIdName, StringComparison.OrdinalIgnoreCase))
+                                      as JProperty);
+                    appIdProperty.Value = new JValue(clientId);
+                    config.Content = configJTokens.ToString();
+
+                    this._logging.Info($"修改授权配置{app.Name}-{app.Id}-{env.Id}:{config.Content}");
+
+                    await this._mediator.SendAsync(new ConfigCommand.Change
+                    {
+                        Id = config.Id,
+                        Name = config.Name,
+                        Content = config.Content
+                    });
+
+                    this._logging.Info($"发布已修改的配置{app.Name}-{app.Id}-{env.Id}");
+
+                    await this._mediator.SendAsync(new AppConfigCommand.Publish
+                    {
+                        Id = app.Id,
+                        EnvironmentId = env.Id
+                    });
+                }
+
                 await this._mediator.SendAsync(new ClientCommand.ChangeStatus
                 {
                     Id = clientId,
@@ -408,6 +451,7 @@ namespace SAE.CommonComponent.InitializeData
                 jAppSecret.Value = new JValue(appSecret);
                 jAuthority.Value = new JValue(this.GetJTokenValue<string>(oauthJToken, nameof(OAuthOptions.Authority)));
                 appSettingJsonString = appSettingJson.Root.ToJsonString();
+                this._logging.Info($"修改网页配置端点: {appSettingPath}");
                 await File.WriteAllTextAsync(appSettingPath, appSettingJsonString);
             }
         }
