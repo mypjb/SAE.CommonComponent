@@ -8,4 +8,4 @@ bin/
 logs/
 *.csproj.user
 node_modules/
-/plugin/
+/plugins/
