@@ -52,7 +52,7 @@ namespace SAE.CommonComponent.Identity.Services
                 Enabled = client.Status == Status.Enable,
                 AccessTokenType = AccessTokenType.Jwt,
                 AuthorizationCodeLifetime = this._option.AuthorizationCodeLifetime,
-                AllowedGrantTypes = GrantTypes.ImplicitAndClientCredentials.Concat(GrantTypes.CodeAndClientCredentials).ToArray(),
+                AllowedGrantTypes = GrantTypes.ImplicitAndClientCredentials.ToArray(),
                 AllowRememberConsent = false,
                 AlwaysIncludeUserClaimsInIdToken = true,
                 AllowAccessTokensViaBrowser = true,
