@@ -289,7 +289,7 @@ namespace SAE.CommonComponent.InitializeData
 
             var scopes = await this._mediator.SendAsync<IEnumerable<DictDto>>(new DictCommand.List
             {
-                ParentId = scopeDict.Id
+                ParentId = scopeDict.ParentId
             });
 
             var bitmapEndpoints = await this._bitmapEndpointProvider.ListAsync();
@@ -333,7 +333,7 @@ namespace SAE.CommonComponent.InitializeData
                     AppId = app.Id,
                     Name = this.GetJTokenValue<string>(basicInfoJToken, nameof(Constants.Config.BasicInfo.Name)),
                     Scopes = scopes.Where(s => scopeNames.Contains(s.Name, StringComparer.OrdinalIgnoreCase))
-                                   .Select(s => s.Id)
+                                   .Select(s => s.Name)
                                    .ToArray(),
                     Endpoint = new ClientEndpointDto
                     {

@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using IdentityServer4.Models;
 using IdentityServer4.Stores;
 using SAE.CommonComponent.Application.Commands;
@@ -6,10 +10,6 @@ using SAE.CommonComponent.BasicData.Commands;
 using SAE.CommonComponent.BasicData.Dtos;
 using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.EventStore.Document;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SAE.CommonComponent.Identity.Services
 {
@@ -31,12 +31,19 @@ namespace SAE.CommonComponent.Identity.Services
 
         private async Task<IEnumerable<DictDto>> GetScopes()
         {
-            var scopes = await this._mediator.SendAsync<IEnumerable<DictDto>>(new DictCommand.List
+            var scopes = await this._mediator.SendAsync<IEnumerable<DictItemDto>>(new DictCommand.Tree
             {
-                
+                Type = nameof(DictType.Scope)
             });
 
-            return scopes;
+            return scopes.Select(s => new DictDto
+            {
+                Name = s.Name,
+                Id = s.Id,
+                ParentId = s.ParentId,
+                Sort = s.Sort,
+                CreateTime = s.CreateTime
+            }).ToArray();
         }
 
         public async Task<ApiResource> FindApiResourceAsync(string name)

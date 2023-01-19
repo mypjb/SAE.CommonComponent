@@ -36,7 +36,7 @@
                 "publish",
                 "${workspaceFolder}/src/SAE.CommonComponent.Application",
                 "-o",
-                "${workspaceFolder}/plugin/Application"
+                "${workspaceFolder}/plugins/Application"
             ]
         },
         {
@@ -47,7 +47,7 @@
                 "publish",
                 "${workspaceFolder}/src/SAE.CommonComponent.Authorize",
                 "-o",
-                "${workspaceFolder}/plugin/Authorize"
+                "${workspaceFolder}/plugins/Authorize"
             ]
         },
         {
@@ -58,7 +58,18 @@
                 "publish",
                 "${workspaceFolder}/src/SAE.CommonComponent.ConfigServer",
                 "-o",
-                "${workspaceFolder}/plugin/ConfigServer"
+                "${workspaceFolder}/plugins/ConfigServer"
+            ]
+        },
+        {
+            "label": "publishBasicData",
+            "command": "dotnet",
+            "type": "shell",
+            "args": [
+                "publish",
+                "${workspaceFolder}/src/SAE.CommonComponent.BasicData",
+                "-o",
+                "${workspaceFolder}/plugins/BasicData"
             ]
         },
         {
@@ -69,7 +80,51 @@
                 "publish",
                 "${workspaceFolder}/src/SAE.CommonComponent.Identity",
                 "-o",
-                "${workspaceFolder}/plugin/Identity"
+                "${workspaceFolder}/plugins/Identity"
+            ]
+        },
+        {
+            "label": "publishInitializeData",
+            "command": "dotnet",
+            "type": "shell",
+            "args": [
+                "publish",
+                "${workspaceFolder}/src/SAE.CommonComponent.InitializeData",
+                "-o",
+                "${workspaceFolder}/plugins/InitializeData"
+            ]
+        },
+        {
+            "label": "publishMultiTenant",
+            "command": "dotnet",
+            "type": "shell",
+            "args": [
+                "publish",
+                "${workspaceFolder}/src/SAE.CommonComponent.MultiTenant",
+                "-o",
+                "${workspaceFolder}/plugins/MultiTenant"
+            ]
+        },
+        {
+            "label": "publishOAuth",
+            "command": "dotnet",
+            "type": "shell",
+            "args": [
+                "publish",
+                "${workspaceFolder}/src/SAE.CommonComponent.OAuth",
+                "-o",
+                "${workspaceFolder}/plugins/OAuth"
+            ]
+        },
+        {
+            "label": "publishPluginManagement",
+            "command": "dotnet",
+            "type": "shell",
+            "args": [
+                "publish",
+                "${workspaceFolder}/src/SAE.CommonComponent.PluginManagement",
+                "-o",
+                "${workspaceFolder}/plugins/PluginManagement"
             ]
         },
         {
@@ -80,7 +135,7 @@
                 "publish",
                 "${workspaceFolder}/src/SAE.CommonComponent.Routing",
                 "-o",
-                "${workspaceFolder}/plugin/Routing"
+                "${workspaceFolder}/plugins/Routing"
             ]
         },
         {
@@ -91,7 +146,7 @@
                 "publish",
                 "${workspaceFolder}/src/SAE.CommonComponent.User",
                 "-o",
-                "${workspaceFolder}/plugin/User"
+                "${workspaceFolder}/plugins/User"
             ]
         }
     ]
