@@ -14,6 +14,7 @@ using Microsoft.IdentityModel.Tokens;
 using SAE.CommonComponent.Authorize.Commands;
 using SAE.CommonComponent.Authorize.Domains;
 using SAE.CommonComponent.Authorize.Dtos;
+using SAE.CommonComponent.Authorize.Events;
 using SAE.CommonLibrary;
 using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.AspNetCore.Authorization;
@@ -108,8 +109,9 @@ namespace SAE.CommonComponent.Authorize
             app.UseServiceFacade()
                .UseBitmapAuthorization();
             var messageQueue = app.ApplicationServices.GetService<IMessageQueue>();
-            messageQueue.Subscibe<RoleCommand.Create>();
+            messageQueue.Subscibe<RoleEvent.Create>();
             messageQueue.Subscibe<RoleCommand.PermissionChange>();
+            messageQueue.Subscibe<RoleCommand.ChangeStatus>();
             messageQueue.Subscibe<PermissionCommand.AppResource>();
             messageQueue.Subscibe<PermissionCommand.ChangeStatus>();
             messageQueue.Subscibe<Command.BatchDelete<Permission>>();

@@ -53,14 +53,15 @@ namespace SAE.CommonComponent.Identity.Handlers
                 foreach (var kv in authorizeCode.Codes)
                 {
                     identity.AddClaim(new Claim(CommonLibrary.AspNetCore.Constants.BitmapAuthorize.Claim,
-                                             string.Format(CommonLibrary.AspNetCore.Constants.BitmapAuthorize.GroupFormat,
+                                                string.Format(CommonLibrary.AspNetCore.Constants.BitmapAuthorize.GroupFormat,
                                                            kv.Key,
-                                                           kv.Value)));
+                                                           kv.Value),
+                                                           Constants.Claim.CustomType));
                 }
 
                 foreach (var appid in authorizeCode.SuperAdmins)
                 {
-                    identity.AddClaim(new Claim(CommonLibrary.AspNetCore.Constants.BitmapAuthorize.Administrator, appid));
+                    identity.AddClaim(new Claim(CommonLibrary.AspNetCore.Constants.BitmapAuthorize.Administrator, appid,Constants.Claim.CustomType));
                 }
             }
 

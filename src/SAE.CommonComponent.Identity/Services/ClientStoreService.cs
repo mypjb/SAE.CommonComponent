@@ -60,7 +60,8 @@ namespace SAE.CommonComponent.Identity.Services
                 AllowAccessTokensViaBrowser = true,
                 RequirePkce = true,
                 RedirectUris = client.Endpoint.RedirectUris.ToArray(),
-                PostLogoutRedirectUris = client.Endpoint.PostLogoutRedirectUris.ToArray()
+                PostLogoutRedirectUris = client.Endpoint.PostLogoutRedirectUris.ToArray(),
+                RequireClientSecret = false
             };
         }
     }

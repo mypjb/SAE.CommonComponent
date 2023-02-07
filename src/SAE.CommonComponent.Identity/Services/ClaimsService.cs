@@ -50,22 +50,21 @@ namespace SAE.CommonComponent.Identity.Services
                 }
             }
 
-            if (!claims.Any(s => s.Type == CommonLibrary.AspNetCore.Constants.BitmapAuthorize.Claim))
-            {
-                var clientCodes = await this._mediator.SendAsync<Dictionary<string, string>>(new ClientRoleCommand.QueryClientAuthorizeCode
-                {
-                    ClientId = client.Id
-                });
+            // if (!claims.Any(s => s.Type == CommonLibrary.AspNetCore.Constants.BitmapAuthorize.Claim))
+            // {
+            //     var clientCodes = await this._mediator.SendAsync<Dictionary<string, string>>(new ClientRoleCommand.QueryClientAuthorizeCode
+            //     {
+            //         ClientId = client.Id
+            //     });
 
-                foreach (var kv in clientCodes)
-                {
-                    claims.Add(new Claim(CommonLibrary.AspNetCore.Constants.BitmapAuthorize.Claim,
-                                         string.Format(CommonLibrary.AspNetCore.Constants.BitmapAuthorize.GroupFormat,
-                                                       kv.Key,
-                                                       kv.Value)));
-                }
-            }
-
+            //     foreach (var kv in clientCodes)
+            //     {
+            //         claims.Add(new Claim(CommonLibrary.AspNetCore.Constants.BitmapAuthorize.Claim,
+            //                              string.Format(CommonLibrary.AspNetCore.Constants.BitmapAuthorize.GroupFormat,
+            //                                            kv.Key,
+            //                                            kv.Value)));
+            //     }
+            // }
             return claims;
         }
 

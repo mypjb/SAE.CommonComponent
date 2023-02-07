@@ -17,9 +17,11 @@ const tailLayout = {
     },
 };
 
+export default () => {
 
-export default connect()(({ dispatch }) => {
-    const { login } = useModel('@@initialState').initialState?.masterProps.masterState.siteConfig.api;
+    const { initialState } = useModel('@@initialState');
+    
+    const { login } = initialState.masterProps.masterState.siteConfig.api;
 
     const formId = "loginForm";
     const query = useLocation().query;
@@ -85,4 +87,4 @@ export default connect()(({ dispatch }) => {
             </Form.Item>
         </Form>
     );
-});
+};

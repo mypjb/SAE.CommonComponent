@@ -1,33 +1,20 @@
-import React, { Fragment } from 'react';
+import oidcConfig from '@/../config/oauth';
 import { UserManager } from 'oidc-client-ts';
-import { useModel } from 'umi';
+import { Fragment } from 'react';
 
-export default (props) => {
-
-  const initialState = useModel('@@initialState').initialState;
+export default () => {
   
-  const { siteConfig } = initialState.masterProps.masterState;
-
-  const { authority, appId, redirectUris, postLogoutRedirectUris, scope } = siteConfig.oauth;
-
-  const oidcConfig = {
-    authority: authority,
-    client_id: appId,
-    redirect_uri: Array.isArray(redirectUris) ? redirectUris[0] : redirectUris,
-    response_type: "code",
-    scope: "openid profile " + scope,
-    post_logout_redirect_uri: Array.isArray(postLogoutRedirectUris) ? postLogoutRedirectUris[0] : postLogoutRedirectUris
-  };
-
-  console.log(oidcConfig);
-
-  const mgr = new UserManager(oidcConfig);
+  const config = oidcConfig();
   
-  mgr.signinRedirect().then(request => {
-    window.location.href = request.url;
-  }).catch(val => {
-    console.error(val);
-  });
+  const mgr = new UserManager(config);
 
-  return (<Fragment></Fragment>);
-}
+  mgr.signinRedirect()
+     .then((request) => {
+       window.location.href = request.url;
+     })
+     .catch((val) => {
+       console.error(val);
+     });
+
+  return <Fragment></Fragment>;
+};

@@ -1,18 +1,21 @@
-import { useLocation, useModel } from 'umi'
-import oidc from 'oidc-client-ts'
+import { useLocation, useModel } from 'umi';
+import { UserManager } from 'oidc-client-ts';
+import oidcConfig from '@/../config/oauth';
 import { Fragment } from 'react';
 
-export default ({ location }) => {
-    const oidcConfig = {
-        response_mode: "query",
-        loadUserInfo: false
-    };
+export default () => {
+
+    const config = oidcConfig();
+
+    const location = useLocation();
 
     const signinCallbackUrl = window.location.origin + window.location.pathname + (location.search || ('?' + location.hash.substr(1)));
 
     const { masterState, setMasterState, masterPush } = useModel('@@initialState').initialState?.masterProps;
+
     const { callbackUrl } = masterState;
-    const mgr = new oidc.UserManager(oidcConfig);
+
+    const mgr = new UserManager(config);
     mgr.signinRedirectCallback(signinCallbackUrl).then((user) => {
         setMasterState({
             ...masterState,

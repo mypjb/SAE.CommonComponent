@@ -66,7 +66,7 @@ namespace SAE.CommonComponent.Authorize.Handlers
             await role.NameExist(this.FindRole);
             await this.AddAsync(role);
             // var handler = ServiceFacade.GetService<IHandler<RoleCommand.Create>>();
-            var roleEvent = role.To<RoleEvent>();
+            var roleEvent = role.To<RoleEvent.Create>();
             await this._messageQueue.PublishAsync(roleEvent);
             return role.Id;
         }
