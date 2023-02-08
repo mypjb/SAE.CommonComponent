@@ -1,4 +1,10 @@
-﻿using IdentityServer4;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Security.Principal;
+using System.Threading.Tasks;
+using IdentityServer4;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -14,12 +20,6 @@ using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.EventStore.Document;
 using SAE.CommonLibrary.Extension;
 using SAE.CommonLibrary.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Security.Principal;
-using System.Threading.Tasks;
 using StatusCodes = SAE.CommonLibrary.StatusCodes;
 
 namespace SAE.CommonComponent.Identity.Controllers
@@ -89,7 +89,7 @@ namespace SAE.CommonComponent.Identity.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> Login([FromForm]AccountCommand.Login command)
+        public async Task<IActionResult> Login([FromForm] AccountCommand.Login command)
         {
             var principal = await this._mediator.SendAsync<IPrincipal>(command);
 
@@ -103,21 +103,26 @@ namespace SAE.CommonComponent.Identity.Controllers
                 claimsPrincipal,
                 properties);
 
-            var returnUrl = command.ReturnUrl.IsNullOrWhiteSpace() ? "/" :
-                $"{this.Request.Scheme}://{this.Request.Host}{command.ReturnUrl}";
+
+
+            var returnUrl = command.ReturnUrl.IsNullOrWhiteSpace() ? (
+                this.Request.Query.ContainsKey(nameof(command.ReturnUrl)) ?
+                this.Request.Query[nameof(command.ReturnUrl)] : "/"
+            ) : command.ReturnUrl;
+
             return this.Redirect(returnUrl);
         }
 
         [AllowAnonymous]
         [HttpPost]
-        public async Task<string> Register([FromBody]AccountCommand.Register command)
+        public async Task<string> Register([FromBody] AccountCommand.Register command)
         {
             return await this._mediator.SendAsync<string>(command);
         }
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<IActionResult> Logout([FromQuery]string logoutId)
+        public async Task<IActionResult> Logout([FromQuery] string logoutId)
         {
 
             string redirectUrl = string.Empty;

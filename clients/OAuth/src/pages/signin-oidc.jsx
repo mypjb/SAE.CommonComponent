@@ -13,10 +13,12 @@ export default () => {
 
     const { masterState, setMasterState, masterPush } = useModel('@@initialState').initialState?.masterProps;
 
-    const { callbackUrl } = masterState;
+    const { callbackUrl,userManager } = masterState;
 
     const mgr = new UserManager(config);
     mgr.signinRedirectCallback(signinCallbackUrl).then((user) => {
+        
+        userManager.set(user);
         setMasterState({
             ...masterState,
             user

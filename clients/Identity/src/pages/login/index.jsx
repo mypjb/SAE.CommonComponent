@@ -1,6 +1,6 @@
 import { Row, Col, Input, Table, Button, Modal, Form, Checkbox } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import { connect, useLocation, useModel } from 'umi';
+import {  useLocation, useModel } from 'umi';
 
 const layout = {
     labelCol: {
@@ -20,28 +20,32 @@ const tailLayout = {
 export default () => {
 
     const { initialState } = useModel('@@initialState');
-    
+
     const { login } = initialState.masterProps.masterState.siteConfig.api;
 
     const formId = "loginForm";
-    const query = useLocation().query;
+    const location = useLocation();
 
     const [form] = Form.useForm();
 
     const handlerSubmit = () => {
         document.getElementById(formId).submit();
     }
-    const array = [];
-    for (let key in query) {
-        array.push(<Input name={key} type="hidden" value={query[key]} />)
+
+    let loginUrl = login;
+
+    if (location.search) {
+        loginUrl = loginUrl + (loginUrl.indexOf('?') ? "" : "&") + location.search;
     }
+
+    console.log({ loginUrl, login });
 
     return (
         <Form
             {...layout}
             name="basic"
             method="post"
-            action={login}
+            action={loginUrl}
             id={formId}
             initialValues={{
                 remember: true,
@@ -49,7 +53,7 @@ export default () => {
             form={form}
             onFinish={handlerSubmit}
         >
-            {array}
+
             <Form.Item
                 label="Name"
                 name="name"

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { history, useModel } from 'umi';
-import { load } from '../config/appConfig'
+import { load, userManager } from '../config/appConfig'
 import indexPage from './pages/index';
 
 let globalConfig = {};
@@ -113,9 +113,11 @@ export function useQiankunStateForSlave() {
     const initial = (requestConfig) => {
         requestConfig.prefix = globalConfig.siteConfig.api.host;
         requestConfig.credentials = "include";
-        requestConfig.requestInterceptors = [async (requestPath, ops) => {
-            debugger;
+        requestConfig.requestInterceptors = [(requestPath, ops) => {
+
             const { url } = masterState.siteConfig;
+
+            const { headers, method } = ops;
 
             if (!checkLogin(masterState?.user)) {
                 window.sessionStorage.setItem(globalConfig.callBackUrlKey, window.location.pathname + window.location.search);
@@ -127,30 +129,25 @@ export function useQiankunStateForSlave() {
                 return;
             }
             const token = masterState?.user?.access_token;
-            headers.common.Authorization = "Bearer " + token;
+
+            headers[method]["Authorization"] = "Bearer " + token;
+
+            debugger;
+
+            return { requestPath, ops };
         }];
+
         requestConfig.responseInterceptors = [];
 
         requestConfig.errorConfig = {
             errorHandler: (res) => {
+                console.log(res)
                 debugger;
             },
             errorThrower: (error, opts) => {
+                console.log({error, opts})
                 debugger;
             }
-            // adaptor: function (resData, context) {
-            //     if (resData === context.res) {
-            //         return {
-            //             ...resData,
-            //             success: true
-            //         }
-            //     }
-            //     return {
-            //         ...resData,
-            //         success: false,
-            //         errorMessage: resData.message || resData.title || resData.statusText,
-            //     };
-            // }
         };
     };
 
@@ -187,7 +184,7 @@ export const layout = ({ initialState }) => {
 
 const formatGlobalConfig = (data) => {
     const userInfo = {
-        ...(data?.user?.profile || {})
+        ...(data?.user?.profile || (userManager.get()))
     };
     return {
         ...data,
