@@ -116,7 +116,7 @@ export const defaultModel = {
         callback(model);
       },
       *paging({ payload }, { call, put, select }) {
-
+       
         const { callback, data } = parsingPayload(payload);
         const params = yield select((globalStatus) => (globalStatus[stateName].params));
 

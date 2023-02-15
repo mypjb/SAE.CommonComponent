@@ -103,8 +103,6 @@ namespace SAE.CommonComponent.Identity.Controllers
                 claimsPrincipal,
                 properties);
 
-
-
             var returnUrl = command.ReturnUrl.IsNullOrWhiteSpace() ? (
                 this.Request.Query.ContainsKey(nameof(command.ReturnUrl)) ?
                 this.Request.Query[nameof(command.ReturnUrl)] : "/"

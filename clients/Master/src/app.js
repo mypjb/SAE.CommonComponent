@@ -111,9 +111,9 @@ export function useQiankunStateForSlave() {
     const { setInitialState } = useModel('@@initialState');
     const [masterState, setMasterState] = useState(globalConfig);
     const initial = (requestConfig) => {
-        requestConfig.prefix = globalConfig.siteConfig.api.host;
-        requestConfig.credentials = "include";
-        requestConfig.requestInterceptors = [(requestPath, ops) => {
+        requestConfig.baseURL = globalConfig.siteConfig.api.host;
+        // requestConfig.credentials = "include";
+        requestConfig.requestInterceptors = [(ops) => {
 
             const { url } = masterState.siteConfig;
 
@@ -132,20 +132,22 @@ export function useQiankunStateForSlave() {
 
             headers[method]["Authorization"] = "Bearer " + token;
 
-            debugger;
-
-            return { requestPath, ops };
+            return { ...ops };
         }];
 
         requestConfig.responseInterceptors = [];
 
         requestConfig.errorConfig = {
             errorHandler: (res) => {
-                console.log(res)
-                debugger;
+                console.log(res);
+                const { status,statusText } = res.response;
+                if (status != "200") {
+                    const error = new Error(statusText);
+                    throw error; // 抛出自制的错误
+                }
             },
-            errorThrower: (error, opts) => {
-                console.log({error, opts})
+            errorThrower: (a, b, c) => {
+                console.log({ a, b, c })
                 debugger;
             }
         };
