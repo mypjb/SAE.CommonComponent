@@ -89,7 +89,7 @@ namespace SAE.CommonComponent.Application.Abstract.Handlers
         {
             var query = this._storage.AsQueryable<AppResourceDto>();
 
-            if (command.ClusterId.IsNullOrWhiteSpace())
+            if (!command.ClusterId.IsNullOrWhiteSpace())
             {
                 if (command.Status == Status.ALL)
                 {
@@ -108,7 +108,7 @@ namespace SAE.CommonComponent.Application.Abstract.Handlers
                             select ar;
                 }
             }
-            else if (command.AppId.IsNullOrWhiteSpace())
+            else if (!command.AppId.IsNullOrWhiteSpace())
             {
                 query=query.Where(s => s.AppId == command.AppId);
             }
