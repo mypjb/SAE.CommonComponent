@@ -1,6 +1,6 @@
 import { history } from 'umi';
 
 export default () => {
-    history.push("menu");
+    history.push("/menu");
     return (<></>)
 }
