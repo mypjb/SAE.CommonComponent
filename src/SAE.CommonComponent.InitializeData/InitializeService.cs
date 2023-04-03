@@ -279,6 +279,7 @@ namespace SAE.CommonComponent.InitializeData
             {
                 ParentId = environmentDict.ParentId
             });
+            environments = environments.OrderBy(s => s.Name).ToArray();
             var oauthKey = nameof(Constants.Config.OAuth);
 
             var basicInfoKey = nameof(Constants.Config.BasicInfo);
@@ -311,6 +312,8 @@ namespace SAE.CommonComponent.InitializeData
 
             var oauthPath = $"{SAE.CommonLibrary.Configuration.Constants.Config.OptionKey.Replace(SAE.CommonLibrary.Configuration.Constants.ConfigSeparator, jsonSeparator)}{jsonSeparator}{oauthKey}";
 
+            var clientInitial = false;
+
             foreach (var env in environments)
             {
                 var pairs = await FindSiteConfigAsync(app, env.Id);
@@ -327,10 +330,17 @@ namespace SAE.CommonComponent.InitializeData
                 var urlJToken = pairs[urlKey].ToObject<JToken>();
 
                 var scopeNames = this.GetJTokenValue<string>(oauthJToken, nameof(Constants.Config.OAuth.Scope)).Split(Constants.Config.OAuth.ScopeSeparator);
+                var initialClientId = string.Empty;
+                if (!clientInitial)
+                {
+                    initialClientId = this.GetJTokenValue<string>(oauthJToken, nameof(Constants.Config.OAuth.AppId));
+                    clientInitial = true;
+                }
 
                 var clientCommand = new ClientCommand.Create
                 {
                     AppId = app.Id,
+                    ClientId = initialClientId,
                     Name = this.GetJTokenValue<string>(basicInfoJToken, nameof(Constants.Config.BasicInfo.Name)),
                     Scopes = scopes.Where(s => scopeNames.Contains(s.Name, StringComparer.OrdinalIgnoreCase))
                                    .Select(s => s.Name)
@@ -825,7 +835,7 @@ namespace SAE.CommonComponent.InitializeData
                 Name = appName,
                 Description = appName,
                 Type = dict.Id,
-                Domain = tenantCreateCommand.Type,
+                Domain = tenantCreateCommand.Domain,
                 TenantId = tenantId
             };
 

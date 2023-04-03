@@ -4,6 +4,7 @@ using SAE.CommonComponent.Application.Commands;
 using SAE.CommonComponent.Application.Events;
 using SAE.CommonLibrary;
 using SAE.CommonLibrary.EventStore.Document;
+using SAE.CommonLibrary.Extension;
 
 namespace SAE.CommonComponent.Application.Abstract.Domains
 {
@@ -27,9 +28,21 @@ namespace SAE.CommonComponent.Application.Abstract.Domains
         {
             this.Apply<ClientEvent.Create>(command, e =>
             {
-                e.Id = Utils.GenerateId();
+                if (command.ClientId.IsNullOrWhiteSpace())
+                {
+
+                    e.Id = Utils.GenerateId();
+
+                    e.Secret = Utils.GenerateId();
+                }
+                else
+                {
+
+                    e.Id = command.ClientId;
+
+                    e.Secret = command.ClientId;
+                }
                 e.CreateTime = DateTime.UtcNow;
-                e.Secret = Utils.GenerateId();
             });
         }
 

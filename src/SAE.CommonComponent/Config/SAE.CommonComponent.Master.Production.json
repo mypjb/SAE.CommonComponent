@@ -4,8 +4,12 @@
       "appId": "localhost.test",
       "scope": "api",
       "authority": "http://oauth.sae.com",
-      "redirectUris": [ "http://master.client.sae.com/oauth/signin-oidc" ],
-      "postLogoutRedirectUris": [ "http://master.client.sae.com/oauth/signout-callback-oidc" ]
+      "redirectUris": [
+        "http://master.client.sae.com/oauth/signin-oidc"
+      ],
+      "postLogoutRedirectUris": [
+        "http://master.client.sae.com/oauth/signout-callback-oidc"
+      ]
     },
     "basicInfo": {
       "name": "master.test"
@@ -21,7 +25,8 @@
       "menu": "http://api.sae.com/menu/tree",
       "app": "http://api.sae.com/plugin/list",
       "config": "http://api.sae.com/app/config?appid=localhost.test&env=Production",
-      "login": "http://oauth.sae.com/account/login"
+      "login": "http://oauth.sae.com/account/login",
+      "bitmaps": "http://api.sae.com/.bitmaps"
     }
   },
   "database": [
@@ -55,9 +60,22 @@
     "connection": "redis.cache.lass.net:6379,allowadmin=true,syncTimeout=5000,password=Aa123456",
     "db": 1
   },
-  "plugin": { "path": "" },
+  "plugin": {
+    "path": ""
+  },
   "mongodb": {
     "connection": "mongodb://root:Aa123456@mongo.db.lass.net:27017/",
     "db": "sae_common"
+  },
+  "SAE": {
+    "Config": {
+      "include": [
+        {
+          "name": "bitmaps",
+          "nodeName": "auth:bitmapEndpoints",
+          "url": "http://localhost:8080/.bitmaps"
+        }
+      ]
+    }
   }
 }

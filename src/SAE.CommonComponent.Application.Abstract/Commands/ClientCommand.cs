@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Microsoft.Win32.SafeHandles;
 using SAE.CommonComponent.Application.Dtos;
 using SAE.CommonLibrary.Abstract.Model;
 
@@ -35,7 +36,11 @@ namespace SAE.CommonComponent.Application.Commands
             /// </summary>
             /// <value></value>
             public string AppId { get; set; }
-
+            /// <summary>
+            /// 客户端标识
+            /// </summary>
+            /// <value></value>
+            public string ClientId { get; set; }
             /// <summary>
             /// 名称
             /// </summary>

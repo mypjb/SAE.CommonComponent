@@ -27,11 +27,14 @@ namespace Microsoft.AspNetCore.Hosting
                           {
                               configure.AddInMemoryCollection(new Dictionary<string, string>
                               {
-                                {HostDefaults.ApplicationKey,"SAE.CommonComponent.Master"}
+                                { HostDefaults.ApplicationKey,"SAE.CommonComponent.Master" }
                               });
                           })
 #endif
-                          .ConfigureRemoteSource()
+                          .ConfigureRemoteSource(options =>
+                          {
+                              options.IncludeEndpointConfiguration = "siteConfig:api:bitmaps";
+                          })
                           .UseAutofacProviderFactory();
         }
     }

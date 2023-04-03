@@ -7,9 +7,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="SAE.CommonLibrary.AspNetCore" Version="2.0.16" />
-    <PackageReference Include="SAE.CommonLibrary.EventStore.Document" Version="2.0.16" />
-    <PackageReference Include="SAE.CommonLibrary.Plugin.AspNetCore" Version="2.0.16" />
+    <PackageReference Include="SAE.CommonLibrary.AspNetCore" Version="2.0.18" />
+    <PackageReference Include="SAE.CommonLibrary.EventStore.Document" Version="2.0.18" />
+    <PackageReference Include="SAE.CommonLibrary.Plugin.AspNetCore" Version="2.0.18" />
   </ItemGroup>
 
   <PropertyGroup>

@@ -70,7 +70,7 @@ namespace SAE.CommonComponent.Authorize
                     .AddHandler();
 
             services.AddBitmapAuthorization()
-                    .AddLocalBitmapEndpointProvider();
+                    .AddConfigurationProvider();
 
             services.AddAuthentication()
                     .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>

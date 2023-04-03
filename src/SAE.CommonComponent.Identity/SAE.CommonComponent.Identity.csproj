@@ -9,10 +9,10 @@
 
   <ItemGroup>
     <PackageReference Include="IdentityServer4" Version="4.1.2" />
-    <PackageReference Include="SAE.CommonLibrary.AspNetCore" Version="2.0.16" />
-    <PackageReference Include="SAE.CommonLibrary.Caching" Version="2.0.16" />
-    <PackageReference Include="SAE.CommonLibrary.EventStore.Document" Version="2.0.16" />
-    <PackageReference Include="SAE.CommonLibrary.Plugin.AspNetCore" Version="2.0.16" />
+    <PackageReference Include="SAE.CommonLibrary.AspNetCore" Version="2.0.18" />
+    <PackageReference Include="SAE.CommonLibrary.Caching" Version="2.0.18" />
+    <PackageReference Include="SAE.CommonLibrary.EventStore.Document" Version="2.0.18" />
+    <PackageReference Include="SAE.CommonLibrary.Plugin.AspNetCore" Version="2.0.18" />
   </ItemGroup>
 
 </Project>

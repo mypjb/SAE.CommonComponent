@@ -4,8 +4,12 @@
       "appId": "localhost.dev",
       "scope": "api",
       "authority": "http://localhost:8080",
-      "redirectUris": [ "http://localhost:8000/oauth/signin-oidc" ],
-      "postLogoutRedirectUris": [ "http://localhost:8000/oauth/signout-callback-oidc" ]
+      "redirectUris": [
+        "http://localhost:8000/oauth/signin-oidc"
+      ],
+      "postLogoutRedirectUris": [
+        "http://localhost:8000/oauth/signout-callback-oidc"
+      ]
     },
     "basicInfo": {
       "name": "master.dev"
@@ -21,7 +25,8 @@
       "menu": "http://localhost:8080/menu/tree",
       "app": "http://localhost:8080/plugin/list",
       "config": "http://localhost:8080/app/config?appid=localhost.dev&env=Development",
-      "login": "http://localhost:8080/account/login"
+      "login": "http://localhost:8080/account/login",
+      "bitmaps": "http://localhost:8080/.bitmaps"
     }
   },
   "Nlog": {
@@ -61,5 +66,16 @@
   "redis": {
     "connection": "redis.cache.lass.net:6379,allowadmin=true,syncTimeout=5000,password=Aa123456",
     "db": 2
+  },
+  "SAE": {
+    "Config": {
+      "include": [
+        {
+          "name": "bitmaps",
+          "nodeName": "auth:bitmapEndpoints",
+          "url": "http://localhost:8080/.bitmaps"
+        }
+      ]
+    }
   }
 }

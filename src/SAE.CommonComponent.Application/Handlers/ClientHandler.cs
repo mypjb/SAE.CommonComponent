@@ -1,3 +1,6 @@
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 using SAE.CommonComponent.Application.Abstract.Domains;
 using SAE.CommonComponent.Application.Commands;
 using SAE.CommonComponent.Application.Dtos;
@@ -9,9 +12,6 @@ using SAE.CommonLibrary.Data;
 using SAE.CommonLibrary.EventStore.Document;
 using SAE.CommonLibrary.Extension;
 using SAE.CommonLibrary.Logging;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 using ClientCommand = SAE.CommonComponent.Application.Commands.ClientCommand;
 
 namespace SAE.CommonComponent.Application.Abstract.Handlers
@@ -46,6 +46,12 @@ namespace SAE.CommonComponent.Application.Abstract.Handlers
 
         public async Task<string> HandleAsync(ClientCommand.Create command)
         {
+            if (!command.ClientId.IsNullOrWhiteSpace())
+            {
+                var count = this._storage.AsQueryable<Client>().Count();
+                Assert.Build(count > 0)
+                      .False($"不允许设置'{nameof(command.ClientId)}'");
+            }
             var app = await this.AddAsync(new Client(command));
             return app.Id;
         }
