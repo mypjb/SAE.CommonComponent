@@ -42,6 +42,11 @@ namespace SAE.CommonComponent.Application.Commands
             /// <value></value>
             public string ClientId { get; set; }
             /// <summary>
+            /// 私钥
+            /// </summary>
+            /// <value></value>
+            public string ClientSecret { get; set; }
+            /// <summary>
             /// 名称
             /// </summary>
             /// <value></value>
@@ -51,7 +56,7 @@ namespace SAE.CommonComponent.Application.Commands
             /// 描述
             /// </summary>
             /// <value></value>
-            public string Description{get;set;}
+            public string Description { get; set; }
             /// <summary>
             /// 客户端端点
             /// </summary>
@@ -83,7 +88,7 @@ namespace SAE.CommonComponent.Application.Commands
             /// 描述
             /// </summary>
             /// <value></value>
-            public string Description{get;set;}
+            public string Description { get; set; }
             /// <summary>
             /// 客户端端点
             /// </summary>

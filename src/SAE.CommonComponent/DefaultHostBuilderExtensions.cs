@@ -33,7 +33,6 @@ namespace Microsoft.AspNetCore.Hosting
 #endif
                           .ConfigureRemoteSource(options =>
                           {
-                              options.IncludeEndpointConfiguration = "siteConfig:api:bitmaps";
                           })
                           .UseAutofacProviderFactory();
         }

@@ -240,7 +240,7 @@ namespace SAE.CommonComponent.Authorize.Handlers
                                  .ToArray();
                 if (appIds.Any())
                 {
-                    query = query.Where(s => appIds.Contains(s.Id));
+                    query = query.Where(s => appIds.Contains(s.AppId));
                 }
                 else
                 {

@@ -49,8 +49,18 @@ namespace SAE.CommonComponent.Application.Abstract.Handlers
             if (!command.ClientId.IsNullOrWhiteSpace())
             {
                 var count = this._storage.AsQueryable<Client>().Count();
-                Assert.Build(count > 0)
-                      .False($"不允许设置'{nameof(command.ClientId)}'");
+                if (count > 0)
+                {
+                    command.ClientId = string.Empty;
+                    command.ClientSecret = string.Empty;
+                }
+                else
+                {
+                    if (command.ClientSecret.IsNullOrWhiteSpace())
+                    {
+                        command.ClientSecret = command.ClientSecret;
+                    }
+                }
             }
             var app = await this.AddAsync(new Client(command));
             return app.Id;

@@ -6,6 +6,7 @@ using SAE.CommonComponent.Application.Commands;
 using SAE.CommonComponent.Application.Events;
 using SAE.CommonLibrary;
 using SAE.CommonLibrary.EventStore.Document;
+using SAE.CommonLibrary.Extension;
 
 namespace SAE.CommonComponent.Application.Domains
 {
@@ -29,7 +30,14 @@ namespace SAE.CommonComponent.Application.Domains
         {
             this.Apply<AppClusterEvent.Create>(command, e =>
             {
-                e.Id = Utils.GenerateId();
+                if (command.Id.IsNullOrWhiteSpace())
+                {
+                    e.Id = Utils.GenerateId();
+                }
+                else
+                {
+                    e.Id = command.Id;
+                }
                 e.CreateTime = DateTime.UtcNow;
                 e.Status = Status.Enable;
             });

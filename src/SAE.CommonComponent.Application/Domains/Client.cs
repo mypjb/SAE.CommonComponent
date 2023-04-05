@@ -28,20 +28,8 @@ namespace SAE.CommonComponent.Application.Abstract.Domains
         {
             this.Apply<ClientEvent.Create>(command, e =>
             {
-                if (command.ClientId.IsNullOrWhiteSpace())
-                {
-
-                    e.Id = Utils.GenerateId();
-
-                    e.Secret = Utils.GenerateId();
-                }
-                else
-                {
-
-                    e.Id = command.ClientId;
-
-                    e.Secret = command.ClientId;
-                }
+                e.Id = command.ClientId.IsNullOrWhiteSpace() ? Utils.GenerateId() : command.ClientId;
+                e.Secret = command.ClientSecret.IsNullOrWhiteSpace() ? Utils.GenerateId() : command.ClientSecret;
                 e.CreateTime = DateTime.UtcNow;
             });
         }

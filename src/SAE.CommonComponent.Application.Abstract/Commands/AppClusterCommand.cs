@@ -48,6 +48,11 @@ namespace SAE.CommonComponent.Application.Commands
         public class Create
         {
             /// <summary>
+            /// 集群标识
+            /// </summary>
+            /// <value></value>
+            public string Id { get; set; }
+            /// <summary>
             /// 名称
             /// </summary>
             /// <value></value>

@@ -331,9 +331,11 @@ namespace SAE.CommonComponent.InitializeData
 
                 var scopeNames = this.GetJTokenValue<string>(oauthJToken, nameof(Constants.Config.OAuth.Scope)).Split(Constants.Config.OAuth.ScopeSeparator);
                 var initialClientId = string.Empty;
+                var initialSecret = string.Empty;
                 if (!clientInitial)
                 {
                     initialClientId = this.GetJTokenValue<string>(oauthJToken, nameof(Constants.Config.OAuth.AppId));
+                    initialSecret = initialClientId;
                     clientInitial = true;
                 }
 
@@ -341,6 +343,7 @@ namespace SAE.CommonComponent.InitializeData
                 {
                     AppId = app.Id,
                     ClientId = initialClientId,
+                    ClientSecret = initialClientId,
                     Name = this.GetJTokenValue<string>(basicInfoJToken, nameof(Constants.Config.BasicInfo.Name)),
                     Scopes = scopes.Where(s => scopeNames.Contains(s.Name, StringComparer.OrdinalIgnoreCase))
                                    .Select(s => s.Name)
@@ -808,8 +811,14 @@ namespace SAE.CommonComponent.InitializeData
         {
             var dict = await this.GetDictAsync(nameof(DictType.Tenant));
 
+            var apiUrl = this._configuration.GetValue<string>($"{SAE.CommonLibrary.Configuration.Constants.Config.OptionKey}{SAE.CommonLibrary.Configuration.Constants.ConfigSeparator}{nameof(SAEOptions.Url)}");
+
+            var match = Regex.Match(apiUrl, $"{nameof(AppDataCommand.Find.ClusterId)}=([\\w-]+)", RegexOptions.IgnoreCase);
+
+            var initialClusterId = match.Success ? match.Groups[1].Value : string.Empty;
             var clusterCommand = new AppClusterCommand.Create
             {
+                Id = initialClusterId,
                 Name = Constants.ClusterName,
                 Description = "租户管理集群",
                 Type = dict.Id
@@ -821,11 +830,19 @@ namespace SAE.CommonComponent.InitializeData
 
             var appName = SiteConfig.Get(Constants.Config.BasicInfo.Name);
 
+            var domain = SiteConfig.Get(Constants.Config.Url.Host);
+
+            var domainIndex = domain.IndexOf(SAE.CommonLibrary.Configuration.Constants.ConfigSeparator);
+            if (domainIndex > 0)
+            {
+                domain = domain.Substring(0, domainIndex);
+            }
+
             var tenantCreateCommand = new TenantCommand.Create
             {
                 Name = "默认租户",
                 Description = "由系统自动创建的第一个租户",
-                Domain = SiteConfig.Get(Constants.Config.Url.Host)
+                Domain = domain
             };
 
             var tenantId = await this._mediator.SendAsync<string>(tenantCreateCommand);

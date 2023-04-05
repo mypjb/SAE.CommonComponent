@@ -72,8 +72,8 @@
       "include": [
         {
           "name": "bitmaps",
-          "nodeName": "auth:bitmapEndpoints",
-          "url": "http://localhost:8080/.bitmaps"
+          "nodeName": "scope",
+          "url": "http://localhost:8080/.bitmaps?clusterId=cw-f25ryN0Kx1u-TBklCeQ"
         }
       ]
     }

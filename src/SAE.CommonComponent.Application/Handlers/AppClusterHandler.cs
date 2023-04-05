@@ -46,6 +46,15 @@ namespace SAE.CommonComponent.Application.Abstract.Handlers
 
         public async Task<string> HandleAsync(AppClusterCommand.Create command)
         {
+            if (!command.Id.IsNullOrWhiteSpace())
+            {
+                var count = this._storage.AsQueryable<AppCluster>().Count();
+                if (count > 0)
+                {
+                    command.Id = string.Empty;
+                }
+            }
+
             var appCluster = new AppCluster(command);
             await appCluster.ExistAsync(this.FindClusterAsync);
             await this.AddAsync(appCluster);
