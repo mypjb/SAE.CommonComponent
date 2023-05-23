@@ -11,13 +11,13 @@ namespace SAE.CommonComponent.Authorize.Commands
     public class SuperAdminCommand
     {
         /// <summary>
-        /// 创建客户端超管属性
+        /// 创建超管属性
         /// </summary>
         public class Create
         {
 
             /// <summary>
-            /// 目标标识
+            /// 目标标识(用户标识，或者Client标识等)
             /// </summary>
             /// <value></value>
             public string TargetId { get; set; }
@@ -28,12 +28,12 @@ namespace SAE.CommonComponent.Authorize.Commands
             public string AppId { get; set; }
         }
         /// <summary>
-        /// 删除客户端超管属性
+        /// 删除目标（客户端、或者用户等）超管属性
         /// </summary>
         public class Delete
         {
             /// <summary>
-            /// 标识
+            /// 标识(用户标识，或者Client标识等)
             /// </summary>
             /// <value></value>
             public string Id { get; set; }
@@ -44,7 +44,7 @@ namespace SAE.CommonComponent.Authorize.Commands
         public class List
         {
             /// <summary>
-            /// 目标标识
+            /// 目标标识(用户标识，或者Client标识等)
             /// </summary>
             /// <value></value>
             public string TargetId { get; set; }

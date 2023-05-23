@@ -480,6 +480,7 @@ namespace SAE.CommonComponent.InitializeData
 
             this._logging.Info($"系统资源:{appResourceDtos.ToJsonString()}");
 
+
             var roleCommand = new RoleCommand.Create
             {
                 AppId = app.Id,
@@ -536,8 +537,20 @@ namespace SAE.CommonComponent.InitializeData
 
             var userDtos = await this._mediator.SendAsync<IPagedList<UserDto>>(new UserCommand.Query());
 
+
+
             foreach (var user in userDtos)
             {
+                var superAdminCommand = new SuperAdminCommand.Create
+                {
+                    AppId = app.Id,
+                    TargetId = user.Id
+                };
+
+                this._logging.Info($"赋予用户'{user.Name}'，'{app.Name}'系统超管权限");
+
+                await this._mediator.SendAsync(superAdminCommand);
+
                 await this._mediator.SendAsync(new UserRoleCommand.ReferenceRole
                 {
                     UserId = user.Id,

@@ -11,7 +11,7 @@ export default connect(({ dict }) => (
     {
         dict
     }))((props) => {
-        
+
         const { dispatch, dict } = props;
         const dispatchType = defaultDispatchType("dict");
 
@@ -60,7 +60,7 @@ export default connect(({ dict }) => (
                 title: 'parent',
                 dataIndex: 'parent',
                 render: (parent, row) => {
-                    return parent.name;
+                    return parent?.name || "--";
                 }
             }
             , {

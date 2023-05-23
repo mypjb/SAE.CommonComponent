@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.ObjectPool;
 using SAE.CommonComponent.Application.Commands;
 using SAE.CommonComponent.Application.Dtos;
 using SAE.CommonComponent.Authorize.Commands;
@@ -337,8 +338,16 @@ namespace SAE.CommonComponent.Authorize.Handlers
                     dict[ar.Key] = ar.Value;
                 }
             }
+            if (command.ClusterId.IsNullOrWhiteSpace())
+            {
+                bitmapAuthorizationDescriptorList.Data = dict.Count > 0 ?
+                                                         dict.First().Value : new object();
+            }
+            else
+            {
+                bitmapAuthorizationDescriptorList.Data = new KeyValuePair<string,object>(SAE.CommonLibrary.Constants.Scope,dict);
+            }
 
-            bitmapAuthorizationDescriptorList.Data = dict;
 
             return bitmapAuthorizationDescriptorList;
         }

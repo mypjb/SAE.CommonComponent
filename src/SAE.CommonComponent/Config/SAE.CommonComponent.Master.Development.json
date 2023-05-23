@@ -60,9 +60,6 @@
     "connection": "mongodb://root:Aa123456@mongo.db.lass.net:27017/",
     "db": "sae_common_dev"
   },
-  "plugin": {
-    "path": "../../../../../plugins"
-  },
   "redis": {
     "connection": "redis.cache.lass.net:6379,allowadmin=true,syncTimeout=5000,password=Aa123456",
     "db": 2

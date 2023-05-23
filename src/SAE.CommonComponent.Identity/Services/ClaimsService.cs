@@ -34,7 +34,7 @@ namespace SAE.CommonComponent.Identity.Services
             ValidatedRequest request)
         {
             var claims = (await base.GetAccessTokenClaimsAsync(subject, resourceResult, request)).ToList();
-
+            
 #warning 专用于测试
             //claims.Add(new Claim(CommonLibrary.AspNetCore.Constants.BitmapAuthorize.Administrator, "1", Constants.Claim.CustomType));
 
