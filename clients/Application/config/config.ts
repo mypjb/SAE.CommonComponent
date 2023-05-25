@@ -18,15 +18,15 @@ export default defineConfig({
             component: 'cluster'
         },
         {
-            path: "/cluster/app/:id",
+            path: "/cluster/app/:clusterId",
             component: "app"
         },
         {
-            path: "/cluster/app/client/:id",
+            path: "/cluster/app/client/:appId",
             component: "client"
         },
         {
-            path: "/cluster/config/:id",
+            path: "/cluster/config/:clusterId",
             component: "config"
         },
         {

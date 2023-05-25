@@ -28,20 +28,10 @@ export default connect(({ config }) => (
 
     const [modal, contextHolder] = Modal.useModal();
 
-    useEffect(() => {
-      dispatch({
-        type: dispatchType.search,
-        payload: {
-          environmentId: defaultEnvId,
-          clusterId: match.id
-        }
-      });
-    }, [defaultEnvId]);
-
     const handleDelete = defaultHandler.delete({ dispatch, dispatchType: dispatchType.delete });
 
     const handleAdd = () => {
-      defaultOperation.add({ dispatch, element: AddForm, clusterId: match.params.id }, modal);
+      defaultOperation.add({ dispatch, element: AddForm, ...match }, modal);
     }
 
     const handleEdit = (row) => {
@@ -49,6 +39,13 @@ export default connect(({ config }) => (
     }
 
     const handleSearch = defaultHandler.search({ dispatch, dispatchType: dispatchType.search });
+
+    useEffect(() => {
+      handleSearch({
+        environmentId: defaultEnvId,
+        ...match
+      });
+    }, [defaultEnvId]);
 
     const columns = [
       {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Row, Col, Button, Input, Modal } from 'antd';
 import { connect, useParams } from 'umi';
 import AddForm from './components/AddForm';
@@ -26,8 +26,14 @@ export default connect(({ client }) => (
 
         const handleSearch = defaultHandler.search({ dispatch, dispatchType: dispatchType.search });
 
+
+        useEffect(() => {
+            handleSearch(match);
+        }, []);
+
+
         const handleAdd = (parent) => {
-            defaultOperation.add({ dispatch, element: AddForm, parent, appId: match.id }, modal);
+            defaultOperation.add({ dispatch, element: AddForm, parent, ...match }, modal);
         }
 
         const handleEdit = (row) => {
@@ -92,8 +98,7 @@ export default connect(({ client }) => (
             },
             {
                 title: 'scopes',
-                dataIndex: 'scopes',
-                render: Format.scope
+                dataIndex: 'scopes'
             },
             {
                 title: 'client id',
@@ -123,6 +128,8 @@ export default connect(({ client }) => (
                 )
             }
         ];
+
+
 
         return (
             <div>

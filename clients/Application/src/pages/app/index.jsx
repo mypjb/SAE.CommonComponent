@@ -35,7 +35,7 @@ export default connect(({ app }) => (
     }
 
     const handleAdd = () => {
-      defaultOperation.add({ dispatch, element: AddForm, clusterId: match.id });
+      defaultOperation.add({ dispatch, element: AddForm, ...match });
     }
 
     const handleEdit = (row) => {
@@ -65,10 +65,6 @@ export default connect(({ app }) => (
         payload: { name, ...match },
       });
     }
-
-    useEffect(() => {
-      handleSearch();
-    }, []);
 
     const columns = [
       {
@@ -103,6 +99,10 @@ export default connect(({ app }) => (
         )
       }
     ];
+
+    useEffect(() => {
+      handleSearch();
+    }, []);
 
     return (
       <div>

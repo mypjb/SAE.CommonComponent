@@ -33,7 +33,10 @@ export default (props) => {
         total: paging.totalCount,
         pageSize: paging.pageSize,
         onChange: handleSkipPage,
-        hideOnSinglePage:true
+        hideOnSinglePage: true
     };
+
+    console.log({ items, props, pagination });
+
     return (<Table {...props} dataSource={items} pagination={pagination} />);
 }

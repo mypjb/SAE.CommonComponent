@@ -1,13 +1,13 @@
 import { request } from "umi";
 
 const dictType = {
-    env: 1,
-    scope: 2,
+    env: "Environment",
+    scope: "Scope",
 };
 
 export const dict = {
     base: async (params) => {
-        return await request("/dict/list", {
+        return await request("/dict/tree", {
             params: params
         })
     },
