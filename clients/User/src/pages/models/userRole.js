@@ -2,6 +2,7 @@ import request from "../userRoleService";
 import { defaultModel, parsingPayload } from '@/utils/utils'
 
 export default {
+  namespace: "userRole",
   state: {
     ...defaultModel.state,
     tree: []

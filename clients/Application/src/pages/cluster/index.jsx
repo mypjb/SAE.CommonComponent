@@ -1,10 +1,10 @@
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Row, Col, Input, Table, Button, Modal } from 'antd';
 import { connect, Link, useModel } from 'umi';
 import AddForm from './components/AddForm';
 import EditForm from './components/EditForm';
-import { defaultOperation, defaultDispatchType,Format } from '@/utils/utils';
+import { defaultOperation, defaultDispatchType, Format } from '@/utils/utils';
 import PagingTable from '@/components/PagingTable';
 
 const { Search } = Input;
@@ -38,13 +38,13 @@ export default connect(({ cluster }) => (
 
     const handleStatus = (row) => {
       dispatch({
-          type: "cluster/status",
-          payload: {
-              id: row.id,
-              status: Math.abs(row.status - 1)
-          }
+        type: "cluster/status",
+        payload: {
+          id: row.id,
+          status: Math.abs(row.status - 1)
+        }
       })
-  };
+    };
 
     const handleSearch = (name) => {
       dispatch({
@@ -52,6 +52,10 @@ export default connect(({ cluster }) => (
         payload: { name },
       });
     }
+
+    useEffect(() => {
+      handleSearch();
+    }, []);
 
     const columns = [
       {
@@ -94,16 +98,16 @@ export default connect(({ cluster }) => (
     ];
 
     return (
-        <div>
-          <Row>
-            <Col span={18}>
-              <Button type="primary" onClick={handleAdd}>Add</Button>
-            </Col>
-            <Col span={6}>
-              <Search placeholder="input search text" onSearch={handleSearch} enterButton />
-            </Col>
-          </Row>
-          <PagingTable {...props} {...cluster} dispatchType={dispatchType.paging} columns={columns} />
-        </div>
+      <div>
+        <Row>
+          <Col span={18}>
+            <Button type="primary" onClick={handleAdd}>Add</Button>
+          </Col>
+          <Col span={6}>
+            <Search placeholder="input search text" onSearch={handleSearch} enterButton />
+          </Col>
+        </Row>
+        <PagingTable {...props} {...cluster} dispatchType={dispatchType.paging} columns={columns} />
+      </div>
     );
   });

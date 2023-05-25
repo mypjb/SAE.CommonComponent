@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Row, Col, Input, Table, Button, Modal, Select } from 'antd';
-import { connect, Link, useModel } from 'umi';
+import { connect, Link, useModel, useParams } from 'umi';
 import AddForm from './components/AddForm';
 import EditForm from './components/EditForm';
 import { defaultOperation, defaultDispatchType } from '@/utils/utils';
@@ -12,7 +12,10 @@ export default connect(({ app }) => (
   {
     app
   }))((props) => {
-    const { dispatch, match, app } = props;
+
+    const match = useParams();
+
+    const { dispatch, app } = props;
 
     const dispatchType = defaultDispatchType("app");
 
@@ -32,7 +35,7 @@ export default connect(({ app }) => (
     }
 
     const handleAdd = () => {
-      defaultOperation.add({ dispatch, element: AddForm, clusterId: match.params.id });
+      defaultOperation.add({ dispatch, element: AddForm, clusterId: match.id });
     }
 
     const handleEdit = (row) => {
@@ -58,10 +61,14 @@ export default connect(({ app }) => (
 
     const handleSearch = (name) => {
       dispatch({
-        type: this.dispatchType.search,
-        payload: { name, ...match.params },
+        type: dispatchType.search,
+        payload: { name, ...match },
       });
     }
+
+    useEffect(() => {
+      handleSearch();
+    }, []);
 
     const columns = [
       {

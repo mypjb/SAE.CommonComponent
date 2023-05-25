@@ -1,4 +1,11 @@
 import service from "@/utils/service";
+import { request } from "umi";
 
-export default service('cluster');
+const httpClient = service('cluster');
+
+httpClient.find = async function (id) {
+    return request(`/cluster?id=${id}`);
+}
+
+export default httpClient;
 

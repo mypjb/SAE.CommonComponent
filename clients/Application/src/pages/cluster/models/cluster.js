@@ -3,6 +3,7 @@ import { history } from "umi";
 import { defaultModel } from "@/utils/utils"
 
 export default {
+  namespace: "cluster",
   state: {
     ...defaultModel.state
   },
@@ -11,16 +12,5 @@ export default {
   },
   effects: {
     ...defaultModel.effects({ request, name: "cluster" })
-  },
-  subscriptions: {
-    setup({ dispatch, history }) {
-      history.listen(({ pathname }) => {
-        if (pathname === '/cluster') {
-          dispatch({
-            type: 'paging'
-          });
-        }
-      });
-    },
   }
 };

@@ -11,16 +11,5 @@ export default {
   },
   effects: {
     ...defaultModel.effects({ request, name: "dict" })
-  },
-  subscriptions: {
-    setup({ dispatch, history }) {
-      history.listen(({ pathname }) => {
-        if (pathname === '/dict') {
-          dispatch({
-            type: 'paging',
-          });
-        }
-      });
-    },
   }
 };

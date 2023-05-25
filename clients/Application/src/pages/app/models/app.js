@@ -2,6 +2,7 @@ import request from "../service";
 import { defaultModel, parsingPayload, regex } from '@/utils/utils';
 
 export default {
+  namespace: "app",
   state: {
     ...defaultModel.state
   },
@@ -26,21 +27,5 @@ export default {
 
       callback(previewData);
     }
-  },
-  subscriptions: {
-    setup({ dispatch, history }) {
-      const idRegex = regex.id('/cluster/app/');
-
-      history.listen(({ pathname }) => {
-        if (idRegex.test(pathname)) {
-          dispatch({
-            type: 'search',
-            payload: {
-              clusterId: idRegex.exec(pathname)[1]
-            }
-          });
-        }
-      });
-    },
   }
 };

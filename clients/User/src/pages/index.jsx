@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Row, Col, Button, Modal, Table, Input } from 'antd';
 import { connect } from 'umi';
 import AddForm from './components/AddForm';
@@ -18,10 +18,13 @@ export default connect(({ user }) => (
 
         const dispatchType = defaultDispatchType("user");
 
-
         const handleDelete = defaultHandler.delete({ dispatch, dispatchType: dispatchType.delete });
 
         const handleSearch = defaultHandler.search({ dispatch, dispatchType: dispatchType.search });
+
+        useEffect(() => {
+            handleSearch();
+          }, []);
 
         const handleAdd = () => {
             defaultOperation.add({ dispatch, element: AddForm });

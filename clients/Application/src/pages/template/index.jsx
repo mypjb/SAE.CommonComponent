@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Row, Col, Input, Table, Button, Modal } from 'antd';
 import { connect } from 'umi';
 import AddForm from './components/AddForm';
@@ -16,10 +16,13 @@ export default connect(({ template }) => (
 
     const dispatchType = defaultDispatchType("template");
 
-
     const handleDelete = defaultHandler.delete({ dispatch, dispatchType: dispatchType.delete });
 
     const handleSearch = defaultHandler.search({ dispatch, dispatchType: dispatchType.search });
+
+    useEffect(() => {
+      handleSearch();
+    }, []);
 
     const handleAdd = () => {
       defaultOperation.add({ dispatch, element: AddForm });
@@ -70,17 +73,17 @@ export default connect(({ template }) => (
 
 
     return (
-        <div>
-          <Row>
-            <Col span={18}>
-              <Button type="primary" onClick={handleAdd}>Add</Button>
-            </Col>
-            <Col span={6}>
-              <Search placeholder="input search text" onSearch={(name) => handleSearch({ name })} enterButton />
-            </Col>
-          </Row>
-          <PagingTable {...props} {...template} dispatchType={dispatchType.paging} columns={columns} />
-        </div>
+      <div>
+        <Row>
+          <Col span={18}>
+            <Button type="primary" onClick={handleAdd}>Add</Button>
+          </Col>
+          <Col span={6}>
+            <Search placeholder="input search text" onSearch={(name) => handleSearch({ name })} enterButton />
+          </Col>
+        </Row>
+        <PagingTable {...props} {...template} dispatchType={dispatchType.paging} columns={columns} />
+      </div>
     );
   });
 

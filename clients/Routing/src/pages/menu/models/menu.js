@@ -14,6 +14,7 @@ const findIds = function (row) {
 }
 
 export default {
+  namespace: "menu",
   state: {
     ...defaultModel.state,
     tree: []
@@ -36,16 +37,5 @@ export default {
       yield put({ type: "setTree", payload: data });
       callback(data);
     }
-  },
-  subscriptions: {
-    setup({ dispatch, history }) {
-      history.listen(({ pathname }) => {
-        if (pathname === '/menu') {
-          dispatch({
-            type: 'tree',
-          });
-        }
-      });
-    },
   }
 };

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Row, Col, Button, Input, Modal } from 'antd';
-import { connect } from 'umi';
+import { connect, useParams } from 'umi';
 import AddForm from './components/AddForm';
 import EditForm from './components/EditForm';
 import PagingTable from '@/components/PagingTable';
@@ -14,7 +14,9 @@ export default connect(({ client }) => (
         client
     }))((props) => {
 
-        const { dispatch, client, match } = props;
+        const { dispatch, client } = props;
+
+        const match = useParams();
 
         const dispatchType = defaultDispatchType("client");
 
@@ -25,7 +27,7 @@ export default connect(({ client }) => (
         const handleSearch = defaultHandler.search({ dispatch, dispatchType: dispatchType.search });
 
         const handleAdd = (parent) => {
-            defaultOperation.add({ dispatch, element: AddForm, parent, appId: match.params.id }, modal);
+            defaultOperation.add({ dispatch, element: AddForm, parent, appId: match.id }, modal);
         }
 
         const handleEdit = (row) => {

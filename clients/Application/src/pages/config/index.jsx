@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Row, Col, Input, Table, Button, Modal, Select } from 'antd';
-import { connect, useModel } from 'umi';
+import { connect, useModel, useParams } from 'umi';
 import AddForm from './components/AddForm';
 import EditForm from './components/EditForm';
 import PagingTable from '@/components/PagingTable';
@@ -14,7 +14,9 @@ export default connect(({ config }) => (
     config
   }))((props) => {
 
-    const { dispatch, config, match } = props;
+    const match = useParams();
+
+    const { dispatch, config } = props;
 
     const { environmentData } = useModel("environment", model => ({ environmentData: model.state }));
 
@@ -31,7 +33,7 @@ export default connect(({ config }) => (
         type: dispatchType.search,
         payload: {
           environmentId: defaultEnvId,
-          clusterId: match.params.id
+          clusterId: match.id
         }
       });
     }, [defaultEnvId]);
@@ -92,22 +94,22 @@ export default connect(({ config }) => (
     ];
 
 
-    return (        
-        <div>{contextHolder}
-          <Row>
-            <Col span={18}>
-              <Button type="primary" onClick={handleAdd}>Add</Button>
-            </Col>
-            <Col span={2}>
-              {defaultEnvId ? (<Select style={{ width: '100%' }} defaultValue={defaultEnvId} onChange={(environmentId) => handleSearch({ environmentId })}>
-                {environmentOptions}
-              </Select>) : <></>}
-            </Col>
-            <Col span={4}>
-              <Search placeholder="input search text" onSearch={(name) => handleSearch({ name })} enterButton />
-            </Col>
-          </Row>
-          <PagingTable {...props} {...config} dispatchType={dispatchType.paging} columns={columns} />
-        </div>
+    return (
+      <div>{contextHolder}
+        <Row>
+          <Col span={18}>
+            <Button type="primary" onClick={handleAdd}>Add</Button>
+          </Col>
+          <Col span={2}>
+            {defaultEnvId ? (<Select style={{ width: '100%' }} defaultValue={defaultEnvId} onChange={(environmentId) => handleSearch({ environmentId })}>
+              {environmentOptions}
+            </Select>) : <></>}
+          </Col>
+          <Col span={4}>
+            <Search placeholder="input search text" onSearch={(name) => handleSearch({ name })} enterButton />
+          </Col>
+        </Row>
+        <PagingTable {...props} {...config} dispatchType={dispatchType.paging} columns={columns} />
+      </div>
     );
   })

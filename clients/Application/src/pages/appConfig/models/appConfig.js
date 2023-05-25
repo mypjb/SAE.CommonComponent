@@ -2,6 +2,7 @@ import { defaultModel } from '@/utils/utils';
 import request from "../service"
 
 export default {
+  namespace: "appConfig",
   state: {
     ...defaultModel.state
   },

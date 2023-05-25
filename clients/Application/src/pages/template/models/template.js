@@ -2,6 +2,7 @@ import request from "../service";
 import { defaultModel } from "@/utils/utils"
 
 export default {
+  namespace: "template",
   state: {
     ...defaultModel.state
   },
@@ -17,16 +18,5 @@ export default {
         callback(data);
       }
     }
-  },
-  subscriptions: {
-    setup({ dispatch, history }) {
-      history.listen(({ pathname }) => {
-        if (pathname === '/template') {
-          dispatch({
-            type: 'paging'
-          });
-        }
-      });
-    },
   }
 };

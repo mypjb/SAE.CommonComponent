@@ -4,7 +4,7 @@ const callBackUrlKey = "sae_callback_url";
 
 const userKey = "sae_user";
 
-let configUrl = "http://api.sae.com/appdata/public?appid=wLmMfZoBskej00f-wMxF3w&env=Production";
+let configUrl = "http://api.sae.com/appdata/public?appid=Wy1zfDFmmEOZWzuKumgXiQ&env=Production";
 
 export const appConfig = {
     callBackUrlKey,
@@ -16,7 +16,7 @@ export const appConfig = {
 };
 
 if (ENV == "dev") {
-    configUrl = "http://localhost:8080/appdata/public?appid=wLmMfZoBskej00f-wMxF3w&env=Development";
+    configUrl = "http://localhost:8080/appdata/public?appid=Wy1zfDFmmEOZWzuKumgXiQ&env=Development";
 }
 
 export const userManager = {

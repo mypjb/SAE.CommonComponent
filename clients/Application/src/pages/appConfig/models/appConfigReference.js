@@ -1,6 +1,7 @@
 import request from "../appConfigReferenceService"
 import { defaultModel, parsingPayload } from "@/utils/utils";
 export default {
+  namespace: "appConfigReference",
   state: {
     ...defaultModel.state
   },

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Row, Col, Button, Modal, Table } from 'antd';
 import { connect } from 'umi';
 import AddForm from './components/AddForm';
@@ -17,6 +17,12 @@ export default connect(({ menu }) => (
     const dispatchType = defaultDispatchType("menu");
 
     const handleDelete = defaultHandler.delete({ dispatch, dispatchType: dispatchType.delete });
+    
+    useEffect(() => {
+      dispatch({
+        type: "menu/paging"
+      })
+    }, []);
 
     const handlePermissionManage = (row) => {
       defaultOperation.add({
@@ -94,7 +100,7 @@ export default connect(({ menu }) => (
             <Button type="primary" onClick={handleAdd}>Add</Button>
           </Col>
         </Row>
-        <Table rowKey='id' dataSource={menu.tree} childrenColumnName='items' pagination={{ hideOnSinglePage: true }} columns={columns} />
+        <Table rowKey='id' dataSource={menu?.tree || []} childrenColumnName='items' pagination={{ hideOnSinglePage: true }} columns={columns} />
       </div>
     );
   });

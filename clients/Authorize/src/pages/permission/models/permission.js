@@ -2,6 +2,7 @@ import request from "../service";
 import { defaultModel } from '@/utils/utils'
 
 export default {
+  namespace: "permission",
   state: {
     ...defaultModel.state
   },
@@ -10,16 +11,5 @@ export default {
   },
   effects: {
     ...defaultModel.effects({ request, name: "permission" })
-  },
-  subscriptions: {
-    setup({ dispatch, history }) {
-      history.listen(({ pathname }) => {
-        if (pathname === '/permission') {
-          dispatch({
-            type: 'paging',
-          });
-        }
-      });
-    },
   }
 };

@@ -2,6 +2,7 @@ import request from "../service";
 import { defaultModel, parsingPayload,regex } from '@/utils/utils'
 
 export default {
+  namespace: "client",
   state: {
     ...defaultModel.state
   },

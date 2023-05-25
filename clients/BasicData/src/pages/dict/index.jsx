@@ -4,6 +4,7 @@ import AddForm from './components/AddForm';
 import EditForm from './components/EditForm';
 import PagingTable from '@/components/PagingTable';
 import { defaultDispatchType, defaultHandler, defaultOperation, Format } from '@/utils/utils';
+import { useEffect } from 'react';
 
 const { Search } = Input;
 
@@ -13,12 +14,16 @@ export default connect(({ dict }) => (
     }))((props) => {
 
         const { dispatch, dict } = props;
-        const dispatchType = defaultDispatchType("dict");
 
+        const dispatchType = defaultDispatchType("dict");
 
         const handleDelete = defaultHandler.delete({ dispatch, dispatchType: dispatchType.delete });
 
         const handleSearch = defaultHandler.search({ dispatch, dispatchType: dispatchType.search });
+
+        useEffect(() => {
+            handleSearch();
+        }, []);
 
         const handleAdd = (parent) => {
             defaultOperation.add({ dispatch, element: AddForm, parent });

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Row, Col, Input, Button, Modal, Select } from 'antd';
-import { connect, useModel } from 'umi';
+import { connect, useModel, useParams } from 'umi';
 import ReferenceTable from './components/ReferenceTable';
 import EditConfig from './components/EditConfig';
 import PagingTable from '@/components/PagingTable';
@@ -15,9 +15,11 @@ export default connect(({ appConfig }) => (
     appConfig
   }))((props) => {
 
-    const { dispatch, appConfig, match } = props;
+    const match = useParams();
 
-    const appId = match.params.id;
+    const { dispatch, appConfig } = props;
+
+    const appId = match.id;
 
     const [modal, contextHolder] = Modal.useModal();
 
