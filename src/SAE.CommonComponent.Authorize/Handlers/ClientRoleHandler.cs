@@ -112,11 +112,24 @@ namespace SAE.CommonComponent.Authorize.Handlers
 
         public async Task<IPagedList<RoleDto>> HandleAsync(ClientRoleCommand.Query command)
         {
-            var query = from role in this._storage.AsQueryable<RoleDto>()
+            IQueryable<RoleDto> query;
+            if (command.Referenced)
+            {
+                query = from role in this._storage.AsQueryable<RoleDto>()
                         join cr in this._storage.AsQueryable<ClientRoleDto>()
                         on role.Id equals cr.RoleId
                         where cr.ClientId == command.ClientId
                         select role;
+            }
+            else
+            {
+                var roleIds = this._storage.AsQueryable<ClientRoleDto>().Where(s => s.ClientId == command.ClientId)
+                                                                        .Select(s => s.RoleId)
+                                                                        .ToArray();
+
+                query = this._storage.AsQueryable<RoleDto>().Where(s => !roleIds.Contains(s.Id));
+            }
+
 
             return PagedList.Build(query, command);
         }

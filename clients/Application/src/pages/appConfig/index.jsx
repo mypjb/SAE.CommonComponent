@@ -27,17 +27,15 @@ export default connect(({ appConfig }) => (
 
     const environmentOptions = environmentData.map(data => <Option value={data.id} data={data}>{data.name}</Option>);
 
-    const environmentId = environmentData.length ? environmentData[0].id : "";
+    const [environmentId, setEnvironment] = useState(environmentData.length ? environmentData[0].id : "");
 
     const dispatchType = defaultDispatchType("appConfig");
 
-    const [state, setState] = useState({ environmentId, appId });
-
     useEffect(() => {
       if (environmentId) {
-        handleSearch({ envId: environmentId });
+        handleSearch({ environmentId, alias: "" });
       }
-    }, [appId, environmentId]);
+    }, [appId]);
 
 
     let ids = [];
@@ -73,14 +71,14 @@ export default connect(({ appConfig }) => (
       });
     }
 
-    const handleSearch = ({ envId }) => {
-      setState({
-        ...state,
-        environmentId: envId
-      });
+    const handleSearch = (data) => {
+      if (data.environmentId) {
+        setEnvironment(data.environmentId);
+      }
+      console.log(data);
       dispatch({
         type: dispatchType.search,
-        payload: { ...state, environmentId: envId },
+        payload: { appId, ...data },
       });
     }
 
@@ -122,12 +120,12 @@ export default connect(({ appConfig }) => (
             <Button type="primary" onClick={handleDelete}>Delete</Button>
           </Col>
           <Col span={2}>
-            <Select style={{ width: '100%' }} value={state.environmentId} onChange={(envId) => handleSearch({ envId })}>
+            <Select style={{ width: '100%' }} value={environmentId} onChange={(environmentId) => handleSearch({ environmentId })}>
               {environmentOptions}
             </Select>
           </Col>
           <Col span={4}>
-            <Search placeholder="input search text" onSearch={(name) => handleSearch({ name })} enterButton />
+            <Search placeholder="input search text" onSearch={(alias) => handleSearch({ alias })} enterButton />
           </Col>
         </Row>
         <PagingTable {...props}

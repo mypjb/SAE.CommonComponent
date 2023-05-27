@@ -11,7 +11,7 @@ namespace SAE.CommonComponent.Authorize.Commands
     /// </summary>
     public class ClientRoleCommand
     {
-        
+
         /// <summary>
         /// 引用角色
         /// </summary>
@@ -51,6 +51,11 @@ namespace SAE.CommonComponent.Authorize.Commands
             /// </summary>
             /// <value></value>
             public string ClientId { get; set; }
+            /// <summary>
+            /// 已关联
+            /// </summary>
+            /// <value></value>
+            public bool Referenced { get; set; }
         }
         /// <summary>
         /// 列表查询

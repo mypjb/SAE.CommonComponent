@@ -59,10 +59,10 @@ export default connect(({ app }) => (
     }
 
 
-    const handleSearch = (name) => {
+    const handleSearch = (key) => {
       dispatch({
         type: dispatchType.search,
-        payload: { name, ...match },
+        payload: { key, ...match },
       });
     }
 

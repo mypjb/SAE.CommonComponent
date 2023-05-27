@@ -80,6 +80,11 @@ namespace SAE.CommonComponent.ConfigServer.Commands
             /// 系统标识
             /// </summary>
             public string AppId { get; set; }
+              /// <summary>
+            /// 别名
+            /// </summary>
+            /// <value></value>
+            public string Alias { get; set; }
             /// <summary>
             /// 环境变量Id
             /// </summary>

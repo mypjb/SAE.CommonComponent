@@ -12,17 +12,17 @@ export default {
   effects: {
     ...defaultModel.effects({ request, name: "client" }),
     *refreshSecret({ payload }, { call, put }) {
-      // const { callback, data } = parsingPayload(payload);
-      // const stream = yield call(request.refreshSecret, data);
-      // const blob = new Blob([stream]);
-      // const objectURL = URL.createObjectURL(blob);
-      // let btn = document.createElement('a');
-      // btn.download = 'appSecret.txt';
-      // btn.href = objectURL;
-      // btn.click();
-      // URL.revokeObjectURL(objectURL);
-      // btn = null;
-      // callback();
+      const { callback, data } = parsingPayload(payload);
+      const stream = yield call(request.refreshSecret, data);
+      const blob = new Blob([stream]);
+      const objectURL = URL.createObjectURL(blob);
+      let btn = document.createElement('a');
+      btn.download = 'appSecret.txt';
+      btn.href = objectURL;
+      btn.click();
+      URL.revokeObjectURL(objectURL);
+      btn = null;
+      callback();
     }
   }
 };

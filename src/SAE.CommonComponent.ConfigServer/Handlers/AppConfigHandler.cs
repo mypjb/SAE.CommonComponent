@@ -1,20 +1,20 @@
-﻿using SAE.CommonComponent.ConfigServer.Commands;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using SAE.CommonComponent.Application.Commands;
+using SAE.CommonComponent.Application.Dtos;
+using SAE.CommonComponent.ConfigServer.Commands;
 using SAE.CommonComponent.ConfigServer.Domains;
 using SAE.CommonComponent.ConfigServer.Dtos;
+using SAE.CommonComponent.ConfigServer.Events;
 using SAE.CommonLibrary;
-using SAE.CommonLibrary.Extension;
+using SAE.CommonLibrary.Abstract.Builder;
 using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.Abstract.Model;
 using SAE.CommonLibrary.Data;
 using SAE.CommonLibrary.EventStore.Document;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using SAE.CommonLibrary.Abstract.Builder;
-using SAE.CommonComponent.Application.Dtos;
-using SAE.CommonComponent.Application.Commands;
-using SAE.CommonComponent.ConfigServer.Events;
+using SAE.CommonLibrary.Extension;
 
 namespace SAE.CommonComponent.ConfigServer.Handlers
 {
@@ -92,6 +92,10 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
             var query = this._storage.AsQueryable<AppConfigDto>()
                                      .Where(s => s.AppId == command.AppId &&
                                             s.EnvironmentId == command.EnvironmentId);
+            if (!command.Alias.IsNullOrWhiteSpace())
+            {
+                query = query.Where(s => s.Alias.Contains(command.Alias));
+            }
             var paging = PagedList.Build(query, command);
 
             await this._director.Build(paging.AsEnumerable());
@@ -194,7 +198,7 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
                                                                 .ToArray())
             {
                 var config = configs.FirstOrDefault(s => s.Id == appConfig.ConfigId);
-                
+
                 var key = appConfig.Alias;
 
                 if (data.ContainsKey(key))
