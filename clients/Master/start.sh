@@ -11,6 +11,7 @@ cd ../Routing && yarn start &
 cd ../Application && yarn start &
 cd ../Authorize && yarn start &
 cd ../PluginManagement && yarn start &
+cd ../User && yarn start &
 
 echo start master app
 # start master 

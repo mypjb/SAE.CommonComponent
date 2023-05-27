@@ -34,6 +34,9 @@ export const parsingPayload = (payload) => {
     model.data = payload.data;
   } else {
     model.data = payload;
+    if (model.data.callback) {
+      delete model.data.callback;
+    }
   }
   return model;
 };

@@ -44,6 +44,9 @@ export const parsingPayload = (payload) => {
     model.data = payload.data;
   } else {
     model.data = payload;
+    if (model.data.callback) {
+      delete model.data.callback;
+    }
   }
   return model;
 };
@@ -116,7 +119,7 @@ export const defaultModel = {
         callback(model);
       },
       *paging({ payload }, { call, put, select }) {
-       
+
         const { callback, data } = parsingPayload(payload);
         const params = yield select((globalStatus) => (globalStatus[stateName].params));
 
