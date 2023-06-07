@@ -4,7 +4,7 @@ const callBackUrlKey = "sae_callback_url";
 
 const userKey = "sae_user";
 
-let configUrl = "http://api.sae.com/appdata/public?appid=qzm1Mgs3-EyIiZeVeQOnbQ&env=Production";
+let configUrl = "http://api.sae.com/appdata/public?appid=v560ccAQ20axbInVGIJBfA&env=Production";
 
 export const appConfig = {
     callBackUrlKey,
@@ -16,17 +16,17 @@ export const appConfig = {
 };
 
 if (ENV == "dev") {
-    configUrl = "http://localhost:8080/appdata/public?appid=qzm1Mgs3-EyIiZeVeQOnbQ&env=Development";
+    configUrl = "http://localhost:8080/appdata/public?appid=v560ccAQ20axbInVGIJBfA&env=Development";
 }
 
 export const userManager = {
     get: function () {
         const userJson = window.sessionStorage.getItem(userKey);
         try {
-            if(userJson){
+            if (userJson) {
                 return JSON.parse(userJson);
-            }else{
-             console.warn("尚未登陆！");   
+            } else {
+                console.warn("尚未登陆！");
             }
         } catch (e) {
             console.warn("用户信息解析无效！");
@@ -50,8 +50,8 @@ export const load = async () => {
     const globalConfig = {
         ...appConfig,
         ...configData,
-        user:userManager.get(),
-        userManager:userManager
+        user: userManager.get(),
+        userManager: userManager
     };
 
     return globalConfig;

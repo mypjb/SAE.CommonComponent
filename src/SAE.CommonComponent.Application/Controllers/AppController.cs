@@ -87,5 +87,15 @@ namespace SAE.CommonComponent.Application.Controllers
             return await this._mediator.SendAsync<IPagedList<AppDto>>(command);
         }
 
+        /// <summary>
+        /// 列出应用集合
+        /// </summary>
+        /// <param name="command"></param>
+        [HttpGet("{action}")]
+        public async Task<object> List([FromQuery] AppCommand.List command)
+        {
+            return await this._mediator.SendAsync<IEnumerable<AppDto>>(command);
+        }
+
     }
 }

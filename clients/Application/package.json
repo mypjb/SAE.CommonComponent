@@ -10,6 +10,9 @@
     "start": "npm run dev"
   },
   "dependencies": {
+    "@types/react": "^18.0.0",
+    "@umijs/max": "^4.0.40",
+    "antd": "^5.0.0",
     "react-json-view": "^1.21.3"
   }
 }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SAE.CommonComponent.Application.Domains;
@@ -20,7 +21,8 @@ namespace SAE.CommonComponent.Application.Abstract.Handlers
                               ICommandHandler<Command.Delete<AppCluster>>,
                               ICommandHandler<AppClusterCommand.ChangeStatus>,
                               ICommandHandler<AppClusterCommand.Query, IPagedList<AppClusterDto>>,
-                              ICommandHandler<AppClusterCommand.Find, AppClusterDto>
+                              ICommandHandler<AppClusterCommand.Find, AppClusterDto>,
+                              ICommandHandler<AppClusterCommand.List, IEnumerable<AppClusterDto>>
     {
         private readonly IStorage _storage;
         private readonly IMediator _mediator;
@@ -102,6 +104,17 @@ namespace SAE.CommonComponent.Application.Abstract.Handlers
             await this.DeleteAsync<AppCluster>(command.Id);
         }
 
+        public async Task<IEnumerable<AppClusterDto>> HandleAsync(AppClusterCommand.List command)
+        {
+            var query = this._storage.AsQueryable<AppClusterDto>();
+            if (!command.Type.IsNullOrWhiteSpace())
+            {
+                query = query.Where(s => s.Type == command.Type);
+            }
+
+            return query.ToArray();
+        }
+
         private Task<AppCluster> FindClusterAsync(AppCluster cluster)
         {
             AppCluster oldAppCluster;
@@ -119,5 +132,6 @@ namespace SAE.CommonComponent.Application.Abstract.Handlers
             }
             return Task.FromResult(oldAppCluster);
         }
+
     }
 }

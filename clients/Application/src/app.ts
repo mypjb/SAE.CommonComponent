@@ -5,7 +5,9 @@ export const qiankun = {
     // 应用加载之前
     async bootstrap(props) {
         masterProps = props;
-        masterProps.initial(request);
+        if (masterProps && masterProps?.initial) {
+            masterProps.initial(request);
+        }
     },
     // 应用 render 之前触发
     async mount(props) {

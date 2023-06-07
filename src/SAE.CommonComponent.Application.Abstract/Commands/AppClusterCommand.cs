@@ -101,5 +101,16 @@ namespace SAE.CommonComponent.Application.Commands
             /// <value></value>
             public Status Status { get; set; }
         }
+        /// <summary>
+        /// 列出集群
+        /// </summary>
+        public class List
+        {
+            /// <summary>
+            /// 集群类型。（集群下的资源属于多租户时，应该设置该值，该值对应字典标识，一旦设置不可更改!)
+            /// </summary>
+            /// <value></value>
+            public string Type { get; set; }
+        }
     }
 }

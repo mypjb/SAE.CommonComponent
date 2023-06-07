@@ -86,6 +86,14 @@ namespace SAE.CommonComponent.Application.Controllers
         {
             return await this._mediator.SendAsync<IPagedList<AppClusterDto>>(command);
         }
-
+        /// <summary>
+        /// 列出集群集合
+        /// </summary>
+        /// <param name="command"></param>
+        [HttpGet("{action}")]
+        public async Task<object> List([FromQuery] AppClusterCommand.List command)
+        {
+            return await this._mediator.SendAsync<IEnumerable<AppClusterDto>>(command);
+        }
     }
 }

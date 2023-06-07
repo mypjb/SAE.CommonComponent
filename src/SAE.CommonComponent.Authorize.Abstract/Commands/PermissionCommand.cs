@@ -90,6 +90,11 @@ namespace SAE.CommonComponent.Authorize.Commands
             /// </summary>
             /// <value></value>
             public string Name { get; set; }
+            /// <summary>
+            /// 系统标识
+            /// </summary>
+            /// <value></value>
+            public string AppId { get; set; }
         }
         /// <summary>
         /// 批量查找

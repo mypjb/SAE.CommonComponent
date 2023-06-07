@@ -87,9 +87,12 @@ namespace SAE.CommonComponent.Application.Abstract.Handlers
 
         public async Task<IEnumerable<AppDto>> HandleAsync(AppCommand.List command)
         {
-            return this._storage.AsQueryable<AppDto>()
-                                .Where(s => s.ClusterId == command.ClusterId)
-                                .ToArray();
+            var query = this._storage.AsQueryable<AppDto>();
+            if (!command.ClusterId.IsNullOrWhiteSpace())
+            {
+                query = query.Where(s => s.ClusterId == command.ClusterId);
+            }
+            return query.ToArray();
         }
 
         private Task<App> FindAppAsync(App app)
