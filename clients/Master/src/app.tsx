@@ -1,10 +1,13 @@
 import Cluster from '@/components/Cluster';
-import { useState } from 'react';
+import { Space } from 'antd';
 import { history, useModel } from 'umi';
 import { load, userManager } from '../config/appConfig';
+
 let globalConfig = {};
 
 const hideLayoutUrls = ['/identity', '/oauth'];
+
+export const request: RequestConfig = {};
 
 const processingMenuData = function (menus, apps) {
   const list = [];
@@ -67,7 +70,9 @@ const processingAppData = function (apps) {
 export const qiankun = async function () {
   globalConfig = await load();
 
-  const { api } = globalConfig.siteConfig;
+  const { siteConfig } = globalConfig;
+
+  const { api } = siteConfig;
 
   const apps = processingAppData(await (await fetch(api.app)).json());
 
@@ -99,62 +104,104 @@ const checkLogin = (user) => {
   }
   return false;
 };
-export function useQiankunStateForSlave() {
-  const { setInitialState } = useModel('@@initialState');
-  const [masterState, setMasterState] = useState(globalConfig);
-  const initial = (requestConfig) => {
-    requestConfig.baseURL = globalConfig.siteConfig.api.host;
-    // requestConfig.credentials = "include";
-    requestConfig.requestInterceptors = [
-      (ops) => {
-        const { url } = masterState.siteConfig;
 
-        const { headers, method } = ops;
+const replaceRequestParams = function (key, val, ops) {
+  if (ops.method.toLowerCase() == 'get') {
+    if (ops?.params && !ops.params[key]) {
+      ops.params[key] = val;
+    }
+  } else {
+    if (ops?.data && !ops.data[key]) {
+      ops.data[key] = val;
+    }
+  }
+  console.log({ key, val, ops });
+};
 
-        if (!checkLogin(masterState?.user)) {
-          window.sessionStorage.setItem(
-            globalConfig.callBackUrlKey,
-            window.location.pathname + window.location.search,
-          );
-          if (url.signIn.startsWith('http') || url.signIn.startsWith('//')) {
-            window.location.href = url.oauth;
-          } else {
-            history.push(url.oauth);
-          }
-          return;
-        }
-        const token = masterState?.user?.access_token;
-
-        headers[method]['Authorization'] = 'Bearer ' + token;
-
-        return { ...ops };
-      },
-    ];
-
-    requestConfig.responseInterceptors = [];
-
-    requestConfig.errorConfig = {
-      errorHandler: (res) => {
-        console.log(res);
-        const { status, statusText } = res.response;
-        if (status != '200') {
-          const error = new Error(statusText);
-          throw error; // 抛出自制的错误
-        }
-      },
-      errorThrower: (a, b, c) => {
-        console.log({ a, b, c });
-      },
-    };
+const configureRequest = (requestConfig, slaveConfig) => {
+  slaveConfig = slaveConfig || {
+    api: {
+      globalCluster: 'clusterId',
+      globalApp: 'appId',
+    },
   };
+  const initialState = globalConfig;
+  requestConfig.baseURL = initialState.siteConfig.api.host;
+  // requestConfig.credentials = "include";
+  requestConfig.requestInterceptors = [
+    (ops) => {
+      const { url } = initialState.siteConfig;
 
+      const { headers, method } = ops;
+
+      if (!checkLogin(initialState?.user)) {
+        window.sessionStorage.setItem(
+          initialState.callBackUrlKey,
+          window.location.pathname + window.location.search,
+        );
+        if (url.signIn.startsWith('http') || url.signIn.startsWith('//')) {
+          window.location.href = url.oauth;
+        } else {
+          history.push(url.oauth);
+        }
+        return;
+      }
+      const token = initialState?.user?.access_token;
+
+      headers[method]['Authorization'] = 'Bearer ' + token;
+
+      console.log({ ops, globalConfig });
+
+      if (slaveConfig?.api?.globalApp && initialState?.globalData?.appId) {
+        replaceRequestParams(
+          slaveConfig?.api?.globalApp,
+          initialState.globalData.appId,
+          ops,
+        );
+      } else {
+        if (
+          slaveConfig?.api?.globalCluster &&
+          initialState?.globalData?.cluserId
+        ) {
+          replaceRequestParams(
+            slaveConfig?.api?.globalCluster,
+            initialState.globalData.cluserId,
+            ops,
+          );
+        }
+      }
+
+      return { ...ops };
+    },
+  ];
+
+  requestConfig.responseInterceptors = [];
+
+  requestConfig.errorConfig = {
+    errorHandler: (res) => {
+      console.log(res);
+      const { status, statusText } = res.response;
+
+      if (status != '200') {
+        const error = new Error(statusText);
+        throw error; // 抛出自制的错误
+      }
+    },
+    errorThrower: (error, opt) => {
+      console.log({ error, opt });
+    },
+  };
+};
+
+export function useQiankunStateForSlave() {
+  const { initialState, setInitialState } = useModel('@@initialState');
   return {
-    initial,
-    masterState,
+    initial: configureRequest,
+    masterState: initialState || globalConfig,
     setMasterState: (data) => {
-      setMasterState(data);
-      const initialData = formatGlobalConfig(data);
-      setInitialState(initialData);
+      const configData = { ...globalConfig, ...data };
+      globalConfig = configData;
+      setInitialState(configData);
     },
     masterPush: (url) => {
       history.push(url);
@@ -169,20 +216,31 @@ export const layout = ({ initialState }) => {
     layout: 'side',
   };
 
-  if (initialState?.user) {
+  if (checkLogin(initialState?.user)) {
+    configureRequest(request);
     layoutOptions.logout = function () {
       history.push(initialState.siteConfig.url.logout || '/oauth/logout');
     };
 
+    const selectHandler = () => {
+      window.location.reload();
+    };
+
     layoutOptions.menuHeaderRender = (logo, title) => {
       return (
-        <>
-          <a>
-            {logo}
-            {title}
-          </a>
-          <Cluster></Cluster>
-        </>
+        <div>
+          <div>
+            <a href="/">
+              <Space>
+                {logo}
+                {title}
+              </Space>
+            </a>
+          </div>
+          <div>
+            <Cluster selectHandler={selectHandler}></Cluster>
+          </div>
+        </div>
       );
     };
   }
@@ -195,13 +253,11 @@ const formatGlobalConfig = (data) => {
   };
   return {
     ...data,
-    ...userInfo,
+    userInfo,
   };
 };
 
 export const getInitialState = async () => {
   const data = formatGlobalConfig(globalConfig);
-  return {
-    ...data,
-  };
+  return { ...data };
 };

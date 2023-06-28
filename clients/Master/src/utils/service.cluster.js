@@ -12,7 +12,9 @@ httpClient.list = async () => {
 httpClient.app = {
     list: async (clusterId) => {
         return request(`/${api}/app/list`, {
-            params: clusterId
+            params: {
+                clusterId
+            }
         });
     }
 }

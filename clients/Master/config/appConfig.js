@@ -4,7 +4,12 @@ const callBackUrlKey = "sae_callback_url";
 
 const userKey = "sae_user";
 
-let configUrl = "http://api.sae.com/appdata/public?appid=v560ccAQ20axbInVGIJBfA&env=Production";
+const clusterKey = "_cluster_selected_key_";
+
+let configUrl = "http://api.sae.com/appdata/public?appid=lAnVpGIoqkCGVNMmJ-qUEw&env=Production";
+
+
+const storage = window.localStorage;
 
 export const appConfig = {
     callBackUrlKey,
@@ -16,12 +21,12 @@ export const appConfig = {
 };
 
 if (ENV == "dev") {
-    configUrl = "http://localhost:8080/appdata/public?appid=v560ccAQ20axbInVGIJBfA&env=Development";
+    configUrl = "http://localhost:8080/appdata/public?appid=lAnVpGIoqkCGVNMmJ-qUEw&env=Development";
 }
 
 export const userManager = {
     get: function () {
-        const userJson = window.sessionStorage.getItem(userKey);
+        const userJson = storage.getItem(userKey);
         try {
             if (userJson) {
                 return JSON.parse(userJson);
@@ -35,25 +40,67 @@ export const userManager = {
     },
     set: function (user) {
         if (user) {
-            window.sessionStorage.setItem(userKey, JSON.stringify(user));
+            storage.setItem(userKey, JSON.stringify(user));
         } else {
             this.delete();
         }
     },
     delete: function () {
-        window.sessionStorage.removeItem(userKey);
+        storage.removeItem(userKey);
+    }
+}
+
+export const clusterManager = {
+    get: function (userInfo) {
+        const json = storage.getItem(clusterKey);
+        if (json) {
+            try {
+                const data = JSON.parse(json);
+                if (data.userId == userInfo.sub) {
+                    return data.values;
+                }
+            } catch (e) {
+                console.error("selected cluster parse fail");
+            }
+        }
+        //保存的选项不是上一个账号所流。
+        storage.removeItem(clusterKey);
+
+        return [];
+    },
+    set: function (values, userInfo) {
+        if (values && values.length) {
+            storage.setItem(clusterKey, JSON.stringify({
+                userId: userInfo.sub,
+                values: values
+            }));
+        }
     }
 }
 
 export const load = async () => {
     const configData = await (await fetch(configUrl)).json();
+    const user = userManager.get();
+
+    let globalData = {};
+    console.log(user);
+    if (user) {
+        const clusterValues = clusterManager.get(user.profile);
+
+        globalData = {
+            clusterId: clusterValues.length > 0 ? clusterValues[0] : "",
+            appId: clusterValues.length > 1 ? clusterValues[1] : ""
+        };
+    }
+
+
     const globalConfig = {
         ...appConfig,
         ...configData,
-        user: userManager.get(),
-        userManager: userManager
+        user: user,
+        userManager: userManager,
+        globalData
     };
 
     return globalConfig;
 };
-

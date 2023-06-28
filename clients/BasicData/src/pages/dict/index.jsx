@@ -1,5 +1,5 @@
 import { Row, Col, Button, Input } from 'antd';
-import { connect } from 'umi';
+import { connect, useModel } from 'umi';
 import AddForm from './components/AddForm';
 import EditForm from './components/EditForm';
 import PagingTable from '@/components/PagingTable';
