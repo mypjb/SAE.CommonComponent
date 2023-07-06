@@ -43,6 +43,7 @@ namespace SAE.CommonComponent.BasicData.Domains
         /// </summary>
         /// <value></value>
         public string Id { get; set; }
+
         /// <summary>
         /// 名称
         /// </summary>

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using SAE.CommonLibrary.EventStore;
 using SAE.CommonLibrary.EventStore.Document;
 
-namespace SAE.CommonComponent.MultiTenant.Events
+namespace SAE.CommonComponent.MultiTenant.Domains
 {
     /// <summary>
     /// 租户系统关联对象
