@@ -7,13 +7,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="SAE.CommonLibrary.AspNetCore" Version="2.0.18.1" />
-    <PackageReference Include="SAE.CommonLibrary.EventStore.Document" Version="2.0.18.1" />
-    <PackageReference Include="SAE.CommonLibrary.Plugin.AspNetCore" Version="2.0.18.1" />
+    <PackageReference Include="SAE.CommonLibrary.AspNetCore" Version="3.0.0" />
+    <PackageReference Include="SAE.CommonLibrary.EventStore.Document" Version="3.0.0" />
+    <PackageReference Include="SAE.CommonLibrary.Plugin.AspNetCore" Version="3.0.0" />
   </ItemGroup>
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>

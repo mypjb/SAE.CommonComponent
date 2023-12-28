@@ -18,15 +18,12 @@ namespace SAE.CommonComponent.Identity.Services
     public class ClaimsService : DefaultClaimsService, IClaimsService
     {
         private readonly IMediator _mediator;
-        private readonly IBitmapAuthorization _bitmapAuthorization;
 
         public ClaimsService(IProfileService profile,
                              ILogger<DefaultClaimsService> logger,
-                             IMediator mediator,
-                             IBitmapAuthorization bitmapAuthorization) : base(profile, logger)
+                             IMediator mediator) : base(profile, logger)
         {
             this._mediator = mediator;
-            this._bitmapAuthorization = bitmapAuthorization;
         }
 
         public override async Task<IEnumerable<Claim>> GetAccessTokenClaimsAsync(ClaimsPrincipal subject,

@@ -348,7 +348,6 @@ namespace SAE.CommonComponent.Authorize.Handlers
                 bitmapAuthorizationDescriptorList.Data = new KeyValuePair<string,object>(SAE.CommonLibrary.Constants.Scope,dict);
             }
 
-
             return bitmapAuthorizationDescriptorList;
         }
 

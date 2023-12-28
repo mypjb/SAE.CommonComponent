@@ -36,16 +36,16 @@
       "ConnectionString": "Data Source=mysql.db.lass.net;Database=sae_common;User ID=root;Password=Aa123456;pooling=true;port=3306;sslmode=none;CharSet=utf8;allowPublicKeyRetrieval=true"
     }
   ],
-  "Nlog": {
+  "nlog": {
     "autoReload": "true",
     "internalLogLevel": "Warn",
     "internalLogFile": "logs/internal-nlog.log",
     "targets": {
-      "FileTarget": {
+      "fileTarget": {
         "type": "File",
         "fileName": "logs/${shortdate}.log",
         "layout": "${level}: ${logger}[${threadid}] ${longdate}${newline}        ${message} ${exception:message,stacktrace}",
-        "MaxArchiveFiles": "10"
+        "maxArchiveFiles": "10"
       }
     },
     "rules": [
@@ -64,8 +64,8 @@
     "connection": "mongodb://root:Aa123456@mongo.db.lass.net:27017/",
     "db": "sae_common"
   },
-  "SAE": {
-    "Config": {
+  "sae": {
+    "config": {
       "include": [
         {
           "name": "bitmaps",
@@ -74,5 +74,12 @@
         }
       ]
     }
+  },
+  "multiTenant": {
+    "claimName": "siteid",
+    "headerName": "tenant",
+    "strategy": "domain",
+    "host": "localhost",
+    "useDefaultRule": true
   }
 }

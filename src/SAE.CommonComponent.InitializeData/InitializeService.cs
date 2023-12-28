@@ -60,9 +60,7 @@ namespace SAE.CommonComponent.InitializeData
         private readonly IServiceProvider _serviceProvider;
         private readonly IConfiguration _configuration;
         private readonly IPluginManage _pluginManage;
-        private readonly IBitmapEndpointProvider _bitmapEndpointProvider;
         private readonly IPathDescriptorProvider _pathDescriptorProvider;
-        private readonly IBitmapAuthorization _bitmapAuthorization;
         private readonly IHostEnvironment _hostEnvironment;
 
         private readonly SAEOptions _saeOptions;
@@ -75,9 +73,7 @@ namespace SAE.CommonComponent.InitializeData
             this._serviceProvider = serviceProvider;
             this._configuration = this._serviceProvider.GetService<IConfiguration>();
             this._pluginManage = serviceProvider.GetService<IPluginManage>();
-            this._bitmapEndpointProvider = serviceProvider.GetService<IBitmapEndpointProvider>();
             this._pathDescriptorProvider = serviceProvider.GetService<IPathDescriptorProvider>();
-            this._bitmapAuthorization = serviceProvider.GetService<IBitmapAuthorization>();
             this._hostEnvironment = serviceProvider.GetService<IHostEnvironment>();
         }
         /// <summary>

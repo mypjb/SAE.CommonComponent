@@ -29,16 +29,16 @@
       "bitmaps": "http://localhost:8080/.bitmaps"
     }
   },
-  "Nlog": {
+  "nlog": {
     "autoReload": "true",
     "internalLogLevel": "Warn",
     "internalLogFile": "logs/internal-nlog.log",
     "targets": {
-      "FileTarget": {
+      "fileTarget": {
         "type": "File",
         "fileName": "logs/${shortdate}.log",
         "layout": "${level}: ${logger}[${threadid}] ${longdate}${newline}        ${message} ${exception:message,stacktrace}",
-        "MaxArchiveFiles": "10"
+        "maxArchiveFiles": "10"
       }
     },
     "rules": [
@@ -51,9 +51,9 @@
   },
   "database": [
     {
-      "Name": "default",
-      "Provider": "mysql",
-      "ConnectionString": "Data Source=mysql.db.lass.net;Database=sae_common_dev;User ID=root;Password=Aa123456;pooling=true;port=3306;sslmode=none;CharSet=utf8;allowPublicKeyRetrieval=true"
+      "name": "default",
+      "provider": "mysql",
+      "connectionString": "Data Source=mysql.db.lass.net;Database=sae_common_dev;User ID=root;Password=Aa123456;pooling=true;port=3306;sslmode=none;CharSet=utf8;allowPublicKeyRetrieval=true"
     }
   ],
   "mongodb": {
@@ -64,8 +64,8 @@
     "connection": "redis.cache.lass.net:6379,allowadmin=true,syncTimeout=5000,password=Aa123456",
     "db": 2
   },
-  "SAE": {
-    "Config": {
+  "sae": {
+    "config": {
       "include": [
         {
           "name": "bitmaps",
@@ -74,5 +74,12 @@
         }
       ]
     }
+  },
+  "multiTenant": {
+    "claimName": "siteid",
+    "headerName": "tenant",
+    "strategy": "domain",
+    "host": "localhost",
+    "useDefaultRule": true
   }
 }
