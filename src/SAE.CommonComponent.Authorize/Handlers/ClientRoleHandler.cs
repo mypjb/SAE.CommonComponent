@@ -29,20 +29,17 @@ namespace SAE.CommonComponent.Authorize.Handlers
         private readonly IStorage _storage;
         private readonly IMediator _mediator;
         private readonly IDirector _director;
-        private readonly IBitmapAuthorization _bitmapAuthorization;
         private readonly ILogging _logging;
 
         public ClientRoleHandler(IDocumentStore documentStore,
                                  IStorage storage,
                                  IMediator mediator,
                                  IDirector director,
-                                 IBitmapAuthorization bitmapAuthorization,
                                  ILogging<ClientRoleHandler> logging) : base(documentStore)
         {
             this._storage = storage;
             this._mediator = mediator;
             this._director = director;
-            this._bitmapAuthorization = bitmapAuthorization;
             this._logging = logging;
         }
 

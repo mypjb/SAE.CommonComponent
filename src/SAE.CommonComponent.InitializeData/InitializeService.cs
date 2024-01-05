@@ -289,20 +289,20 @@ namespace SAE.CommonComponent.InitializeData
                 ParentId = scopeDict.ParentId
             });
 
-            var bitmapEndpoints = await this._bitmapEndpointProvider.ListAsync();
+            // var bitmapEndpoints = await this._bitmapEndpointProvider.ListAsync();
 
-            this._logging.Info($"创建系统资源：{bitmapEndpoints.ToJsonString()}");
+            // this._logging.Info($"创建系统资源：{bitmapEndpoints.ToJsonString()}");
 
-            foreach (var bitmapEndpoint in bitmapEndpoints)
-            {
-                await this._mediator.SendAsync<string>(new AppResourceCommand.Create
-                {
-                    AppId = app.Id,
-                    Method = bitmapEndpoint.Method,
-                    Name = $"{bitmapEndpoint.Path}:{bitmapEndpoint.Method}",
-                    Path = bitmapEndpoint.Path
-                });
-            }
+            // foreach (var bitmapEndpoint in bitmapEndpoints)
+            // {
+            //     await this._mediator.SendAsync<string>(new AppResourceCommand.Create
+            //     {
+            //         AppId = app.Id,
+            //         Method = bitmapEndpoint.Method,
+            //         Name = $"{bitmapEndpoint.Path}:{bitmapEndpoint.Method}",
+            //         Path = bitmapEndpoint.Path
+            //     });
+            // }
 
             var jsonSeparator = '.';
 

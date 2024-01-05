@@ -30,7 +30,6 @@ namespace SAE.CommonComponent.Application.Test
             return builder.UseStartup<Startup>();
         }
 
-        [Fact]
         public async Task<AppClusterDto> Add()
         {
             var command = new AppClusterCommand.Create

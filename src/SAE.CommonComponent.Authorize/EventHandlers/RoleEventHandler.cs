@@ -27,7 +27,6 @@ namespace SAE.CommonComponent.Authorize.EventHandlers
     {
         private readonly IMediator _mediator;
         private readonly ILogging _logging;
-        private readonly IBitmapAuthorization _bitmapAuthorization;
         private readonly IDistributedCache _distributedCache;
 
         /// <summary>
@@ -35,16 +34,13 @@ namespace SAE.CommonComponent.Authorize.EventHandlers
         /// </summary>
         /// <param name="mediator"></param>
         /// <param name="logging"></param>
-        /// <param name="bitmapAuthorization"></param>
         /// <param name="distributedCache"></param>
         public RoleEventHandler(IMediator mediator,
                                 ILogging<RoleEventHandler> logging,
-                                IBitmapAuthorization bitmapAuthorization,
                                 IDistributedCache distributedCache)
         {
             this._mediator = mediator;
             this._logging = logging;
-            this._bitmapAuthorization = bitmapAuthorization;
             this._distributedCache = distributedCache;
         }
 
@@ -129,16 +125,16 @@ namespace SAE.CommonComponent.Authorize.EventHandlers
                 }
             }
 
-            var permissionCode = this._bitmapAuthorization.GenerateCode(bits);
+            // var permissionCode = this._bitmapAuthorization.GenerateCode(bits);
 
-            var changePermissionCodeCommand = new RoleCommand.ChangePermissionCode
-            {
-                Id = role.Id,
-                PermissionCode = permissionCode
-            };
+            // var changePermissionCodeCommand = new RoleCommand.ChangePermissionCode
+            // {
+            //     Id = role.Id,
+            //     PermissionCode = permissionCode
+            // };
 
-            await this._mediator.SendAsync(changePermissionCodeCommand);
-            await this.RoleChangeCoreAsync(message.Id);
+            // await this._mediator.SendAsync(changePermissionCodeCommand);
+            // await this.RoleChangeCoreAsync(message.Id);
         }
 
         public async Task HandleAsync(RoleCommand.ChangeStatus message)

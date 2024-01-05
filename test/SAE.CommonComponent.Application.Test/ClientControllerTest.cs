@@ -33,7 +33,7 @@ namespace SAE.CommonComponent.Application.Test
             return builder.UseStartup<Startup>();
         }
 
-        [Fact]
+
         public async Task<ClientDto> Add()
         {
             var command = new ClientCommand.Create

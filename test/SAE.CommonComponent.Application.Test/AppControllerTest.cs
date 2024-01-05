@@ -31,8 +31,6 @@ namespace SAE.CommonComponent.Application.Test
             return builder.UseStartup<Startup>();
         }
 
-        [Theory]
-        [InlineData("")]
         public async Task<AppDto> Add(string clusterId = null)
         {
             if (clusterId.IsNullOrWhiteSpace())

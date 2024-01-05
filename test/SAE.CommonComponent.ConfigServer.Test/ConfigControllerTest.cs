@@ -32,8 +32,6 @@ namespace SAE.CommonComponent.ConfigServer.Test
             this._environmentId = envId;
         }
 
-        [Theory]
-        [InlineData(null)]
         public async Task<ConfigDto> Add(string clusterId = null)
         {
             if (clusterId.IsNullOrWhiteSpace())

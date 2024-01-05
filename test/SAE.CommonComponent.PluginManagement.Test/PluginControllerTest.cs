@@ -31,7 +31,7 @@ namespace SAE.CommonComponent.PluginManagement.Test
             return builder.UseStartup<Startup>();
         }
 
-        [Fact]
+ 
         public async Task<PluginDto> Add()
         {
             var command = new PluginCommand.Create

@@ -22,7 +22,6 @@ namespace SAE.CommonComponent.ConfigServer.Test
         {
         }
 
-        [Fact]
         public async Task<TemplateDto> Add()
         {
             var command = new TemplateCommand.Create

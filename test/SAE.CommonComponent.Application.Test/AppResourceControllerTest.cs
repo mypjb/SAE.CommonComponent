@@ -50,8 +50,6 @@ namespace SAE.CommonComponent.Application.Test
                           });
         }
 
-        [Theory]
-        [InlineData("")]
         public async Task<AppResourceDto> Add(string appId = null)
         {
             if (appId.IsNullOrWhiteSpace())

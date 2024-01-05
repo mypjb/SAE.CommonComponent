@@ -21,16 +21,13 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
     public class AppDataController : Controller
     {
         private readonly IMediator _mediator;
-        private readonly IBitmapEndpointStorage _bitmapEndpointStorage;
         private readonly IOptions<SAEOptions> _options;
 
         public AppDataController(IMediator mediator,
-                                 IBitmapEndpointStorage bitmapEndpointStorage,
                                  IOptions<SAEOptions> options)
         {
 
             this._mediator = mediator;
-            this._bitmapEndpointStorage = bitmapEndpointStorage;
             this._options = options;
         }
 

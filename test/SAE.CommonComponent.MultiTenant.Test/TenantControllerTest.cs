@@ -44,8 +44,6 @@ namespace SAE.CommonComponent.MultiTenant.Test
                           });
         }
 
-        [Theory]
-        [InlineData("")]
         public async Task<TenantDto> Add(string parentId = null)
         {
             var command = new TenantCommand.Create

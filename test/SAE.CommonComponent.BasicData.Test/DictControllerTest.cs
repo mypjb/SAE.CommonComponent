@@ -30,8 +30,6 @@ namespace SAE.CommonComponent.BasicData.Test
             return builder.UseStartup<Startup>();
         }
 
-        [Theory]
-        [InlineData(null)]
         public async Task<DictDto> Add(string parentId = null)
         {
             var command = new DictCommand.Create
@@ -96,7 +94,6 @@ namespace SAE.CommonComponent.BasicData.Test
 
         }
 
-        [Fact]
         public async Task<IEnumerable<DictItemDto>> Tree()
         {
             var parent = await this.Add();

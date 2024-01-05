@@ -30,20 +30,17 @@ namespace SAE.CommonComponent.Authorize.Handlers
         private readonly IStorage _storage;
         private readonly IMediator _mediator;
         private readonly IDirector _director;
-        private readonly IBitmapAuthorization _bitmapAuthorization;
         private readonly ILogging _logging;
 
         public UserRoleHandler(IDocumentStore documentStore,
                               IStorage storage,
                               IMediator mediator,
                               IDirector director,
-                              IBitmapAuthorization bitmapAuthorization,
                               ILogging<UserRoleHandler> logging) : base(documentStore)
         {
             this._storage = storage;
             this._mediator = mediator;
             this._director = director;
-            this._bitmapAuthorization = bitmapAuthorization;
             this._logging = logging;
         }
 
@@ -97,13 +94,13 @@ namespace SAE.CommonComponent.Authorize.Handlers
                     continue;
                 }
                 var indexs = group.Select(s => s.Index).ToArray();
-                var code = this._bitmapAuthorization.GenerateCode(indexs);
-                if (code.IsNullOrWhiteSpace())
-                {
-                    this._logging.Warn($"系统({group.Key})下的用户({command.UserId})分配的角色，尚未分配任何权限，或权限索引皆为0。");
-                    continue;
-                }
-                dic.Add(group.Key, code);
+                // var code = this._bitmapAuthorization.GenerateCode(indexs);
+                // if (code.IsNullOrWhiteSpace())
+                // {
+                //     this._logging.Warn($"系统({group.Key})下的用户({command.UserId})分配的角色，尚未分配任何权限，或权限索引皆为0。");
+                //     continue;
+                // }
+                // dic.Add(group.Key, code);
             }
 
             return new AuthorizeCodeDto
