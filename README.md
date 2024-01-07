@@ -54,13 +54,18 @@
   [
     {
       "id": 1,
-      "name": "必须是成年男性",
-      "value": "user.age >= 18 && sex == 'man'"
+      "name": "必须是男性",
+      "expression": "sex == 'man'"
     },
     {
       "id": 2,
+      "name": "必须成年",
+      "expression": "user.age >= 18"
+    },
+    {
+      "id": 3,
       "name": "api域必须是'api'",
-      "value": "cert.scope == 'api'"
+      "expression": "cert.scope == 'api'"
     }
   ]
   ```
@@ -72,12 +77,12 @@
     {
       "id": 1,
       "name": "成年男性规则",
-      "rules": [1]
+      "rules": [1 && 2]
     },
     {
       "id": 2,
       "name": "混合规则",
-      "rules": [1, 2]
+      "rules": [3 || 1 && 2]
     }
   ]
   ```

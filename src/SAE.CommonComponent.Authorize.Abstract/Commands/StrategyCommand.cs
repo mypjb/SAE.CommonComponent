@@ -1,13 +1,16 @@
-﻿using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using SAE.CommonLibrary.Abstract.Authorization.ABAC;
 using SAE.CommonLibrary.Abstract.Model;
 
 namespace SAE.CommonComponent.Authorize.Commands
 {
     /// <summary>
-    /// 权限命令
+    /// 规则命令集合
     /// </summary>
-    public class PermissionCommand
+    public class StrategyCommand
     {
         /// <summary>
         /// 创建
@@ -15,25 +18,13 @@ namespace SAE.CommonComponent.Authorize.Commands
         public class Create
         {
             /// <summary>
-            /// 系统标识
+            /// 规则名称
             /// </summary>
-            /// <value></value>
-            public string AppId { get; set; }
-            /// <summary>
-            /// 名称
-            /// </summary>
-            /// <value></value>
             public string Name { get; set; }
             /// <summary>
             /// 描述
             /// </summary>
-            /// <value></value>
             public string Description { get; set; }
-            /// <summary>
-            /// 系统资源标识
-            /// </summary>
-            /// <value></value>
-            public string AppResourceId { get; set; }
         }
 
         /// <summary>
@@ -44,9 +35,9 @@ namespace SAE.CommonComponent.Authorize.Commands
             /// <summary>
             /// 标识
             /// </summary>
-            /// <value></value>
             public string Id { get; set; }
         }
+
         /// <summary>
         /// 更改状态
         /// </summary>
@@ -63,63 +54,78 @@ namespace SAE.CommonComponent.Authorize.Commands
             /// <value></value>
             public Status Status { get; set; }
         }
+
         /// <summary>
-        /// 设置资源
+        /// 添加规则
         /// </summary>
-        public class AppResource
+        public class AddRule
         {
             /// <summary>
-            /// 标识
+            /// 组合
             /// </summary>
-            /// <value></value>
+            public class Combine
+            {
+                /// <summary>
+                /// 规则标识
+                /// </summary>
+                public string Id { get; set; }
+                /// <summary>
+                /// 操作
+                /// </summary>
+                public LogicalOperator Operator { get; set; }
+            }
+
+            /// <summary>
+            /// 策略标识
+            /// </summary>
             public string Id { get; set; }
             /// <summary>
-            /// 系统资源标识
+            /// 组合规则
             /// </summary>
-            /// <value></value>
-            public string AppResourceId { get; set; }
+            public Combine[] Combines { get; set; }
         }
-
         /// <summary>
         /// 分页查询
         /// </summary>
         public class Query : Paging
         {
             /// <summary>
-            /// 名称
-            /// </summary>
-            /// <value></value>
+            /// 规则名称或描述关键字
+            ///</summary>
             public string Name { get; set; }
             /// <summary>
-            /// 系统标识
+            /// 状态
             /// </summary>
-            /// <value></value>
-            public string AppId { get; set; }
+            public Status Status { get; set; }
         }
+
         /// <summary>
-        /// 批量查找
-        /// </summary>
-        public class Finds
-        {
-            /// <summary>
-            /// 标识集合
-            /// </summary>
-            /// <value></value>
-            public string[] Ids { get; set; }
-        }
-        /// <summary>
-        /// 列出所有权限
+        /// 列出规则集合
         /// </summary>
         public class List
         {
             /// <summary>
-            /// 系统标识
+            /// 规则名称或描述关键字
+            ///</summary>
+            public string Name { get; set; }
+            /// <summary>
+            /// 状态
+            /// </summary>
+            public Status Status { get; set; }
+        }
+
+        /// <summary>
+        /// 列出规则集合
+        /// </summary>
+
+        public class RuleList
+        {
+            /// <summary>
+            /// 策略标识
             /// </summary>
             /// <value></value>
-            public string AppId { get; set; }
+            public string Id { get; set; }
         }
 
     }
-
-
 }

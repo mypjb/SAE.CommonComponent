@@ -1,15 +1,16 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using SAE.CommonComponent.Authorize.Domains;
 using SAE.CommonLibrary.EventStore;
 
 namespace SAE.CommonComponent.Authorize.Events
 {
     /// <summary>
-    /// 角色事件
+    /// 策略事件
     /// </summary>
-    public partial class RoleEvent
+    public partial class StrategyEvent
     {
         /// <summary>
         /// 创建
@@ -22,11 +23,6 @@ namespace SAE.CommonComponent.Authorize.Events
             /// <value></value>
             public string Id { get; set; }
             /// <summary>
-            /// 系统标识
-            /// </summary>
-            /// <value></value>
-            public string AppId { get; set; }
-            /// <summary>
             /// 创建时间
             /// </summary>
             /// <value></value>
@@ -37,17 +33,7 @@ namespace SAE.CommonComponent.Authorize.Events
             /// <value></value>
             public Status Status { get; set; }
         }
-        /// <summary>
-        /// 设置索引
-        /// </summary>
-        public class SetIndex : IEvent
-        {
-            /// <summary>
-            /// 索引
-            /// </summary>
-            /// <value></value>
-            public int Index { get; set; }
-        }
+
         /// <summary>
         /// 更改
         /// </summary>
@@ -63,6 +49,7 @@ namespace SAE.CommonComponent.Authorize.Events
             /// </summary>
             /// <value></value>
             public string Description { get; set; }
+
         }
         /// <summary>
         /// 更改状态
@@ -75,27 +62,17 @@ namespace SAE.CommonComponent.Authorize.Events
             /// <value></value>
             public Status Status { get; set; }
         }
+
         /// <summary>
-        /// 引用权限
+        /// 添加规则
         /// </summary>
-        public class ReferencePermission : IEvent
+        public class AddRule : IEvent
         {
             /// <summary>
-            /// 权限集合
+            /// 规则组合
             /// </summary>
-            /// <value></value>
-            public string[] PermissionIds { get; set; }
+            public RuleCombine RuleCombine { get; set; }
         }
-        /// <summary>
-        /// 更改权限码
-        /// </summary>
-        public class ChangePermissionCode : IEvent
-        {
-            /// <summary>
-            /// 权限码
-            /// </summary>
-            /// <value></value>
-            public string PermissionCode { get; set; }
-        }
+
     }
 }

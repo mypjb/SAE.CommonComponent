@@ -1,16 +1,15 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using SAE.CommonLibrary.EventStore;
 
 namespace SAE.CommonComponent.Authorize.Events
 {
     /// <summary>
-    /// 权限事件
+    /// 策略事件
     /// </summary>
-    public class PermissionEvent
+    public partial class RuleEvent
     {
         /// <summary>
         /// 创建
@@ -22,31 +21,13 @@ namespace SAE.CommonComponent.Authorize.Events
             /// </summary>
             /// <value></value>
             public string Id { get; set; }
-            /// <summary>
-            /// 系统标识
-            /// </summary>
-            public string AppId { get; set; }
+
             /// <summary>
             /// 创建时间
             /// </summary>
             public DateTime CreateTime { get; set; }
-            /// <summary>
-            /// 状态
-            /// </summary>
-            public Status Status { get; set; }
         }
-        /// <summary>
-        /// 系统资源
-        /// </summary>
-        public class AppResource:IEvent
-        {
 
-            /// <summary>
-            /// 系统资源标识
-            /// </summary>
-            /// <value></value>
-            public string AppResourceId { get; set; }
-        }
         /// <summary>
         /// 更改
         /// </summary>
@@ -55,23 +36,34 @@ namespace SAE.CommonComponent.Authorize.Events
             /// <summary>
             /// 名称
             /// </summary>
+            /// <value></value>
             public string Name { get; set; }
             /// <summary>
             /// 描述
             /// </summary>
-
+            /// <value></value>
             public string Description { get; set; }
-        }
-        /// <summary>
-        /// 更改状态
-        /// </summary>
-        public class ChangeStatus : IEvent
-        {
+
             /// <summary>
-            /// 状态
+            /// 左值
             /// </summary>
             /// <value></value>
-            public Status Status { get; set; }
+            public string Left { get; set; }
+            /// <summary>
+            /// 符号
+            /// </summary>
+            /// <remarks>
+            /// ：<![CDATA[>、<、>=、<=]]>、=、!=、regex...
+            /// </remarks>
+            public string Symbol { get; set; }
+            /// <summary>
+            /// 右值
+            /// </summary>
+            /// <remarks>
+            /// 再某些时候不存在右值，比如!$left
+            /// </remarks><value></value>
+            public string Right { get; set; }
+
         }
     }
 }
