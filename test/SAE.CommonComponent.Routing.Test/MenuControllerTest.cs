@@ -37,8 +37,6 @@ namespace SAE.CommonComponent.Routing.Test
             return builder.UseStartup<Startup>();
         }
 
-        [Theory]
-        [InlineData(null)]
         public async Task<MenuDto> Add(string parentId = null)
         {
             var command = new MenuCommand.Create

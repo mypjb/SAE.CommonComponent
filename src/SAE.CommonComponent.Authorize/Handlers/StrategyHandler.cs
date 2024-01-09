@@ -9,6 +9,7 @@ using SAE.CommonComponent.Authorize.Commands;
 using SAE.CommonComponent.Authorize.Domains;
 using SAE.CommonComponent.Authorize.Dtos;
 using SAE.CommonComponent.Authorize.Events;
+using SAE.CommonLibrary.Abstract;
 using SAE.CommonLibrary.Abstract.Builder;
 using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.Abstract.Model;
@@ -183,6 +184,18 @@ namespace SAE.CommonComponent.Authorize.Handlers
             }
 
             strategy.AddRule(combines);
+
+            await strategy.BuildAsync(async ruleId =>
+            {
+                var ruleDto = await this._mediator.SendAsync<RuleDto>(new Command.Find<RuleDto>
+                {
+                    Id = ruleId
+                });
+
+                return ruleDto.To<Rule>();
+            });
+
+            await this._documentStore.SaveAsync(strategy);
         }
 
         private Task<Strategy> FindStrategy(Strategy Strategy)

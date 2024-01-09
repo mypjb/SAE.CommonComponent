@@ -1,25 +1,9 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using System.Reflection;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Primitives;
-using Microsoft.IdentityModel.Tokens;
-using SAE.CommonComponent.Authorize.Commands;
-using SAE.CommonComponent.Authorize.Domains;
 using SAE.CommonComponent.Authorize.Dtos;
-using SAE.CommonComponent.Authorize.Events;
-using SAE.CommonLibrary;
-using SAE.CommonLibrary.Abstract.Mediator;
-using SAE.CommonLibrary.AspNetCore.Authorization;
-using SAE.CommonLibrary.AspNetCore.Routing;
-using SAE.CommonLibrary.EventStore.Document;
 using SAE.CommonLibrary.MessageQueue;
 using SAE.CommonLibrary.Plugin.AspNetCore;
 
@@ -56,7 +40,7 @@ namespace SAE.CommonComponent.Authorize
         {
             services.AddControllers().AddResponseResult();
 
-            var assemblys = new[] { typeof(UserRoleDto).Assembly, Assembly.GetExecutingAssembly() };
+            var assemblys = new[] { typeof(RuleDto).Assembly, Assembly.GetExecutingAssembly() };
 
             services.AddServiceFacade()
                     .AddMediator(assemblys)
@@ -69,52 +53,43 @@ namespace SAE.CommonComponent.Authorize
                     .AddMemoryMessageQueue()
                     .AddHandler();
 
-            services.AddBitmapAuthorization()
-                    .AddConfigurationProvider();
-
-            services.AddAuthentication()
-                    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
-                     {
-                         options.Authority = SiteConfig.Get(Constants.Config.OAuth.Authority);
-                         options.TokenValidationParameters = new TokenValidationParameters
-                         {
-                             ValidateAudience = false
-                         };
-                         options.RequireHttpsMetadata = false;
-                         options.Events = new JwtBearerEvents();
-                     });
+            // services.AddAuthentication()
+            //         .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+            //          {
+            //              options.Authority = SiteConfig.Get(Constants.Config.OAuth.Authority);
+            //              options.TokenValidationParameters = new TokenValidationParameters
+            //              {
+            //                  ValidateAudience = false
+            //              };
+            //              options.RequireHttpsMetadata = false;
+            //              options.Events = new JwtBearerEvents();
+            //          });
 
 
-            services.PostConfigure<CookieAuthenticationOptions>(CookieAuthenticationDefaults.AuthenticationScheme, options =>
-            {
-                options.ForwardDefaultSelector = (ctx) =>
-                {
-                    StringValues sv;
-                    if (ctx.Request.Headers.TryGetValue(HttpRequestHeader.Authorization.ToString(), out sv) &&
-                        sv.Any() &&
-                        sv.First().StartsWith(JwtBearerDefaults.AuthenticationScheme))
-                    {
-                        return JwtBearerDefaults.AuthenticationScheme;
-                    }
+            // services.PostConfigure<CookieAuthenticationOptions>(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+            // {
+            //     options.ForwardDefaultSelector = (ctx) =>
+            //     {
+            //         StringValues sv;
+            //         if (ctx.Request.Headers.TryGetValue(HttpRequestHeader.Authorization.ToString(), out sv) &&
+            //             sv.Any() &&
+            //             sv.First().StartsWith(JwtBearerDefaults.AuthenticationScheme))
+            //         {
+            //             return JwtBearerDefaults.AuthenticationScheme;
+            //         }
 
-                    return null;
-                };
+            //         return null;
+            //     };
 
-            });
+            // });
         }
 
         public override void PluginConfigure(IApplicationBuilder app)
         {
             //app.UseMediatorOrleansSilo();
-            app.UseServiceFacade()
-               .UseBitmapAuthorization();
+            app.UseServiceFacade();
             var messageQueue = app.ApplicationServices.GetService<IMessageQueue>();
-            messageQueue.Subscibe<RoleEvent.Create>();
-            messageQueue.Subscibe<RoleCommand.PermissionChange>();
-            messageQueue.Subscibe<RoleCommand.ChangeStatus>();
-            messageQueue.Subscibe<PermissionCommand.AppResource>();
-            messageQueue.Subscibe<PermissionCommand.ChangeStatus>();
-            messageQueue.Subscibe<Command.BatchDelete<Permission>>();
+            // messageQueue.Subscibe<RoleEvent.Create>();
         }
     }
 }

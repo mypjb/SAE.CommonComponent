@@ -467,99 +467,99 @@ namespace SAE.CommonComponent.InitializeData
 
         public virtual async Task AuthorizeAsync()
         {
-            var (cluster, app) = await this.GetAppClusterAsync();
+            // var (cluster, app) = await this.GetAppClusterAsync();
 
-            var appResourceDtos = await this._mediator.SendAsync<IEnumerable<AppResourceDto>>(new AppResourceCommand.List
-            {
-                AppId = app.Id
-            });
+            // var appResourceDtos = await this._mediator.SendAsync<IEnumerable<AppResourceDto>>(new AppResourceCommand.List
+            // {
+            //     AppId = app.Id
+            // });
 
-            this._logging.Info($"系统资源:{appResourceDtos.ToJsonString()}");
-
-
-            var roleCommand = new RoleCommand.Create
-            {
-                AppId = app.Id,
-                Description = "超级管理员",
-                Name = Constants.Authorize.AdminRoleName
-            };
-
-            var roleId = await this._mediator.SendAsync<string>(roleCommand);
-
-            var permissionIds = new string[appResourceDtos.Count()];
-
-            for (int i = 0; i < appResourceDtos.Count(); i++)
-            {
-                var appResource = appResourceDtos.ElementAt(i);
-
-                var permissionCommand = new PermissionCommand.Create
-                {
-                    AppId = roleCommand.AppId,
-                    Description = appResource.Name,
-                    Name = appResource.Name,
-                    AppResourceId = appResource.Id
-                };
-
-                permissionIds[i] = await this._mediator.SendAsync<string>(permissionCommand);
-            }
-
-            var referencePermissionCommand = new RoleCommand.ReferencePermission
-            {
-                Id = roleId,
-                PermissionIds = permissionIds
-            };
-
-            await this._mediator.SendAsync(referencePermissionCommand);
-
-            var clientDtos = await this._mediator.SendAsync<IPagedList<ClientDto>>(new ClientCommand.Query
-            {
-                AppId = app.Id
-            });
-
-            foreach (var client in clientDtos)
-            {
-                await this._mediator.SendAsync(new ClientRoleCommand.ReferenceRole
-                {
-                    ClientId = client.Id,
-                    RoleIds = new[] { roleId }
-                });
-                var clientCodes = await this._mediator.SendAsync<Dictionary<string, string>>(new ClientRoleCommand.QueryClientAuthorizeCode
-                {
-                    ClientId = client.Id
-                });
-
-                this._logging.Info($"客户端'{client.Name}({client.Id})'认证码:'{clientCodes.ToJsonString()}'");
-            }
-
-            var userDtos = await this._mediator.SendAsync<IPagedList<UserDto>>(new UserCommand.Query());
+            // this._logging.Info($"系统资源:{appResourceDtos.ToJsonString()}");
 
 
+            // var roleCommand = new RoleCommand.Create
+            // {
+            //     AppId = app.Id,
+            //     Description = "超级管理员",
+            //     Name = Constants.Authorize.AdminRoleName
+            // };
 
-            foreach (var user in userDtos)
-            {
-                var superAdminCommand = new SuperAdminCommand.Create
-                {
-                    AppId = app.Id,
-                    TargetId = user.Id
-                };
+            // var roleId = await this._mediator.SendAsync<string>(roleCommand);
 
-                this._logging.Info($"赋予用户'{user.Name}'，'{app.Name}'系统超管权限");
+            // var permissionIds = new string[appResourceDtos.Count()];
 
-                await this._mediator.SendAsync(superAdminCommand);
+            // for (int i = 0; i < appResourceDtos.Count(); i++)
+            // {
+            //     var appResource = appResourceDtos.ElementAt(i);
 
-                await this._mediator.SendAsync(new UserRoleCommand.ReferenceRole
-                {
-                    UserId = user.Id,
-                    RoleIds = new[] { roleId }
-                });
+            //     var permissionCommand = new PermissionCommand.Create
+            //     {
+            //         AppId = roleCommand.AppId,
+            //         Description = appResource.Name,
+            //         Name = appResource.Name,
+            //         AppResourceId = appResource.Id
+            //     };
 
-                var userCodes = await this._mediator.SendAsync<Dictionary<string, string>>(new UserRoleCommand.QueryUserAuthorizeCode
-                {
-                    UserId = user.Id
-                });
+            //     permissionIds[i] = await this._mediator.SendAsync<string>(permissionCommand);
+            // }
 
-                this._logging.Info($"用户'{user.Name}({user.Id})'认证码:{userCodes.ToJsonString()}");
-            }
+            // var referencePermissionCommand = new RoleCommand.ReferencePermission
+            // {
+            //     Id = roleId,
+            //     PermissionIds = permissionIds
+            // };
+
+            // await this._mediator.SendAsync(referencePermissionCommand);
+
+            // var clientDtos = await this._mediator.SendAsync<IPagedList<ClientDto>>(new ClientCommand.Query
+            // {
+            //     AppId = app.Id
+            // });
+
+            // foreach (var client in clientDtos)
+            // {
+            //     await this._mediator.SendAsync(new ClientRoleCommand.ReferenceRole
+            //     {
+            //         ClientId = client.Id,
+            //         RoleIds = new[] { roleId }
+            //     });
+            //     var clientCodes = await this._mediator.SendAsync<Dictionary<string, string>>(new ClientRoleCommand.QueryClientAuthorizeCode
+            //     {
+            //         ClientId = client.Id
+            //     });
+
+            //     this._logging.Info($"客户端'{client.Name}({client.Id})'认证码:'{clientCodes.ToJsonString()}'");
+            // }
+
+            // var userDtos = await this._mediator.SendAsync<IPagedList<UserDto>>(new UserCommand.Query());
+
+
+
+            // foreach (var user in userDtos)
+            // {
+            //     var superAdminCommand = new SuperAdminCommand.Create
+            //     {
+            //         AppId = app.Id,
+            //         TargetId = user.Id
+            //     };
+
+            //     this._logging.Info($"赋予用户'{user.Name}'，'{app.Name}'系统超管权限");
+
+            //     await this._mediator.SendAsync(superAdminCommand);
+
+            //     await this._mediator.SendAsync(new UserRoleCommand.ReferenceRole
+            //     {
+            //         UserId = user.Id,
+            //         RoleIds = new[] { roleId }
+            //     });
+
+            //     var userCodes = await this._mediator.SendAsync<Dictionary<string, string>>(new UserRoleCommand.QueryUserAuthorizeCode
+            //     {
+            //         UserId = user.Id
+            //     });
+
+            //     this._logging.Info($"用户'{user.Name}({user.Id})'认证码:{userCodes.ToJsonString()}");
+            // }
         }
 
         public virtual async Task ConfigServerAsync()

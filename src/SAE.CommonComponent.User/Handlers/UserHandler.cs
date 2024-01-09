@@ -98,12 +98,12 @@ namespace SAE.CommonComponent.User.Handlers
                 }
                 else
                 {
-                    var code = await this._mediator.SendAsync<string>(new UserRoleCommand.QueryUserAuthorizeCode
-                    {
-                        UserId = dto.Id
-                    });
+                    // var code = await this._mediator.SendAsync<string>(new UserRoleCommand.QueryUserAuthorizeCode
+                    // {
+                    //     UserId = dto.Id
+                    // });
 
-                    dto.AuthorizeCode = code;
+                    // dto.AuthorizeCode = code;
                 }
 
             }

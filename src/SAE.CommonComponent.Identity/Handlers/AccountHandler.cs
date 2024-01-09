@@ -35,35 +35,34 @@ namespace SAE.CommonComponent.Identity.Handlers
             };
             var dto = await this._mediator.SendAsync<UserDto>(authenticationCommand);
 
-            Assert.Build(dto)
-                  .NotNull("用户名或密码错误!");
+            Assert.Build(dto).NotNull("用户名或密码错误!");
 
             var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
 
             identity.AddClaim(new Claim(JwtClaimTypes.Subject, dto.Id.ToLower()));
             identity.AddClaim(new Claim(JwtClaimTypes.Name, dto.Name));
             identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, dto.Account.Name));
-            var authorizeCode = await this._mediator.SendAsync<AuthorizeCodeDto>(new UserRoleCommand.QueryUserAuthorizeCode
-            {
-                UserId = dto.Id
-            });
+            // var authorizeCode = await this._mediator.SendAsync<AuthorizeCodeDto>(new UserRoleCommand.QueryUserAuthorizeCode
+            // {
+            //     UserId = dto.Id
+            // });
 
-            if (authorizeCode != null)
-            {
-                foreach (var kv in authorizeCode.Codes)
-                {
-                    identity.AddClaim(new Claim(CommonLibrary.AspNetCore.Constants.BitmapAuthorize.Claim,
-                                                string.Format(CommonLibrary.AspNetCore.Constants.BitmapAuthorize.GroupFormat,
-                                                           kv.Key,
-                                                           kv.Value),
-                                                           Constants.Claim.CustomType));
-                }
+            // if (authorizeCode != null)
+            // {
+            //     foreach (var kv in authorizeCode.Codes)
+            //     {
+            //         identity.AddClaim(new Claim(CommonLibrary.AspNetCore.Constants.BitmapAuthorize.Claim,
+            //                                     string.Format(CommonLibrary.AspNetCore.Constants.BitmapAuthorize.GroupFormat,
+            //                                                kv.Key,
+            //                                                kv.Value),
+            //                                                Constants.Claim.CustomType));
+            //     }
 
-                foreach (var appid in authorizeCode.SuperAdmins)
-                {
-                    identity.AddClaim(new Claim(CommonLibrary.AspNetCore.Constants.BitmapAuthorize.Administrator, appid,Constants.Claim.CustomType));
-                }
-            }
+            //     foreach (var appid in authorizeCode.SuperAdmins)
+            //     {
+            //         identity.AddClaim(new Claim(CommonLibrary.AspNetCore.Constants.BitmapAuthorize.Administrator, appid,Constants.Claim.CustomType));
+            //     }
+            // }
 
             var principal = new ClaimsPrincipal(identity);
 

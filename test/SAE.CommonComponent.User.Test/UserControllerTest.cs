@@ -19,18 +19,15 @@ namespace SAE.CommonComponent.User.Test
     {
         public const string API = "user";
         public const string DefaultPassword = "Aa123456";
-        private UserRoleControllerTest _userRoleController;
         public UserControllerTest(ITestOutputHelper output) : base(output)
         {
-            this._userRoleController = new UserRoleControllerTest(output);
+            
         }
 
         protected override IWebHostBuilder UseStartup(IWebHostBuilder builder)
         {
             return builder.UseStartup<Startup>();
         }
-
-        [Fact]
         public async Task<UserDto> Add()
         {
             var command = new UserCommand.Create

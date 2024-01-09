@@ -73,6 +73,17 @@ namespace SAE.CommonComponent.Authorize.Events
             /// </summary>
             public RuleCombine RuleCombine { get; set; }
         }
+        /// <summary>
+        /// 构建事件
+        /// </summary>
+        public class Build : IEvent
+        {
+            /// <summary>
+            /// 表达式
+            /// </summary>
+            /// <value></value>
+            public string Expression { get; set; }
+        }
 
     }
 }

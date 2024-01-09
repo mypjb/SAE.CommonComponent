@@ -94,14 +94,18 @@ namespace SAE.CommonComponent.Authorize.Domains
         /// 构建策略的表达式
         /// </summary>
         /// <param name="provider">rule存储委托</param>
-        public async Task Build(Func<string, Task<Rule>> provider)
+        public async Task BuildAsync(Func<string, Task<Rule>> provider)
         {
             var expression = string.Empty;
             if (this.RuleCombine != null)
             {
                 expression = await this.RuleCombine.CombineAsync(provider);
             }
-            this.Expression = expression;
+
+            this.Apply(new StrategyEvent.Build
+            {
+                Expression = expression
+            });
         }
 
         /// <summary>
@@ -116,7 +120,10 @@ namespace SAE.CommonComponent.Authorize.Domains
         /// <param name="command"></param>
         public void ChangeStatus(StrategyCommand.ChangeStatus command) =>
             this.Apply<StrategyEvent.ChangeStatus>(command);
-
+        /// <summary>
+        /// 添加规则集合
+        /// </summary>
+        /// <param name="combines"></param>
         public void AddRule(IEnumerable<RuleCombine> combines)
         {
             RuleCombine combine = null;
