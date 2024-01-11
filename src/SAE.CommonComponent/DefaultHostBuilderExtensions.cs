@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using SAE.CommonLibrary.Configuration;
 using SAE.CommonLibrary.Extension;
+using Constants = SAE.CommonLibrary.Configuration.Constants;
 
 namespace Microsoft.AspNetCore.Hosting
 {
@@ -27,7 +28,8 @@ namespace Microsoft.AspNetCore.Hosting
                           {
                               configure.AddInMemoryCollection(new Dictionary<string, string>
                               {
-                                { HostDefaults.ApplicationKey,"SAE.CommonComponent.Master" }
+
+                                {$"{Constants.Config.OptionKey}{Constants.ConfigSeparator}{nameof(SAEOptions.FileName)}","SAE.CommonComponent.Master" }
                               });
                           })
 #endif

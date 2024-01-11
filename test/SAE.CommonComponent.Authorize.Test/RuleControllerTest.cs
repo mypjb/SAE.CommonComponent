@@ -124,7 +124,7 @@ namespace SAE.CommonComponent.Authorize.Test
             {
                 var symbols = new[] { ">", ">=", "<", "<=", "==", "!", "!=", "regex", "in" };
 
-                var symbol = symbols[symbols.Length % Math.Abs(this.GetRandom().GetHashCode())];
+                var symbol = symbols[Math.Abs(this.GetRandom().GetHashCode()) % symbols.Length];
 
                 args = new string[3]
                 {

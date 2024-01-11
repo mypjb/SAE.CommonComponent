@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
-    <PackageReference Include="SAE.CommonLibrary.Abstract" Version="3.0.0" />
-    <PackageReference Include="SAE.CommonLibrary.Plugin" Version="3.0.0" />
+    <PackageReference Include="SAE.CommonLibrary.Abstract" Version="8.0.0" />
+    <PackageReference Include="SAE.CommonLibrary.Plugin" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>

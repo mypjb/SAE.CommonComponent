@@ -15,7 +15,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\SAE.CommonComponent.Authorize\SAE.CommonComponent.Authorize.csproj" />
     <ProjectReference Include="..\SAE.CommonComponent.Test\SAE.CommonComponent.Test.csproj" />
-    <ProjectReference Include="..\SAE.CommonComponent.Application.Test\SAE.CommonComponent.Application.Test.csproj" />
   </ItemGroup>
 
 </Project>

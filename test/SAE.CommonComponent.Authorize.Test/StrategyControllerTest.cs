@@ -2,29 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using SAE.CommonComponent.Application.Commands;
-using SAE.CommonComponent.Application.Dtos;
-using SAE.CommonComponent.Application.Test;
 using SAE.CommonComponent.Authorize.Commands;
 using SAE.CommonComponent.Authorize.Domains;
 using SAE.CommonComponent.Authorize.Dtos;
 using SAE.CommonComponent.Test;
 using SAE.CommonLibrary;
 using SAE.CommonLibrary.Abstract.Authorization.ABAC;
-using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.Abstract.Mediator.Behavior;
-using SAE.CommonLibrary.Abstract.Model;
-using SAE.CommonLibrary.AspNetCore.Authorization;
 using SAE.CommonLibrary.EventStore.Document;
 using SAE.CommonLibrary.Extension;
 using Xunit;
 using Xunit.Abstractions;
-using Xunit.Sdk;
 using Assert = Xunit.Assert;
 
 namespace SAE.CommonComponent.Authorize.Test

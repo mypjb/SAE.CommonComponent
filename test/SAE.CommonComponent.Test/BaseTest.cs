@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SAE.CommonLibrary;
 using SAE.CommonLibrary.Extension;
@@ -11,7 +13,8 @@ using Xunit.Abstractions;
 
 namespace SAE.CommonComponent.Test
 {
-    public abstract class BaseTest : MarshalByRefObject
+    // public abstract class BaseTest : MarshalByRefObject
+    public abstract class BaseTest
     {
         protected readonly ITestOutputHelper _output;
         public IServiceProvider ServiceProvider { get; private set; }
@@ -28,13 +31,16 @@ namespace SAE.CommonComponent.Test
                        var dict = new Dictionary<string, string>
                         {
                            {"SAE:CONFIG:URL", "http://localhost:8080/app/config?id=0dbbcfdf123f44baad50ac830106c87b&env=Development"},
-                           {HostDefaults.ApplicationKey,"SAE.CommonComponent.Master" }
                         };
                        build.AddInMemoryCollection(dict);
                    })
                    .ConfigureWebHost(webBuilder =>
                    {
                        webBuilder.UseEnvironment(Environments.Development);
+                       webBuilder.ConfigureServices(t =>
+                       {
+                           var t1 = t;
+                       });
                        this.UseStartup(webBuilder.UseTestServer());
                    }).ConfigureDefault()
                    .Start();
