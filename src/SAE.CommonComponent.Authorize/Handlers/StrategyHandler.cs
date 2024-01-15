@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using SAE.CommonComponent.Authorize.Commands;
 using SAE.CommonComponent.Authorize.Domains;
 using SAE.CommonComponent.Authorize.Dtos;
+using SAE.CommonLibrary.Abstract;
 using SAE.CommonLibrary.Abstract.Builder;
 using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.Abstract.Model;
@@ -15,16 +16,23 @@ using SAE.CommonLibrary.MessageQueue;
 
 namespace SAE.CommonComponent.Authorize.Handlers
 {
+    /// <summary>
+    /// 策略处理器
+    /// </summary>
     public class StrategyHandler : AbstractHandler<Strategy>,
                                    ICommandHandler<Command.BatchDelete<Strategy>>,
                                    ICommandHandler<Command.Find<StrategyDto>, StrategyDto>,
+                                   ICommandHandler<Command.Finds<StrategyDto>, IEnumerable<StrategyDto>>,
                                    ICommandHandler<StrategyCommand.Query, IPagedList<StrategyDto>>,
                                    ICommandHandler<StrategyCommand.List, IEnumerable<StrategyDto>>,
                                    ICommandHandler<StrategyCommand.Create, string>,
                                    ICommandHandler<StrategyCommand.Change>,
                                    ICommandHandler<StrategyCommand.ChangeStatus>,
                                    ICommandHandler<StrategyCommand.RuleList, IEnumerable<RuleDto>>,
-                                   ICommandHandler<StrategyCommand.AddRule>
+                                   ICommandHandler<StrategyCommand.AddRule>,
+                                   ICommandHandler<StrategyResourceCommand.Create, string>,
+                                   ICommandHandler<StrategyResourceCommand.List, IEnumerable<StrategyDto>>,
+                                   ICommandHandler<Command.BatchDelete<StrategyResource>>
 
     {
         private readonly IStorage _storage;
@@ -136,7 +144,7 @@ namespace SAE.CommonComponent.Authorize.Handlers
                 {
                     var ids = await strategy.RuleCombine.GetRuleIdsAsync();
 
-                    var findsCommand = new RuleCommand.Finds
+                    var findsCommand = new Command.Finds<RuleDto>
                     {
                         Ids = ids
                     };
@@ -190,6 +198,47 @@ namespace SAE.CommonComponent.Authorize.Handlers
             });
 
             await this._documentStore.SaveAsync(strategy);
+        }
+
+        public async Task<string> HandleAsync(StrategyResourceCommand.Create command)
+        {
+            var sr = new StrategyResource(command);
+            await this._documentStore.SaveAsync(sr);
+            return sr.Id;
+        }
+
+        public async Task<IEnumerable<StrategyDto>> HandleAsync(StrategyResourceCommand.List command)
+        {
+            var query = this._storage.AsQueryable<StrategyResource>().Where(s => s.ResourceType == command.ResourceType);
+
+            if (!command.ResourceId.IsNullOrWhiteSpace())
+            {
+                query = query.Where(s => s.ResourceId == command.ResourceId);
+            }
+
+            var ids = query.Select(s => s.StrategyId).ToArray().Distinct().ToArray();
+
+            return await this._mediator.SendAsync<IEnumerable<StrategyDto>>(new Command.Finds<StrategyDto>
+            {
+                Ids = ids
+            });
+
+        }
+
+        public async Task HandleAsync(Command.BatchDelete<StrategyResource> command)
+        {
+            await this._documentStore.DeleteAsync<StrategyResource>(command.Ids);
+        }
+
+        public async Task<IEnumerable<StrategyDto>> HandleAsync(Command.Finds<StrategyDto> command)
+        {
+            if (command.Ids == null || !command.Ids.Any()) return Enumerable.Empty<StrategyDto>();
+
+            var result = this._storage.AsQueryable<StrategyDto>()
+                                    .Where(s => command.Ids.Contains(s.Id))
+                                    .ToArray();
+
+            return result;
         }
 
         private Task<Strategy> FindStrategy(Strategy Strategy)

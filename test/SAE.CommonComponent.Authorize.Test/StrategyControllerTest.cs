@@ -104,7 +104,7 @@ namespace SAE.CommonComponent.Authorize.Test
         [Fact]
         public async Task AddRule()
         {
-            var range = new Random().Next(50, 100);
+            var range = new Random().Next(500, 1000);
             var strategyDto = await this.Add();
 
             var ruleDtos = new List<RuleDto>();
@@ -139,10 +139,113 @@ namespace SAE.CommonComponent.Authorize.Test
 
             foreach (var rule in ruleDtos)
             {
-                Assert.Contains(strategy.Expression, rule.Left);
+                Assert.Contains(rule.Left, strategy.Expression);
             }
 
             this.WriteLine(strategy.Expression);
+        }
+
+        [Fact]
+        public async Task GrveResource()
+        {
+            var strategyDtos = new List<StrategyDto>();
+
+            await Enumerable.Range(0, new Random().Next(500, 1000))
+                            .ForEachAsync(async s =>
+                            {
+                                strategyDtos.Add(await this.Add());
+                            });
+
+            var resourceIds = Enumerable.Range(0, new Random().Next(50, 100))
+                                        .Select(s => Utils.GenerateId())
+                                        .ToArray();
+
+            var resourceTypes = Enumerable.Range(0, new Random().Next(50, 100))
+                                        .Select(s => Utils.GenerateId())
+                                        .ToArray();
+
+            var commands = strategyDtos.Select(s => new StrategyResourceCommand.Create
+            {
+                Name = this.GetRandom(),
+                Description = this.GetRandom(),
+                ResourceId = resourceIds[Math.Abs(this.GetRandom().GetHashCode() % (resourceIds.Length - 1))],
+                ResourceType = resourceIds[Math.Abs(this.GetRandom().GetHashCode() % (resourceTypes.Length - 1))],
+                StrategyId = s.Id,
+            }).ToArray();
+
+            var requestPath = $"{API}/Resource";
+
+            var strategyResources = new List<StrategyResource>();
+
+            foreach (var command in commands)
+            {
+                var request = new HttpRequestMessage(HttpMethod.Post, requestPath);
+
+                request.AddJsonContent(command);
+
+                var httpResponse = await this.HttpClient.SendAsync(request);
+
+                strategyResources.Add(new StrategyResource
+                {
+                    Id = await httpResponse.AsAsync<string>(),
+                    Description = command.Description,
+                    Name = command.Name,
+                    ResourceId = command.ResourceId,
+                    ResourceType = command.ResourceType,
+                    StrategyId = command.StrategyId
+                });
+            }
+
+            var deleteIds = new List<string>();
+
+            foreach (var group in strategyResources.GroupBy(s => s.ResourceType).ToArray())
+            {
+                var request = new HttpRequestMessage(HttpMethod.Get, $"{requestPath}?{nameof(StrategyResourceCommand.List.ResourceType)}={group.Key}");
+                var httpResponse = await this.HttpClient.SendAsync(request);
+                var strategies = await httpResponse.AsAsync<StrategyDto[]>();
+
+                Assert.Equal(group.Count(), strategies.Count());
+
+                foreach (var strategy in strategies)
+                {
+                    Assert.Contains(group, s => s.StrategyId == strategy.Id);
+                    if (Math.Abs(strategy.Id.GetHashCode()) % 2 == 0)
+                    {
+                        request = new HttpRequestMessage(HttpMethod.Delete, $"{requestPath}");
+
+                        request.AddJsonContent(new Command.BatchDelete<Strategy>
+                        {
+                            Ids = [strategy.Id]
+                        });
+
+                        deleteIds.Add(strategy.Id);
+
+                        httpResponse = await this.HttpClient.SendAsync(request);
+
+                        httpResponse.EnsureSuccessStatusCode();
+                    }
+                }
+
+
+                request = new HttpRequestMessage(HttpMethod.Get, $"{requestPath}?{nameof(StrategyResourceCommand.List.ResourceType)}={group.Key}");
+                httpResponse = await this.HttpClient.SendAsync(request);
+                strategies = await httpResponse.AsAsync<StrategyDto[]>();
+
+                foreach (var strategy in strategies)
+                {
+                    if (deleteIds.Contains(strategy.Id))
+                    {
+                        Assert.Contains(group, s => s.StrategyId != strategy.Id);
+                    }
+                    else
+                    {
+                        Assert.Contains(group, s => s.StrategyId == strategy.Id);
+                    }
+
+                }
+
+            }
+
         }
 
         private async Task<StrategyDto> Get(string id)

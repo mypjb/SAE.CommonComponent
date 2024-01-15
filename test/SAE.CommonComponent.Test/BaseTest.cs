@@ -37,10 +37,6 @@ namespace SAE.CommonComponent.Test
                    .ConfigureWebHost(webBuilder =>
                    {
                        webBuilder.UseEnvironment(Environments.Development);
-                       webBuilder.ConfigureServices(t =>
-                       {
-                           var t1 = t;
-                       });
                        this.UseStartup(webBuilder.UseTestServer());
                    }).ConfigureDefault()
                    .Start();

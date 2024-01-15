@@ -20,7 +20,7 @@ namespace SAE.CommonComponent.Authorize.Controllers
     /// <summary>
     /// 规则管理
     /// </summary>
-    [Route("{controller}")]
+    [Route("[controller]")]
     [ApiController]
     public class StrategyController : Controller
     {
@@ -70,7 +70,7 @@ namespace SAE.CommonComponent.Authorize.Controllers
         /// 更改状态
         /// </summary>
         /// <param name="command"></param>
-        [HttpPut("{action}")]
+        [HttpPut("[action]")]
         public async Task<IActionResult> Status(StrategyCommand.ChangeStatus command)
         {
             await this._mediator.SendAsync(command);
@@ -81,7 +81,7 @@ namespace SAE.CommonComponent.Authorize.Controllers
         /// 添加规则
         /// </summary>
         /// <param name="command"></param>
-        [HttpPost("{action}")]
+        [HttpPost("[action]")]
         public async Task<IActionResult> AddRule([FromBody] StrategyCommand.AddRule command)
         {
             await this._mediator.SendAsync(command);
@@ -101,7 +101,7 @@ namespace SAE.CommonComponent.Authorize.Controllers
         /// 列出规则
         /// </summary>
         /// <param name="command"></param>
-        [HttpGet("{action}")]
+        [HttpGet("[action]")]
         public async Task<object> List([FromQuery] StrategyCommand.List command)
         {
             return await this._mediator.SendAsync<StrategyCommand.List, IEnumerable<StrategyDto>>(command);
@@ -110,7 +110,7 @@ namespace SAE.CommonComponent.Authorize.Controllers
         /// 分页查询
         /// </summary>
         /// <param name="command"></param>
-        [HttpGet("{action}")]
+        [HttpGet("[action]")]
         public async Task<object> Paging([FromQuery] StrategyCommand.Query command)
         {
             return await this._mediator.SendAsync<StrategyCommand.Query, IPagedList<StrategyDto>>(command);
@@ -121,11 +121,41 @@ namespace SAE.CommonComponent.Authorize.Controllers
         /// 列出策略引用的规则
         /// </summary>
         /// <param name="command"></param>
-        [HttpGet("{action}")]
+        [HttpGet("[action]")]
         public async Task<object> RuleList([FromQuery] StrategyCommand.RuleList command)
         {
             return await this._mediator.SendAsync<StrategyCommand.RuleList, IEnumerable<IEnumerable<RuleDto>>>(command);
         }
 
+        /// <summary>
+        /// 创建资源和策略关联对象
+        /// </summary>
+        /// <param name="command">操作命令</param>
+        [HttpPost("[action]")]
+        public async Task<object> Resource([FromBody] StrategyResourceCommand.Create command)
+        {
+            return await this._mediator.SendAsync<string>(command);
+        }
+
+        /// <summary>
+        /// 创建资源和策略关联对象
+        /// </summary>
+        /// <param name="command">操作命令</param>
+        [HttpDelete("[action]")]
+        public async Task<IActionResult> Resource([FromBody] Command.BatchDelete<Strategy> command)
+        {
+            await this._mediator.SendAsync(command);
+            return this.Ok();
+        }
+
+        /// <summary>
+        /// 创建资源和策略关联对象
+        /// </summary>
+        /// <param name="command">操作命令</param>
+        [HttpGet("[action]")]
+        public async Task<object> Resource([FromQuery] StrategyResourceCommand.List command)
+        {
+            return await this._mediator.SendAsync<IEnumerable<StrategyDto>>(command);
+        }
     }
 }

@@ -14,12 +14,15 @@ using SAE.CommonLibrary.MessageQueue;
 
 namespace SAE.CommonComponent.Authorize.Handlers
 {
+    /// <summary>
+    /// 规则处理器
+    /// </summary>
     public class RuleHandler : AbstractHandler<Rule>,
                                ICommandHandler<RuleCommand.Create, string>,
                                ICommandHandler<RuleCommand.Change>,
                                ICommandHandler<Command.BatchDelete<Rule>>,
                                ICommandHandler<Command.Find<RuleDto>, RuleDto>,
-                               ICommandHandler<RuleCommand.Finds, IEnumerable<RuleDto>>,
+                               ICommandHandler<Command.Finds<RuleDto>, IEnumerable<RuleDto>>,
                                ICommandHandler<RuleCommand.Query, IPagedList<RuleDto>>,
                                ICommandHandler<RuleCommand.List, IEnumerable<RuleDto>>
     {
@@ -103,7 +106,7 @@ namespace SAE.CommonComponent.Authorize.Handlers
             return Task.FromResult(oldRule);
         }
 
-        public Task<IEnumerable<RuleDto>> HandleAsync(RuleCommand.Finds command)
+        public Task<IEnumerable<RuleDto>> HandleAsync(Command.Finds<RuleDto> command)
         {
             return Task.FromResult<IEnumerable<RuleDto>>(
                         this.GetStorage()

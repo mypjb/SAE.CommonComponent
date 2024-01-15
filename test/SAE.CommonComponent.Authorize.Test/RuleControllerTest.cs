@@ -128,9 +128,9 @@ namespace SAE.CommonComponent.Authorize.Test
 
                 args = new string[3]
                 {
-                    this.GetRandom(),
+                    $"${this.GetRandom()}",
                     symbol,
-                    symbol=="!"?string.Empty:this.GetRandom(),
+                    symbol=="!"?string.Empty:$"'{this.GetRandom()}'",
                 };
             }
 

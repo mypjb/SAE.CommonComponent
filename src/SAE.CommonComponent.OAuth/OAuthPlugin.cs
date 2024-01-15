@@ -1,10 +1,15 @@
+using System.Linq;
+using System.Net;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Primitives;
+using Microsoft.IdentityModel.Tokens;
 using SAE.CommonLibrary;
 using SAE.CommonLibrary.Plugin.AspNetCore;
 
@@ -33,12 +38,42 @@ namespace SAE.CommonComponent.OAuth
             //    options.CorrelationCookie.SameSite = SameSiteMode.Lax;
             //    options.NonceCookie.SameSite = SameSiteMode.Lax;
             //});
+
+            services.AddAuthentication()
+                    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+                     {
+                         options.Authority = SiteConfig.Get(Constants.Config.OAuth.Authority);
+                         options.TokenValidationParameters = new TokenValidationParameters
+                         {
+                             ValidateAudience = false
+                         };
+                         options.RequireHttpsMetadata = false;
+                         options.Events = new JwtBearerEvents();
+                     });
+
+
+            services.PostConfigure<CookieAuthenticationOptions>(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+            {
+                options.ForwardDefaultSelector = (ctx) =>
+                {
+                    StringValues sv;
+                    if (ctx.Request.Headers.TryGetValue(HttpRequestHeader.Authorization.ToString(), out sv) &&
+                        sv.Any() &&
+                        sv.First().StartsWith(JwtBearerDefaults.AuthenticationScheme))
+                    {
+                        return JwtBearerDefaults.AuthenticationScheme;
+                    }
+
+                    return null;
+                };
+
+            });
         }
 
         public override void PluginConfigure(IApplicationBuilder app)
         {
-            //app.UseAuthentication();
-            //app.UseAuthorization();
+            app.UseAuthentication();
+            app.UseAuthorization();
         }
     }
 }

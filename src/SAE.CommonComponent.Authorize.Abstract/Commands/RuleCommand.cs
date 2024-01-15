@@ -55,17 +55,6 @@ namespace SAE.CommonComponent.Authorize.Commands
             /// </summary>
             public string Id { get; set; }
         }
-        /// <summary>
-        /// 查找多个
-        /// </summary>
-        public class Finds
-        {
-            /// <summary>
-            /// 标识集合
-            /// </summary>
-            /// <value></value>
-            public IEnumerable<string> Ids { get; set; }
-        }
 
         /// <summary>
         /// 分页查询

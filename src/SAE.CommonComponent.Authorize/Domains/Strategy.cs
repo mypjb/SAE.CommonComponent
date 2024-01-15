@@ -29,7 +29,7 @@ namespace SAE.CommonComponent.Authorize.Domains
         /// ctor
         /// </summary>
         /// <param name="command"></param>
-        public Strategy(StrategyCommand.Create command)
+       public Strategy(StrategyCommand.Create command)
         {
             this.Apply<StrategyEvent.Create>(command, e =>
                         {
@@ -62,9 +62,9 @@ namespace SAE.CommonComponent.Authorize.Domains
         /// </summary> 
         public RuleCombine RuleCombine { get; set; }
         /// <summary>
-        /// 策略的表达式，通过调用<see cref="Build"/>，进行赋值
+        /// 策略的表达式，通过调用<see cref="BuildAsync(Func{string, Task{Rule}})"/>，进行赋值
         /// </summary>
-        public string Expression { get; private set; }
+        public string Expression { get; set; }
         /// <summary>
         /// 创建时间
         /// </summary>

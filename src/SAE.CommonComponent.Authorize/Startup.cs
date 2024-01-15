@@ -53,36 +53,6 @@ namespace SAE.CommonComponent.Authorize
                     .AddDataPersistenceService(assemblys)
                     .AddMemoryMessageQueue()
                     .AddHandler();
-
-            // services.AddAuthentication()
-            //         .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
-            //          {
-            //              options.Authority = SiteConfig.Get(Constants.Config.OAuth.Authority);
-            //              options.TokenValidationParameters = new TokenValidationParameters
-            //              {
-            //                  ValidateAudience = false
-            //              };
-            //              options.RequireHttpsMetadata = false;
-            //              options.Events = new JwtBearerEvents();
-            //          });
-
-
-            // services.PostConfigure<CookieAuthenticationOptions>(CookieAuthenticationDefaults.AuthenticationScheme, options =>
-            // {
-            //     options.ForwardDefaultSelector = (ctx) =>
-            //     {
-            //         StringValues sv;
-            //         if (ctx.Request.Headers.TryGetValue(HttpRequestHeader.Authorization.ToString(), out sv) &&
-            //             sv.Any() &&
-            //             sv.First().StartsWith(JwtBearerDefaults.AuthenticationScheme))
-            //         {
-            //             return JwtBearerDefaults.AuthenticationScheme;
-            //         }
-
-            //         return null;
-            //     };
-
-            // });
         }
 
         public override void PluginConfigure(IApplicationBuilder app)
