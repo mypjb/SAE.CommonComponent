@@ -35,7 +35,6 @@ namespace SAE.CommonComponent.ConfigServer.Commands
         /// <summary>
         /// 引用配置
         /// </summary>
-       
         public class ReferenceConfig
         {
             /// <summary>

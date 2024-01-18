@@ -164,12 +164,15 @@ namespace SAE.CommonComponent.Authorize.Test
                                         .Select(s => Utils.GenerateId())
                                         .ToArray();
 
+            var resourceIdIndex = Math.Abs(this.GetRandom().GetHashCode()) % resourceIds.Length;
+            var resourceTypeIndex = Math.Abs(this.GetRandom().GetHashCode()) % resourceTypes.Length;
+
             var commands = strategyDtos.Select(s => new StrategyResourceCommand.Create
             {
                 Name = this.GetRandom(),
                 Description = this.GetRandom(),
-                ResourceId = resourceIds[Math.Abs(this.GetRandom().GetHashCode() % (resourceIds.Length - 1))],
-                ResourceType = resourceIds[Math.Abs(this.GetRandom().GetHashCode() % (resourceTypes.Length - 1))],
+                ResourceId = resourceIds[resourceIdIndex],
+                ResourceType = resourceTypes[resourceTypeIndex],
                 StrategyId = s.Id,
             }).ToArray();
 
