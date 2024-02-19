@@ -101,13 +101,13 @@ namespace SAE.CommonComponent.BasicData.Domains
 
         }
         /// <summary>
-        /// 字典不存在
+        /// 检测字典是否存在，如果存在则触发异常。
         /// </summary>
         /// <param name="provider"></param>
         public async Task NotExist(Func<Dict, Task<bool>> provider)
         {
             Assert.Build(await provider.Invoke(this))
-                  .False("字典不存在！");
+                  .False($"字典存在:{this.Name}");
         }
     }
 }

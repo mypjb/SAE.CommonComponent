@@ -161,6 +161,10 @@ namespace SAE.CommonComponent
             /// 默认树的根标识
             /// </summary>
             public const string RootId = "";
+            /// <summary>
+            /// 分割符
+            /// </summary>
+            public const string Separator = "/";
         }
 
         /// <summary>
@@ -179,6 +183,16 @@ namespace SAE.CommonComponent
                 /// <value></value>
                 public const string BitmapDescriptors = "bitmap_auth_";
             }
+        }
+        /// <summary>
+        /// 字段
+        /// </summary>
+        public class Dict
+        {
+            /// <summary>
+            /// 应用资源
+            /// </summary>
+            public const string AppResource = "app/resource";
         }
     }
 }

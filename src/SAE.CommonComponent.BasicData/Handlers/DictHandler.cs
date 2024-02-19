@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
+using System.Reflection.Metadata.Ecma335;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using SAE.CommonComponent.BasicData.Commands;
@@ -15,20 +17,21 @@ using SAE.CommonLibrary.Extension;
 
 namespace SAE.CommonComponent.BasicData.Handlers
 {
-    public class ConfigHandler : AbstractHandler<Dict>,
+    public class DictHandler : AbstractHandler<Dict>,
                                  ICommandHandler<DictCommand.Create, string>,
                                  ICommandHandler<DictCommand.Change>,
                                  ICommandHandler<Command.Delete<Dict>>,
                                  ICommandHandler<Command.Find<DictDto>, DictDto>,
                                  ICommandHandler<DictCommand.Query, IPagedList<DictDto>>,
                                  ICommandHandler<DictCommand.Tree, IEnumerable<DictItemDto>>,
-                                 ICommandHandler<DictCommand.List, IEnumerable<DictDto>>
+                                 ICommandHandler<DictCommand.List, IEnumerable<DictDto>>,
+                                 ICommandHandler<DictCommand.Find, DictDto>
     {
         private readonly IStorage _storage;
         private readonly IMediator _mediator;
         private readonly IDirector _director;
 
-        public ConfigHandler(IDocumentStore documentStore,
+        public DictHandler(IDocumentStore documentStore,
             IStorage storage,
             IMediator mediator,
             IDirector director) : base(documentStore)
@@ -95,6 +98,11 @@ namespace SAE.CommonComponent.BasicData.Handlers
         public async Task<IPagedList<DictDto>> HandleAsync(DictCommand.Query command)
         {
             var query = this._storage.AsQueryable<DictDto>();
+
+            if (!string.IsNullOrWhiteSpace(command.ParentId))
+            {
+                query = query.Where(s => s.ParentId == command.ParentId);
+            }
 
             if (!command.Name.IsNullOrWhiteSpace())
             {
@@ -181,6 +189,35 @@ namespace SAE.CommonComponent.BasicData.Handlers
                 query = query.Where(s => s.Name == command.Name);
             }
             return query.ToArray();
+        }
+
+        public async Task<DictDto> HandleAsync(DictCommand.Find command)
+        {
+            if (string.IsNullOrWhiteSpace(command.Names))
+            {
+                return null;
+            }
+
+            var names = command.Names.Split(Constants.Tree.Separator).ToArray();
+
+            var query = this._storage.AsQueryable<DictDto>();
+
+            var dict = query.FirstOrDefault(s => s.ParentId == Constants.Tree.RootId && s.Name == names.First());
+
+            if (dict != null && names.Length > 1)
+            {
+                foreach (var name in names.Skip(1))
+                {
+                    dict = query.FirstOrDefault(s => s.ParentId == dict.Id && s.Name == name);
+                    
+                    if (dict == null)
+                    {
+                        break;
+                    }
+                }
+            }
+
+            return dict;
         }
     }
 }

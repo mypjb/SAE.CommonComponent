@@ -91,5 +91,9 @@ namespace SAE.CommonComponent
         /// 租户
         /// </summary>
         Tenant,
+        /// <summary>
+        /// 应用
+        /// </summary>
+        App,
     }
 }

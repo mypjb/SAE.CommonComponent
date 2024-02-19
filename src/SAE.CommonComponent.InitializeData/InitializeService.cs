@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -23,18 +22,13 @@ using SAE.CommonComponent.ConfigServer.Commands;
 using SAE.CommonComponent.ConfigServer.Dtos;
 using SAE.CommonComponent.Identity.Commands;
 using SAE.CommonComponent.MultiTenant.Commands;
-using SAE.CommonComponent.MultiTenant.Dtos;
 using SAE.CommonComponent.PluginManagement.Commands;
 using SAE.CommonComponent.PluginManagement.Dtos;
 using SAE.CommonComponent.Routing.Commands;
 using SAE.CommonComponent.Routing.Dtos;
-using SAE.CommonComponent.User.Commands;
-using SAE.CommonComponent.User.Dtos;
 using SAE.CommonLibrary;
 using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.Abstract.Model;
-using SAE.CommonLibrary.AspNetCore;
-using SAE.CommonLibrary.AspNetCore.Authorization;
 using SAE.CommonLibrary.AspNetCore.Routing;
 using SAE.CommonLibrary.Configuration;
 using SAE.CommonLibrary.EventStore.Document;
@@ -52,10 +46,25 @@ namespace SAE.CommonComponent.InitializeData
     /// <inheritdoc/>
     public class InitializeService : IInitializeService
     {
+        /// <summary>
+        /// 站点映射配额路径
+        /// </summary>
         protected const string SiteMapPath = "siteMap.json";
+        /// <summary>
+        /// 应用配置路径
+        /// </summary>
         protected const string AppSettings = "appsettings.json";
+        /// <summary>
+        /// 站点映射配额路径（开发环境）
+        /// </summary>
         protected const string SiteMapDevelopmentPath = "siteMap.Development.json";
+        /// <summary>
+        /// 中介者
+        /// </summary>
         protected readonly IMediator _mediator;
+        /// <summary>
+        /// 日志记录器
+        /// </summary>
         protected readonly ILogging _logging;
         private readonly IServiceProvider _serviceProvider;
         private readonly IConfiguration _configuration;
@@ -64,12 +73,15 @@ namespace SAE.CommonComponent.InitializeData
         private readonly IHostEnvironment _hostEnvironment;
 
         private readonly SAEOptions _saeOptions;
-
+        /// <summary>
+        /// ctor
+        /// </summary>
+        /// <param name="serviceProvider"></param>
         public InitializeService(IServiceProvider serviceProvider)
         {
             this._mediator = serviceProvider.GetService<IMediator>();
-            var loggingFactory = serviceProvider.GetService<ILoggingFactory>();
-            this._logging = loggingFactory.Create(this.GetType().Name);
+            this._logging = serviceProvider.GetService<ILoggingFactory>()
+                                            .Create(this.GetType().Name);
             this._serviceProvider = serviceProvider;
             this._configuration = this._serviceProvider.GetService<IConfiguration>();
             this._pluginManage = serviceProvider.GetService<IPluginManage>();
@@ -289,22 +301,22 @@ namespace SAE.CommonComponent.InitializeData
                 ParentId = scopeDict.ParentId
             });
 
-            // var bitmapEndpoints = await this._bitmapEndpointProvider.ListAsync();
+            var pathDescriptors = this._pathDescriptorProvider.GetDescriptors();
 
-            // this._logging.Info($"创建系统资源：{bitmapEndpoints.ToJsonString()}");
+            this._logging.Info($"创建系统资源：{pathDescriptors.ToJsonString()}");
 
-            // foreach (var bitmapEndpoint in bitmapEndpoints)
-            // {
-            //     await this._mediator.SendAsync<string>(new AppResourceCommand.Create
-            //     {
-            //         AppId = app.Id,
-            //         Method = bitmapEndpoint.Method,
-            //         Name = $"{bitmapEndpoint.Path}:{bitmapEndpoint.Method}",
-            //         Path = bitmapEndpoint.Path
-            //     });
-            // }
+            foreach (var pathDescriptor in pathDescriptors)
+            {
+                await this._mediator.SendAsync<string>(new AppResourceCommand.Create
+                {
+                    AppId = app.Id,
+                    Method = pathDescriptor.Method,
+                    Name = pathDescriptor.Name,
+                    Path = pathDescriptor.Path
+                });
+            }
 
-            var jsonSeparator = '.';
+            var jsonSeparator = ".";
 
             var oauthPath = $"{SAE.CommonLibrary.Configuration.Constants.Config.OptionKey.Replace(SAE.CommonLibrary.Configuration.Constants.ConfigSeparator, jsonSeparator)}{jsonSeparator}{oauthKey}";
 
@@ -342,8 +354,8 @@ namespace SAE.CommonComponent.InitializeData
                     ClientSecret = initialClientId,
                     Name = this.GetJTokenValue<string>(basicInfoJToken, nameof(Constants.Config.BasicInfo.Name)),
                     Scopes = scopes.Where(s => scopeNames.Contains(s.Name, StringComparer.OrdinalIgnoreCase))
-                                   .Select(s => s.Name)
-                                   .ToArray(),
+                                    .Select(s => s.Name)
+                                    .ToArray(),
                     Endpoint = new ClientEndpointDto
                     {
                         RedirectUris = this.GetJTokenValues<string>(oauthJToken, nameof(ClientEndpointDto.RedirectUris)).ToArray(),
@@ -354,7 +366,7 @@ namespace SAE.CommonComponent.InitializeData
 
                 var clientId = await this._mediator.SendAsync<string>(clientCommand);
 
-                // clientCommand.Secret = "************";
+                clientCommand.ClientSecret = "************";
 
                 this._logging.Info($"添加默认客户端凭证:{clientCommand.ToJsonString()}");
 
@@ -467,99 +479,82 @@ namespace SAE.CommonComponent.InitializeData
 
         public virtual async Task AuthorizeAsync()
         {
-            // var (cluster, app) = await this.GetAppClusterAsync();
+            var (cluster, app) = await this.GetAppClusterAsync();
 
-            // var appResourceDtos = await this._mediator.SendAsync<IEnumerable<AppResourceDto>>(new AppResourceCommand.List
-            // {
-            //     AppId = app.Id
-            // });
+            var appResourceDtos = await this._mediator.SendAsync<IEnumerable<AppResourceDto>>(new AppResourceCommand.List
+            {
+                AppId = app.Id
+            });
 
-            // this._logging.Info($"系统资源:{appResourceDtos.ToJsonString()}");
-
-
-            // var roleCommand = new RoleCommand.Create
-            // {
-            //     AppId = app.Id,
-            //     Description = "超级管理员",
-            //     Name = Constants.Authorize.AdminRoleName
-            // };
-
-            // var roleId = await this._mediator.SendAsync<string>(roleCommand);
-
-            // var permissionIds = new string[appResourceDtos.Count()];
-
-            // for (int i = 0; i < appResourceDtos.Count(); i++)
-            // {
-            //     var appResource = appResourceDtos.ElementAt(i);
-
-            //     var permissionCommand = new PermissionCommand.Create
-            //     {
-            //         AppId = roleCommand.AppId,
-            //         Description = appResource.Name,
-            //         Name = appResource.Name,
-            //         AppResourceId = appResource.Id
-            //     };
-
-            //     permissionIds[i] = await this._mediator.SendAsync<string>(permissionCommand);
-            // }
-
-            // var referencePermissionCommand = new RoleCommand.ReferencePermission
-            // {
-            //     Id = roleId,
-            //     PermissionIds = permissionIds
-            // };
-
-            // await this._mediator.SendAsync(referencePermissionCommand);
-
-            // var clientDtos = await this._mediator.SendAsync<IPagedList<ClientDto>>(new ClientCommand.Query
-            // {
-            //     AppId = app.Id
-            // });
-
-            // foreach (var client in clientDtos)
-            // {
-            //     await this._mediator.SendAsync(new ClientRoleCommand.ReferenceRole
-            //     {
-            //         ClientId = client.Id,
-            //         RoleIds = new[] { roleId }
-            //     });
-            //     var clientCodes = await this._mediator.SendAsync<Dictionary<string, string>>(new ClientRoleCommand.QueryClientAuthorizeCode
-            //     {
-            //         ClientId = client.Id
-            //     });
-
-            //     this._logging.Info($"客户端'{client.Name}({client.Id})'认证码:'{clientCodes.ToJsonString()}'");
-            // }
-
-            // var userDtos = await this._mediator.SendAsync<IPagedList<UserDto>>(new UserCommand.Query());
+            this._logging.Info($"系统资源:{appResourceDtos.ToJsonString()}");
 
 
+            var strategyCreateCommand = new StrategyCommand.Create
+            {
+                Name = "Super Administrator",
+                Description = "超级管理员"
+            };
 
-            // foreach (var user in userDtos)
-            // {
-            //     var superAdminCommand = new SuperAdminCommand.Create
-            //     {
-            //         AppId = app.Id,
-            //         TargetId = user.Id
-            //     };
+            var strategyId = await this._mediator.SendAsync<string>(strategyCreateCommand);
 
-            //     this._logging.Info($"赋予用户'{user.Name}'，'{app.Name}'系统超管权限");
+            var ruleCreateCommand = new RuleCommand.Create
+            {
+                Description = "超级管理员",
+                Name = "Super Administrator",
+                Left = "$SuperAdmin",
+                Symbol = "==",
+                Right = "true"
+            };
 
-            //     await this._mediator.SendAsync(superAdminCommand);
+            var ruleId = await this._mediator.SendAsync<string>(ruleCreateCommand);
 
-            //     await this._mediator.SendAsync(new UserRoleCommand.ReferenceRole
-            //     {
-            //         UserId = user.Id,
-            //         RoleIds = new[] { roleId }
-            //     });
+            var strategyAddRuleCommand = new StrategyCommand.AddRule
+            {
+                Id = strategyId,
+                Combines = new StrategyCommand.AddRule.Combine[1]
+                {
+                    new StrategyCommand.AddRule.Combine
+                    {
+                        Id=ruleId
+                    }
+                }
+            };
 
-            //     var userCodes = await this._mediator.SendAsync<Dictionary<string, string>>(new UserRoleCommand.QueryUserAuthorizeCode
-            //     {
-            //         UserId = user.Id
-            //     });
+            await this._mediator.SendAsync(strategyAddRuleCommand);
 
-            //     this._logging.Info($"用户'{user.Name}({user.Id})'认证码:{userCodes.ToJsonString()}");
-            // }
+            var dictDto = await this._mediator.SendAsync<DictDto>(new DictCommand.Find
+            {
+                Names = Constants.Dict.AppResource
+            });
+
+            for (int i = 0; i < appResourceDtos.Count(); i++)
+            {
+                var appResource = appResourceDtos.ElementAt(i);
+
+                var strategyResourceCommand = new StrategyResourceCommand.Create
+                {
+                    Name = $"{appResource.Name} Super Administrator",
+                    Description = $"{appResource.Name}超级管理员规则",
+                    ResourceId = appResource.Id,
+                    ResourceType = dictDto.Id,
+                    StrategyId = strategyId
+                };
+
+                await this._mediator.SendAsync<string>(strategyResourceCommand);
+
+                this._logging.Info($"授权'{appResource.Name}({appResource.Method}:{appResource.Path})超管权限");
+            }
+
+            var clientDtos = await this._mediator.SendAsync<IPagedList<ClientDto>>(new ClientCommand.Query
+            {
+                AppId = app.Id
+            });
+
+            foreach (var client in clientDtos)
+            {
+                //添加标签
+            }
+
         }
 
         public virtual async Task ConfigServerAsync()

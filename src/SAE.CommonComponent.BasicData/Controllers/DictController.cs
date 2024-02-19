@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace SAE.CommonComponent.BasicData.Controllers
 {
     [ApiController]
-    [Route("{controller}")]
+    [Route("[controller]")]
     public class DictController : Controller
     {
         private readonly IMediator _mediator;
@@ -42,18 +42,18 @@ namespace SAE.CommonComponent.BasicData.Controllers
         {
             return await this._mediator.SendAsync<DictDto>(command);
         }
-        [HttpGet("{action}")]
+        [HttpGet("[action]")]
         public async Task<object> Paging([FromQuery] DictCommand.Query command)
         {
             return await this._mediator.SendAsync<IPagedList<DictDto>>(command);
         }
-        [HttpGet("{action}")]
+        [HttpGet("[action]")]
         public async Task<object> Tree([FromQuery]DictCommand.Tree command)
         {
             return await this._mediator.SendAsync<IEnumerable<DictItemDto>>(command);
         }
 
-        [HttpGet("{action}")]
+        [HttpGet("[action]")]
         public async Task<object> List([FromQuery] DictCommand.List command)
         {
             return await this._mediator.SendAsync<IEnumerable<DictDto>>(command);

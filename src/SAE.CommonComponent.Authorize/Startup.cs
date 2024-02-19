@@ -59,7 +59,7 @@ namespace SAE.CommonComponent.Authorize
         {
             //app.UseMediatorOrleansSilo();
             app.UseServiceFacade();
-            var messageQueue = app.ApplicationServices.GetService<IMessageQueue>();
+            // var messageQueue = app.ApplicationServices.GetService<IMessageQueue>();
             // messageQueue.Subscibe<RoleEvent.Create>();
         }
     }

@@ -93,5 +93,19 @@ namespace SAE.CommonComponent.BasicData.Commands
             /// <value></value>
             public string Type { get; set; }
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        public class Find
+        {
+            /// <summary>
+            /// 使用带有层次结构的名称进行查找
+            /// </summary>
+            /// <remarks>
+            ///  使用<c>/</c>进行分割
+            /// </remarks>
+            /// <value></value>
+            public string Names { get; set; }
+        }
     }
 }
