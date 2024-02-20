@@ -15,18 +15,30 @@ using SAE.CommonLibrary.Extension;
 
 namespace SAE.CommonComponent.BasicData.Handlers
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class LabelHandler : AbstractHandler<Label>,
                                 ICommandHandler<LabelCommand.Create, string>,
                                 ICommandHandler<Command.Delete<Label>>,
                                 ICommandHandler<Command.Find<LabelDto>, LabelDto>,
                                 ICommandHandler<LabelCommand.Find, LabelDto>,
                                 ICommandHandler<LabelCommand.Query, IPagedList<LabelDto>>,
-                                ICommandHandler<LabelCommand.List, IEnumerable<LabelDto>>
+                                ICommandHandler<LabelCommand.List, IEnumerable<LabelDto>>,
+                                ICommandHandler<LabelResourceCommand.Create>,
+                                ICommandHandler<LabelResourceCommand.List, IEnumerable<LabelDto>>,
+                                ICommandHandler<LabelResourceCommand.List, IEnumerable<string>>
     {
         private readonly IStorage _storage;
         private readonly IMediator _mediator;
         private readonly IDirector _director;
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="documentStore"></param>
+        /// <param name="storage"></param>
+        /// <param name="mediator"></param>
+        /// <param name="director"></param>
         public LabelHandler(IDocumentStore documentStore,
             IStorage storage,
             IMediator mediator,
@@ -121,9 +133,59 @@ namespace SAE.CommonComponent.BasicData.Handlers
         public Task<LabelDto> HandleAsync(LabelCommand.Find command)
         {
             var query = this._storage.AsQueryable<LabelDto>();
-            var lable = query.FirstOrDefault(s => s.Name == command.Name &&
+            var label = query.FirstOrDefault(s => s.Name == command.Name &&
                                     s.Value == command.Value);
-            return Task.FromResult(lable);
+            return Task.FromResult(label);
+        }
+
+        public async Task HandleAsync(LabelResourceCommand.Create command)
+        {
+            var labelDto = await this._mediator.SendAsync<LabelDto>(new LabelCommand.Create
+            {
+                Name = command.Name,
+                Value = command.Value,
+                Creator = command.Creator
+            });
+
+            var label = labelDto.To<Label>();
+
+            var labelResource = new LabelResource(label, command);
+
+            await this._storage.SaveAsync(labelResource);
+        }
+
+        public async Task<IEnumerable<LabelDto>> HandleAsync(LabelResourceCommand.List command)
+        {
+            if (command.ResourceId.IsNullOrWhiteSpace() || command.ResourceType.IsNullOrWhiteSpace())
+            {
+                return new LabelDto[0];
+            }
+
+            var labelIds = this._storage.AsQueryable<LabelResource>()
+                                .Where(s => s.ResourceId == command.ResourceId && s.ResourceType == command.ResourceType)
+                                .Select(s => s.LabelId)
+                                .ToArray();
+
+            var labels = this._storage.AsQueryable<LabelDto>()
+                            .Where(s => labelIds.Contains(s.Id))
+                            .ToArray();
+
+            return labels;
+        }
+
+        async Task<IEnumerable<string>> ICommandHandler<LabelResourceCommand.List, IEnumerable<string>>.HandleAsync(LabelResourceCommand.List command)
+        {
+            if (command.ResourceId.IsNullOrWhiteSpace() || command.ResourceType.IsNullOrWhiteSpace())
+            {
+                return new string[0];
+            }
+
+            var labelIds = this._storage.AsQueryable<LabelResource>()
+                                .Where(s => s.ResourceId == command.ResourceId && s.ResourceType == command.ResourceType)
+                                .Select(s => s.LabelId)
+                                .Distinct()
+                                .ToArray();
+            return labelIds;
         }
     }
 }

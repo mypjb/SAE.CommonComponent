@@ -26,6 +26,8 @@ using SAE.CommonComponent.PluginManagement.Commands;
 using SAE.CommonComponent.PluginManagement.Dtos;
 using SAE.CommonComponent.Routing.Commands;
 using SAE.CommonComponent.Routing.Dtos;
+using SAE.CommonComponent.User.Commands;
+using SAE.CommonComponent.User.Dtos;
 using SAE.CommonLibrary;
 using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.Abstract.Model;
@@ -37,6 +39,7 @@ using SAE.CommonLibrary.Extension.Middleware;
 using SAE.CommonLibrary.Logging;
 using SAE.CommonLibrary.Plugin;
 using ClientCommand = SAE.CommonComponent.Application.Commands.ClientCommand;
+using ABACConstants = SAE.CommonLibrary.Abstract.Authorization.ABAC.Constants;
 
 namespace SAE.CommonComponent.InitializeData
 {
@@ -91,7 +94,7 @@ namespace SAE.CommonComponent.InitializeData
         /// <summary>
         /// Find app config
         /// </summary>
-        /// <param name="app"></param>
+        /// <param name="appDto"></param>
         /// <param name="envId"></param>
         /// <returns></returns>
         protected virtual async Task<IDictionary<string, string>> FindSiteConfigAsync(AppDto appDto, string envId)
@@ -124,6 +127,12 @@ namespace SAE.CommonComponent.InitializeData
         {
             return Utils.GenerateId();
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns> <summary>
+        /// 
+        /// </summary>
         protected virtual async Task<IEnumerable<SiteMap>> GetSiteMapsAsync()
         {
             var assembly = Assembly.GetExecutingAssembly();
@@ -164,6 +173,12 @@ namespace SAE.CommonComponent.InitializeData
 
             return Enumerable.Empty<SiteMap>();
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="name"></param>
+        /// <typeparam name="T"></typeparam>
         protected T GetJTokenValue<T>(JToken token, string name)
         {
             var first = token.FirstOrDefault(s => s.Path.Equals(name, StringComparison.OrdinalIgnoreCase));
@@ -175,7 +190,12 @@ namespace SAE.CommonComponent.InitializeData
             }
             return token.Value<T>(first.Path);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="name"></param>
+        /// <typeparam name="T"></typeparam>
         protected IEnumerable<T> GetJTokenValues<T>(JToken token, string name)
         {
             var first = token.FirstOrDefault(s => s.Path.Equals(name, StringComparison.OrdinalIgnoreCase));
@@ -259,6 +279,16 @@ namespace SAE.CommonComponent.InitializeData
                 Name = nameof(DictType.Tenant)
             });
 
+            var labelId = await this._mediator.SendAsync<string>(new DictCommand.Create
+            {
+                Name = nameof(DictType.Label)
+            });
+
+            var appId = await this._mediator.SendAsync<string>(new DictCommand.Create
+            {
+                Name = nameof(DictType.App)
+            });
+
             var scopeCommand = new DictCommand.Create
             {
                 Name = Constants.Scope,
@@ -271,11 +301,36 @@ namespace SAE.CommonComponent.InitializeData
                 ParentId = tenantId
             };
 
-            this._logging.Info($"添加区域、租户字典:{scopeCommand.ToJsonString()}\r\n{tenantCommand.ToJsonString()}");
+            var appResourceCommand = new DictCommand.Create
+            {
+                Name = "resource",
+                ParentId = appId
+            };
+
+            var labelUserCommand = new DictCommand.Create
+            {
+                Name = "user",
+                ParentId = labelId
+            };
+
+            var labelClientCommand = new DictCommand.Create
+            {
+                Name = "client",
+                ParentId = labelId
+            };
+
+
+            this._logging.Info($"添加区域、租户、应用资源、标签字典:{scopeCommand.ToJsonString()}\r\n{tenantCommand.ToJsonString()}\r\n{appResourceCommand.ToJsonString()}\r\n{labelUserCommand.ToJsonString()}\r\n{labelClientCommand.ToJsonString()}");
 
             await this._mediator.SendAsync<string>(scopeCommand);
 
             await this._mediator.SendAsync<string>(tenantCommand);
+
+            await this._mediator.SendAsync<string>(appResourceCommand);
+
+            await this._mediator.SendAsync<string>(labelUserCommand);
+
+            await this._mediator.SendAsync<string>(labelClientCommand);
         }
         public virtual async Task ApplicationAsync()
         {
@@ -501,7 +556,7 @@ namespace SAE.CommonComponent.InitializeData
             {
                 Description = "超级管理员",
                 Name = "Super Administrator",
-                Left = "$SuperAdmin",
+                Left = $"{ABACConstants.PropertyPrefix}{Constants.Authorize.SuperAdmin}",
                 Symbol = "==",
                 Right = "true"
             };
@@ -522,9 +577,19 @@ namespace SAE.CommonComponent.InitializeData
 
             await this._mediator.SendAsync(strategyAddRuleCommand);
 
-            var dictDto = await this._mediator.SendAsync<DictDto>(new DictCommand.Find
+            var strategyResourceDictDto = await this._mediator.SendAsync<DictDto>(new DictCommand.Find
             {
                 Names = Constants.Dict.AppResource
+            });
+
+            var labelUserDictDto = await this._mediator.SendAsync<DictDto>(new DictCommand.Find
+            {
+                Names = Constants.Dict.LabelUser
+            });
+
+            var labelClientDictDto = await this._mediator.SendAsync<DictDto>(new DictCommand.Find
+            {
+                Names = Constants.Dict.LabelClient
             });
 
             for (int i = 0; i < appResourceDtos.Count(); i++)
@@ -536,7 +601,7 @@ namespace SAE.CommonComponent.InitializeData
                     Name = $"{appResource.Name} Super Administrator",
                     Description = $"{appResource.Name}超级管理员规则",
                     ResourceId = appResource.Id,
-                    ResourceType = dictDto.Id,
+                    ResourceType = strategyResourceDictDto.Id,
                     StrategyId = strategyId
                 };
 
@@ -550,9 +615,46 @@ namespace SAE.CommonComponent.InitializeData
                 AppId = app.Id
             });
 
+            var userDtos = await this._mediator.SendAsync<IPagedList<UserDto>>(new UserCommand.Query());
+
             foreach (var client in clientDtos)
             {
-                //添加标签
+                await this._mediator.SendAsync(new LabelResourceCommand.Create
+                {
+                    Creator = userDtos.First().Id,
+                    Name = Constants.Authorize.SuperAdmin,
+                    Value = "true",
+                    ResourceId = client.Id,
+                    ResourceType = labelUserDictDto.Id
+                });
+
+                var labelDtos = await this._mediator.SendAsync<IEnumerable<LabelDto>>(new LabelResourceCommand.List
+                {
+                    ResourceId = client.Id,
+                    ResourceType = labelUserDictDto.Id
+                });
+
+                this._logging.Info($"为client({client.Id})附加标签:{labelDtos.ToJsonString()}");
+            }
+
+            foreach (var user in userDtos)
+            {
+                await this._mediator.SendAsync(new LabelResourceCommand.Create
+                {
+                    Creator = userDtos.First().Id,
+                    Name = Constants.Authorize.SuperAdmin,
+                    Value = "true",
+                    ResourceId = user.Id,
+                    ResourceType = labelClientDictDto.Id
+                });
+
+                var labelDtos = await this._mediator.SendAsync<IEnumerable<LabelDto>>(new LabelResourceCommand.List
+                {
+                    ResourceId = user.Id,
+                    ResourceType = labelClientDictDto.Id
+                });
+
+                this._logging.Info($"为user({user.Id})附加标签:{labelDtos.ToJsonString()}");
             }
 
         }

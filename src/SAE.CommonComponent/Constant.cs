@@ -48,9 +48,9 @@ namespace SAE.CommonComponent
             /// <value></value>
             public const string PermissionFormat = "{0}:{1}";
             /// <summary>
-            /// 超管名称
+            /// 超级管理员
             /// </summary>
-            public const string AdminRoleName = "admin";
+            public const string SuperAdmin = "SuperAdmin";
         }
         /// <summary>
         /// 配置节
@@ -193,6 +193,14 @@ namespace SAE.CommonComponent
             /// 应用资源
             /// </summary>
             public const string AppResource = "app/resource";
+            /// <summary>
+            /// 用户标签
+            /// </summary>
+            public const string LabelUser = "label/user";
+            /// <summary>
+            /// client标签
+            /// </summary>
+            public const string LabelClient = "label/client";
         }
     }
 }

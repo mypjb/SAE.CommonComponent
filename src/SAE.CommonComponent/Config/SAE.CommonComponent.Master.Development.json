@@ -81,5 +81,8 @@
     "strategy": "domain",
     "host": "localhost",
     "useDefaultRule": true
+  },
+  "plugin": {
+    "path": "../../../../../plugins"
   }
 }

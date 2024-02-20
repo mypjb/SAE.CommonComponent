@@ -6,6 +6,7 @@ using SAE.CommonComponent.Authorize.Commands;
 using SAE.CommonComponent.Authorize.Events;
 using SAE.CommonLibrary;
 using SAE.CommonLibrary.EventStore.Document;
+using SAE.CommonLibrary.Extension;
 
 namespace SAE.CommonComponent.Authorize.Domains
 {
@@ -32,7 +33,7 @@ namespace SAE.CommonComponent.Authorize.Domains
         {
             this.Apply<StrategyResourceEvent.Create>(command, e =>
             {
-                e.Id = Utils.GenerateId();
+                e.Id = $"{command.StrategyId}_{command.ResourceType}_{command.ResourceId}".ToMd5().ToLower();
                 e.CreateTime = DateTime.UtcNow;
             });
         }

@@ -4,62 +4,59 @@ using System.Linq;
 using System.Threading.Tasks;
 using SAE.CommonComponent.BasicData.Commands;
 using SAE.CommonComponent.BasicData.Events;
-using SAE.CommonLibrary;
 using SAE.CommonLibrary.EventStore.Document;
-using SAE.CommonLibrary.Extension;
 
 namespace SAE.CommonComponent.BasicData.Domains
 {
     /// <summary>
-    /// 标签
+    /// 标签资源
     /// </summary>
-    public class Label : Document
+    public class LabelResource : Document
     {
         /// <summary>
-        /// 创建一个新的对象
+        /// ctor
         /// </summary>
-        public Label()
+        public LabelResource()
         {
 
         }
         /// <summary>
-        /// 创建一个新的对象
+        /// ctor
         /// </summary>
+        /// <param name="label"></param>
         /// <param name="command"></param>
-        public Label(LabelCommand.Create command)
+        public LabelResource(Label label, LabelResourceCommand.Create command)
         {
-            this.Apply<LabelEvent.Create>(command, e =>
+            this.Apply<LabelResourceEvent.Create>(command, e =>
             {
-                e.Id = $"{command.Name}_{command.Value}".ToMd5().ToLower();
-                e.CreateTime = DateTime.Now;
+                e.Id = $"{label.Id}_{command.ResourceType}_{command.ResourceId}".ToLower();
+                e.LabelId = label.Id;
+                e.CreateTime = DateTime.UtcNow;
             });
-
         }
         /// <summary>
-        /// 标识
+        /// 标签
         /// </summary>
-        /// <value></value>
         public string Id { get; set; }
         /// <summary>
-        /// 名称
+        /// 标签标识
         /// </summary>
         /// <value></value>
-        public string Name { get; set; }
+        public string LabelId { get; set; }
         /// <summary>
-        /// 值
+        /// 资源标识
         /// </summary>
         /// <value></value>
-        public string Value { get; set; }
+        public string ResourceId { get; set; }
         /// <summary>
-        /// 创建人
+        /// 资源类型
         /// </summary>
         /// <value></value>
-        public string Creator { get; set; }
+        public string ResourceType { get; set; }
         /// <summary>
         /// 创建时间
         /// </summary>
         /// <value></value>
         public DateTime CreateTime { get; set; }
-
     }
 }

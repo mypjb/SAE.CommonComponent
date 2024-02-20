@@ -95,5 +95,9 @@ namespace SAE.CommonComponent
         /// 应用
         /// </summary>
         App,
+        /// <summary>
+        /// 标签
+        /// </summary>
+        Label,
     }
 }
