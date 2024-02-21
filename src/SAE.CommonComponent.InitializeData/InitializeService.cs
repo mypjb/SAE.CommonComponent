@@ -303,19 +303,19 @@ namespace SAE.CommonComponent.InitializeData
 
             var appResourceCommand = new DictCommand.Create
             {
-                Name = "resource",
+                Name = "Resource",
                 ParentId = appId
             };
 
             var labelUserCommand = new DictCommand.Create
             {
-                Name = "user",
+                Name = "User",
                 ParentId = labelId
             };
 
             var labelClientCommand = new DictCommand.Create
             {
-                Name = "client",
+                Name = "Client",
                 ParentId = labelId
             };
 
@@ -556,7 +556,7 @@ namespace SAE.CommonComponent.InitializeData
             {
                 Description = "超级管理员",
                 Name = "Super Administrator",
-                Left = $"{ABACConstants.PropertyPrefix}{Constants.Authorize.SuperAdmin}",
+                Left = $"{ABACConstants.PropertyPrefix}{Constants.Authorize.CustomPrefix}{Constants.Authorize.SuperAdmin}",
                 Symbol = "==",
                 Right = "true"
             };

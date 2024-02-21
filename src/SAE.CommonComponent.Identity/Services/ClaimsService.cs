@@ -31,9 +31,6 @@ namespace SAE.CommonComponent.Identity.Services
             ValidatedRequest request)
         {
             var claims = (await base.GetAccessTokenClaimsAsync(subject, resourceResult, request)).ToList();
-            
-#warning 专用于测试
-            //claims.Add(new Claim(CommonLibrary.AspNetCore.Constants.BitmapAuthorize.Administrator, "1", Constants.Claim.CustomType));
 
             var client = await this._mediator.SendAsync<ClientDto>(new Command.Find<ClientDto> { Id = request.ClientId });
 
@@ -41,27 +38,12 @@ namespace SAE.CommonComponent.Identity.Services
 
             foreach (var claim in this.GetCustomClaim(subject))
             {
-                if (!claims.Any(s => s.Type.Equals(claim.Type, StringComparison.OrdinalIgnoreCase)))
+                if (!claims.Any(s => s.Type.Equals(claim.Type, StringComparison.OrdinalIgnoreCase) &&
+                    s.Value.Equals(claim.Value, StringComparison.OrdinalIgnoreCase)))
                 {
-                    claims.Add(claim);
+
                 }
             }
-
-            // if (!claims.Any(s => s.Type == CommonLibrary.AspNetCore.Constants.BitmapAuthorize.Claim))
-            // {
-            //     var clientCodes = await this._mediator.SendAsync<Dictionary<string, string>>(new ClientRoleCommand.QueryClientAuthorizeCode
-            //     {
-            //         ClientId = client.Id
-            //     });
-
-            //     foreach (var kv in clientCodes)
-            //     {
-            //         claims.Add(new Claim(CommonLibrary.AspNetCore.Constants.BitmapAuthorize.Claim,
-            //                              string.Format(CommonLibrary.AspNetCore.Constants.BitmapAuthorize.GroupFormat,
-            //                                            kv.Key,
-            //                                            kv.Value)));
-            //     }
-            // }
             return claims;
         }
 

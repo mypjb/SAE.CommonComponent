@@ -105,21 +105,5 @@ namespace SAE.CommonComponent.Application.Commands
             /// <value></value>
             public Status Status { get; set; }
         }
-        /// <summary>
-        /// 设置索引
-        /// </summary>
-        public class SetIndex
-        {
-            /// <summary>
-            /// 标识
-            /// </summary>
-            /// <value></value>
-            public string Id { get; set; }
-            /// <summary>
-            /// 索引
-            /// </summary>
-            /// <value></value>
-            public int Index { get; set; }
-        }
     }
 }

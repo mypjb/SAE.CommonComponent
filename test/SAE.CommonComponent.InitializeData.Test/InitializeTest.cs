@@ -24,7 +24,7 @@ namespace SAE.CommonComponent.InitializeData.Test
         {
             return builder.UseStartup<Master.Startup>();
         }
-
+        
         [Fact]
         public async Task InitialTest()
         {

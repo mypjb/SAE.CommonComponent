@@ -50,7 +50,11 @@ namespace SAE.CommonComponent
             /// <summary>
             /// 超级管理员
             /// </summary>
-            public const string SuperAdmin = "SuperAdmin";
+            public const string SuperAdmin = "admin";
+            /// <summary>
+            /// 自定义前缀
+            /// </summary>
+            public const string CustomPrefix="label.";
         }
         /// <summary>
         /// 配置节
@@ -172,17 +176,6 @@ namespace SAE.CommonComponent
         /// </summary>
         public class Caching
         {
-            /// <summary>
-            /// 角色缓存
-            /// </summary>
-            public class Bitmap
-            {
-                /// <summary>
-                /// 集群应用
-                /// </summary>
-                /// <value></value>
-                public const string BitmapDescriptors = "bitmap_auth_";
-            }
         }
         /// <summary>
         /// 字段
@@ -192,15 +185,15 @@ namespace SAE.CommonComponent
             /// <summary>
             /// 应用资源
             /// </summary>
-            public const string AppResource = "app/resource";
+            public const string AppResource = "App/Resource";
             /// <summary>
             /// 用户标签
             /// </summary>
-            public const string LabelUser = "label/user";
+            public const string LabelUser = "Label/User";
             /// <summary>
             /// client标签
             /// </summary>
-            public const string LabelClient = "label/client";
+            public const string LabelClient = "Label/Client";
         }
     }
 }

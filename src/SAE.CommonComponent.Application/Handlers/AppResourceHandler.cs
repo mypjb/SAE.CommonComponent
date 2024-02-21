@@ -22,7 +22,6 @@ namespace SAE.CommonComponent.Application.Abstract.Handlers
     public class AppResourceHandler : AbstractHandler<AppResource>,
                                       ICommandHandler<AppResourceCommand.Create, string>,
                                       ICommandHandler<AppResourceCommand.Change>,
-                                      ICommandHandler<AppResourceCommand.SetIndex>,
                                       ICommandHandler<Command.Delete<AppResource>>,
                                       ICommandHandler<AppResourceCommand.Query, IPagedList<AppResourceDto>>,
                                       ICommandHandler<Command.Find<AppResourceDto>, AppResourceDto>,
@@ -120,15 +119,5 @@ namespace SAE.CommonComponent.Application.Abstract.Handlers
             return Task.FromResult(query.ToArray().AsEnumerable());
         }
 
-        public async Task HandleAsync(AppResourceCommand.SetIndex command)
-        {
-            var resource = await this.FindAsync(command.Id);
-            Assert.Build(resource)
-                  .NotNull("资源不存在，或被删除！");
-            resource.SetIndex(command);
-            await this._documentStore.SaveAsync(resource);
-        }
-
-        
     }
 }

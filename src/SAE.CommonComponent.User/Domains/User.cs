@@ -12,20 +12,39 @@ using SAE.CommonComponent.User.Dtos;
 
 namespace SAE.CommonComponent.User.Domains
 {
+    /// <summary>
+    /// 账户
+    /// </summary>
     public class Account
     {
+        /// <summary>
+        /// ctor
+        /// </summary>
         public Account()
         {
 
         }
+        /// <summary>
+        /// ctor
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="password"></param>
         public Account(string name, string password)
         {
             Name = name;
             this.SetPassword(password);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
         public string Name { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
         public string Password { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
         public string Slat { get; set; }
 
         /// <summary>
@@ -67,12 +86,22 @@ namespace SAE.CommonComponent.User.Domains
             return $"{input}{this.Slat}".ToLower().ToMd5().ToLower();
         }
     }
+    /// <summary>
+    /// 用户
+    /// </summary>
     public class User : Document
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public User()
         {
 
         }
+        /// <summary>
+        /// ctor
+        /// </summary>
+        /// <param name="command"></param>
         public User(UserCommand.Create command)
         {
             var @event = new UserEvent.Register
@@ -116,12 +145,19 @@ namespace SAE.CommonComponent.User.Domains
             Assert.Build(await userProvider.Invoke(this.Account.Name))
                   .False($"{this.Account.Name} is exist");
         }
-
+        /// <summary>
+        /// 检查密码是否正确
+        /// </summary>
+        /// <param name="password"></param>
+        /// <returns></returns>
         public bool Authentication(string password)
         {
             return this.Account.CheckPassword(password);
         }
-
+        /// <summary>
+        /// 修改密码
+        /// </summary>
+        /// <param name="command"></param>
         public void ChangePassword(UserCommand.ChangePassword command)
         {
             Assert.Build(this.Account.CheckPassword(command.OriginalPassword))
@@ -130,7 +166,10 @@ namespace SAE.CommonComponent.User.Domains
 
             this.Apply(@event);
         }
-
+        /// <summary>
+        /// 更改状态
+        /// </summary>
+        /// <param name="command"></param>
         public void ChangeStatus(UserCommand.ChangeStatus command)
         {
             this.Apply<UserEvent.ChangeStatus>(command);

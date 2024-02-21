@@ -39,7 +39,7 @@ fi
 
 echo -e "	output_dir:${output_dir}	\n	project_file:${project_file}	\n	version:${version}"
 
-dotnet publish -o ${output_dir} "src/SAE.CommonComponent.${project}"
+dotnet publish -c Debug -o ${output_dir} "src/SAE.CommonComponent.${project}"
 
 if [ $project != 'Master' ]
 then

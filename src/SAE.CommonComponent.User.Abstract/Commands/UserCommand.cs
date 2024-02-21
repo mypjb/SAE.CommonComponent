@@ -18,7 +18,7 @@ namespace SAE.CommonComponent.User.Commands
             /// </summary>
             public string Password { get; set; }
         }
-       
+
         /// <summary>
         /// 
         /// </summary>
@@ -46,7 +46,13 @@ namespace SAE.CommonComponent.User.Commands
         /// </summary>
         public class ChangeStatus
         {
+            /// <summary>
+            /// 
+            /// </summary>
             public string Id { get; set; }
+            /// <summary>
+            /// 
+            /// </summary>
             public Status Status { get; set; }
 
         }
@@ -56,7 +62,13 @@ namespace SAE.CommonComponent.User.Commands
         /// </summary>
         public class Query : Paging
         {
+            /// <summary>
+            /// 
+            /// </summary>
             public string Name { get; set; }
+            /// <summary>
+            /// 
+            /// </summary>
             public Status Status { get; set; }
         }
 
@@ -65,12 +77,24 @@ namespace SAE.CommonComponent.User.Commands
         /// </summary>
         public class GetByName
         {
+            /// <summary>
+            /// 
+            /// </summary>
             public string AccountName { get; set; }
         }
-        
+
+        ///<summary>
+        ///
+        ///</summary>
         public class Authentication
         {
+            /// <summary>
+            /// 
+            /// </summary>
             public string AccountName { get; set; }
+            /// <summary>
+            /// 
+            /// </summary>
             public string Password { get; set; }
         }
     }

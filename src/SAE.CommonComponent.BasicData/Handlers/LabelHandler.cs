@@ -140,16 +140,14 @@ namespace SAE.CommonComponent.BasicData.Handlers
 
         public async Task HandleAsync(LabelResourceCommand.Create command)
         {
-            var labelDto = await this._mediator.SendAsync<LabelDto>(new LabelCommand.Create
+            var labelId = await this._mediator.SendAsync<string>(new LabelCommand.Create
             {
                 Name = command.Name,
                 Value = command.Value,
                 Creator = command.Creator
             });
 
-            var label = labelDto.To<Label>();
-
-            var labelResource = new LabelResource(label, command);
+            var labelResource = new LabelResource(labelId, command);
 
             await this._storage.SaveAsync(labelResource);
         }

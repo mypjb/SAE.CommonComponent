@@ -25,12 +25,12 @@ namespace SAE.CommonComponent.BasicData.Domains
         /// </summary>
         /// <param name="label"></param>
         /// <param name="command"></param>
-        public LabelResource(Label label, LabelResourceCommand.Create command)
+        public LabelResource(string labelId, LabelResourceCommand.Create command)
         {
             this.Apply<LabelResourceEvent.Create>(command, e =>
             {
-                e.Id = $"{label.Id}_{command.ResourceType}_{command.ResourceId}".ToLower();
-                e.LabelId = label.Id;
+                e.Id = $"{labelId}_{command.ResourceType}_{command.ResourceId}".ToLower();
+                e.LabelId = labelId;
                 e.CreateTime = DateTime.UtcNow;
             });
         }

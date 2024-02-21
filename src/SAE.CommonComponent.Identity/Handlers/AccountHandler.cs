@@ -1,17 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading.Tasks;
 using IdentityModel;
-using IdentityServer4;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.VisualBasic;
-using SAE.CommonComponent.Authorize.Commands;
-using SAE.CommonComponent.Authorize.Dtos;
+using SAE.CommonComponent.BasicData.Commands;
+using SAE.CommonComponent.BasicData.Dtos;
 using SAE.CommonComponent.Identity.Commands;
 using SAE.CommonComponent.User.Commands;
 using SAE.CommonComponent.User.Dtos;
-using SAE.CommonLibrary;
 using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.Extension;
 
@@ -33,36 +32,35 @@ namespace SAE.CommonComponent.Identity.Handlers
                 AccountName = command.Name,
                 Password = command.Password
             };
-            var dto = await this._mediator.SendAsync<UserDto>(authenticationCommand);
+            var user = await this._mediator.SendAsync<UserDto>(authenticationCommand);
 
-            Assert.Build(dto).NotNull("用户名或密码错误!");
+            Assert.Build(user).NotNull("用户名或密码错误!");
 
             var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
 
-            identity.AddClaim(new Claim(JwtClaimTypes.Subject, dto.Id.ToLower()));
-            identity.AddClaim(new Claim(JwtClaimTypes.Name, dto.Name));
-            identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, dto.Account.Name));
-            // var authorizeCode = await this._mediator.SendAsync<AuthorizeCodeDto>(new UserRoleCommand.QueryUserAuthorizeCode
-            // {
-            //     UserId = dto.Id
-            // });
+            identity.AddClaim(new Claim(JwtClaimTypes.Subject, user.Id.ToLower()));
+            identity.AddClaim(new Claim(JwtClaimTypes.Name, user.Name));
+            identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Account.Name));
 
-            // if (authorizeCode != null)
-            // {
-            //     foreach (var kv in authorizeCode.Codes)
-            //     {
-            //         identity.AddClaim(new Claim(CommonLibrary.AspNetCore.Constants.BitmapAuthorize.Claim,
-            //                                     string.Format(CommonLibrary.AspNetCore.Constants.BitmapAuthorize.GroupFormat,
-            //                                                kv.Key,
-            //                                                kv.Value),
-            //                                                Constants.Claim.CustomType));
-            //     }
+            var rootDict = await this._mediator.SendAsync<DictDto>(new DictCommand.Find
+            {
+                Names = Constants.Dict.LabelUser
+            });
 
-            //     foreach (var appid in authorizeCode.SuperAdmins)
-            //     {
-            //         identity.AddClaim(new Claim(CommonLibrary.AspNetCore.Constants.BitmapAuthorize.Administrator, appid,Constants.Claim.CustomType));
-            //     }
-            // }
+            var labels = await this._mediator.SendAsync<IEnumerable<LabelDto>>(new LabelResourceCommand.List
+            {
+                ResourceId = user.Id,
+                ResourceType = rootDict.Id
+            });
+
+            foreach (var label in labels)
+            {
+                if (!identity.Claims.Any(s => s.Type.Equals(label.Name) &&
+                                        s.Value.Equals(label.Value)))
+                {
+                    identity.AddClaim(new Claim($"{Constants.Authorize.CustomPrefix}{label.Name}", label.Value, Constants.Claim.CustomType));
+                }
+            }
 
             var principal = new ClaimsPrincipal(identity);
 

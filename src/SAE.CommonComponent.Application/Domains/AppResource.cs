@@ -76,14 +76,5 @@ namespace SAE.CommonComponent.Application.Domains
         {
             this.Apply<AppResourceEvent.Change>(command);
         }
-     
-        /// <summary>
-        /// 设置资源索引
-        /// </summary>
-        /// <param name="command"></param>
-        public void SetIndex(AppResourceCommand.SetIndex command)
-        {
-            this.Apply<AppResourceEvent.SetIndex>(command);
-        }
     }
 }

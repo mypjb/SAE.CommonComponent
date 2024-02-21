@@ -45,8 +45,6 @@ namespace SAE.CommonComponent.Application.Test
                           })
                           .ConfigureServices(s =>
                           {
-                              s.AddMediatorBehavior()
-                               .AddRetry<AppResourceCommand.SetIndex>();
                           });
         }
 

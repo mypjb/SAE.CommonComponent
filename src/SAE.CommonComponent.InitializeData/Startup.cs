@@ -43,7 +43,7 @@ namespace SAE.CommonComponent.InitializeData
             {
                 initializeService = new InitializeService(provider);
             }
-            initializeService.InitialAsync(app);
+            initializeService.InitialAsync(app).GetAwaiter().GetResult();
             //var key = Guid.NewGuid().ToString("N");
 
             //File.AppendAllText(KeyPath, key);

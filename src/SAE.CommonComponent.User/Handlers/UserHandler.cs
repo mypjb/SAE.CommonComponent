@@ -62,7 +62,7 @@ namespace SAE.CommonComponent.User.Handlers
         public Task<UserDto> HandleAsync(UserCommand.GetByName command)
         {
             var user = this._storage.AsQueryable<UserDto>()
-                           .FirstOrDefault(s => s.Account.Equals(command.AccountName));
+                            .FirstOrDefault(s => s.Account.Equals(command.AccountName));
             return Task.FromResult(user);
         }
 
@@ -80,7 +80,7 @@ namespace SAE.CommonComponent.User.Handlers
         public async Task<UserDto> HandleAsync(Command.Find<UserDto> command)
         {
             return this._storage.AsQueryable<UserDto>()
-                                 .FirstOrDefault(s => s.Id == command.Id);
+                        .FirstOrDefault(s => s.Id == command.Id);
 
         }
 
@@ -96,16 +96,6 @@ namespace SAE.CommonComponent.User.Handlers
                 {
                     dto = null;
                 }
-                else
-                {
-                    // var code = await this._mediator.SendAsync<string>(new UserRoleCommand.QueryUserAuthorizeCode
-                    // {
-                    //     UserId = dto.Id
-                    // });
-
-                    // dto.AuthorizeCode = code;
-                }
-
             }
 
             return dto;
