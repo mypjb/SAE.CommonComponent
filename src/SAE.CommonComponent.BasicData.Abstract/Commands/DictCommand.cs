@@ -106,6 +106,11 @@ namespace SAE.CommonComponent.BasicData.Commands
             /// </remarks>
             /// <value></value>
             public string Names { get; set; }
+            ///<inheritdoc/>
+            public override string ToString()
+            {
+                return $"{nameof(DictCommand)}{nameof(Find)}_{this.Names}";
+            }
         }
     }
 }

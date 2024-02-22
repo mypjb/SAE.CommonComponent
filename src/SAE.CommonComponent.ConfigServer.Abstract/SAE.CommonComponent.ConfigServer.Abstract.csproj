@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
-    <PackageReference Include="SAE.CommonLibrary.Abstract" Version="8.0.0.1" />
+    <PackageReference Include="SAE.CommonLibrary.Abstract" Version="8.0.0.2" />
   </ItemGroup>
 
 </Project>

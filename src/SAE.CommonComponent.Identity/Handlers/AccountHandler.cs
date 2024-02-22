@@ -47,18 +47,21 @@ namespace SAE.CommonComponent.Identity.Handlers
                 Names = Constants.Dict.LabelUser
             });
 
-            var labels = await this._mediator.SendAsync<IEnumerable<LabelDto>>(new LabelResourceCommand.List
+            if (rootDict != null)
             {
-                ResourceId = user.Id,
-                ResourceType = rootDict.Id
-            });
-
-            foreach (var label in labels)
-            {
-                if (!identity.Claims.Any(s => s.Type.Equals(label.Name) &&
-                                        s.Value.Equals(label.Value)))
+                var labels = await this._mediator.SendAsync<IEnumerable<LabelDto>>(new LabelResourceCommand.List
                 {
-                    identity.AddClaim(new Claim($"{Constants.Authorize.CustomPrefix}{label.Name}", label.Value, Constants.Claim.CustomType));
+                    ResourceId = user.Id,
+                    ResourceType = rootDict.Id
+                });
+
+                foreach (var label in labels)
+                {
+                    if (!identity.Claims.Any(s => s.Type.Equals(label.Name) &&
+                                            s.Value.Equals(label.Value)))
+                    {
+                        identity.AddClaim(new Claim($"{Constants.Authorize.CustomPrefix}{label.Name}", label.Value, Constants.Claim.CustomType));
+                    }
                 }
             }
 
