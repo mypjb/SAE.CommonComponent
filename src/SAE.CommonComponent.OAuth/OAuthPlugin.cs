@@ -15,8 +15,10 @@ using SAE.CommonLibrary.Plugin.AspNetCore;
 
 namespace SAE.CommonComponent.OAuth
 {
+    ///<inheritdoc/>
     public class OAuthPlugin : WebPlugin
     {
+        ///<inheritdoc/>
         public override void PluginConfigureServices(IServiceCollection services)
         {
             //var authenticationBuilder = services.AddAuthentication(options =>
@@ -69,7 +71,7 @@ namespace SAE.CommonComponent.OAuth
 
             });
         }
-
+        ///<inheritdoc/>
         public override void PluginConfigure(IApplicationBuilder app)
         {
             app.UseAuthentication();

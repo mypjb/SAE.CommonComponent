@@ -18,12 +18,13 @@ using System.Threading.Tasks;
 
 namespace SAE.CommonComponent.InitializeData
 {
+    ///<inheritdoc/>
     public class Startup : WebPlugin
     {
         private const string KeyPath = "keys";
+        ///<inheritdoc/>
         public override void PluginConfigure(IApplicationBuilder app)
         {
-
             //if (File.Exists(KeyPath))
             //{
             //    return;
@@ -49,7 +50,7 @@ namespace SAE.CommonComponent.InitializeData
             //File.AppendAllText(KeyPath, key);
         }
 
-
+        ///<inheritdoc/>
         public override void PluginConfigureServices(IServiceCollection services)
         {
 

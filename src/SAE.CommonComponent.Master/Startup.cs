@@ -13,19 +13,31 @@ using SAE.CommonLibrary.Plugin.AspNetCore;
 
 namespace SAE.CommonComponent.Master
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class Startup
     {
         private readonly IHostEnvironment _env;
-
+        /// <summary>
+        /// ctor
+        /// </summary>
+        /// <param name="configuration"></param>
+        /// <param name="environment"></param>
         public Startup(IConfiguration configuration, IHostEnvironment environment)
         {
             Configuration = configuration;
             this._env = environment;
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        private IConfiguration Configuration { get; }
 
-        public IConfiguration Configuration { get; }
-
-        // This method gets called by the runtime. Use this method to add services to the container.
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
@@ -60,7 +72,11 @@ namespace SAE.CommonComponent.Master
             services.AddPluginManage(this.Configuration);
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="app"></param>
+        /// <param name="env"></param>
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -79,12 +95,13 @@ namespace SAE.CommonComponent.Master
             app.UseMultiTenant()
                .UseAuthentication()
                .UseAuthorization()
-               .UsePluginManage()
-               .UseEndpoints(endpoints =>
-               {
-                   endpoints.MapControllers();
-               })
-               .UseRoutingScanning();
+               .UsePluginManage();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            })
+            .UseRoutingScanning();
         }
 
     }

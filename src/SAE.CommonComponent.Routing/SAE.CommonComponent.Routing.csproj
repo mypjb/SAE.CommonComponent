@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
     <ProjectReference Include="..\SAE.CommonComponent.Routing.Abstract\SAE.CommonComponent.Routing.Abstract.csproj" />
     <ProjectReference Include="..\SAE.CommonComponent\SAE.CommonComponent.csproj" />
@@ -6,9 +6,9 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.2" />
-    <PackageReference Include="SAE.CommonLibrary.AspNetCore" Version="8.0.0.2" />
-    <PackageReference Include="SAE.CommonLibrary.EventStore.Document" Version="8.0.0.2" />
-    <PackageReference Include="SAE.CommonLibrary.Plugin.AspNetCore" Version="8.0.0.2" />
+    <PackageReference Include="SAE.CommonLibrary.AspNetCore" Version="8.0.0.5" />
+    <PackageReference Include="SAE.CommonLibrary.EventStore.Document" Version="8.0.0.5" />
+    <PackageReference Include="SAE.CommonLibrary.Plugin.AspNetCore" Version="8.0.0.5" />
   </ItemGroup>
 
 </Project>

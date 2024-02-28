@@ -83,6 +83,6 @@
     "useDefaultRule": true
   },
   "plugin": {
-    "path": "../../../../../plugins"
+    "path": ""
   }
 }

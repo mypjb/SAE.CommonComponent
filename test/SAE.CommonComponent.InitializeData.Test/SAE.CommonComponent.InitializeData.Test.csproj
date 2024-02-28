@@ -15,6 +15,16 @@
     <ProjectReference Include="..\SAE.CommonComponent.Test\SAE.CommonComponent.Test.csproj" />
     <ProjectReference Include="..\..\src\SAE.CommonComponent.InitializeData\SAE.CommonComponent.InitializeData.csproj" />
     <ProjectReference Include="..\..\src\SAE.CommonComponent.Master\SAE.CommonComponent.Master.csproj" />
+    <ProjectReference Include="..\..\src\SAE.CommonComponent.Application\SAE.CommonComponent.Application.csproj" />
+    <ProjectReference Include="..\..\src\SAE.CommonComponent.Authorize\SAE.CommonComponent.Authorize.csproj" />
+    <ProjectReference Include="..\..\src\SAE.CommonComponent.BasicData\SAE.CommonComponent.BasicData.csproj" />
+    <ProjectReference Include="..\..\src\SAE.CommonComponent.ConfigServer\SAE.CommonComponent.ConfigServer.csproj" />
+    <ProjectReference Include="..\..\src\SAE.CommonComponent.Identity\SAE.CommonComponent.Identity.csproj" />
+    <ProjectReference Include="..\..\src\SAE.CommonComponent.MultiTenant\SAE.CommonComponent.MultiTenant.csproj" />
+    <ProjectReference Include="..\..\src\SAE.CommonComponent.OAuth\SAE.CommonComponent.OAuth.csproj" />
+    <ProjectReference Include="..\..\src\SAE.CommonComponent.PluginManagement\SAE.CommonComponent.PluginManagement.csproj" />
+    <ProjectReference Include="..\..\src\SAE.CommonComponent.Routing\SAE.CommonComponent.Routing.csproj" />
+    <ProjectReference Include="..\..\src\SAE.CommonComponent.User\SAE.CommonComponent.User.csproj" />
   </ItemGroup>
 
 </Project>

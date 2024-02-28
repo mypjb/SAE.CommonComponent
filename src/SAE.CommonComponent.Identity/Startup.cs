@@ -15,34 +15,13 @@ using System.Reflection;
 
 namespace SAE.CommonComponent.Identity
 {
+    ///<inheritdoc/>
     public class Startup : WebPlugin
     {
-
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddControllers();
-            this.PluginConfigureServices(services);
-        }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IMediator mediator)
-        {
-
-            app.UseRouting();
-
-            this.PluginConfigure(app);
-
-            app.UseEndpoints(endpoints =>
-               {
-                   endpoints.MapDefaultControllerRoute();
-               });
-        }
-
+        ///<inheritdoc/>
         public override void PluginConfigureServices(IServiceCollection services)
         {
-            var build = services.AddTransient<ICorsPolicyService,CorsPolicyService>()
+            var build = services.AddTransient<ICorsPolicyService, CorsPolicyService>()
                                 .AddTransient<IClaimsService, ClaimsService>()
                                 .AddIdentityServer()
                                 .AddJwtBearerClientAuthentication()
@@ -66,28 +45,26 @@ namespace SAE.CommonComponent.Identity
                         options.Filters.Add(new AuthorizeFilter());
                     });
 
-            var assemblys = new[] { typeof(ClientDto).Assembly, Assembly.GetExecutingAssembly() };
+            var assemblies = new[] { typeof(ClientDto).Assembly, Assembly.GetExecutingAssembly() };
 
-            services.AddServiceFacade()
-                    .AddMediator(assemblys)
+            services.AddMediator()
                     //.AddMediatorOrleansClient()
                     ;
 
             services.AddMemoryDocument()
                     .AddSAEMemoryDistributedCache()
-                    .AddDataPersistenceService(assemblys)
+                    .AddDataPersistenceService(assemblies)
                     .AddMemoryMessageQueue()
                     .AddHandler();
         }
-
+        ///<inheritdoc/>
         public override void PluginConfigure(IApplicationBuilder app)
         {
-            var hostEnvironment= app.ApplicationServices.GetService<IHostEnvironment>();
+            var hostEnvironment = app.ApplicationServices.GetService<IHostEnvironment>();
             if (hostEnvironment.IsDevelopment())
             {
                 IdentityModelEventSource.ShowPII = true;
             }
-            app.UseServiceFacade();
             app.UseAuthentication();
             app.UseIdentityServer();
         }

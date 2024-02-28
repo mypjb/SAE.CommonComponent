@@ -16,8 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="SAE.CommonLibrary.EventStore.Document" Version="8.0.0.2" />
-    <PackageReference Include="SAE.CommonLibrary.Plugin.AspNetCore" Version="8.0.0.2" />
+    <PackageReference Include="SAE.CommonLibrary.EventStore.Document" Version="8.0.0.5" />
+    <PackageReference Include="SAE.CommonLibrary.Plugin.AspNetCore" Version="8.0.0.5" />
     <PackageReference Include="System.Text.Encoding" Version="4.3.0" />
   </ItemGroup>
 

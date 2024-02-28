@@ -10,57 +10,29 @@ using SAE.CommonLibrary.Plugin.AspNetCore;
 
 namespace SAE.CommonComponent.Authorize
 {
+    ///<inheritdoc/>
     public class Startup : WebPlugin
     {
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddControllers();
-            this.PluginConfigureServices(services);
-        }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-
-            app.UseRouting();
-            this.PluginConfigure(app);
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapDefaultControllerRoute();
-            });
-        }
-
+        ///<inheritdoc/>
         public override void PluginConfigureServices(IServiceCollection services)
         {
-            services.AddControllers().AddResponseResult();
+            var assemblies = new[] { typeof(RuleDto).Assembly, Assembly.GetExecutingAssembly() };
 
-            var assemblys = new[] { typeof(RuleDto).Assembly, Assembly.GetExecutingAssembly() };
-
-            services.AddServiceFacade()
-                    .AddMediator(assemblys)
+            services.AddMediator()
                     //.AddMediatorOrleansProxy()
                     ;
 
             services.AddBuilder()
                     .AddMemoryDocument()
-                    .AddDataPersistenceService(assemblys)
+                    .AddDataPersistenceService(assemblies)
                     .AddMemoryMessageQueue()
                     .AddHandler();
         }
 
+        ///<inheritdoc/>
         public override void PluginConfigure(IApplicationBuilder app)
         {
             //app.UseMediatorOrleansSilo();
-            app.UseServiceFacade();
-            // var messageQueue = app.ApplicationServices.GetService<IMessageQueue>();
-            // messageQueue.Subscibe<RoleEvent.Create>();
         }
     }
 }

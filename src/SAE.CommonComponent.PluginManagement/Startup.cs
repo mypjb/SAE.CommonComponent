@@ -8,46 +8,18 @@ using System.Reflection;
 
 namespace SAE.CommonComponent.PluginManagement
 {
+    ///<inheritdoc/>
     public class Startup : WebPlugin
     {
-        // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddControllers();
-            this.PluginConfigureServices(services);
-        }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-
-            app.UseRouting();
-            this.PluginConfigure(app);
-            app.UseAuthorization();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapDefaultControllerRoute();
-            });
-        }
-
+        ///<inheritdoc/>
         public override void PluginConfigureServices(IServiceCollection services)
         {
 
             services.AddTinyMapper();
 
+            var assemblies = new[] { Assembly.GetExecutingAssembly(), typeof(Commands.PluginCommand.Create).Assembly };
 
-            var assemblies = new[] { Assembly.GetExecutingAssembly(),typeof(Commands.PluginCommand.Create).Assembly };
-
-            services.AddMvc()
-                    .AddResponseResult();
-
-            services.AddServiceFacade()
-                    .AddMediator(assemblies)
+            services.AddMediator()
                     // .AddMediatorOrleansProxy()
                     ;
 
@@ -56,7 +28,7 @@ namespace SAE.CommonComponent.PluginManagement
                     .AddMemoryMessageQueue()
                     .AddHandler();
         }
-
+        ///<inheritdoc/>
         public override void PluginConfigure(IApplicationBuilder app)
         {
             app.UseServiceFacade();

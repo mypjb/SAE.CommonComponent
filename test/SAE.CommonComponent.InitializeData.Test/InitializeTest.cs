@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SAE.CommonComponent.Test;
 using SAE.CommonLibrary.Extension;
 using SAE.CommonLibrary.Plugin;
+using SAE.CommonLibrary.Plugin.AspNetCore;
 using Xunit;
 using Xunit.Abstractions;
 using Assert = Xunit.Assert;
@@ -22,9 +23,20 @@ namespace SAE.CommonComponent.InitializeData.Test
 
         protected override IWebHostBuilder UseStartup(IWebHostBuilder builder)
         {
+            var _ = typeof(SAE.CommonComponent.Application.Startup);
+            _ = typeof(SAE.CommonComponent.Authorize.Startup);
+            _ = typeof(SAE.CommonComponent.BasicData.Startup);
+            _ = typeof(SAE.CommonComponent.ConfigServer.Startup);
+            _ = typeof(SAE.CommonComponent.Identity.Startup);
+            _ = typeof(SAE.CommonComponent.InitializeData.Startup);
+            _ = typeof(SAE.CommonComponent.MultiTenant.Startup);
+            _ = typeof(SAE.CommonComponent.OAuth.OAuthPlugin);
+            _ = typeof(SAE.CommonComponent.PluginManagement.Startup);
+            _ = typeof(SAE.CommonComponent.Routing.Startup);
+            _ = typeof(SAE.CommonComponent.User.Startup);
             return builder.UseStartup<Master.Startup>();
         }
-        
+
         [Fact]
         public async Task InitialTest()
         {
