@@ -70,10 +70,11 @@
         {
           "name": "bitmaps",
           "nodeName": "scope",
-          "url": "http://localhost:8080/.bitmaps?clusterId=cw-f25ryN0Kx1u-TBklCeQ"
+          "url": "http://api.sae.com/app/resource/authorize/list?clusterId=cw-f25ryN0Kx1u-TBklCeQ"
         }
       ]
-    }
+    },
+    "url": "http://api.sae.com/app/config?env=Production&clusterId=cw-f25ryN0Kx1u-TBklCeQ"
   },
   "multiTenant": {
     "claimName": "siteid",
@@ -84,5 +85,16 @@
   },
   "plugin": {
     "path": ""
+  },
+  "SAE": {
+    "Config": {
+      "Include": [
+        {
+          "Name": "abac_auth",
+          "NodeName": "auth:abac",
+          "Url": "http://api.sae.com/app/resource/authorize/list?clusterId=cw-f25ryN0Kx1u-TBklCeQ"
+        }
+      ]
+    }
   }
 }

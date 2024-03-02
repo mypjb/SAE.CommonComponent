@@ -50,7 +50,7 @@ namespace SAE.CommonComponent.Authorize.Handlers
 
             var strategies = new List<StrategyDto>();
 
-            var authDescriptors = new List<AuthDescriptor>();
+            var authDescriptors = new List<AspNetCoreAuthDescriptor>();
 
             foreach (var appResource in appResourceDtos)
             {
@@ -61,18 +61,18 @@ namespace SAE.CommonComponent.Authorize.Handlers
                 {
                     var strategyIds = new List<string>();
 
-                    foreach (var strategyResource in strategyResources)
+                    foreach (var strategyResourceGroup in strategyResources.GroupBy(s => s.ResourceId).ToArray())
                     {
-                        if (strategyResource.Strategies != null && strategyResource.Strategies.Length > 0)
+                        foreach (var strategyResource in strategyResourceGroup)
                         {
-                            foreach (var strategy in strategyResource.Strategies)
-                            {
-                                if (!strategyIds.Contains(strategy.Id))
-                                    strategyIds.Add(strategy.Id);
+                            if (strategyResource.Strategy.Status != Status.Enable)
+                                continue;
+                                
+                            if (!strategyIds.Contains(strategyResource.StrategyId))
+                                strategyIds.Add(strategyResource.StrategyId);
 
-                                if (!strategies.Any(s => s.Id == strategy.Id))
-                                    strategies.Add(strategy);
-                            }
+                            if (!strategies.Any(s => s.Id == strategyResource.StrategyId))
+                                strategies.Add(strategyResource.Strategy);
                         }
                     }
 
@@ -93,7 +93,12 @@ namespace SAE.CommonComponent.Authorize.Handlers
 
             return new
             {
-                policies = strategies.ToArray(),
+                policies = strategies.Select(s => new AuthorizationPolicy
+                {
+                    Id = s.Id,
+                    Name = s.Name,
+                    Rule = s.Expression
+                }).ToArray(),
                 descriptors = authDescriptors.ToArray()
             };
         }

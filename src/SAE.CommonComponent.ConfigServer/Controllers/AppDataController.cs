@@ -17,7 +17,7 @@ using SAE.CommonLibrary.Extension;
 namespace SAE.CommonComponent.ConfigServer.Controllers
 {
     [ApiController]
-    [Route("{controller}")]
+    [Route("[controller]")]
     public class AppDataController : Controller
     {
         private readonly IMediator _mediator;
@@ -76,7 +76,7 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("{action}")]
+        [HttpGet("[action]")]
         public async Task<IActionResult> Public([FromQuery] AppDataCommand.Find command)
         {
             command.Private = false;

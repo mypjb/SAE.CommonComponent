@@ -32,6 +32,7 @@ namespace SAE.CommonComponent.Authorize.Handlers
                                    ICommandHandler<StrategyCommand.AddRule>,
                                    ICommandHandler<StrategyResourceCommand.Create, string>,
                                    ICommandHandler<StrategyResourceCommand.List, IEnumerable<StrategyDto>>,
+                                   ICommandHandler<StrategyResourceCommand.List, IEnumerable<StrategyResourceDto>>,
                                    ICommandHandler<Command.BatchDelete<StrategyResource>>
 
     {
@@ -247,6 +248,22 @@ namespace SAE.CommonComponent.Authorize.Handlers
                                     .FirstOrDefault(s => s.Name == Strategy.Name
                                                     && s.Id != Strategy.Id);
             return Task.FromResult(oldStrategy);
+        }
+
+        async Task<IEnumerable<StrategyResourceDto>> ICommandHandler<StrategyResourceCommand.List, IEnumerable<StrategyResourceDto>>.HandleAsync(StrategyResourceCommand.List command)
+        {
+            var query = this._storage.AsQueryable<StrategyResourceDto>().Where(s => s.ResourceType == command.ResourceType);
+
+            if (!command.ResourceId.IsNullOrWhiteSpace())
+            {
+                query = query.Where(s => s.ResourceId == command.ResourceId);
+            }
+
+            IEnumerable<StrategyResourceDto> result = query.ToArray();
+
+            await this._director.Build(result);
+
+            return result;
         }
     }
 }

@@ -25,8 +25,7 @@
       "menu": "http://localhost:8080/menu/tree",
       "app": "http://localhost:8080/plugin/list",
       "config": "http://localhost:8080/app/config?appid=localhost.dev&env=Development",
-      "login": "http://localhost:8080/account/login",
-      "bitmaps": "http://localhost:8080/.bitmaps"
+      "login": "http://localhost:8080/account/login"
     }
   },
   "nlog": {
@@ -64,17 +63,6 @@
     "connection": "redis.cache.lass.net:6379,allowadmin=true,syncTimeout=5000,password=Aa123456",
     "db": 2
   },
-  "sae": {
-    "config": {
-      "include": [
-        {
-          "name": "bitmaps",
-          "nodeName": "scope",
-          "url": "http://localhost:8080/.bitmaps?clusterId=cw-f25ryN0Kx1u-TBklCeQ"
-        }
-      ]
-    }
-  },
   "multiTenant": {
     "claimName": "siteid",
     "headerName": "tenant",
@@ -84,5 +72,16 @@
   },
   "plugin": {
     "path": ""
+  },
+  "SAE": {
+    "Config": {
+      "Include": [
+        {
+          "Name": "abac_auth",
+          "NodeName": "auth:abac",
+          "Url": "http://localhost:8080/app/resource/authorize/list?clusterId=cw-f25ryN0Kx1u-TBklCeQ"
+        }
+      ]
+    }
   }
 }

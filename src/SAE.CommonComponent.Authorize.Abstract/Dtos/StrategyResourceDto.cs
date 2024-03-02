@@ -49,6 +49,6 @@ namespace SAE.CommonComponent.Authorize.Dtos
         /// 策略
         /// </summary>
         /// <value></value>
-        public StrategyDto[] Strategies { get; set; }
+        public StrategyDto Strategy { get; set; }
     }
 }

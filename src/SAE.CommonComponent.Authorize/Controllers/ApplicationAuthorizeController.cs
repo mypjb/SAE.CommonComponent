@@ -23,7 +23,7 @@ namespace SAE.CommonComponent.Authorize.Controllers
         }
 
         [HttpGet("[action]")]
-        public async Task<object> List(ApplicationAuthorizeCommand.List command)
+        public async Task<object> List([FromQuery]ApplicationAuthorizeCommand.List command)
         {
             return await this._mediator.SendAsync<object>(command);
         }

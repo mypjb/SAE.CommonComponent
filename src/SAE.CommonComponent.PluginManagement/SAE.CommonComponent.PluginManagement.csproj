@@ -1,10 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
-    <PackageReference Include="SAE.CommonLibrary.Abstract" Version="8.0.0.5" />
-    <PackageReference Include="SAE.CommonLibrary.AspNetCore" Version="8.0.0.5" />
-    <PackageReference Include="SAE.CommonLibrary.EventStore.Document" Version="8.0.0.5" />
-    <PackageReference Include="SAE.CommonLibrary.ObjectMapper.TinyMapper" Version="8.0.0.5" />
-    <PackageReference Include="SAE.CommonLibrary.Plugin.AspNetCore" Version="8.0.0.5" />
+    <PackageReference Include="SAE.CommonLibrary.Abstract" Version="8.0.0.9" />
+    <PackageReference Include="SAE.CommonLibrary.AspNetCore" Version="8.0.0.9" />
+    <PackageReference Include="SAE.CommonLibrary.EventStore.Document" Version="8.0.0.9" />
+    <PackageReference Include="SAE.CommonLibrary.ObjectMapper.TinyMapper" Version="8.0.0.9" />
+    <PackageReference Include="SAE.CommonLibrary.Plugin.AspNetCore" Version="8.0.0.9" />
   </ItemGroup>
 
   <ItemGroup>

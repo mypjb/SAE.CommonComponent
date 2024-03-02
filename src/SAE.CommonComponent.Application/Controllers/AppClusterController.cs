@@ -61,7 +61,7 @@ namespace SAE.CommonComponent.Application.Controllers
         /// 更改状态
         /// </summary>
         /// <param name="command"></param>
-        [HttpPut("{action}")]
+        [HttpPut("[action]")]
         public async Task<object> Status(AppClusterCommand.ChangeStatus command)
         {
             await this._mediator.SendAsync(command);
@@ -81,7 +81,7 @@ namespace SAE.CommonComponent.Application.Controllers
         /// 分页查询
         /// </summary>
         /// <param name="command"></param>
-        [HttpGet("{action}")]
+        [HttpGet("[action]")]
         public async Task<object> Paging([FromQuery] AppClusterCommand.Query command)
         {
             return await this._mediator.SendAsync<IPagedList<AppClusterDto>>(command);
@@ -90,7 +90,7 @@ namespace SAE.CommonComponent.Application.Controllers
         /// 列出集群集合
         /// </summary>
         /// <param name="command"></param>
-        [HttpGet("{action}")]
+        [HttpGet("[action]")]
         public async Task<object> List([FromQuery] AppClusterCommand.List command)
         {
             return await this._mediator.SendAsync<IEnumerable<AppClusterDto>>(command);

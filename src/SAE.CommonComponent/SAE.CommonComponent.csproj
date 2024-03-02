@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<ItemGroup>
-		<PackageReference Include="SAE.CommonLibrary.Configuration.Microsoft" Version="8.0.0.5" />
-		<PackageReference Include="SAE.CommonLibrary.DependencyInjection" Version="8.0.0.5" />
+		<PackageReference Include="SAE.CommonLibrary.Configuration.Microsoft" Version="8.0.0.9" />
+		<PackageReference Include="SAE.CommonLibrary.DependencyInjection" Version="8.0.0.9" />
 	</ItemGroup>
 	<ItemGroup>
 		<None Update="Config\SAE.CommonComponent.Master.Development.json">

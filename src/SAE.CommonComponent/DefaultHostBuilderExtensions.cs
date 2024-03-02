@@ -15,9 +15,17 @@ namespace Microsoft.AspNetCore.Hosting
         /// Use Default Configure
         /// </summary>
         /// <param name="builder"></param>
+        /// <param name="action"></param>
         /// <returns></returns>
-        public static IHostBuilder ConfigureDefault(this IHostBuilder builder)
+        public static IHostBuilder ConfigureDefault(this IHostBuilder builder, Action<SAEOptions> action = null)
         {
+            if (action == null)
+            {
+                action = s =>
+                {
+
+                };
+            }
 #if DEBUG
             Directory.SetCurrentDirectory(AppContext.BaseDirectory);
 #endif
@@ -33,9 +41,7 @@ namespace Microsoft.AspNetCore.Hosting
                               });
                           })
 #endif
-                          .ConfigureRemoteSource(options =>
-                          {
-                          })
+                          .ConfigureRemoteSource(action)
                           .UseAutofacProviderFactory();
         }
     }

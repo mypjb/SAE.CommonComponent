@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SAE.CommonLibrary;
+using SAE.CommonLibrary.Configuration;
 using SAE.CommonLibrary.Extension;
 using Xunit.Abstractions;
 
@@ -28,36 +29,41 @@ namespace SAE.CommonComponent.Test
             var host = new HostBuilder()
                    .ConfigureAppConfiguration(build =>
                    {
-                       var dict = new Dictionary<string, string>
-                        {
-                           {"SAE:CONFIG:URL", "http://localhost:8080/app/config?id=0dbbcfdf123f44baad50ac830106c87b&env=Development"},
-                        };
-                       build.AddInMemoryCollection(dict);
+                       build.AddJsonFile("appsettings.json");
+                       build.AddJsonFile("appsettings.Development.json");
                    })
                    .ConfigureWebHost(webBuilder =>
                    {
                        webBuilder.UseEnvironment(Environments.Development);
                        this.UseStartup(webBuilder.UseTestServer());
-                   }).ConfigureDefault()
+                   })
+                   .ConfigureDefault(this.Configure)
                    .Start();
 
             this.ServiceProvider = host.Services;
 
-            this.UseClient(host.GetTestClient().UseExceptionHandler(async response =>
+            var client = new HttpClient(host.GetTestServer().CreateHandler())
             {
-                if (response.StatusCode != System.Net.HttpStatusCode.Found)
-                {
-                    var json = await response.Content.ReadAsStringAsync();
-                    this.WriteLine(new { Error = json, url = response.RequestMessage.RequestUri });
-                    if (json.IsNullOrWhiteSpace())
-                    {
-                        throw new SAEException((int)response.StatusCode, json);
-                    }
-                    var output = json.ToObject<ErrorOutput>();
+                BaseAddress = new Uri("http://localhost:8080")
+            };
 
-                    throw new SAEException(output);
-                }
-            }));
+            client.UseExceptionHandler(async response =>
+                        {
+                            if (response.StatusCode != System.Net.HttpStatusCode.Found)
+                            {
+                                var json = await response.Content.ReadAsStringAsync();
+                                this.WriteLine(new { Error = json, url = response.RequestMessage.RequestUri });
+                                if (json.IsNullOrWhiteSpace())
+                                {
+                                    throw new SAEException((int)response.StatusCode, json);
+                                }
+                                var output = json.ToObject<ErrorOutput>();
+
+                                throw new SAEException(output);
+                            }
+                        });
+
+            this.UseClient(client);
         }
 
         public BaseTest(ITestOutputHelper output, HttpClient httpClient)
@@ -65,6 +71,14 @@ namespace SAE.CommonComponent.Test
             this._output = output;
             this.HttpClient = httpClient;
             this.ServiceProvider = ServiceFacade.ServiceProvider;
+        }
+        /// <summary>
+        /// 配置<see cref="SAEOptions"/>
+        /// </summary>
+        /// <param name="options"></param>
+        protected virtual void Configure(SAEOptions options)
+        {
+
         }
 
         protected abstract IWebHostBuilder UseStartup(IWebHostBuilder builder);

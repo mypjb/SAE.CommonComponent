@@ -51,7 +51,7 @@ namespace SAE.CommonComponent.Master
 
             services.AddOptions<SiteConfig>(SiteConfig.Option)
                     .Bind();
-
+            
             if (!this._env.IsDevelopment())
             {
                 services.AddMySqlDocument()
@@ -93,8 +93,6 @@ namespace SAE.CommonComponent.Master
             }
 
             app.UseMultiTenant()
-               .UseAuthentication()
-               .UseAuthorization()
                .UsePluginManage();
 
             app.UseEndpoints(endpoints =>

@@ -126,7 +126,7 @@
   ```
 
 ---
-
+- 添加集群测试
 - 通用数据添加`appId`标识。
 - 解決前端`Application`中`Format.Scope`格式化触发 Hook 异常。
 - ~~加入全局集群、应用选项（目前`request`配置在`Master`尚未进行配置）~~

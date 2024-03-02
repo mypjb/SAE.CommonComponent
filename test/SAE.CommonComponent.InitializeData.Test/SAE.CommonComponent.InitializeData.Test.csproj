@@ -26,5 +26,9 @@
     <ProjectReference Include="..\..\src\SAE.CommonComponent.Routing\SAE.CommonComponent.Routing.csproj" />
     <ProjectReference Include="..\..\src\SAE.CommonComponent.User\SAE.CommonComponent.User.csproj" />
   </ItemGroup>
-
+	<ItemGroup>
+		<None Update="Config\abac_auth.Development.json">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
 </Project>

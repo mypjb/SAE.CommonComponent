@@ -556,7 +556,7 @@ namespace SAE.CommonComponent.InitializeData
             {
                 Description = "超级管理员",
                 Name = "Super Administrator",
-                Left = $"{ABACConstants.PropertyPrefix}{Constants.Authorize.CustomPrefix}{Constants.Authorize.SuperAdmin}",
+                Left = $"{ABACConstants.PropertyPrefix}{SAE.CommonLibrary.AspNetCore.Constants.ABAC.User}.{Constants.Authorize.CustomPrefix}{Constants.Authorize.SuperAdmin}",
                 Symbol = "==",
                 Right = "true"
             };
@@ -625,13 +625,13 @@ namespace SAE.CommonComponent.InitializeData
                     Name = Constants.Authorize.SuperAdmin,
                     Value = "true",
                     ResourceId = client.Id,
-                    ResourceType = labelUserDictDto.Id
+                    ResourceType = labelClientDictDto.Id
                 });
 
                 var labelDtos = await this._mediator.SendAsync<IEnumerable<LabelDto>>(new LabelResourceCommand.List
                 {
                     ResourceId = client.Id,
-                    ResourceType = labelUserDictDto.Id
+                    ResourceType = labelClientDictDto.Id
                 });
 
                 this._logging.Info($"为client({client.Id})附加标签:{labelDtos.ToJsonString()}");
@@ -645,13 +645,13 @@ namespace SAE.CommonComponent.InitializeData
                     Name = Constants.Authorize.SuperAdmin,
                     Value = "true",
                     ResourceId = user.Id,
-                    ResourceType = labelClientDictDto.Id
+                    ResourceType = labelUserDictDto.Id
                 });
 
                 var labelDtos = await this._mediator.SendAsync<IEnumerable<LabelDto>>(new LabelResourceCommand.List
                 {
                     ResourceId = user.Id,
-                    ResourceType = labelClientDictDto.Id
+                    ResourceType = labelUserDictDto.Id
                 });
 
                 this._logging.Info($"为user({user.Id})附加标签:{labelDtos.ToJsonString()}");
