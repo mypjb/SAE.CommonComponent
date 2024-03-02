@@ -34,6 +34,11 @@ namespace SAE.CommonComponent.Application.Events
             /// </summary>
             /// <value></value>
             public DateTime CreateTime { get; set; }
+            /// <summary>
+            /// 状态
+            /// </summary>
+            /// <value></value>
+            public Status Status { get; set; }
         }
         /// <summary>
         /// 更改

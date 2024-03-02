@@ -31,6 +31,7 @@ namespace SAE.CommonComponent.Application.Abstract.Domains
                 e.Id = command.ClientId.IsNullOrWhiteSpace() ? Utils.GenerateId() : command.ClientId;
                 e.Secret = command.ClientSecret.IsNullOrWhiteSpace() ? Utils.GenerateId() : command.ClientSecret;
                 e.CreateTime = DateTime.UtcNow;
+                e.Status = Status.Disable;
             });
         }
 

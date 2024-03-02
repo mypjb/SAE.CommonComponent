@@ -133,7 +133,7 @@ namespace SAE.CommonComponent.InitializeData.Test
 
             this.WriteLine(this.HttpClient.DefaultRequestHeaders.Authorization);
 
-            Thread.Sleep(1 * 1000 * 30);
+            Thread.Sleep(1 * 1000 * 60);
             var rep = await this.HttpClient.GetAsync("/cluster/list");
 
             Assert.True(rep.IsSuccessStatusCode);

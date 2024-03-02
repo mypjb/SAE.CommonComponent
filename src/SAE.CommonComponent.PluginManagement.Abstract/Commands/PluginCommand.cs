@@ -18,7 +18,6 @@ namespace SAE.CommonComponent.PluginManagement.Commands
             public int Order { get; set; }
             public string Path { get; set; }
             public string Entry { get; set; }
-            public Status Status { get; set; }
            
         }
 

@@ -19,10 +19,11 @@ namespace SAE.CommonComponent.PluginManagement.Domians
 
         public Plugin(PluginCommand.Create command)
         {
-            this.Apply<PluginEvent.Create>(command,e=>
+            this.Apply<PluginEvent.Create>(command, e =>
             {
                 e.Id = e.Name.Trim().ToMd5().ToLower();
                 e.CreateTime = DateTime.Now;
+                e.Status = Status.Disable;
             });
         }
         public string Id { get; set; }
@@ -33,7 +34,7 @@ namespace SAE.CommonComponent.PluginManagement.Domians
         public int Order { get; set; }
         public Status Status { get; set; }
         public string Entry { get; set; }
-        public DateTime CreateTime { get;set;}
+        public DateTime CreateTime { get; set; }
 
         protected override string GetIdentity()
         {

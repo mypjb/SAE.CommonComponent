@@ -109,8 +109,8 @@ namespace SAE.CommonComponent.User.Domains
                 Id = Utils.GenerateId(),
                 Account = new Account(command.Name, command.Password),
                 Name = command.Name,
-                Status = Status.Enable,
-                CreateTime =SAE.CommonLibrary.Constants.DefaultTimeZone
+                Status = Status.Disable,
+                CreateTime = SAE.CommonLibrary.Constants.DefaultTimeZone
             };
             this.Apply(@event);
         }

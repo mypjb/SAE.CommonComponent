@@ -39,7 +39,7 @@ namespace SAE.CommonComponent.Application.Domains
                     e.Id = command.Id;
                 }
                 e.CreateTime = DateTime.UtcNow;
-                e.Status = Status.Enable;
+                e.Status = Status.Disable;
             });
         }
 

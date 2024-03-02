@@ -39,7 +39,6 @@ namespace SAE.CommonComponent.PluginManagement.Test
                 Name = $"test_{this.GetRandom()}",
                 Description = this.GetRandom(),
                 Order = (Math.Abs(this.GetRandom().GetHashCode() % 100)),
-                Status = Status.Enable,
                 Version = (Math.Abs(this.GetRandom().GetHashCode() % 100)).ToString()
             };
 
@@ -50,7 +49,6 @@ namespace SAE.CommonComponent.PluginManagement.Test
             Assert.Equal(plugin.Name, command.Name);
             Assert.Equal(plugin.Description, command.Description);
             Assert.Equal(plugin.Order, command.Order);
-            Assert.Equal(plugin.Status, command.Status);
             Assert.Equal(plugin.Version, command.Version);
             this.WriteLine(plugin);
             return plugin;

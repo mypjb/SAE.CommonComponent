@@ -35,6 +35,7 @@ namespace SAE.CommonComponent.MultiTenant.Domains
             {
                 e.Id = Utils.GenerateId();
                 e.CreateTime = DateTime.Now;
+                e.Status = Status.Disable;
             });
         }
 

@@ -421,6 +421,12 @@ namespace SAE.CommonComponent.InitializeData
 
                 var clientId = await this._mediator.SendAsync<string>(clientCommand);
 
+                await this._mediator.SendAsync(new ClientCommand.ChangeStatus
+                {
+                    Id = clientId,
+                    Status = Status.Enable
+                });
+
                 clientCommand.ClientSecret = "************";
 
                 this._logging.Info($"添加默认客户端凭证:{clientCommand.ToJsonString()}");
@@ -467,12 +473,6 @@ namespace SAE.CommonComponent.InitializeData
                         EnvironmentId = env.Id
                     });
                 }
-
-                await this._mediator.SendAsync(new ClientCommand.ChangeStatus
-                {
-                    Id = clientId,
-                    Status = Status.Enable
-                });
 
                 var clientDto = await this._mediator.SendAsync<ClientDto>(new Command.Find<ClientDto>
                 {
@@ -551,6 +551,12 @@ namespace SAE.CommonComponent.InitializeData
             };
 
             var strategyId = await this._mediator.SendAsync<string>(strategyCreateCommand);
+
+            await this._mediator.SendAsync(new StrategyCommand.ChangeStatus
+            {
+                Id = strategyId,
+                Status = Status.Enable
+            });
 
             var ruleCreateCommand = new RuleCommand.Create
             {
@@ -742,6 +748,7 @@ namespace SAE.CommonComponent.InitializeData
                         Name = kv.Key,
                         EnvironmentId = environmentId
                     });
+
                     if (kv.Key.Equals(SiteConfig.Option, StringComparison.OrdinalIgnoreCase))
                     {
                         publicConfigId = configId;
@@ -890,9 +897,11 @@ namespace SAE.CommonComponent.InitializeData
                     Name = plugin.Name,
                     Description = plugin.Description,
                     Order = plugin.Order,
-                    Status = plugin.Status ? Status.Enable : Status.Disable,
                     Version = plugin.Version
                 };
+
+
+
                 if (siteMap != null)
                 {
                     command.Path = siteMap.Path;
@@ -905,7 +914,13 @@ namespace SAE.CommonComponent.InitializeData
                         command.Entry = siteMap.Entry;
                     }
                 }
-                await this._mediator.SendAsync<string>(command);
+                var pluginId = await this._mediator.SendAsync<string>(command);
+
+                await this._mediator.SendAsync(new PluginCommand.ChangeStatus
+                {
+                    Id = pluginId,
+                    Status = Status.Enable
+                });
             }
 
             var plugins = await this._mediator.SendAsync<IEnumerable<PluginDto>>(new Command.List<PluginDto>());
@@ -932,6 +947,12 @@ namespace SAE.CommonComponent.InitializeData
 
             var clusterId = await this._mediator.SendAsync<string>(clusterCommand);
 
+            await this._mediator.SendAsync(new AppClusterCommand.ChangeStatus
+            {
+                Id = clusterId,
+                Status = Status.Enable
+            });
+
             this._logging.Info($"创建集群 '{clusterId}'-'{Constants.ClusterName}'");
 
             var appName = SiteConfig.Get(Constants.Config.BasicInfo.Name);
@@ -952,6 +973,12 @@ namespace SAE.CommonComponent.InitializeData
             };
 
             var tenantId = await this._mediator.SendAsync<string>(tenantCreateCommand);
+
+            await this._mediator.SendAsync(new TenantCommand.ChangeStatus
+            {
+                Id = tenantId,
+                Status = Status.Enable
+            });
 
             var tenantAppCreateCommand = new TenantCommand.App.Create
             {
