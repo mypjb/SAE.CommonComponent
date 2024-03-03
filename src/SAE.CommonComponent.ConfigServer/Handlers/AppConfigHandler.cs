@@ -15,6 +15,7 @@ using SAE.CommonLibrary.Abstract.Model;
 using SAE.CommonLibrary.Data;
 using SAE.CommonLibrary.EventStore.Document;
 using SAE.CommonLibrary.Extension;
+using SAE.CommonLibrary.MessageQueue;
 
 namespace SAE.CommonComponent.ConfigServer.Handlers
 {
@@ -30,15 +31,18 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
     {
         private readonly IMediator _mediator;
         private readonly IDirector _director;
+        private readonly IMessageQueue _messageQueue;
         private readonly IStorage _storage;
         public AppConfigHandler(
             IDocumentStore documentStore,
             IStorage storage,
             IMediator mediator,
-            IDirector director) : base(documentStore)
+            IDirector director,
+            IMessageQueue messageQueue) : base(documentStore)
         {
             this._mediator = mediator;
             this._director = director;
+            this._messageQueue = messageQueue;
             this._storage = storage;
         }
 
@@ -177,6 +181,7 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
             }
 
             await this._documentStore.SaveAsync(appConfigData);
+            await this._messageQueue.PublishAsync(command);
         }
 
         public async Task<AppConfigDataPreviewDto> HandleAsync(AppConfigCommand.Preview command)

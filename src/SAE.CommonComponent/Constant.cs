@@ -54,7 +54,7 @@ namespace SAE.CommonComponent
             /// <summary>
             /// 自定义前缀
             /// </summary>
-            public const string CustomPrefix="label.";
+            public const string CustomPrefix = "label.";
         }
         /// <summary>
         /// 配置节
@@ -176,6 +176,14 @@ namespace SAE.CommonComponent
         /// </summary>
         public class Caching
         {
+            /// <summary>
+            /// <c>ApplicationAuthorizeCommand</c>.<c>Find</c> cache key
+            /// </summary>
+            public const string ApplicationAuthorizeCommand_Find = "app_auth_find_";
+            /// <summary>
+            /// <c>AppDataCommand</c>.<c>Find</c> cache key
+            /// </summary>
+            public const string AppDataCommand_Find="app_data_find_";
         }
         /// <summary>
         /// 字段

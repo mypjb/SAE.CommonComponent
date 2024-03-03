@@ -8,12 +8,22 @@ using System.Threading.Tasks;
 
 namespace SAE.CommonComponent.ConfigServer.Domains
 {
+    /// <summary>
+    /// 应用配置数据
+    /// </summary>
     public class AppConfigData:Document
     {
+        /// <summary>
+        /// ctor
+        /// </summary>
         public AppConfigData()
         {
 
         }
+        /// <summary>
+        /// ctor
+        /// </summary>
+        /// <param name="event"></param>
         public AppConfigData(AppConfigDataEvent.Create @event)
         {
             this.Apply<AppConfigDataEvent.Create>(@event,e=>
@@ -22,7 +32,9 @@ namespace SAE.CommonComponent.ConfigServer.Domains
                 e.Version = 1;
             });
         }
-
+        /// <summary>
+        /// 标识
+        /// </summary>
         public string Id { get; set; }
         /// <summary>
         /// App Id
@@ -40,9 +52,14 @@ namespace SAE.CommonComponent.ConfigServer.Domains
         /// 项目已发布的配置数据
         /// </summary>
         public string Data { get; set; }
-
+        /// <summary>
+        /// 公共配置
+        /// </summary>
         public string PublicData { get; set; }
-
+        /// <summary>
+        /// 获得标识
+        /// </summary>
+        /// <returns></returns>
         protected override string GetIdentity()
         {
             return this.Id;

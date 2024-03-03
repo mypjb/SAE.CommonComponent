@@ -14,23 +14,36 @@ using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.Data;
 using SAE.CommonLibrary.EventStore.Document;
 using SAE.CommonLibrary.Extension;
+using SAE.CommonLibrary.MessageQueue;
 using SAE.CommonLibrary.Scope.AspNetCore;
 
 namespace SAE.CommonComponent.ConfigServer.Handles
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class AppDataHandler : ICommandHandler<AppDataCommand.Find, AppDataDto>
     {
         private readonly IStorage _storage;
         private readonly IDocumentStore _documentStore;
         private readonly IMediator _mediator;
-
+        private readonly IMessageQueue _messageQueue;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="storage"></param>
+        /// <param name="documentStore"></param>
+        /// <param name="mediator"></param>
+        /// <param name="messageQueue"></param>
         public AppDataHandler(IStorage storage,
-                                IDocumentStore documentStore,
-                                IMediator mediator)
+                              IDocumentStore documentStore,
+                              IMediator mediator,
+                              IMessageQueue messageQueue)
         {
             this._storage = storage;
             this._documentStore = documentStore;
             this._mediator = mediator;
+            this._messageQueue = messageQueue;
         }
         public async Task<AppDataDto> HandleAsync(AppDataCommand.Find command)
         {

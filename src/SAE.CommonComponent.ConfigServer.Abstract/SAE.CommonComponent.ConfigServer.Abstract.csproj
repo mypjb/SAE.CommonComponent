@@ -2,5 +2,8 @@
   <ItemGroup>
     <PackageReference Include="SAE.CommonLibrary.Abstract" Version="8.0.0.9" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SAE.CommonComponent\SAE.CommonComponent.csproj" />
+  </ItemGroup>
 
 </Project>

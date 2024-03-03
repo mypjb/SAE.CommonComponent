@@ -73,6 +73,7 @@ namespace SAE.CommonComponent.Authorize.Handlers
                 strategy.Change(command);
                 await strategy.NameExist(this.FindStrategy);
             });
+            await this._messageQueue.PublishAsync(command);
         }
 
         public async Task HandleAsync(StrategyCommand.ChangeStatus command)
@@ -81,6 +82,8 @@ namespace SAE.CommonComponent.Authorize.Handlers
             {
                 strategy.ChangeStatus(command);
             });
+
+            await this._messageQueue.PublishAsync(command);
         }
 
         public async Task HandleAsync(Command.BatchDelete<Strategy> command)
@@ -89,6 +92,7 @@ namespace SAE.CommonComponent.Authorize.Handlers
             {
                 await this._storage.DeleteAsync<Strategy>(id);
             });
+            await this._messageQueue.PublishAsync(command);
         }
 
         public async Task<IPagedList<StrategyDto>> HandleAsync(StrategyCommand.Query command)
@@ -199,6 +203,9 @@ namespace SAE.CommonComponent.Authorize.Handlers
             });
 
             await this._documentStore.SaveAsync(strategy);
+
+            await this._messageQueue.PublishAsync(command);
+
         }
 
         public async Task<string> HandleAsync(StrategyResourceCommand.Create command)

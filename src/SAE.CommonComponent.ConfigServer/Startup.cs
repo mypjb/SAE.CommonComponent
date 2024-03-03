@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SAE.CommonComponent.ConfigServer.Commands;
 using SAE.CommonComponent.ConfigServer.Dtos;
 using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.Plugin.AspNetCore;
@@ -18,6 +19,9 @@ namespace SAE.CommonComponent.ConfigServer
             var assemblies = new[] { typeof(ConfigDto).Assembly, Assembly.GetExecutingAssembly() };
 
             services.AddMediator();
+
+            services.AddMediatorBehavior()
+                    .AddCaching<AppDataCommand.Find,AppDataDto>();
 
             services.AddMemoryDocument()
                     .AddDataPersistenceService(assemblies)

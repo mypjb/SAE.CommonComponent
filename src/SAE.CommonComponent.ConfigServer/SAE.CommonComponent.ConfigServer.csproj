@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.2" />
+    <PackageReference Include="SAE.CommonLibrary.Abstract.Mediator.Behavior" Version="8.0.0.9" />
     <PackageReference Include="SAE.CommonLibrary.AspNetCore" Version="8.0.0.9" />
     <PackageReference Include="SAE.CommonLibrary.EventStore.Document" Version="8.0.0.9" />
     <PackageReference Include="SAE.CommonLibrary.Plugin.AspNetCore" Version="8.0.0.9" />

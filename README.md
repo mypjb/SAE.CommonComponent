@@ -126,6 +126,7 @@
   ```
 
 ---
+- 添加注释
 - 添加集群测试
 - 通用数据添加`appId`标识。
 - 解決前端`Application`中`Format.Scope`格式化触发 Hook 异常。

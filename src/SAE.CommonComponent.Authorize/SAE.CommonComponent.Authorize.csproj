@@ -1,5 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <PackageReference Include="SAE.CommonLibrary.Abstract.Mediator.Behavior" Version="8.0.0.9" />
     <PackageReference Include="SAE.CommonLibrary.AspNetCore" Version="8.0.0.9" />
     <PackageReference Include="SAE.CommonLibrary.DependencyInjection" Version="8.0.0.9" />
     <PackageReference Include="SAE.CommonLibrary.EventStore.Document" Version="8.0.0.9" />

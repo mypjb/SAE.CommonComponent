@@ -38,11 +38,12 @@ namespace SAE.CommonComponent.ConfigServer.Commands
             /// 私有标识
             /// </summary>
             public bool Private { get; set; }
-
+            
+            ///<inheritdoc/>
             public override string ToString()
             {
                 var key = this.ClusterId.IsNullOrWhiteSpace() ? this.AppId : this.ClusterId;
-                return $"{key}_{this.Env}_{this.Version}_{this.Private}";
+                return $"{Constants.Caching.AppDataCommand_Find}{key}_{this.Env}_{this.Version}_{this.Private}";
             }
         }
     }

@@ -55,6 +55,7 @@ namespace SAE.CommonComponent.Authorize.Handlers
                 rule.Change(command);
                 await rule.NameExist(this.FindRule);
             });
+            await this._messageQueue.PublishAsync(command);
         }
 
         public async Task HandleAsync(Command.BatchDelete<Rule> command)
@@ -63,6 +64,7 @@ namespace SAE.CommonComponent.Authorize.Handlers
             {
                 await this._storage.DeleteAsync<Rule>(id);
             });
+            await this._messageQueue.PublishAsync(command);
         }
 
         public Task<IPagedList<RuleDto>> HandleAsync(RuleCommand.Query command)
@@ -90,7 +92,7 @@ namespace SAE.CommonComponent.Authorize.Handlers
         public async Task<RuleDto> HandleAsync(Command.Find<RuleDto> command)
         {
             var dto = this.GetStorage()
-                            .FirstOrDefault(s => s.Id == command.Id);
+                          .FirstOrDefault(s => s.Id == command.Id);
             return dto;
         }
 
@@ -101,8 +103,8 @@ namespace SAE.CommonComponent.Authorize.Handlers
         private Task<Rule> FindRule(Rule Rule)
         {
             var oldRule = this._storage.AsQueryable<Rule>()
-                                .FirstOrDefault(s => s.Name == Rule.Name
-                                                && s.Id != Rule.Id);
+                              .FirstOrDefault(s => s.Name == Rule.Name
+                                              && s.Id != Rule.Id);
             return Task.FromResult(oldRule);
         }
 
