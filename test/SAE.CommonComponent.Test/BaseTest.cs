@@ -23,6 +23,7 @@ namespace SAE.CommonComponent.Test
         {
             get; private set;
         }
+        protected HttpMessageHandler HttpMessageHandler { get; set; }
         public BaseTest(ITestOutputHelper output)
         {
             _output = output;
@@ -42,7 +43,9 @@ namespace SAE.CommonComponent.Test
 
             this.ServiceProvider = host.Services;
 
-            var client = new HttpClient(host.GetTestServer().CreateHandler())
+            this.HttpMessageHandler = host.GetTestServer().CreateHandler();
+
+            var client = new HttpClient(this.HttpMessageHandler)
             {
                 BaseAddress = new Uri("http://localhost:8080")
             };
@@ -57,9 +60,15 @@ namespace SAE.CommonComponent.Test
                                 {
                                     throw new SAEException((int)response.StatusCode, json);
                                 }
-                                var output = json.ToObject<ErrorOutput>();
-
-                                throw new SAEException(output);
+                                try
+                                {
+                                    var output = json.ToObject<ErrorOutput>();
+                                    throw new SAEException(output);
+                                }
+                                catch (Exception ex)
+                                {
+                                    throw new SAEException(StatusCodes.Custom, json);
+                                }
                             }
                         });
 
