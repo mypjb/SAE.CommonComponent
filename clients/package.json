@@ -4,6 +4,8 @@
     "*"
   ],
   "dependencies": {
+    "@ant-design/icons": "^5.3.1",
+    "@ant-design/pro-layout": "^7.17.19",
     "@umijs/max": "^4.1.2",
     "antd": "^5.15.2"
   },

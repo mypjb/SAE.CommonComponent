@@ -12,6 +12,7 @@
     "@types/react": "^18.2.65",
     "@umijs/max": "^4.1.2",
     "antd": "^5.15.2",
+    "moment": "^2.30.1",
     "react-json-view": "^1.21.3"
   }
 }
