@@ -16,7 +16,7 @@ namespace SAE.CommonComponent.BasicData.Builders
         {
             this._storage = storage;
         }
-        public Task Build(IEnumerable<DictDto> models)
+        public Task BuildAsync(IEnumerable<DictDto> models)
         {
             var parentIds = models.Select(s => s.ParentId).ToArray();
             var parentDtos = this._storage.AsQueryable<DictDto>()

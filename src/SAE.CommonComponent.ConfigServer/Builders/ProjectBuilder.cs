@@ -18,7 +18,7 @@ namespace SAE.CommonComponent.ConfigServer.Builders
         }
 
 
-        public async Task Build(IEnumerable<AppConfigDto> dtos)
+        public async Task BuildAsync(IEnumerable<AppConfigDto> dtos)
         {
             var ids = dtos.Select(s => s.ConfigId);
 

@@ -1,16 +1,27 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <ItemGroup>
-    <PackageReference Include="SAE.CommonLibrary.AspNetCore" Version="8.0.0.9" />
-    <PackageReference Include="SAE.CommonLibrary.Data.MongoDB" Version="8.0.0.9" />
-    <PackageReference Include="SAE.CommonLibrary.Database" Version="8.0.0.9" />
-    <PackageReference Include="SAE.CommonLibrary.EventStore" Version="8.0.0.9" />
-    <PackageReference Include="SAE.CommonLibrary.EventStore.Document.MySql" Version="8.0.0.9" />
-    <PackageReference Include="SAE.CommonLibrary.Plugin.AspNetCore" Version="8.0.0.9" />
-    <PackageReference Include="SAE.CommonLibrary.Scope.AspNetCore" Version="8.0.0.9" />
+    <PackageReference Include="SAE.CommonLibrary.AspNetCore" Version="8.0.0.10" />
+    <PackageReference Include="SAE.CommonLibrary.Data.MongoDB" Version="8.0.0.10" />
+    <PackageReference Include="SAE.CommonLibrary.Database" Version="8.0.0.10" />
+    <PackageReference Include="SAE.CommonLibrary.EventStore" Version="8.0.0.10" />
+    <PackageReference Include="SAE.CommonLibrary.EventStore.Document.MySql" Version="8.0.0.10" />
+    <PackageReference Include="SAE.CommonLibrary.Plugin.AspNetCore" Version="8.0.0.10" />
+    <PackageReference Include="SAE.CommonLibrary.Scope.AspNetCore" Version="8.0.0.10" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\SAE.CommonComponent\SAE.CommonComponent.csproj" />
+    <ProjectReference Include="..\SAE.CommonComponent.InitializeData\SAE.CommonComponent.InitializeData.csproj" />
+    <ProjectReference Include="..\SAE.CommonComponent.Application\SAE.CommonComponent.Application.csproj" />
+    <ProjectReference Include="..\SAE.CommonComponent.Authorize\SAE.CommonComponent.Authorize.csproj" />
+    <ProjectReference Include="..\SAE.CommonComponent.BasicData\SAE.CommonComponent.BasicData.csproj" />
+    <ProjectReference Include="..\SAE.CommonComponent.ConfigServer\SAE.CommonComponent.ConfigServer.csproj" />
+    <ProjectReference Include="..\SAE.CommonComponent.Identity\SAE.CommonComponent.Identity.csproj" />
+    <ProjectReference Include="..\SAE.CommonComponent.MultiTenant\SAE.CommonComponent.MultiTenant.csproj" />
+    <ProjectReference Include="..\SAE.CommonComponent.OAuth\SAE.CommonComponent.OAuth.csproj" />
+    <ProjectReference Include="..\SAE.CommonComponent.PluginManagement\SAE.CommonComponent.PluginManagement.csproj" />
+    <ProjectReference Include="..\SAE.CommonComponent.Routing\SAE.CommonComponent.Routing.csproj" />
+    <ProjectReference Include="..\SAE.CommonComponent.User\SAE.CommonComponent.User.csproj" />
   </ItemGroup>
   	<ItemGroup>
 		<None Update="appsettings.Development.json">

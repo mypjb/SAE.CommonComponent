@@ -86,7 +86,7 @@ namespace SAE.CommonComponent.BasicData.Handlers
                             .FirstOrDefault(s => s.Id == command.Id);
             if (first != null)
             {
-                await this._director.Build<IEnumerable<LabelDto>>(new[] { first });
+                await this._director.BuildAsync<IEnumerable<LabelDto>>(new[] { first });
             }
 
             return first;
@@ -103,7 +103,7 @@ namespace SAE.CommonComponent.BasicData.Handlers
 
             var paging = PagedList.Build(query, command);
 
-            await this._director.Build(paging.AsEnumerable());
+            await this._director.BuildAsync(paging.AsEnumerable());
 
             return paging;
         }

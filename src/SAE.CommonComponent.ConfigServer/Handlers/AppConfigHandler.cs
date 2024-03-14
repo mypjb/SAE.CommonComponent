@@ -102,7 +102,7 @@ namespace SAE.CommonComponent.ConfigServer.Handlers
             }
             var paging = PagedList.Build(query, command);
 
-            await this._director.Build(paging.AsEnumerable());
+            await this._director.BuildAsync(paging.AsEnumerable());
 
             return paging;
         }

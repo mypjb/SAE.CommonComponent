@@ -2,6 +2,8 @@ using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
+using System.Net.Http.Headers;
+using System.Net.Mime;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -54,9 +56,9 @@ namespace SAE.CommonComponent.ConfigServer.Controllers
 
                 var nextUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.Path}{query.ToUriComponent()}";
 
-                this.HttpContext.Response.Headers.Add(this._options.Value.NextRequestHeaderName, nextUrl);
+                this.HttpContext.Response.Headers.Append(this._options.Value.NextRequestHeaderName, nextUrl);
 
-                return this.Json(appConfig.Data);
+                return this.Content(appConfig.Data.ToJsonString(), MediaTypeNames.Application.Json);
             }
         }
 

@@ -18,7 +18,7 @@ namespace SAE.CommonComponent.Authorize.Builders
         {
             this._mediator = mediator;
         }
-        public async Task Build(IEnumerable<StrategyResourceDto> strategyResources)
+        public async Task BuildAsync(IEnumerable<StrategyResourceDto> strategyResources)
         {
             var strategyIds = strategyResources.Select(s => s.StrategyId)
                                                .Distinct()

@@ -92,7 +92,7 @@ namespace SAE.CommonComponent.MultiTenant.Handlers
                             .FirstOrDefault(s => s.Id == command.Id);
             if (first != null)
             {
-                await this._director.Build<IEnumerable<TenantDto>>(new[] { first });
+                await this._director.BuildAsync<IEnumerable<TenantDto>>(new[] { first });
             }
 
             return first;
@@ -115,7 +115,7 @@ namespace SAE.CommonComponent.MultiTenant.Handlers
             }
             var paging = PagedList.Build(query, command);
 
-            await this._director.Build(paging.AsEnumerable());
+            await this._director.BuildAsync(paging.AsEnumerable());
             return paging;
         }
 

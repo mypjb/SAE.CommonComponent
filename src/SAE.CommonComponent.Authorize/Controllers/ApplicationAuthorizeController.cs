@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Net.Mime;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,7 @@ using SAE.CommonComponent.Authorize.Dtos;
 using SAE.CommonLibrary.Abstract.Authorization.ABAC;
 using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.Configuration;
+using SAE.CommonLibrary.Extension;
 
 namespace SAE.CommonComponent.Authorize.Controllers
 {
@@ -28,7 +30,7 @@ namespace SAE.CommonComponent.Authorize.Controllers
         /// </summary>
         /// <param name="mediator"></param>
         /// <param name="options"></param>
-        public ApplicationAuthorizeController(IMediator mediator,IOptions<SAEOptions> options)
+        public ApplicationAuthorizeController(IMediator mediator, IOptions<SAEOptions> options)
         {
             this._mediator = mediator;
             this._options = options;
@@ -58,9 +60,9 @@ namespace SAE.CommonComponent.Authorize.Controllers
 
                 var nextUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.Path}{query.ToUriComponent()}";
 
-                this.HttpContext.Response.Headers.Add(this._options.Value.NextRequestHeaderName, nextUrl);
+                this.HttpContext.Response.Headers.Append(this._options.Value.NextRequestHeaderName, nextUrl);
 
-                return this.Json(applicationAuthorizeDto.Data);
+                return this.Content(applicationAuthorizeDto.Data.ToJsonString(), MediaTypeNames.Application.Json);
             }
         }
     }

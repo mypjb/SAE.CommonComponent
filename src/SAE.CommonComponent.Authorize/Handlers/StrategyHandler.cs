@@ -105,7 +105,7 @@ namespace SAE.CommonComponent.Authorize.Handlers
 
             var dtos = PagedList.Build(query, command);
 
-            await this._director.Build(dtos.AsEnumerable());
+            await this._director.BuildAsync(dtos.AsEnumerable());
 
             return dtos;
         }
@@ -114,7 +114,7 @@ namespace SAE.CommonComponent.Authorize.Handlers
         {
             var dto = this._storage.AsQueryable<StrategyDto>()
                                     .FirstOrDefault(s => s.Id == command.Id);
-            await this._director.Build(dto);
+            await this._director.BuildAsync(dto);
             return dto;
         }
 
@@ -268,7 +268,7 @@ namespace SAE.CommonComponent.Authorize.Handlers
 
             IEnumerable<StrategyResourceDto> result = query.ToArray();
 
-            await this._director.Build(result);
+            await this._director.BuildAsync(result);
 
             return result;
         }

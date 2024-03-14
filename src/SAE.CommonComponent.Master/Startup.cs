@@ -1,15 +1,8 @@
-using System;
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Newtonsoft.Json.Linq;
-using SAE.CommonLibrary.AspNetCore.Authorization;
-using SAE.CommonLibrary.Plugin;
-using SAE.CommonLibrary.Plugin.AspNetCore;
 
 namespace SAE.CommonComponent.Master
 {
@@ -51,7 +44,7 @@ namespace SAE.CommonComponent.Master
 
             services.AddOptions<SiteConfig>(SiteConfig.Option)
                     .Bind();
-            
+
             if (!this._env.IsDevelopment())
             {
                 services.AddMySqlDocument()

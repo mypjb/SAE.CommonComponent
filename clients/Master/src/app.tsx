@@ -46,6 +46,7 @@ const processingMenuData = function (menus, apps) {
     if (hideLayoutUrls.findIndex((s) => s.indexOf(element.path) != -1) != -1) {
       data.headerRender = false;
       data.menuRender = false;
+
       data.menuHeaderRender = false;
     }
     data.routes = processingMenuData(element.items, apps);
@@ -79,7 +80,7 @@ export const qiankun = async function () {
   const menus = await (await fetch(api.menu)).json();
 
   const routes = processingMenuData(menus, apps);
-
+  debugger;
   globalConfig.apps = apps;
 
   globalConfig.routes = routes;

@@ -22,7 +22,7 @@ namespace SAE.CommonComponent.MultiTenant
             
         }
 
-        public async Task Build(IEnumerable<TenantDto> model)
+        public async Task BuildAsync(IEnumerable<TenantDto> model)
         {
 
         }
