@@ -8,6 +8,7 @@ import PagingTable from '@/components/PagingTable';
 import Preview from './components/Preview';
 
 const { Search } = Input;
+
 export default connect(({ app }) => (
   {
     app

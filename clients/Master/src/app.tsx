@@ -60,7 +60,7 @@ const processingAppData = function (apps) {
   for (let index = 0; index < apps.length; index++) {
     const element = apps[index];
     if (element.entry && element.path) {
-      array.push(element);
+      array.push({ ...element, autoCaptureError: true });
     }
   }
 
@@ -89,7 +89,7 @@ export const qiankun = async function () {
     apps,
     routes,
     lifeCycles: {
-      afterMount: (props) => {},
+      afterMount: (props) => console.log(props),
     },
     addGlobalUncaughtErrorHandler: (e) => console.log(e),
   };

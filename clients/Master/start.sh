@@ -4,15 +4,15 @@ cd $(dirname $0);
 
 echo start childs app
 # start childs
-cd ../BasicData && yarn start &
-cd ../Identity && yarn start &
-cd ../OAuth && yarn start &
-cd ../Routing && yarn start &
-cd ../Application && yarn start &
-cd ../Authorize && yarn start &
-cd ../PluginManagement && yarn start &
-cd ../User && yarn start &
+cd ../BasicData && pnpm start &
+cd ../Identity && pnpm start &
+cd ../OAuth && pnpm start &
+cd ../Routing && pnpm start &
+cd ../Application && pnpm start &
+cd ../Authorize && pnpm start &
+cd ../PluginManagement && pnpm start &
+cd ../User && pnpm start &
 
 echo start master app
 # start master 
-cd ../Master && yarn start &
+cd ../Master && pnpm start &

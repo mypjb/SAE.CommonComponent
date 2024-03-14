@@ -9,6 +9,6 @@
     "start": "npm run dev"
   },
   "dependencies": {
-    "oidc-client-ts": "^2.2.0"
+    "oidc-client-ts": "^2.4.0"
   }
 }
