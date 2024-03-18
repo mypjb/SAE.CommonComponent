@@ -11,7 +11,7 @@ using SAE.CommonComponent.Application.Converts;
 using SAE.CommonComponent.Application.Dtos;
 using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.MessageQueue;
-using SAE.CommonLibrary.Plugin.AspNetCore;
+using SAE.CommonLibrary.AspNetCore.Plugin;
 
 namespace SAE.CommonComponent.Application
 {

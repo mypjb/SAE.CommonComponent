@@ -12,7 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using SAE.CommonComponent.Routing.Dtos;
-using SAE.CommonLibrary.Plugin.AspNetCore;
+using SAE.CommonLibrary.AspNetCore.Plugin;
 
 namespace SAE.CommonComponent.Routing
 {
@@ -22,7 +22,7 @@ namespace SAE.CommonComponent.Routing
         ///<inheritdoc/>
         public override void PluginConfigure(IApplicationBuilder app)
         {
-            app.UseServiceFacade();
+            app.ApplicationServices.UseServiceFacade();
         }
         ///<inheritdoc/>
         public override void PluginConfigureServices(IServiceCollection services)

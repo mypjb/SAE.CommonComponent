@@ -7,7 +7,7 @@ using SAE.CommonComponent.Application.Dtos;
 using SAE.CommonLibrary.Abstract.Mediator;
 using SAE.CommonLibrary.Abstract.Model;
 using SAE.CommonLibrary.Logging;
-using SAE.CommonLibrary.Plugin.AspNetCore;
+using SAE.CommonLibrary.AspNetCore.Plugin;
 using System;
 using System.Collections.Generic;
 using System.IO;

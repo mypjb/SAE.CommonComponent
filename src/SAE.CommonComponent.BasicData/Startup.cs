@@ -1,17 +1,8 @@
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using SAE.CommonComponent.BasicData.Dtos;
-using SAE.CommonLibrary.Plugin.AspNetCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using SAE.CommonLibrary.AspNetCore.Plugin;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace SAE.CommonComponent.BasicData
 {

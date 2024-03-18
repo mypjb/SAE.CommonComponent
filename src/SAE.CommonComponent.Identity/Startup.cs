@@ -10,7 +10,7 @@ using Microsoft.IdentityModel.Logging;
 using SAE.CommonComponent.Application.Dtos;
 using SAE.CommonComponent.Identity.Services;
 using SAE.CommonLibrary.Abstract.Mediator;
-using SAE.CommonLibrary.Plugin.AspNetCore;
+using SAE.CommonLibrary.AspNetCore.Plugin;
 using System.Reflection;
 
 namespace SAE.CommonComponent.Identity

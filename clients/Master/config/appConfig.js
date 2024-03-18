@@ -6,7 +6,7 @@ const userKey = "sae_user";
 
 const clusterKey = "_cluster_selected_key_";
 
-let configUrl = "http://api.sae.com/appdata/public?appid=8vNildOotkeDAy0ywEXFQw&env=Production";
+let configUrl = "http://api.sae.com/appdata/public?appid=uX16DIGAhUWYdXvp5mzKWQ&env=Production";
 
 
 const storage = window.localStorage;
@@ -21,7 +21,7 @@ export const appConfig = {
 };
 
 if (ENV == "dev") {
-    configUrl = "http://localhost:8080/appdata/public?appid=8vNildOotkeDAy0ywEXFQw&env=Development";
+    configUrl = "http://localhost:8080/appdata/public?appid=uX16DIGAhUWYdXvp5mzKWQ&env=Development";
 }
 
 export const userManager = {

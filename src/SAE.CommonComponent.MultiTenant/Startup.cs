@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using SAE.CommonComponent.MultiTenant.Dtos;
-using SAE.CommonLibrary.Plugin.AspNetCore;
+using SAE.CommonLibrary.AspNetCore.Plugin;
 
 namespace SAE.CommonComponent.MultiTenant
 {

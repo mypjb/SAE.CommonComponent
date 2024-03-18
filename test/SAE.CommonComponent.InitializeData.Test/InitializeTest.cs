@@ -20,7 +20,7 @@ using SAE.CommonLibrary.AspNetCore.Authorization.ABAC;
 using SAE.CommonLibrary.Configuration;
 using SAE.CommonLibrary.Extension;
 using SAE.CommonLibrary.Plugin;
-using SAE.CommonLibrary.Plugin.AspNetCore;
+using SAE.CommonLibrary.AspNetCore.Plugin;
 using Xunit;
 using Xunit.Abstractions;
 using Assert = Xunit.Assert;

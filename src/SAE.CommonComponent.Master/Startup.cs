@@ -1,3 +1,6 @@
+using System;
+using System.IO;
+using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -19,6 +22,17 @@ namespace SAE.CommonComponent.Master
         /// <param name="environment"></param>
         public Startup(IConfiguration configuration, IHostEnvironment environment)
         {
+            // var _ = typeof(SAE.CommonComponent.Application.Startup);
+            // _ = typeof(SAE.CommonComponent.Authorize.Startup);
+            // _ = typeof(SAE.CommonComponent.BasicData.Startup);
+            // _ = typeof(SAE.CommonComponent.ConfigServer.Startup);
+            // _ = typeof(SAE.CommonComponent.Identity.Startup);
+            // _ = typeof(SAE.CommonComponent.InitializeData.Startup);
+            // _ = typeof(SAE.CommonComponent.MultiTenant.Startup);
+            // _ = typeof(SAE.CommonComponent.OAuth.OAuthPlugin);
+            // _ = typeof(SAE.CommonComponent.PluginManagement.Startup);
+            // _ = typeof(SAE.CommonComponent.Routing.Startup);
+            // _ = typeof(SAE.CommonComponent.User.Startup);
             Configuration = configuration;
             this._env = environment;
         }
@@ -77,7 +91,7 @@ namespace SAE.CommonComponent.Master
                 app.UseDeveloperExceptionPage();
             }
             //app.UseHttpsRedirection();
-            app.UseServiceFacade();
+            app.ApplicationServices.UseServiceFacade();
             app.UseRouting();
 
             if (env.IsDevelopment())

@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SAE.CommonComponent.Authorize.Dtos;
 using SAE.CommonLibrary.MessageQueue;
-using SAE.CommonLibrary.Plugin.AspNetCore;
+using SAE.CommonLibrary.AspNetCore.Plugin;
 
 namespace SAE.CommonComponent.Authorize
 {

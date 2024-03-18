@@ -15,7 +15,7 @@ using SAE.CommonLibrary.Data;
 using SAE.CommonLibrary.EventStore.Document;
 using SAE.CommonLibrary.Extension;
 using SAE.CommonLibrary.MessageQueue;
-using SAE.CommonLibrary.Scope.AspNetCore;
+using SAE.CommonLibrary.AspNetCore.Scope;
 
 namespace SAE.CommonComponent.ConfigServer.Handles
 {

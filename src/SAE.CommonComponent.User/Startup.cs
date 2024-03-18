@@ -6,7 +6,7 @@ using SAE.CommonComponent.User.Dtos;
 using SAE.CommonComponent.User.Converts;
 using SAE.CommonComponent.User.Events;
 using SAE.CommonLibrary.ObjectMapper;
-using SAE.CommonLibrary.Plugin.AspNetCore;
+using SAE.CommonLibrary.AspNetCore.Plugin;
 using System.ComponentModel;
 using System.Reflection;
 

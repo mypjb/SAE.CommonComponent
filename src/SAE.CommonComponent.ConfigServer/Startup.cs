@@ -5,7 +5,7 @@ using Microsoft.Extensions.Hosting;
 using SAE.CommonComponent.ConfigServer.Commands;
 using SAE.CommonComponent.ConfigServer.Dtos;
 using SAE.CommonLibrary.Abstract.Mediator;
-using SAE.CommonLibrary.Plugin.AspNetCore;
+using SAE.CommonLibrary.AspNetCore.Plugin;
 using System.Reflection;
 
 namespace SAE.CommonComponent.ConfigServer

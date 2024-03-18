@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using SAE.CommonLibrary.Plugin.AspNetCore;
+using SAE.CommonLibrary.AspNetCore.Plugin;
 using System.Reflection;
 
 namespace SAE.CommonComponent.PluginManagement
@@ -31,7 +31,7 @@ namespace SAE.CommonComponent.PluginManagement
         ///<inheritdoc/>
         public override void PluginConfigure(IApplicationBuilder app)
         {
-            app.UseServiceFacade();
+            app.ApplicationServices.UseServiceFacade();
         }
     }
 }
