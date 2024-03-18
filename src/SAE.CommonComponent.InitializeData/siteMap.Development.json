@@ -1,7 +1,7 @@
 [
   {
     "name": "basicData",
-    "plugin": "BasicData",
+    "plugin": "SAE.CommonComponent.BasicData",
     "path": "/basicdata",
     "hidden": false,
     "entry": "//localhost:8001"
@@ -9,14 +9,14 @@
   {
     "name": "plugin",
     "path": "/plugin",
-    "plugin": "PluginManagement",
+    "plugin": "SAE.CommonComponent.PluginManagement",
     "hidden": false,
     "entry": "//localhost:8002"
   },
   {
     "name": "application",
     "path": "/application",
-    "plugin": "Application",
+    "plugin": "SAE.CommonComponent.Application",
     "hidden": false,
     "entry": "//localhost:8003",
     "items": [
@@ -34,7 +34,7 @@
   },
   {
     "name": "routing",
-    "plugin": "routing",
+    "plugin": "SAE.CommonComponent.routing",
     "path": "/routing",
     "hidden": false,
     "entry": "//localhost:8004"
@@ -42,14 +42,14 @@
   {
     "name": "user",
     "path": "/user",
-    "plugin": "user",
+    "plugin": "SAE.CommonComponent.user",
     "hidden": false,
     "entry": "//localhost:8005"
   },
   {
     "name": "authorize",
     "path": "/authorize",
-    "plugin": "authorize",
+    "plugin": "SAE.CommonComponent.authorize",
     "hidden": false,
     "entry": "//localhost:8006",
     "items": [
@@ -68,14 +68,14 @@
   {
     "name": "identity",
     "path": "/identity",
-    "plugin": "identity",
+    "plugin": "SAE.CommonComponent.identity",
     "hidden": true,
     "entry": "//localhost:8007"
   },
   {
     "name": "oauth",
     "path": "/oauth",
-    "plugin": "oauth",
+    "plugin": "SAE.CommonComponent.oauth",
     "hidden": true,
     "entry": "//localhost:8008"
   }
