@@ -80,7 +80,7 @@ export const qiankun = async function () {
   const menus = await (await fetch(api.menu)).json();
 
   const routes = processingMenuData(menus, apps);
-  debugger;
+  
   globalConfig.apps = apps;
 
   globalConfig.routes = routes;

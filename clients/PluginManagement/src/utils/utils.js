@@ -114,7 +114,7 @@ export const defaultModel = {
         const params = yield select((globalStatus) => (globalStatus[stateName].params));
 
         const paging = yield call(request.queryPaging, { ...data, ...params });
-
+        
         yield put({ type: "setList", payload: paging });
 
         yield put({ type: "setPaging", payload: paging });

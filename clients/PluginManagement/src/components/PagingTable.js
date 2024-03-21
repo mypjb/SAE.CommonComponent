@@ -27,13 +27,12 @@ export default (props) => {
         }
     }
 
-
     const pagination = {
         current: paging.pageIndex,
         total: paging.totalCount,
         pageSize: paging.pageSize,
         onChange: handleSkipPage,
-        hideOnSinglePage:true
+        hideOnSinglePage: true
     };
     return (<Table {...props} dataSource={items} pagination={pagination} />);
 }

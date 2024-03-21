@@ -11,7 +11,7 @@ export default connect(({ plugin }) => (
     {
         plugin
     }))((props) => {
-
+        console.log({props});
         const { dispatch, plugin } = props;
 
         const dispatchType = defaultDispatchType("plugin");

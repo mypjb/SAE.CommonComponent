@@ -47,7 +47,9 @@ namespace SAE.CommonComponent.Master
         /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers()
+                    .AddNewtonsoftJson()
+                    .AddResponseResult();
 
             services.AddMultiTenant();
 
