@@ -8,8 +8,8 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.3" />
-    <PackageReference Include="SAE.CommonLibrary.AspNetCore.Plugin" Version="8.0.0.12" />
-    <PackageReference Include="SAE.CommonLibrary.AspNetCore" Version="8.0.0.12" />
+    <PackageReference Include="SAE.CommonLibrary.AspNetCore.Plugin" Version="8.0.0.13" />
+    <PackageReference Include="SAE.CommonLibrary.AspNetCore" Version="8.0.0.13" />
   </ItemGroup>
 
   <ItemGroup>
