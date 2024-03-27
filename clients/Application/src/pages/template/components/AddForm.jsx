@@ -13,7 +13,7 @@ export default (props) => {
 
     const handleFormatFormat = handleFormat.bind(this, { form, fieldName: 'format' });
 
-    return (<Form form={form} onFinish={handleSave} size='middl'>
+    return (<Form form={form} onFinish={handleSave} size='middle'>
         <Form.Item name="name" label="name" rules={[{ required: true }]}>
             <Input />
         </Form.Item>

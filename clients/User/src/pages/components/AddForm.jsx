@@ -9,7 +9,7 @@ export default (props) => {
     const [handleSave] = defaultFormBuild({ ...props, form, dispatchType: "user/add" });
 
 
-    return (<Form form={form} onFinish={handleSave} size='middl' >
+    return (<Form form={form} onFinish={handleSave} size='middle' >
         <Form.Item name="name" label="name" rules={[
             {
                 required: true,

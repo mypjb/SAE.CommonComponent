@@ -30,7 +30,7 @@ export default (props) => {
     const environmentOptions = environmentData.map(data => <Option value={data.id} data={data}>{data.name}</Option>);
 
     return (
-        <Form form={form} size='middl' onFinish={handleSave} initialValues={{ clusterId }}>
+        <Form form={form} size='middle' onFinish={handleSave} initialValues={{ clusterId }}>
             <Form.Item name="clusterId" hidden rules={[{ required: true }]}>
                 <Input />
             </Form.Item>

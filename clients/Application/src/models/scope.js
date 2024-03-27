@@ -10,7 +10,7 @@ export default () => {
             });
     }, []);
 
-    useEffect(async () => {
+    useEffect(() => {
         load();
     }, []);
 

@@ -22,7 +22,7 @@ export default (props) => {
 
     form.setFieldsValue(model);
 
-    return (<Form form={form} onFinish={handleSave} size='middl' >
+    return (<Form form={form} onFinish={handleSave} size='middle' >
         <Form.Item name="id" label="id" rules={[{ required: true }]} hidden>
             <Input />
         </Form.Item>

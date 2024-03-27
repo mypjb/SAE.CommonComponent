@@ -33,7 +33,7 @@ namespace SAE.CommonComponent.Authorize.Commands
             /// 符号
             /// </summary>
             /// <remarks>
-            /// ：<![CDATA[>、<、>=、<=]]>、=、!=、regex...
+            /// !、<![CDATA[>、<、>=、<=]]>、=、!=、regex...
             /// </remarks>
             public string Symbol { get; set; }
             /// <summary>

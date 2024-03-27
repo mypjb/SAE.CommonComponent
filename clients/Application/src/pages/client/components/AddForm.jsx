@@ -29,7 +29,7 @@ export default (props) => {
         }
     };
 
-    return (<Form form={form} onFinish={handleSave} size='middl' initialValues={defaultModel}>
+    return (<Form form={form} onFinish={handleSave} size='middle' initialValues={defaultModel}>
         <Form.Item name='appId' label="appId" rules={[{ required: true }]} hidden>
             <Input />
         </Form.Item>

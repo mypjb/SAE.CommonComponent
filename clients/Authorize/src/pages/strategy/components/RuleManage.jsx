@@ -7,16 +7,16 @@ const { Option } = Select;
 
 export default (props) => {
 
-  const { dispatch, role } = props;
+  const { dispatch, strategy } = props;
 
-  const dispatchType = defaultDispatchType("rolePermission");
+  const dispatchType = defaultDispatchType("strategyResource");
 
   const [state, setState] = useState({
     ...defaultState,
     params: {
-      id: role.id, referenced: true
+      id: strategy.id, referenced: true
     },
-    permissionIds: []
+    ruleIds: []
   });
 
   const { paging } = state;
@@ -30,7 +30,7 @@ export default (props) => {
         pageSize,
         ...state.params,
         callback: (data) => {
-          setState({ ...state, ...data, params: state.params, permissionIds: [] });
+          setState({ ...state, ...data, params: state.params, ruleIds: [] });
         }
       }
     });
@@ -88,7 +88,7 @@ export default (props) => {
       type: state.params.referenced ? dispatchType.delete : dispatchType.add,
       payload: {
         permissionIds: state.permissionIds,
-        id: role.id,
+        id: strategy.id,
         callback: function () {
           handleSkipPage();
         }

@@ -2,7 +2,7 @@ import request from "../service";
 import { defaultModel, parsingPayload } from '@/utils/utils'
 
 export default {
-  namespace: "role",
+  namespace: "strategy",
   state: {
     ...defaultModel.state,
     tree: []
@@ -11,6 +11,6 @@ export default {
     ...defaultModel.reducers
   },
   effects: {
-    ...defaultModel.effects({ request, name: "role" })
+    ...defaultModel.effects({ request, name: "strategy" })
   }
 };

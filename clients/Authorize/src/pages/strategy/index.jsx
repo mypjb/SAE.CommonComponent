@@ -3,21 +3,21 @@ import { Row, Col, Button, Modal, Table, Input } from 'antd';
 import { connect } from 'umi';
 import AddForm from './components/AddForm';
 import EditForm from './components/EditForm';
-import PermissionManage from './components/PermissionManage';
+import PermissionManage from './components/RuleManage';
 import MenuManage from './components/MenuManage';
 import PagingTable from '@/components/PagingTable';
 import { defaultDispatchType, defaultHandler, defaultOperation, Format } from '@/utils/utils';
 
 const { Search } = Input;
 
-export default connect(({ role }) => (
+export default connect(({ strategy }) => (
     {
-        role
+        strategy
     }))((props) => {
 
-        const { dispatch, role } = props;
+        const { dispatch, strategy } = props;
 
-        const dispatchType = defaultDispatchType("role");
+        const dispatchType = defaultDispatchType("strategy");
 
         const handleDelete = defaultHandler.delete({ dispatch, dispatchType: dispatchType.delete });
 
@@ -42,7 +42,7 @@ export default connect(({ role }) => (
 
         const handleStatus = (row) => {
             dispatch({
-                type: "role/status",
+                type: "strategy/status",
                 payload: {
                     id: row.id,
                     status: Math.abs(row.status - 1)
@@ -50,7 +50,7 @@ export default connect(({ role }) => (
             })
         };
 
-        const handlePermissionManage = (role) => {
+        const handlePermissionManage = (strategy) => {
             defaultOperation.add({
                 dispatch,
                 modalProps: {
@@ -58,7 +58,7 @@ export default connect(({ role }) => (
                     width: "75%"
                 },
                 element: PermissionManage,
-                role
+                strategy
             });
         }
 
@@ -68,7 +68,7 @@ export default connect(({ role }) => (
                 type: dispatchType.find,
                 payload: {
                     data: id,
-                    callback: (role) => {
+                    callback: (strategy) => {
                         defaultOperation.add({
                             dispatch,
                             modalProps: {
@@ -76,7 +76,7 @@ export default connect(({ role }) => (
                                 width: "75%"
                             },
                             element: MenuManage,
-                            role
+                            strategy
                         });
                     }
                 }
@@ -105,7 +105,12 @@ export default connect(({ role }) => (
             {
                 title: 'description',
                 dataIndex: 'description'
-            }, {
+            },
+            {
+                title: 'expression',
+                dataIndex: 'expression'
+            },
+            {
                 title: 'createTime',
                 dataIndex: 'createTime',
                 render: Format.date
@@ -132,7 +137,7 @@ export default connect(({ role }) => (
                         <Search placeholder="input search text" onSearch={(name) => handleSearch({ name })} enterButton />
                     </Col>
                 </Row>
-                <PagingTable {...props} {...role} dispatchType={dispatchType.paging} columns={columns} />
+                <PagingTable {...props} {...strategy} dispatchType={dispatchType.paging} columns={columns} />
             </div>
         );
     });

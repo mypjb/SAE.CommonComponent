@@ -41,7 +41,7 @@ export default (props) => {
         return (<Option value={val.id}>{val.name}</Option>);
     });
 
-    return (<Form form={form} onFinish={handleSave} size='middl' initialValues={model}>
+    return (<Form form={form} onFinish={handleSave} size='middle' initialValues={model}>
         {parentElement}
         <Form.Item name="name" label="name" rules={[{ required: true }]}>
             <Input />

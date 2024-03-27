@@ -14,7 +14,7 @@ export default (props) => {
 
     const parentName = model && model.name ? model.name : "root";
 
-    return (<Form form={form} onFinish={handleSave} size='middl' initialValues={{ parentName, hidden: true, parentId: model?.id }}>
+    return (<Form form={form} onFinish={handleSave} size='middle' initialValues={{ parentName, hidden: true, parentId: model?.id }}>
         <Form.Item name="parentName" label="parent" rules={[{ required: true }]}>
             <Select disabled={true}></Select>
         </Form.Item>

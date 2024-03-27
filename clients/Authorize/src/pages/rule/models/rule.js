@@ -2,7 +2,7 @@ import request from "../service";
 import { defaultModel } from '@/utils/utils'
 
 export default {
-  namespace: "permission",
+  namespace: "rule",
   state: {
     ...defaultModel.state
   },
@@ -10,6 +10,6 @@ export default {
     ...defaultModel.reducers
   },
   effects: {
-    ...defaultModel.effects({ request, name: "permission" })
+    ...defaultModel.effects({ request, name: "rule" })
   }
 };

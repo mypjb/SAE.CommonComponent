@@ -6,14 +6,11 @@ export default (props) => {
 
     const [form] = Form.useForm();
 
-    const [handleSave] = defaultFormBuild({ ...props, form, dispatchType: "permission/add" });
+    const [handleSave] = defaultFormBuild({ ...props, form, dispatchType: "role/add" });
 
 
-    return (<Form form={form} onFinish={handleSave} size='middl' >
+    return (<Form form={form} onFinish={handleSave} size='middle' >
         <Form.Item name="name" label="name" rules={[{ required: true }]}>
-            <Input />
-        </Form.Item>
-        <Form.Item name="path" label="path" rules={[{ required: true }]}>
             <Input />
         </Form.Item>
         <Form.Item name="description" label="description" rules={[{ required: true }]}>

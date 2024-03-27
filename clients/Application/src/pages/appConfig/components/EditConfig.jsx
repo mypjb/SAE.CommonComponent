@@ -11,7 +11,7 @@ export default (props) => {
 
     form.setFieldsValue(model);
 
-    return (<Form form={form} size='middl' onFinish={handleSave} >
+    return (<Form form={form} size='middle' onFinish={handleSave} >
         <Form.Item name="alias" label="alias" rules={[{ required: true }]}>
             <Input />
         </Form.Item>

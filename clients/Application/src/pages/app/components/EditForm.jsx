@@ -13,7 +13,7 @@ export default props => {
     const [handleSave] = defaultFormBuild({ ...props, form, dispatchType: "app/edit" });
 
     return (
-        <Form form={form} size='middl' onFinish={handleSave} >
+        <Form form={form} size='middle' onFinish={handleSave} >
             <Form.Item name="name" label="name" rules={[{ required: true }]}>
                 <Input />
             </Form.Item>

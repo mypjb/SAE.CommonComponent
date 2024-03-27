@@ -17,7 +17,7 @@ export default (props) => {
 
     const handleFormatFormat = handleFormat.bind(this, { form, fieldName: 'format' });
 
-    return (<Form form={form} size='middl' onFinish={handleSave} >
+    return (<Form form={form} size='middle' onFinish={handleSave} >
         <Form.Item name="id" style={{ display: "none" }}>
             <Input />
         </Form.Item>
